@@ -210,10 +210,70 @@ open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8').write(fill('tem
     '{{LAUREL}}': laurel_symbol(), '{{SECTIONS}}': '\n'.join(sections), '{{TABS}}': ''.join(tabs),
     '{{DESC}}': html.escape(GALLERY_DESC), '{{HEAD_META}}': gallery_meta,
     '{{FEATURE_POSTER}}': FEATURE['poster'], '{{FEATURE_SRC}}': FEATURE['src']}))
+# The 98 styles of OPUSCAR 98, listed under the film on its page: styleboard/opuscar98_styles.json (written from the production
+# archive in promo/opuscar98, which is not in the repo) + one frame per film in styleboard/img/opuscar98/<no>.jpg.
+BOOK = json.load(open(os.path.join(HERE, 'opuscar98_styles.json'), encoding='utf-8'))
+
+def stylebook():
+    """(decade filter buttons, one <article> per film). Every text comes in both languages; the page shows one (data-lang)."""
+    e = html.escape
+    def L(en, zh, tag='span'):
+        return f'<{tag} lang="en">{e(en)}</{tag}><{tag} lang="zh-CN">{e(zh)}</{tag}>'
+    def hexes(t):   # colour codes in a prompt get a swatch
+        return re.sub(r'#[0-9A-Fa-f]{6}\b', lambda m: f'<code><i style="background:{m[0]}"></i>{m[0]}</code>', e(t))
+    def tc(t): return f'{int(t // 60)}:{int(t % 60):02d}'
+    chs = {c['id']: c for c in BOOK['chapters']}
+    TONE = {'B&W': '黑白', 'Sepia': '棕褐', 'B&W screen': '黑白屏幕'}
+    def kind(dim):   # "2D·B&W" → ("2D", "B&W"); "2D (B&W screen)" → ("2D", "B&W screen")
+        k = re.match(r'[\d.]+D', dim)[0]; return k, dim[len(k):].strip(' ·()')
+    KIND_TIP = {'2D': ('Drawn flat, in layers', '平面绘制，分层'), '2.5D': ('3D models rendered into flat 2D layers', '3D 模型渲染进 2D 平面图层'),
+                '3D': ('A real 3D scene and camera', '真 3D 场景和机位')}
+    def short(y):   # "1950–1959" → "1950s", "1927–1938" → "1927–38"
+        a, b = y.split('–'); return f'{a}s' if a.endswith('0') and b.endswith('9') and a[:3] == b[:3] else f'{a}–{b[2:]}'
+    buttons = ['<button type="button" data-ch="all" class="on"><b>98</b>' + L('All films', '全部') + '</button>']
+    buttons += [f'<button type="button" data-ch="{c["id"]}" title="{e(c["en"])} · {e(c["zh"])}"><b>{short(c["years"])}</b>{L(c["en"], c["zh"])}</button>'
+                for c in BOOK['chapters']]
+    n_kind = {k: sum(kind(f['dim'])[0] == k for f in BOOK['films']) for k in KIND_TIP}
+    kinds = '<button type="button" data-k="all" class="on">' + L('All', '全部') + '</button>' + ''.join(
+        f'<button type="button" data-k="{k}" title="{e(KIND_TIP[k][0])} · {e(KIND_TIP[k][1])}">{k}<small>{n_kind[k]}</small></button>' for k in KIND_TIP)
+    arts, last = [], None
+    for f in BOOK['films']:
+        if f['chapter'] != last:
+            c = chs[f['chapter']]; last = f['chapter']
+            arts.append(f'<h3 class="decade" data-ch="{c["id"]}">{L(c["en"], c["zh"])}<small>{e(c["years"])}</small></h3>')
+        no = f['no']; k, tone = kind(f['dim'])
+        badge = (f'<span class="kind" data-k="{k}" title="{e(KIND_TIP[k][0])} · {e(KIND_TIP[k][1])}">{k}'
+                 + (f'<small>{L(tone, TONE[tone])}</small>' if tone else '') + '</span>')
+        q = ' '.join([f['title'], f['zh'], f['year'], f'no.{no}', k.lower(), f['style_en'], f['style_zh'], *f['blend_en'], *f['blend_zh'], *f['refs']]).lower()
+        shots = ''.join(f'<li><p class="cam"><b>{e(s["cam"])}</b><i>{s["sec"]:.1f}s</i></p>{L(s["en"], s["zh"], "p")}</li>' for s in f['shots'])
+        arts.append(
+            f'<article class="film" id="no-{no}" data-ch="{f["chapter"]}" data-k="{k}" data-tone="{e(tone)}" data-t0="{f["t0"]}" data-dur="{f["dur"]}" data-q="{e(q)}">\n'
+            f' <button class="shot" type="button" data-t="{f["t0"]}" aria-label="Play No.{no} in the film">'
+            f'<img loading="lazy" decoding="async" width="960" height="400" src="../img/opuscar98/{no:02d}.jpg" '
+            f'alt="No.{no} {e(f["title"])} ({f["year"]}) in OPUSCAR 98, {e(f["style_en"])}"><span class="tc">▶ {tc(f["t0"])}</span></button>\n'
+            f' <div class="txt">\n'
+            f'  <p class="meta"><a class="no" href="#no-{no}">No.{no}</a><span>{e(f["year"])}</span>'
+            f'<button class="qcopy copy-btn" type="button" title="Copy the style prompt · 复制风格提示词">{L("Copy prompt", "复制提示词")}</button></p>\n'
+            f'  <h4>{e(f["title"])}<small>{e(f["zh"])}</small></h4>\n'
+            f'  <p class="style">{badge}{L(f["style_en"], f["style_zh"])}</p>\n'
+            f'  <ul class="blend">' + ''.join(f'<li>{L(a, b)}</li>' for a, b in zip(f['blend_en'], f['blend_zh'])) + '</ul>\n'
+            f'  <p class="desc">{L(f["desc_en"], f["desc_zh"])}</p>\n'
+            f'  <details><summary>{L("Style prompt", "风格提示词")}</summary>'
+            f'<div class="prompt"><p lang="en">{hexes(f["prompt_en"])}</p><p lang="zh-CN">{hexes(f["prompt_zh"])}</p><button class="copy copy-btn" type="button">{L("Copy", "复制")}</button></div></details>\n'
+            f'  <details><summary>{L("Shots & direction", "镜头与导演编排")}</summary><ol class="shots">{shots}</ol>'
+            f'<p class="dir">{L(f["direction_en"], f["direction_zh"])}</p>'
+            f'<p class="refs">{L("References: ", "对标：")}{e(" · ".join(f["refs"]))}</p></details>\n'
+            f' </div>\n</article>')
+    return ''.join(buttons), kinds, '\n'.join(arts)
+
+book_tabs, book_kinds, book_films = stylebook()
 # OPUSCAR 98 has its own page (one level down, so its relative paths start with ../)
 open(os.path.join(out_dir, 'opuscar98', 'index.html'), 'w', encoding='utf-8').write(fill('opuscar98.html', {
     '{{DESC}}': html.escape(FILM_DESC), '{{HEAD_META}}': film_meta,
-    '{{FEATURE_POSTER}}': '../' + FEATURE['poster'], '{{FEATURE_SRC}}': '../' + FEATURE['src']}))
+    '{{FEATURE_POSTER}}': '../' + FEATURE['poster'], '{{FEATURE_SRC}}': '../' + FEATURE['src'],
+    '{{BOOK_TABS}}': book_tabs, '{{BOOK_KINDS}}': book_kinds, '{{BOOK_FILMS}}': book_films}))
+# the same list as data, for anyone (or any agent) who wants all 98 prompts at once (site only: locally the source sits next door)
+if site: shutil.copy(os.path.join(HERE, 'opuscar98_styles.json'), os.path.join(out_dir, 'opuscar98', 'styles.json'))
 
 def llms_txt():
     """llms.txt (llmstxt.org): what the project is, where the upstream repo is, and a link per style."""
@@ -226,7 +286,9 @@ def llms_txt():
            f'- [README in Chinese]({BLOB_URL}/README.zh-CN.md): the same in Simplified Chinese',
            f'- [Agent instructions]({BLOB_URL}/AGENTS.md): how an agent directs a film in one of the styles',
            f'- [Gallery]({SITE_URL}): every style with its demo film',
-           f'- [OPUSCAR 98]({FILM_URL}): 98 Years of Best Picture ({FEATURE["dur"]}), the feature film made with these tools', '']
+           f'- [OPUSCAR 98]({FILM_URL}): 98 Years of Best Picture ({FEATURE["dur"]}), the feature film made with these tools',
+           f'- [OPUSCAR 98, all 98 styles]({FILM_URL}#styles): per film the style, a reusable style prompt, and the shots and direction '
+           f'(as JSON: {FILM_URL}styles.json)', '']
     for cn, en in cats:
         group = [x for x in styles if x['cat'] == cn and x['stylemd']]
         if not group: continue

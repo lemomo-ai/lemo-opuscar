@@ -8,7 +8,7 @@
 {{HEAD_META}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* same house as the gallery (styleboard/template.html): black stage, gold foil, velvet */
 :root{
@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box}
 html{background:var(--black)}
-body{margin:0;color:var(--ink);font:17px/1.6 var(--serif);
+body{margin:0;color:var(--ink);font:17px/1.6 var(--serif);font-feature-settings:"lnum" 1;
   background:radial-gradient(1000px 560px at 50% 22%, rgba(212,176,100,.13), transparent 70%), var(--black)}
 a{color:var(--gold)}
 .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
@@ -35,7 +35,32 @@ h1{margin:18px 0 0;font:900 clamp(46px,8vw,110px)/.95 var(--caps);letter-spacing
 .sub{margin:14px 0 0;font:600 clamp(12px,1.5vw,15px)/1.4 var(--caps);letter-spacing:.3em;color:var(--gold-hi);text-transform:uppercase}
 .frame{position:relative;margin:34px auto 0;padding:14px;background:linear-gradient(180deg,#1d160f,#0e0a07);
   border:1px solid rgba(212,176,100,.6);box-shadow:0 0 0 6px rgba(212,176,100,.08),0 40px 90px -30px #000,0 0 120px rgba(212,176,100,.12)}
-.frame video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:#000}
+.slot{position:relative;aspect-ratio:16/9;background:#000}
+.dock{position:absolute;inset:0}
+.dock video{display:block;width:100%;height:100%;background:#000}
+.away{position:absolute;inset:0;display:none;align-items:center;justify-content:center;margin:0;padding:0 24px;text-align:center;
+  font:italic 500 clamp(16px,2vw,21px)/1.4 var(--serif);color:var(--soft)}
+.away[lang=zh-CN]{font:400 clamp(14px,1.7vw,17px)/1.6 var(--cn);font-style:normal}
+.slot.out .away{display:flex}
+html[data-lang=en] .away[lang=zh-CN],html[data-lang=zh] .away[lang=en]{display:none !important}
+/* docked: the same video, fixed in the corner, with a caption bar */
+.dock.docked{position:fixed;inset:auto 20px 20px auto;width:min(420px,calc(100vw - 32px));z-index:40;background:#000;
+  border:1px solid rgba(212,176,100,.7);box-shadow:0 18px 50px -10px #000,0 0 0 5px rgba(7,6,5,.6);animation:dockin .22s ease-out}
+.dock.docked video{height:auto;aspect-ratio:16/9}
+@keyframes dockin{from{opacity:0;transform:translateY(14px)}}
+.dockbar{display:none;align-items:center;gap:8px;padding:7px 8px 7px 12px;background:var(--plate);border-top:1px solid var(--line)}
+.docked .dockbar{display:flex}
+.dnow{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:500 13.5px/1.3 var(--serif);color:var(--gold-hi);text-decoration:none}
+html[data-lang=zh] .dnow{font:500 12.5px/1.3 var(--cn)}
+.dockbar button{flex:none;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--soft);padding:5px 9px 4px;font:600 10.5px/1 var(--caps);letter-spacing:.12em;text-transform:uppercase}
+html[data-lang=zh] .dockbar button{font:500 12px/1 var(--cn);letter-spacing:.04em}
+.dockbar .dloop.on{background:var(--gold);border-color:var(--gold);color:#140e06}
+.dockbar .dclose{font:400 18px/1 var(--serif);padding:2px 9px 4px}
+.dockbar button:hover{border-color:var(--gold);color:var(--gold-hi)}
+.dockbar .dloop.on:hover{color:#140e06}
+html[data-lang=en] .dockbar [lang=zh-CN],html[data-lang=zh] .dockbar [lang=en]{display:none}
+@media (max-width:720px){.dock.docked{inset:auto 12px 12px auto;width:min(300px,calc(100vw - 24px))}.dockbar{padding:6px 6px 6px 10px}.dnow{font-size:12.5px}}
+@media (prefers-reduced-motion:reduce){.dock.docked{animation:none}}
 .blurb{max-width:760px;margin:30px auto 0;text-align:center;font:italic 500 clamp(19px,2.2vw,24px)/1.45 var(--serif);text-wrap:balance}
 .blurb-cn{max-width:680px;margin:10px auto 0;text-align:center;font:500 14.5px/1.8 var(--cn);color:var(--soft)}
 .links{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 26px;margin:26px 0 0;font:600 11.5px/1 var(--caps);letter-spacing:.2em;text-transform:uppercase}
@@ -60,7 +85,106 @@ footer{text-align:center;padding:60px 16px 56px;border-top:1px solid var(--line)
 footer .sig{margin:0;font:600 13px/1 var(--caps);letter-spacing:.42em;color:var(--gold);text-transform:uppercase}
 footer .fine{margin:14px 0 0;font:italic 500 16px/1.5 var(--serif);color:var(--soft)}
 footer .fine-cn{margin:6px 0 0;font:400 13px/1.6 var(--cn);color:var(--dim)}
-a:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
+/* ---------- now playing (under the player) ---------- */
+.now{min-height:1.6em;margin:12px 0 0;text-align:center;font:500 14px/1.6 var(--cn);color:var(--soft)}
+.now a{color:var(--gold-hi);text-decoration:none}
+/* ---------- the 98 styles ---------- */
+.book{margin:72px 0 0;scroll-margin-top:16px}
+.book>h2{margin:0;text-align:center;font:700 clamp(24px,3.4vw,38px)/1.15 var(--caps);letter-spacing:.12em;text-transform:uppercase;
+  background:var(--foil);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.book>.lead{max-width:62ch;margin:14px auto 0;text-align:center;color:#dfd3bb}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:28px 0 0;padding:12px 0;
+  background:linear-gradient(180deg,rgba(7,6,5,.97),rgba(7,6,5,.92));border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.decades{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px;flex:1 1 100%;min-width:0}
+.bar button{cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--soft);padding:8px 4px 7px;min-width:0}
+.decades button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.decades button b{display:block;font:700 16px/1.1 var(--serif);letter-spacing:.02em;color:var(--ink)}
+.decades button span{display:block;margin-top:4px;font:500 12px/1.25 var(--serif);color:var(--dim);text-wrap:balance}
+.decades button span[lang=zh-CN]{font:400 11.5px/1.3 var(--cn);letter-spacing:.04em}
+.bar button:hover{color:var(--gold-hi);border-color:var(--gold)}
+.bar button.on{background:var(--gold);border-color:var(--gold);color:#140e06}
+.bar button.on b,.bar button.on span{color:#140e06}
+.bar input{flex:1 1 220px;min-width:0;padding:9px 12px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--ink);font:500 15px/1.2 var(--serif)}
+.bar input::placeholder{color:var(--dim)}
+.bar input:focus{outline:none;border-color:var(--gold)}
+.lang{display:flex;gap:0}
+.lang button{padding:9px 12px 8px;font:600 11px/1 var(--caps);letter-spacing:.14em}
+.lang button[data-lang=zh]{font:500 12.5px/1 var(--cn);letter-spacing:.06em}
+.count{font:500 13px/1 var(--cn);color:var(--dim)}
+.kinds{display:flex}
+.kinds button{padding:8px 11px 7px;font:600 12px/1 var(--caps);letter-spacing:.08em}
+.kinds button small{margin-left:5px;font:500 11px/1 var(--serif);color:var(--dim)}
+.kinds button.on small{color:#3a2a10}
+.book[data-lang=zh] .kinds button span{font:500 12.5px/1 var(--cn)}
+/* 2D / 2.5D / 3D badge in front of every style name */
+.kind{display:inline-flex;align-items:baseline;gap:5px;margin:0 10px 0 0;padding:3px 7px 2px;vertical-align:.12em;border:1px solid;
+  font:700 11.5px/1.2 var(--caps);letter-spacing:.08em;white-space:nowrap}
+.kind[data-k="2D"]{color:var(--gold-hi);border-color:rgba(212,176,100,.55)}
+.kind[data-k="2.5D"]{color:#e9b98c;border-color:rgba(233,185,140,.55);background:rgba(233,185,140,.08)}
+.kind[data-k="3D"]{color:#140e06;border-color:var(--gold);background:var(--gold)}
+.kind small{font:500 11px/1 var(--serif);letter-spacing:.02em;text-transform:none;opacity:.85}
+.kind small [lang=zh-CN]{font:500 11px/1 var(--cn)}
+.decade{margin:46px 0 0;padding:0 0 10px;border-bottom:1px solid var(--line);font:700 clamp(18px,2.2vw,24px)/1.2 var(--caps);letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.decade [lang=zh-CN]{font:600 clamp(18px,2.1vw,23px)/1.2 var(--cn);letter-spacing:.12em}
+.decade small{margin-left:14px;font:600 13px/1 var(--caps);letter-spacing:.14em;color:var(--soft)}
+.film{display:grid;grid-template-columns:minmax(0,46%) minmax(0,1fr);gap:26px;padding:28px 0;border-bottom:1px solid rgba(212,176,100,.12);scroll-margin-top:120px}
+.film:target .shot{box-shadow:0 0 0 2px var(--gold-hi)}
+.film.playing .shot{box-shadow:0 0 0 2px var(--velvet-hi)}
+.shot{position:relative;display:block;align-self:start;width:100%;padding:0;border:1px solid rgba(212,176,100,.35);background:#000;cursor:pointer}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:12/5}
+.shot .tc{position:absolute;left:8px;bottom:8px;padding:5px 9px 4px;background:rgba(7,6,5,.82);color:var(--gold-hi);font:600 11px/1 var(--caps);letter-spacing:.14em}
+.shot:hover .tc,.shot:focus-visible .tc{background:var(--gold);color:#140e06}
+.txt{min-width:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0;font:600 11px/1.4 var(--caps);letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.meta .no{color:var(--velvet-hi);text-decoration:none}
+.meta{align-items:center}
+.qcopy{margin-left:auto;cursor:pointer;padding:6px 11px 5px;border:1px solid rgba(212,176,100,.55);background:transparent;color:var(--gold-hi);
+  font:600 10.5px/1 var(--caps);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.qcopy::before{content:"⧉ ";letter-spacing:0}
+.qcopy:hover,.qcopy.done{background:var(--gold);border-color:var(--gold);color:#140e06}
+.book[data-lang=zh] .qcopy{font:600 12px/1 var(--cn);letter-spacing:.06em}
+.copy-btn.done [lang]::after{content:" ✓"}
+.film h4{margin:6px 0 0;font:600 clamp(20px,2.2vw,25px)/1.2 var(--serif);color:var(--ink)}
+.film h4 small{margin-left:10px;font:500 15px/1 var(--cn);color:var(--soft)}
+.style{margin:10px 0 0;font:600 clamp(16px,1.7vw,19px)/1.3 var(--caps);letter-spacing:.06em;color:var(--gold-hi)}
+.blend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+.blend li{padding:3px 9px 2px;border:1px solid var(--line);font:500 13px/1.5 var(--serif);color:var(--soft)}
+.desc{margin:12px 0 0;color:#dfd3bb}
+.film details{margin:12px 0 0;border-top:1px solid rgba(212,176,100,.14)}
+.film summary{cursor:pointer;padding:10px 0 2px;font:600 11.5px/1.2 var(--caps);letter-spacing:.2em;color:var(--gold);text-transform:uppercase;list-style:none}
+.film summary::-webkit-details-marker{display:none}
+.film summary::before{content:"+ ";color:var(--dim)}
+.film details[open] summary::before{content:"– "}
+.prompt{position:relative;margin:10px 0 4px;padding:14px 16px 46px;background:var(--plate);border:1px solid var(--line)}
+.prompt p{margin:0;font:500 16.5px/1.6 var(--serif);color:var(--ink);white-space:pre-line}
+.prompt code{white-space:nowrap;font:500 .82em/1 ui-monospace,Menlo,monospace;color:var(--gold-hi)}
+.prompt code i{display:inline-block;width:.8em;height:.8em;margin:0 .3em 0 .1em;vertical-align:-.05em;border:1px solid rgba(243,234,216,.35)}
+.copy{position:absolute;right:10px;bottom:10px;cursor:pointer;padding:6px 12px 5px;border:1px solid var(--gold);background:transparent;color:var(--gold-hi);font:600 10.5px/1 var(--caps);letter-spacing:.18em;text-transform:uppercase}
+.copy:hover,.copy.done{background:var(--gold);color:#140e06}
+.shots{margin:10px 0 0;padding:0;list-style:none;counter-reset:s}
+.shots li{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:0 14px;padding:8px 0;border-bottom:1px dashed rgba(212,176,100,.14)}
+.shots li>p{margin:0;font-size:16px;line-height:1.55}
+.shots .cam{display:flex;flex-direction:column;gap:2px;padding-top:3px}
+.shots b{font:500 12px/1.3 ui-monospace,Menlo,monospace;color:var(--gold-hi);overflow-wrap:anywhere}
+.shots i{font:normal 500 11.5px/1.3 ui-monospace,Menlo,monospace;color:var(--dim)}
+.dir{margin:10px 0 0;color:#dfd3bb}
+.refs{margin:8px 0 0;font-size:14px;color:var(--soft)}
+.book[data-lang=en] [lang=zh-CN],.book[data-lang=zh] [lang=en]{display:none}
+body *{font-feature-settings:"lnum" 1 !important}   /* Cormorant defaults to old-style figures, which sink next to Chinese; every font: shorthand resets this, hence !important */
+.book [lang=zh-CN]{font-family:var(--cn)}
+.book[data-lang=zh] .desc,.book[data-lang=zh] .dir,.book[data-lang=zh] .shots li>p,.book[data-lang=zh] .prompt p{font:400 15px/1.85 var(--cn);letter-spacing:.01em}
+.book[data-lang=zh] .style{font:600 clamp(16px,1.6vw,18px)/1.35 var(--cn);letter-spacing:.06em}
+.book[data-lang=zh] .blend li{font:400 13px/1.6 var(--cn)}
+.book[data-lang=zh] .film summary{font:600 13px/1.2 var(--cn);letter-spacing:.08em}
+.book[data-lang=zh] .copy{font:600 12px/1 var(--cn);letter-spacing:.1em}
+.book[data-lang=zh] .refs{font:400 13.5px/1.7 var(--cn)}
+.film[hidden],.decade[hidden]{display:none}
+.json{margin:30px 0 0;text-align:center;font:500 14px/1.6 var(--cn);color:var(--dim)}
+@media (max-width:900px){.decades{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:24px}
+  .decades::-webkit-scrollbar{display:none}.decades button{flex:none;width:96px}}
+@media (max-width:720px){.film{grid-template-columns:1fr;gap:14px;padding:22px 0}.decade small{display:block;margin:6px 0 0}.bar{gap:8px}.lang button{padding:8px 10px 7px}
+  .shots li{grid-template-columns:1fr;gap:4px}.shots .cam{flex-direction:row;gap:10px}}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
 @media (max-width:720px){.wrap{padding:0 16px}.frame{padding:8px}.sub{letter-spacing:.18em}.credits div{padding:16px 4px}.repo a{font-size:10.5px;letter-spacing:.1em;padding:12px 14px 11px}}
 </style>
 </head>
@@ -74,11 +198,20 @@ a:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
     <p class="sub">98 Years of Best Picture · 1927 – 2025 · {{FEATURE_DUR}}</p>
   </header>
 
-  <div class="frame"><video controls playsinline preload="none" poster="{{FEATURE_POSTER}}" src="{{FEATURE_SRC}}"></video></div>
+  <div class="frame"><div class="slot" id="slot">
+    <p class="away" lang="en">Playing in the corner. Scroll back here to watch it large.</p><p class="away" lang="zh-CN">正在右下角播放，滚回这里看大画面</p>
+    <div class="dock" id="dock">
+      <video id="film" controls playsinline preload="none" poster="{{FEATURE_POSTER}}" src="{{FEATURE_SRC}}"></video>
+      <div class="dockbar"><a class="dnow" id="dnow" href="#styles"></a>
+        <button type="button" class="dloop on" id="dloop" aria-pressed="true"><span lang="en">Loop this film</span><span lang="zh-CN">循环本段</span></button>
+        <button type="button" class="dclose" id="dclose" aria-label="Close the player · 关闭">×</button></div>
+    </div>
+  </div></div>
+  <p class="now" id="now" aria-live="polite"></p>
 
   <p class="blurb">One Clawd walks through all 98 Best Picture winners, each one redrawn in a style that fits the film. Every frame, every note and every cut was written in code by Claude Opus 5.5.</p>
   <p class="blurb-cn">一个 Clawd 走过 98 部最佳影片，每一部都换成贴合那部电影的画风。每一帧画面、每一个音符、每一刀剪辑，都是 Claude Opus 5.5 写代码做出来的。</p>
-  <nav class="links"><a class="main" href="{{FEATURE_FULL}}" target="_blank" rel="noopener">Download · 1080p</a><a href="{{REPO_URL}}" target="_blank" rel="noopener">Source repo · 仓库</a><a href="../">The {{N_ALL}} styles · 风格图鉴</a></nav>
+  <nav class="links"><a class="main" href="{{FEATURE_FULL}}" target="_blank" rel="noopener">Download · 1080p</a><a href="{{REPO_URL}}" target="_blank" rel="noopener">Source repo · 仓库</a><a href="#styles">The 98 styles · 98 种风格</a><a href="../">The {{N_ALL}} styles · 风格图鉴</a></nav>
 
   <dl class="credits">
     <div><dt>Running time</dt><dd>{{FEATURE_DUR}}<small>98 部影片，1927 – 2025</small></dd></div>
@@ -86,6 +219,23 @@ a:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
     <div><dt>Video model</dt><dd>None<small>没有用视频生成模型</small></dd></div>
     <div><dt>By</dt><dd>Lemomo · LemoLab<small><a href="https://x.com/lemomo_ai" target="_blank" rel="noopener">@lemomo_ai</a> · <a href="https://github.com/lemomo-ai" target="_blank" rel="noopener">github.com/lemomo-ai</a></small></dd></div>
   </dl>
+
+  <section class="book" id="styles" data-lang="en">
+    <h2>The 98 Styles</h2>
+    <p class="lead">Every film in OPUSCAR 98 got its own style. Here is each one: what the style is, a prompt to reuse it on your own topic, and how the shots were directed. Click a frame to play that film: it loops in a small player that stays in the corner while you keep reading.</p>
+    <p class="lead cn" style="font:400 14px/1.85 var(--cn);color:var(--soft);margin-top:8px">98 部影片，每部一种定制画风。这里逐部公开：风格是什么、拿去拍你自己题材的提示词、镜头怎么设计和编排。点截图就播放那一部：在右下角的小播放器里循环，你可以边看边往下翻。</p>
+    <div class="bar">
+      <div class="decades" role="group" aria-label="Decade">{{BOOK_TABS}}</div>
+      <input type="search" id="q" placeholder="Search a film or a style" data-zh="搜索片名或风格" data-en="Search a film or a style" aria-label="Search">
+      <div class="kinds" role="group" aria-label="2D or 3D">{{BOOK_KINDS}}</div>
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" class="on">EN</button><button type="button" data-lang="zh">中文</button></div>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="films">
+{{BOOK_FILMS}}
+    </div>
+    <p class="json">All 98 as JSON · 全部数据：<a href="styles.json">styles.json</a></p>
+  </section>
 
   <section class="made">
     <h2>How it was made</h2>
@@ -103,5 +253,92 @@ a:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
   <p class="fine">Official repository: github.com/{{REPO}}, by Lemomo.</p>
   <p class="fine-cn">官方仓库：github.com/{{REPO}}，作者 Lemomo。</p>
 </footer>
+<script>
+(() => {
+  const v = document.getElementById('film'), book = document.getElementById('styles'), films = [...book.querySelectorAll('.film')];
+  const now = document.getElementById('now'), q = document.getElementById('q'), count = document.getElementById('count');
+  const TONE_ZH = { 'B&W': '黑白', 'Sepia': '棕褐', 'B&W screen': '黑白屏幕' };
+  // language: remembered per viewer, else the browser's
+  let lang = 'en';
+  try { lang = localStorage.getItem('o98lang') || (/^zh/i.test(navigator.language) ? 'zh' : 'en'); } catch (e) { lang = /^zh/i.test(navigator.language) ? 'zh' : 'en'; }
+  const setLang = l => { lang = l; book.dataset.lang = l; document.documentElement.dataset.lang = l; q.placeholder = q.dataset[l]; book.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+    try { localStorage.setItem('o98lang', l); } catch (e) {} };
+  setLang(lang);
+  book.querySelectorAll('.lang button').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+  // decade + search filter
+  let ch = 'all', kind = 'all';
+  const filter = () => {
+    const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean); let n = 0;
+    films.forEach(f => { const ok = (ch === 'all' || f.dataset.ch === ch) && (kind === 'all' || f.dataset.k === kind)
+      && words.every(w => f.dataset.q.includes(w)); f.hidden = !ok; n += ok; });
+    book.querySelectorAll('.decade').forEach(h => h.hidden = !films.some(f => !f.hidden && f.dataset.ch === h.dataset.ch));
+    count.textContent = n === films.length ? '' : n + ' / ' + films.length;
+  };
+  book.querySelectorAll('.decades button').forEach(b => b.onclick = () => {
+    ch = b.dataset.ch; book.querySelectorAll('.decades button').forEach(x => x.classList.toggle('on', x === b)); filter(); });
+  book.querySelectorAll('.kinds button').forEach(b => b.onclick = () => {
+    kind = b.dataset.k; book.querySelectorAll('.kinds button').forEach(x => x.classList.toggle('on', x === b)); filter(); });
+  q.oninput = filter;
+  // click a frame: play that film where you are. The page never jumps: once the big player is off screen, the same video
+  // docks in the corner (with its caption, a loop switch and a close button) and goes back when you scroll up to it.
+  const slot = document.getElementById('slot'), dock = document.getElementById('dock'), dnow = document.getElementById('dnow');
+  const dloop = document.getElementById('dloop');
+  let seg = null, loop = true, inView = true, closed = false;
+  const place = () => {
+    const d = !inView && !closed && (!v.paused || seg !== null);
+    dock.classList.toggle('docked', d); slot.classList.toggle('out', d);
+  };
+  new IntersectionObserver(([en]) => { inView = en.isIntersecting; place(); }, { threshold: .3 }).observe(slot);
+  const caption = f => {
+    const style = f.querySelector(`.style > [lang="${lang === 'zh' ? 'zh-CN' : 'en'}"]`).textContent;
+    const title = f.querySelector('.no').textContent + ' · ' + f.querySelector('h4').firstChild.textContent;
+    now.innerHTML = ''; const a = document.createElement('a'); a.href = '#' + f.id; a.textContent = title + ' — ' + style; now.append(a);
+    dnow.href = '#' + f.id; dnow.textContent = title + ' · ' + style; dnow.title = dnow.textContent;
+  };
+  const play = f => {
+    caption(f);
+    seg = { t0: +f.dataset.t0, end: +f.dataset.t0 + +f.dataset.dur }; closed = false;
+    const go = () => { v.currentTime = seg.t0; v.play().catch(() => {}); };
+    if (v.readyState >= 1) go(); else { v.preload = 'auto'; v.addEventListener('loadedmetadata', go, { once: true }); v.load(); }
+    place();
+  };
+  // looping one film: checked every frame where the browser allows it, so the loop doesn't spill into the next film
+  const keep = () => { if (seg && loop && v.currentTime >= seg.end - .04) v.currentTime = seg.t0; };
+  // (v.load() drops pending frame callbacks, so the per-frame check is re-armed whenever playback starts; timeupdate is the fallback)
+  let armed = false;
+  const tick = () => { keep(); if (armed) v.requestVideoFrameCallback(tick); };
+  v.addEventListener('playing', () => { if ('requestVideoFrameCallback' in v && !armed) { armed = true; v.requestVideoFrameCallback(tick); } });
+  v.addEventListener('emptied', () => { armed = false; });
+  v.addEventListener('timeupdate', keep);
+  // a seek outside the film (the viewer used the scrubber) ends the loop: from there it's just the whole film playing
+  v.addEventListener('seeked', () => { if (seg && (v.currentTime < seg.t0 - .05 || v.currentTime > seg.end + .05)) seg = null; });
+  v.addEventListener('play', () => { closed = false; place(); });
+  v.addEventListener('pause', place);
+  dloop.onclick = () => { loop = !loop; dloop.classList.toggle('on', loop); dloop.setAttribute('aria-pressed', loop); };
+  document.getElementById('dclose').onclick = () => { closed = true; seg = null; v.pause(); place(); };
+  book.addEventListener('click', e => {
+    const s = e.target.closest('.shot'); if (s) return play(s.closest('.film'));
+    const c = e.target.closest('.copy-btn'); if (!c) return;
+    const f = c.closest('.film'), zh = lang === 'zh', p = f.querySelector(`.prompt p[lang="${zh ? 'zh-CN' : 'en'}"]`);
+    // what gets copied: one line naming the style and whether it is 2D or 3D, then the prompt
+    const tone = f.dataset.tone && (zh ? TONE_ZH[f.dataset.tone] : f.dataset.tone);
+    const name = f.querySelector(`.style > [lang="${zh ? 'zh-CN' : 'en'}"]`).textContent;
+    const text = (zh ? '风格：' : 'Style: ') + [name, f.dataset.k, tone].filter(Boolean).join(' · ') + '\n\n' + p.textContent;
+    const done = () => { c.classList.add('done'); setTimeout(() => c.classList.remove('done'), 1400); };
+    // no clipboard access (http, old browser): open the prompt and select it so the viewer can copy it themselves
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(done, () => {
+      p.closest('details').open = true;
+      const r = document.createRange(); r.selectNodeContents(p); getSelection().removeAllRanges(); getSelection().addRange(r); });
+  });
+  // while the film plays: name the film on screen and mark it in the list
+  let cur = null;
+  v.addEventListener('timeupdate', () => {
+    const t = v.currentTime, f = films.find(f => t >= +f.dataset.t0 && t < +f.dataset.t0 + +f.dataset.dur) || null;
+    if (f === cur) return; if (cur) cur.classList.remove('playing'); cur = f;
+    if (!f) { now.textContent = ''; dnow.textContent = ''; return; }
+    f.classList.add('playing'); caption(f);
+  });
+})();
+</script>
 </body>
 </html>

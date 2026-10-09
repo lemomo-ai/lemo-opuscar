@@ -12,7 +12,7 @@
 
 <sub>官方仓库：[github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) · 作者 Lemomo（[@lemomo_ai](https://x.com/lemomo_ai)）</sub>
 
-**新增：** 铜版画 · 科幻全息界面 · 50s 扁平卡通 · 丝印旅行海报
+**最新：[OPUSCAR 98 的 98 种风格全部公开](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles)**：每部片的风格（标明 2D 还是 3D）、截图、可以直接拿去用的风格提示词、镜头设计和导演编排。
 
 </div>
 
@@ -27,7 +27,11 @@
 一个 Clawd 走过 98 部最佳影片，每一部都换成贴合那部电影的画风。<br>
 每一帧画面、每一个音符、每一刀剪辑，都是 Claude Opus 5.5 写代码做出来的。
 
-[**▶ 观看**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**下载 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
+98 种风格现在全部公开：每部片的风格和 2D/3D 标注、截图、拿去拍你自己题材的风格提示词、镜头与导演编排（2D 77 部，2.5D 4 部，3D 17 部）。同一份清单在影片页上，也有 [JSON](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/styles.json)。
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles"><img src="docs/opuscar98-styles.jpg" alt="OPUSCAR 98：98 种风格全部公开" width="100%"></a>
+
+[**▶ 观看**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**98 种风格**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles) · [**下载 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
 
 </div>
 

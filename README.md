@@ -16,7 +16,7 @@ Pick a style, bring your own story, and let your coding agent direct the film.<b
 
 <sub>Official repo: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) · by Lemomo ([@lemomo_ai](https://x.com/lemomo_ai))</sub>
 
-**New:** Copperplate Engraving · Sci-fi Hologram HUD · Mid-century Cartoon · Silkscreen Travel Poster
+**New: [all 98 styles of OPUSCAR 98](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles)**: for every film, its style (2D or 3D), a frame, a style prompt you can reuse, and how its shots were directed.
 
 </div>
 
@@ -31,7 +31,11 @@ Pick a style, bring your own story, and let your coding agent direct the film.<b
 One Clawd walks through all 98 Best Picture winners, each one redrawn in a style that fits the film.<br>
 Every frame, every note and every cut was written in code by Claude Opus 5.5.
 
-[**▶ Watch**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**Download 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
+All 98 styles are now public: each film's style and 2D/3D tag, a frame, a style prompt to reuse on your own topic, and the shots and direction (77 in 2D, 4 in 2.5D, 17 in 3D). The same list is on the film page and as [JSON](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/styles.json).
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles"><img src="docs/opuscar98-styles.jpg" alt="OPUSCAR 98 — all 98 styles open" width="100%"></a>
+
+[**▶ Watch**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**All 98 styles**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles) · [**Download 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
 
 </div>
 
