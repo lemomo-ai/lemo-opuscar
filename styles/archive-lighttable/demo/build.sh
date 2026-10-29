@@ -36,7 +36,7 @@ fi
 "$PY" core/tts/tts.py "$HERE/voice/lines.json" "$HERE/voice/out"
 WHISPER_MODEL=small.en "$PY" core/tts/asr_check.py "$HERE/voice/lines.json" "$HERE/voice/out" --lang en
 node "$HERE/tools/export.mjs" "$HERE" > /dev/null     # cues and timeline from the real durations; fails on overlap
-node "$HERE/tools/cuecheck.mjs" "$HERE" | tail -1
+node "$HERE/tools/cuecheck.mjs" "$HERE" > "$HERE/out/cuecheck.txt" || { cat "$HERE/out/cuecheck.txt"; exit 1; }; tail -1 "$HERE/out/cuecheck.txt"
 
 # picture, events, score + mix, master, subtitles
 node core/render/video.mjs "$HERE" --fps 24 --workers 4 --out "$HERE/out/video.mp4"
@@ -45,8 +45,8 @@ sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$FILM/$NAME.mp4
 "$PY" core/render/srt.py "$HERE/out/cues_srt.json" "$FILM/$NAME.srt"
 
 # checks
-node "$HERE/tools/subcheck.mjs" "$HERE" | tail -1
-node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok"
+node "$HERE/tools/subcheck.mjs" "$HERE" > "$HERE/out/subcheck.txt" || { cat "$HERE/out/subcheck.txt"; exit 1; }; tail -1 "$HERE/out/subcheck.txt"
+node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok" || { tail -20 "$HERE/out/readcheck.txt"; exit 1; }
 
 # poster (the signature shot) and the gallery style frame
 mkdir -p "$HERE/stills"

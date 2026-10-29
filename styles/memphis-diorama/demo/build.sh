@@ -23,7 +23,7 @@ node core/render/video.mjs "$HERE" --fps 60 --workers 4 --out "$HERE/out/video.m
 sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$FILM/$NAME.mp4" 60 0
 
 # every bottom line is held long enough to read
-node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok"
+node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok" || { tail -20 "$HERE/out/readcheck.txt"; exit 1; }
 
 # poster (autumn: haystacks and the geese) = gallery style frame; one still per season for DEMO.md
 ffmpeg -v error -y -ss 25.0 -i "$FILM/$NAME.mp4" -frames:v 1 -q:v 2 "$FILM/poster.jpg"

@@ -48,9 +48,9 @@ sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$FILM/$NAME.mp4
 "$PY" core/render/srt.py "$HERE/out/cues_srt.json" "$FILM/$NAME.srt"
 
 # checks
-"$PY" "$HERE/tools/cuecheck.py" "$HERE" | tail -1
-node "$HERE/tools/subcheck.mjs" "$HERE" | tail -1
-node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok"
+"$PY" "$HERE/tools/cuecheck.py" "$HERE" > "$HERE/out/cuecheck.txt" || { cat "$HERE/out/cuecheck.txt"; exit 1; }; tail -1 "$HERE/out/cuecheck.txt"
+node "$HERE/tools/subcheck.mjs" "$HERE" > "$HERE/out/subcheck.txt" || { cat "$HERE/out/subcheck.txt"; exit 1; }; tail -1 "$HERE/out/subcheck.txt"
+node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok" || { tail -20 "$HERE/out/readcheck.txt"; exit 1; }
 WHISPER_MODEL=small.en "$PY" "$HERE/tools/finalasr.py" "$FILM/$NAME.mp4" "$HERE" | grep -c '^OK' | sed 's/$/ lines heard in the final mix/'
 ffmpeg -v info -i "$FILM/$NAME.mp4" -vf blackdetect=d=0.1:pix_th=0.05 -an -f null - 2>&1 | grep -c black_start | sed 's/$/ black stretches/'
 

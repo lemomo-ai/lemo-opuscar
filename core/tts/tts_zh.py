@@ -98,7 +98,7 @@ def main():
         nz = np.where(np.abs(y) > (np.abs(y).max() if len(y) else 0) * .02)[0]
         if len(nz): y = y[max(0, nz[0] - int(.03 * sr)): nz[-1] + int(.10 * sr)]   # trim leading/trailing silence; leave a slightly longer tail so the sentence's last ring isn't cut off
         else: print('warning: line', L['id'], 'is silent', file=sys.stderr)
-        sf.write(os.path.join(a.out_dir, L['id'] + '.wav'), y, sr); dur[L['id']] = round(len(y) / sr, 3)
+        sf.write(os.path.join(a.out_dir, f"{L['id']}.wav"), y, sr); dur[L['id']] = round(len(y) / sr, 3)
         print(L['id'], dur[L['id']], L['text'])
     json.dump(dur, open(os.path.join(a.out_dir, 'dur.json'), 'w', encoding='utf-8'), indent=1)
 
