@@ -1,0 +1,138 @@
+[
+ {
+  "id": "ad",
+  "text": "是兄弟，就来砍我！",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "q1",
+  "text": "你点这一下，游戏公司要付两百块。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "q2",
+  "text": "凭什么？这门生意只算一道题：",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "q3",
+  "text": "买你的钱，得少于你充的钱。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "买你的钱，得少于你冲的钱。"
+ },
+ {
+  "id": "a1",
+  "text": "可十个人里，大概就一个充钱。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "a2",
+  "text": "那就让这一个，多充点。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "那就让这一个，多冲点。"
+ },
+ {
+  "id": "a3",
+  "text": "六块首充，先让你掏一次钱包；",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "六块手冲，先让你掏一次钱包；"
+ },
+ {
+  "id": "a4",
+  "text": "排行榜，再让大哥越充越多。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "排行榜，再让大哥越冲越多。"
+ },
+ {
+  "id": "a5",
+  "text": "有家公司，付费玩家平均每月充四百多。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "a6",
+  "text": "不充钱的你也有用：大哥砍人，得有人看。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "b1",
+  "text": "可两周后，人走光了，大哥没人砍了。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "b2",
+  "text": "那就开新服：回到一级，重新冲榜，再充一遍。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "那就开心服：回到一集，重新冲绑，再冲一遍。"
+ },
+ {
+  "id": "b3",
+  "text": "老服没人了，就合在一起。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "老服没人了，就和在一起。"
+ },
+ {
+  "id": "c1",
+  "text": "可新服要新人，新人又得花钱买。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "可心服要心人，心人又得花钱买。"
+ },
+ {
+  "id": "c2",
+  "text": "有家公司，收入六到八成花在推广，就是去买下一个你。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "c3",
+  "text": "回得了本，这个圈就一直转。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "d1",
+  "text": "买人这么贵，广告不能浪费在不充钱的人身上。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "d2",
+  "text": "所以它故意这么土：嫌土的划走，留下的才会充钱。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "所以他故意这么吐：弦吐的滑走，留下的才会冲前。"
+ },
+ {
+  "id": "d3",
+  "text": "请明星？那笔钱只占预算的零点几个百分点。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%"
+ },
+ {
+  "id": "e1",
+  "text": "所以，别笑它土。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "所以，别笑他吐。"
+ },
+ {
+  "id": "e2",
+  "text": "它不是做给所有人看的，是做给会充钱的你。",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+40%",
+  "asr": "他不是做给所有人看的，是做给会冲钱的你。"
+ }
+]
