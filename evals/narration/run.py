@@ -2,13 +2,14 @@
 """Build local promptfoo fixtures from narration only; never track source text."""
 import argparse, json, os, re, subprocess, tempfile
 from pathlib import Path
+from judge_records import find_record
 ROOT = Path(__file__).resolve().parent
 DEFAULT = Path.home() / 'lemo-opuscar/films/openai-navier-stokes-lean-gap'
 p = argparse.ArgumentParser()
 p.add_argument('--case', help='Evaluate only this case id')
 p.add_argument('--deterministic-only', action='store_true', help='Run only red-line and opening assertions')
 p.add_argument('--project', type=Path, default=DEFAULT)
-p.add_argument('--report', type=Path, required=True)
+p.add_argument('--report', type=Path, default=Path('/tmp/narration-eval.md'))
 p.add_argument('--human-reference', type=Path, help='Verified human-written narration, not the placeholder')
 p.add_argument('--promptfoo', default='promptfoo', help='Installed promptfoo executable')
 a = p.parse_args()
@@ -18,6 +19,7 @@ def extract(text):
         raise ValueError('Missing nonempty ## 口播 section')
     return m[1].strip()
 tests = []
+record_states = {}
 for version, case in enumerate(json.loads((ROOT / 'cases.json').read_text()), 1):
     if a.case and case['id'] != a.case:
         continue
@@ -29,7 +31,14 @@ for version, case in enumerate(json.loads((ROOT / 'cases.json').read_text()), 1)
                   'assert': [{'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:redLines'},
                              {'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:opening'}]})
     llm_ready = not a.deterministic_only and bool((os.getenv('NARRATION_LLM_API_KEY') or os.getenv('OPENAI_API_KEY')) and os.getenv('NARRATION_LLM_MODEL'))
-    if llm_ready and target:
+    recorded = find_record(case['id'], narration, ROOT / 'judge-runs') if not a.deterministic_only else None
+    if recorded:
+        record_states[case['id']] = recorded
+        print(f"{case['id']}: judge record {recorded['status']} (score={recorded['record']['score']})")
+        if recorded['status'] != 'SKIP':
+            tests[-1]['vars']['recorded_retell'] = recorded
+            tests[-1]['assert'].append({'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:recordedRetell'})
+    elif llm_ready and target:
         tests[-1]['vars']['retell_target'] = target[1]
         tests[-1]['assert'].append({'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:retell'})
     if llm_ready and a.human_reference:
@@ -62,10 +71,16 @@ with tempfile.TemporaryDirectory(prefix='narration-eval-') as temp:
             lines += [f'### {desc}', f"- PASS={grading.get('pass')}，已运行断言均分={grading.get('score')}"]
             for c in grading.get('componentResults', []):
                 lines.append(f"- {'PASS' if c.get('pass') else 'FAIL'} score={c.get('score')}: {c.get('reason')}")
-        lines += ['', '## 附加断言状态（本轮缺项）', ('a) 复述断言：见上方评分；未启用的 fixture 缺目标句或 provider。' if any(any(':retell' in c['value'] for c in t['assert']) for t in tests) else '- a) 零背景复述：SKIP。本轮仅运行确定性断言或缺少目标句/完整 provider；不生成语义分数。'),
+        for case_id, state in record_states.items():
+            record = state['record']
+            lines += ['', f"Recorded retelling {case_id}: {state['status']}",
+                      f"- score={record['score']}/10; {state['reason']}",
+                      f"- narration_sha256={state['current_sha256']}",
+                      f"- source={state['source']}"]
+        lines += ['', '## 附加断言状态（本轮缺项）' , ('a) 复述断言：见上方评分；未启用的 fixture 缺目标句或 provider。' if any(any(':retell' in c['value'] for c in t['assert']) for t in tests) else '- a) 复述：已提供记录的 case 见上方哈希核验状态；其余未满足前提的 case 为 SKIP。'),
                   ('d) 盲测：见上方评分。' if a.human_reference and llm_ready else '- d) 盲测：SKIP，缺人写参照或完整 LLM provider；参见 human-reference.md。'),
                   '- b) 本轮是前15字的保守确定性矛盾词检查，不声称完成 LLM 语义判分。',
-                  '', '阈值：复述 score>=0.8，其余 score=1 才 PASS；全部已运行项通过才局部关口 PASS，SKIP 不代表完整验收。任何 FAIL 退出1；评测工具失败退出2。',
+                  '', '阈值：存档裁判原分>=7/10（promptfoo 归一化为 score/10）；实时复述>=0.8；其余 score=1 才 PASS；STALE 失败且不采用旧分；全部已运行项通过才局部关口 PASS，SKIP 不代表完整验收。任何 FAIL 退出1；评测工具失败退出2。',
                   '', '事实包仅作为边界来源，不参与禁词扫描；禁词只扫描 ## 口播 到下一个二级标题。']
         a.report.parent.mkdir(parents=True, exist_ok=True)
         a.report.write_text('\n'.join(lines)+'\n')

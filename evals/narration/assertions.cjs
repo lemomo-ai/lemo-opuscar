@@ -43,3 +43,12 @@ exports.blind = async (output, context) => {
   const pass = result.choice !== candidate;
   return {pass, score:pass ? 1 : 0, reason:`seed=${seed}；选择=${result.choice}；${result.reason}`};
 };
+
+// Evidence is loaded and checked against stripped narration by run.py.
+exports.recordedRetell = (output, context) => {
+  const state = context.vars.recorded_retell;
+  if (state.status === 'STALE') return {pass:false, score:0, reason:`STALE: ${state.reason}`};
+  const score = state.record.score;
+  if (score === null) throw new Error('SKIP records must not become scored assertions');
+  return {pass:score >= 7, score:score / 10, reason:`存档裁判 ${score}/10: ${state.reason}`};
+};

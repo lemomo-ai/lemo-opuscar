@@ -23,3 +23,10 @@ v1、v2 均固定标 `baidi_judged_bad`，局部通过不意味着稿件合格�
 可执行语义断言已定义在 `assertions.cjs` 的 `retell` 和 `blind` 中。配置 `NARRATION_LLM_MODEL` 及 `NARRATION_LLM_API_KEY`（或 `OPENAI_API_KEY`），可选 `NARRATION_LLM_BASE_URL`（或 `OPENAI_BASE_URL`）。稿内新增独立一行 `外行复述句：…` 才启用复述断言；`--human-reference /absolute/verified-human.md` 才启用盲测。未满足前提时不将 SKIP 计为通过或给分。
 
 四版分别运行：`--case navier-stokes-v3.1 --deterministic-only --report <notes/script-v3.1-eval.md>`。v3/v3.1 标签为 pending_baidi；该开关只运行两项确定性断言。
+
+裁判存档位于 `judge-runs/*.json`；默认复述断言优先使用匹配 case 的记录，
+按口播段 `strip()` 后 UTF-8 SHA256 核验。匹配且 score>=7/10 才通过，
+哈希不匹配标 STALE 并失败（不采用旧分），空分数标 SKIP 并保留原因。
+没有记录才走原实时 LLM 路径。`--deterministic-only` 仍只跑确定性检查。
+默认 `--report /tmp/narration-eval.md`，不要求 API key 即可重放存档评分。
+`reports/navier-stokes-retelling.md` 保留本次协议、原文及作废记录。
