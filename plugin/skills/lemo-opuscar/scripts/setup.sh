@@ -16,7 +16,7 @@ if [ -n "$LEMO_OPUSCAR_HOME" ]; then LIB=$LEMO_OPUSCAR_HOME
 elif top=$(git rev-parse --show-toplevel 2>/dev/null) && is_lib "$top"; then LIB=$top
 else LIB=$HOME/lemo-opuscar
 fi
-case "$LIB" in /*) ;; *) LIB=$(pwd)/$LIB ;; esac
+case "$LIB" in /*|[A-Za-z]:[/\\]*) ;; *) LIB=$(pwd)/$LIB ;; esac   # C:/… is absolute too (Windows git prints paths that way)
 
 # Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
@@ -50,10 +50,18 @@ node_ok() { [ "$(cat "$LIB/node_modules/.lemo-ok" 2>/dev/null)" = "$(sig "$LIB/p
 py_ok() { [ "$(cat "$LIB/.venv/.lemo-$1" 2>/dev/null)" = "$(pysig "$(req "$1")")" ]; }
 # a Python 3.11+ for the venv when uv is absent; kokoro-onnx (voice tier) needs < 3.14, so those come first
 find_py() {
-  for c in python3.12 python3.13 python3.11 python3; do
+  for c in python3.12 python3.13 python3.11 python3 python; do
     "$c" -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>/dev/null && { echo "$c"; return 0; }
   done
   return 1
+}
+# Windows (Git Bash): a venv keeps its Python in Scripts/python.exe. Give it the .venv/bin/python every tool calls,
+# a shim that also forces UTF-8 (a Chinese Windows defaults to GBK, which can't print ✓ or read our UTF-8 files).
+win_shim() {
+  [ -f .venv/Scripts/python.exe ] && [ ! -e .venv/bin/python ] || return 0
+  mkdir -p .venv/bin
+  printf '#!/bin/sh\nPYTHONUTF8=1 PYTHONIOENCODING=utf-8 exec "$(dirname "$0")/../Scripts/python.exe" "$@"\n' > .venv/bin/python
+  chmod +x .venv/bin/python
 }
 
 case "$1" in
@@ -70,10 +78,12 @@ case "$1" in
     fi
     node node_modules/playwright-core/cli.js install chromium-headless-shell   # the renderer's browser (a no-op when present)
     # a venv whose Python is gone (after a Python upgrade) can't be repaired in place: make it again
+    win_shim
     [ ! -e .venv ] || .venv/bin/python -c pass 2>/dev/null || { echo "! $LIB/.venv is broken; making it again"; rm -rf .venv; }
     if [ ! -x .venv/bin/python ]; then
       if command -v uv >/dev/null; then uv venv --quiet --python 3.12 .venv
       else py=$(find_py) || { echo "✗ Python 3.11+ is needed (or install uv, which fetches it)"; exit 1; }; "$py" -m venv .venv; fi
+      win_shim
     fi
     for t in $tiers; do
       py_ok "$t" && continue
