@@ -389,3 +389,14 @@ You are responsible for the materials you use in your films.
 <sub>LemoLab · by Lemomo</sub>
 
 </div>
+
+### Narration writing checks
+
+For script review without producing a film, use the Chinese editing skill
+[`stop-slop-cn`](plugin/skills/stop-slop-cn/SKILL.md), then run
+`scripts/narration-detect films/<slug>/SCRIPT_vN.md` and the
+[`promptfoo narration evaluations`](evals/narration/README.md).
+The detector reads only `## 口播` and writes a report in the film's `notes/`;
+its PASS means the documented surface thresholds passed, not audience approval.
+Keep rewrite comparisons in `notes/` and preserve the original script unless
+its author explicitly requests an edit. No voice or video production is required.
