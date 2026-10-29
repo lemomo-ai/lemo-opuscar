@@ -1,0 +1,32 @@
+[
+  {
+    "id": "navier-stokes-v1",
+    "file": "SCRIPT_v1.md",
+    "label": "baidi_judged_bad",
+    "human_reference": null
+  },
+  {
+    "id": "navier-stokes-v2",
+    "file": "SCRIPT_v2.md",
+    "label": "baidi_judged_bad",
+    "human_reference": null
+  },
+  {
+    "id": "navier-stokes-v3",
+    "file": "SCRIPT_v3.md",
+    "label": "pending_baidi",
+    "human_reference": null
+  },
+  {
+    "id": "navier-stokes-v3.1",
+    "file": "SCRIPT_v3.1.md",
+    "label": "pending_baidi",
+    "human_reference": null
+  },
+  {
+    "id": "navier-stokes-v3.2",
+    "file": "SCRIPT_v3.2.md",
+    "label": "pending_baidi",
+    "human_reference": null
+  }
+]

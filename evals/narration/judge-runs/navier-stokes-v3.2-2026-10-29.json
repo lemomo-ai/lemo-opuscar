@@ -1,0 +1,7 @@
+{
+  "protocol": "t3-code judge, gpt-6.1-sol medium; viewer = fresh scratch thread fed only the 口播 section + fixed prompt; scorer = fresh scratch thread fed only viewer retelling + not-understood list + script 外行复述句, plus explicit GAP_A/GAP_B checks; PASS threshold score>=7",
+  "runs": [
+    {"case": "v3.2", "file": "films/openai-navier-stokes-lean-gap/SCRIPT_v3.2.md", "narration_sha256": "9399ff26424ede78bb49ca87394392f287a26b5a9218609525caafbaada53a01", "viewer_thread": "mcp:38b20760-4587-4aab-af0b-4fc2ea16abf9", "viewer_output": "1) OpenAI 说给大家看的证明经过了电脑验证，但电脑实际验的是要求更高的另一份，原来的证明对不对还不知道。\n\n2) 听不懂的词或句：\n\n- “电脑验证过”：电脑是怎么算出一份数学证明对不对的？\n- “水流的变化得够顺”“水流再顺一档”：这里的“顺”到底是什么意思，一档又差多少？", "reference": "OpenAI 说给人看的证明电脑验过了，可电脑验的那份条件更严，要水流再顺一档，不是同一份，所以“你看到的被电脑验过”要打折；这不等于证明错了。", "scorer_thread": "mcp:756ceb9d-dbe5-486a-8137-fafe90514a85", "score": 9, "score_status": "PASS", "reason": "复述抓住了电脑验证版本条件更严、验证背书因此要打折且原证明未被判错的核心，但未提及 AI 解决悬赏难题的背景。", "gap_a": "没听懂 — 只知道电脑版要求更高，仍不理解“顺一档”指光滑度从 m+4 提高到 m+5。", "gap_b": "听懂 — “原来的证明对不对还不知道”表明理解了验证有缺口不等于证明已被判错。"}
+  ],
+  "blind_test": "SKIP: no human-written reference script"
+}
