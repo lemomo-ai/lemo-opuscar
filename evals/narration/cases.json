@@ -22,5 +22,11 @@
     "file": "SCRIPT_v3.1.md",
     "label": "pending_baidi",
     "human_reference": null
+  },
+  {
+    "id": "navier-stokes-v3.2",
+    "file": "SCRIPT_v3.2.md",
+    "label": "pending_baidi",
+    "human_reference": null
   }
 ]

@@ -26,6 +26,7 @@ def extract_narration(markdown):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--short', action='store_true', help='Explicit short mode (already the narration default)')
     parser.add_argument('script', type=Path)
     parser.add_argument('--output', type=Path, help='default: SCRIPT_vN.md sibling notes/script-vN-detect.md')
     args = parser.parse_args()
