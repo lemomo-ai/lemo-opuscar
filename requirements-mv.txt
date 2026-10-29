@@ -1,0 +1,11 @@
+# Music-video tier: core/mv/ (get_song.py, lyrics.py, song.py). Install: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps mv
+# yt-dlp fetches the song; demucs (pulls torch, ~1 GB) splits off the vocals; whisper times the sung words; pypinyin aligns
+# Chinese lyrics by sound; librosa finds beats, bars and sections; rapidocr reads lyrics burned into a video. mlx-whisper is the
+# fast backend on Apple silicon.
+yt-dlp
+demucs
+faster-whisper
+mlx-whisper; sys_platform == "darwin" and platform_machine == "arm64"
+pypinyin
+librosa
+rapidocr_onnxruntime

@@ -23,6 +23,7 @@ Everything else installs in tiers, from the library root (`$LIB` in skill mode).
 | `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` | core: npm packages, headless browser, Python `.venv` (numpy, scipy, soundfile, soxr, pillow): render, synthesize sound, mux | ~350 MB |
 | `… setup.sh deps voice` | Kokoro + model (English, offline), edge-tts (Chinese, online), faster-whisper (voice check) | ~0.55 GB + a Whisper model on first check (~145 MB for English, ~480 MB for Chinese) |
 | `… setup.sh deps music` | numba, for plucked strings (`pluck.py`); the sampler itself needs only the core | ~140 MB |
+| `… setup.sh deps mv` | music videos: fetch a song, split its vocals, time its lyrics, map its beats ([`MV.md`](MV.md)) | ~1.3 GB |
 | `sh tools/fetch.sh instruments <lib>` | a sample library: `freepats`, `karoryfer`, `salamander`, `vcsl`, `vsco2ce` or `all` | 70–400 MB each |
 | `sh tools/fetch.sh hdri` | HDRIs for 3D styles | 12 MB |
 
@@ -82,6 +83,9 @@ To render a second version with other content, pass it to the page and give it i
 Capture is fast because of **JPEG screenshots**, **one browser per worker** and **grain added in ffmpeg**: grain drawn in the page makes every frame incompressible and slow.
 
 ## 3. One timeline drives everything
+
+In a music video the timeline is the song's: `core/mv/song.py` and `lyrics.py` write it ([`MV.md`](MV.md) §2–3), and the page reads it instead of a `timeline.js` of its own.
+
 
 Keep sections, tempo, beats and hit points in one file (`timeline.js`). Export it to JSON and let the score, the mixer, the subtitles and the checks read the same numbers:
 
@@ -146,7 +150,7 @@ Only CC0, CC BY or OFL material, each listed in the film's `CREDITS` with its so
 
 A film that states facts (the Evidence Films styles) keeps a `FACTS.md` in the project folder: each claim with its source URL and the quoted wording, or the measurement that produced it.
 
-Fonts: Google Fonts (OFL), self-hosted in the project. The typefaces a `STYLE.md` names are not in the library; download them (`https://github.com/google/fonts/tree/main/ofl/<family>`) into the project's `fonts/`. `core/fonts/` holds a few Latin display fonts and a Chinese display font with only about 200 glyphs, not enough for running Chinese text. For Chinese, subset a CJK font to the characters you use: the Google Fonts CSS API with `&text=` returns just those glyphs (`https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700&text=<URL-encoded characters>`). Download the font file it points to into the project's `fonts/` and load it with `@font-face`; don't link Google Fonts at render time.
+Fonts: Google Fonts (OFL), self-hosted in the project. The typefaces a `STYLE.md` names are not in the library; download them (`https://github.com/google/fonts/tree/main/ofl/<family>`) into the project's `fonts/`. `core/fonts/` holds a few Latin display fonts and a Chinese display font with only about 200 glyphs, not enough for running Chinese text. For Chinese, subset a CJK font to the characters you use: the Google Fonts CSS API with `&text=` returns just those glyphs (`https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700&text=<URL-encoded characters>`). Download the font file it points to into the project's `fonts/` and load it with `@font-face`; don't link Google Fonts at render time. Check that the CSS holds one `@font-face` per weight: sometimes it ignores `text=` and returns the whole font cut into many `unicode-range` blocks. Then retry later, or keep only the blocks whose range covers your characters, each as its own `@font-face` with its `unicode-range`, and load every face before the first frame (`Promise.all([...document.fonts].map(f => f.load()))`).
 
 ## 12. Where to look in our demos
 

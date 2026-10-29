@@ -6,6 +6,7 @@ This repository is a library of film styles. Each style has a `styles/<slug>/STY
 |---|---|
 | Any request: first see the user's own styles; no request yet: offer the ways in | **Start** below |
 | A film about the user's topic (the normal case) | **Style and story**, **Workflow** below |
+| A music video for a song the user brings (a fan MV, 二创, a lyric video) | [`MV.md`](MV.md), then **Workflow** below with its changes |
 | "Which styles are there?" / no style chosen | **Finding the style** below |
 | Directing: story, sound, rhythm, camera, checks, delivery | [`DIRECTOR.md`](DIRECTOR.md) |
 | Building: install, pages, voice, music, mix | [`TECHNIQUE.md`](TECHNIQUE.md) |
@@ -71,11 +72,13 @@ All 66 styles · 全部风格:
    - whether they want to review a storyboard first (default: no);
    - anything missing on their machine: first run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` from the library root (core only) and include what it reports. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1).
 
+   A music video asks other things (the song, its version, lyrics language, length): MV.md §1.
+
    Skip what their request already answers. Wait for the reply, fill every other gap with a sensible default, sum up the brief in a few lines and start. Don't come back with more questions.
 2. **Treatment.** Write `TREATMENT.md` in the project folder (DIRECTOR.md §4), before you open the demo (an Edit & Documentary style gathers its material first: **Treatment first** above).
 3. **Look.** Render style frames or a model sheet with the real drawing code and check them against `STYLE.md` (DIRECTOR.md §5).
 4. **Storyboard, only if the user asked for it** (DIRECTOR.md §5). **Stop and wait for approval.** Otherwise don't stop.
-5. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render (TECHNIQUE.md).
+5. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render (TECHNIQUE.md). For a music video: song → lyrics → song map → animation → mux with the song (MV.md).
 6. **Self-check and deliver** (DIRECTOR.md §11).
 
 Report progress in the user's language. If a step fails, read the error, fix the cause and retry; go back to the user only for a decision or something only they can provide.
