@@ -177,7 +177,7 @@ def main():
     m = load_model(name)
     bad, words = 0, {}
     for L in lines:
-        y, sr = sf.read(os.path.join(a.voices_dir, L['id'] + '.wav'))
+        y, sr = sf.read(os.path.join(a.voices_dir, f"{L['id']}.wav"))
         if y.ndim > 1: y = y.mean(1)
         y = soxr.resample(y, sr, 16000, quality='HQ'); pad = np.zeros(int(.6 * 16000))   # same as librosa's default soxr_hq
         kw = dict(initial_prompt='以下是普通话的句子。') if lang == 'zh' else {}          # prompt in Simplified Chinese so the transcription doesn't come out in Traditional
