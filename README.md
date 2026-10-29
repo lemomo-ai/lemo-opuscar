@@ -398,5 +398,7 @@ For script review without producing a film, use the Chinese editing skill
 [`promptfoo narration evaluations`](evals/narration/README.md).
 The detector reads only `## 口播` and writes a report in the film's `notes/`;
 its PASS means the documented surface thresholds passed, not audience approval.
+The detect component vendors lieflat-less-ai-tone under **CC BY-NC 4.0
+(noncommercial use only)**; see its [notice](vendor/lieflat-less-ai-tone/README.md).
 Keep rewrite comparisons in `notes/` and preserve the original script unless
 its author explicitly requests an edit. No voice or video production is required.
