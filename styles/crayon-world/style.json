@@ -1,0 +1,18 @@
+{
+ "slug": "crayon-world",
+ "num": "80",
+ "en": "Crayon World 3D",
+ "cn": "蜡笔立体世界",
+ "category_en": "Hand-drawn & Painting",
+ "category_cn": "手绘与绘画",
+ "film": "The Butterfly",
+ "line": "A first-person flight over a crayon village to one flower in an old man's garden; then his eyes, and what he says.",
+ "line_cn": "第一人称飞过蜡笔画的村子，落在老人花园里的一朵花上；最后换成他的眼睛，和他说的一句话。",
+ "uses": [
+  "Short stories",
+  "Tributes",
+  "Journeys"
+ ],
+ "frame_sec": 32.5,
+ "dur": 64.5
+}
