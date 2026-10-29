@@ -4,6 +4,7 @@
 # Audio: two-pass loudnorm → −14 LUFS / TP −1.2 (a single pass is off by about 0.5 LU); finally prints the measured I / LRA / true peak and warns if off target (loudness outside ±1 LU or peak above −1 dB)
 # (when the mix itself clips or has extremely high peaks, loudnorm's dynamic mode misses both targets; measured −20 LUFS / +5 dBTP)
 # Any failed ffmpeg step exits non-zero and leaves no half-written file; the output path is printed only if the finished file exists and is non-empty.
+#   (the film is written to a temporary file beside the output and renamed when complete, so Ctrl-C or a failed re-mux never touches an earlier good film)
 # Silent / extremely quiet audio (below −70 LUFS, which loudnorm can't measure): only when it "decoded successfully and measured as truly silent" is loudness normalisation skipped with a warning; the film is still made.
 # Not audio, no audio stream, or a damaged file: exit 1, no film. "Damaged" is judged from what actually decodes, not from seeing error wording:
 #   · the decoder reported an error (with damaged FLAC/MP3/M4A, ffmpeg often reports an error yet returns 0);
@@ -83,12 +84,18 @@ if [ "${LEMO_COLOR:-}" = "bt709" ]; then
 else
   VF="$VF,format=yuv420p"; CARGS=""
 fi
+# the temporary file keeps the output's extension, since ffmpeg picks the container from it
+B=${O##*/}; case "$B" in *.*) EXT=${B##*.} ;; *) EXT=mp4 ;; esac
+TMP="$O.$$.part.$EXT"
+trap 'rm -f "$TMP"' EXIT
+trap 'exit 130' INT; trap 'exit 143' TERM
 # shellcheck disable=SC2086  (CARGS must split on spaces into several arguments; empty by default)
 ffmpeg -y -loglevel error -i "$V" -i "$A" \
   -filter_complex "[0:v]$VF[v];[1:a]$LN,aresample=48000$PAD[a]" \
-  -map "[v]" -map "[a]" -c:v libx264 -preset slow -crf 19 -r "$FPS" $CARGS -c:a aac -b:a 256k -movflags +faststart -shortest "$O" \
-  || { rm -f "$O"; die "ffmpeg failed while writing '$O' (its message is above)"; }
-[ -s "$O" ] || { rm -f "$O"; die "no output was written to '$O'"; }
+  -map "[v]" -map "[a]" -c:v libx264 -preset slow -crf 19 -r "$FPS" $CARGS -c:a aac -b:a 256k -movflags +faststart -shortest "$TMP" \
+  || die "ffmpeg failed while writing '$O' (its message is above)"
+[ -s "$TMP" ] || die "no output was written to '$O'"
+mv -f "$TMP" "$O" || die "could not move the finished film to '$O'"
 echo "$O"
 R=$(ffmpeg -hide_banner -nostats -i "$O" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3)
 echo "$R"
