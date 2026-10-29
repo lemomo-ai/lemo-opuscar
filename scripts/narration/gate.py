@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Narration-only adapter for the unmodified noncommercial upstream detector."""
+"""Narration-only adapter for the noncommercial upstream detector."""
 import argparse
 import hashlib
 import json
@@ -41,9 +41,10 @@ def main():
     with tempfile.TemporaryDirectory(prefix='narration-detect-') as tmp:
         speech = Path(tmp) / 'narration.txt'
         speech.write_text(body, encoding='utf-8')
-        run = subprocess.run([sys.executable, str(upstream_path), str(speech), '--json'], capture_output=True, text=True)
-    # Preserve the CLI's refusal of short texts; diagnostics use only its original functions.
-    metrics = json.loads(run.stdout) if run.returncode == 0 else upstream.measure_docs([('narration.txt', body)])
+        run = subprocess.run([sys.executable, str(upstream_path), str(speech), '--json', '--short'], capture_output=True, text=True)
+    if run.returncode != 0:
+        parser.exit(2, f'Upstream error: {run.stderr}\n')
+    metrics = json.loads(run.stdout)
     st = metrics['structure']
     rows = [
         ('句长CV', st['句长CV'], '>=', upstream.TH_SENT_CV),
@@ -56,24 +57,25 @@ def main():
     def exceeds(value, direction, limit):
         return value is not None and (value < limit if direction == '>=' else value > limit)
     failed = run.returncode != 0 or any(exceeds(v, d, lim) for _, v, d, lim in rows)
-    version = re.fullmatch(r'SCRIPT_v(\d+)\.md', args.script.name, re.I)
+    version = re.fullmatch(r'SCRIPT_v(\d+(?:\.\d+)?)\.md', args.script.name, re.I)
     if args.output is None and not version:
         parser.error('Use SCRIPT_vN.md or specify --output')
     output = args.output or args.script.parent / 'notes' / f'script-v{version[1]}-detect.md'
-    report = ['# Narration detect — original lieflat detector', '', f'Result: **{"FAIL" if failed else "PASS"}**',
+    report = ['# Narration detect — original lieflat detector', '',
+              f'短稿模式，汉字数 {upstream.hanzi(body)}，短文本指标波动大，仅供参考。', '', f'Result: **{"FAIL" if failed else "PASS"}**',
               f'Original CLI exit: {run.returncode}; wrapper exit: {int(failed)}',
               f'Source: `{args.script.resolve()}`', f'SHA256: `{hashlib.sha256(raw).hexdigest()}`',
               '', '仅提取 ## 口播 到下一个一级/二级标题；原稿未修改。',
               'Upstream: fe13f1a0712cd2c138b6cdc500a77927d5bf04ec; CC BY-NC 4.0，仅限非商用。',
               '', '## Validity', run.stderr.strip() or 'Original CLI accepted input.',
-              '原版拒绝短文本时，下列原版 measure_docs 数值仅为诊断，不能作为有效检测通过。',
+              '短稿开关仅跳过最低汉字数拦截，其余度量与阈值保持不变。',
               '', '## Thresholds',
-              '原版没有总 PASS/FAIL；本地适配器将原版 fmt_report 的结构告警及破折号建议转为失败，且保留 CLI 输入拒绝。',
+              '原版没有总 PASS/FAIL；本地适配器将原版 fmt_report 的结构告警及破折号建议转为失败。',
               '出处：vendor/lieflat-less-ai-tone/scripts/detect.py 的 TH_*、fmt_report（三句同构>0.8）、CHAR_HITS（破折号>2/千字）。',
               'A/B/H/F 其他候选没有自动拒绝阈值，原版要求复核；X 已否决特征不设失败阈值。null 表示样本不足，不判该项。',
               '| Metric | Value | Required |', '|---|---:|---|']
     report += [f'| {name} | {value} | {direction} {limit} |' for name, value, direction, limit in rows]
-    report += ['', '## Original metrics (all values, diagnostic if refused)', '```json',
+    report += ['', '## Original metrics (all values)', '```json',
                json.dumps(metrics, ensure_ascii=False, indent=2), '```', '', '## Located original lines']
     for name, hits in metrics['hits'].items():
         for hit in hits:

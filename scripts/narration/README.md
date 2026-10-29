@@ -34,10 +34,11 @@ are comparisons, not hard thresholds. Other A/B/H/F candidates require review;
 X features are explicitly rejected by upstream as AI signals and never fail the
 gate. MTLD is reference-only. Null values mean insufficient samples for a metric.
 
-The original CLI rejects `meta["万汉字"] < 0.05` (a rounded value; upstream message
-says <500 Han characters). Short input yields FAIL for insufficient evidence.
-The adapter additionally calls unmodified upstream measurement/report functions
-to expose all diagnostic values, explicitly marked invalid for passing a gate.
-It never pads or repeats the narration to evade the original minimum.
+The adapter defaults to upstream `--short`: only the minimum-Han-character
+refusal is skipped. Metrics and thresholds are unchanged. The report header
+states the exact Han-character count and warns that short-text metrics fluctuate.
+Without `--short`, direct upstream invocation retains its minimum-length refusal.
+See the vendor NOTICE for this narrowly scoped modification.
+Decimal versions such as SCRIPT_v3.1.md produce notes/script-v3.1-detect.md.
 
 Validation: `python3 -m unittest discover -s scripts/narration -p 'test_*.py'`.

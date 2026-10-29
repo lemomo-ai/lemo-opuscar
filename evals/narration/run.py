@@ -5,6 +5,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DEFAULT = Path.home() / 'lemo-opuscar/films/openai-navier-stokes-lean-gap'
 p = argparse.ArgumentParser()
+p.add_argument('--case', help='Evaluate only this case id')
+p.add_argument('--deterministic-only', action='store_true', help='Run only red-line and opening assertions')
 p.add_argument('--project', type=Path, default=DEFAULT)
 p.add_argument('--report', type=Path, required=True)
 p.add_argument('--human-reference', type=Path, help='Verified human-written narration, not the placeholder')
@@ -17,6 +19,8 @@ def extract(text):
     return m[1].strip()
 tests = []
 for version, case in enumerate(json.loads((ROOT / 'cases.json').read_text()), 1):
+    if a.case and case['id'] != a.case:
+        continue
     text = (a.project / case['file']).read_text()
     narration = extract(text)
     target = re.search(r'^外行复述句[：:]\s*(.+)$', text, re.M)
@@ -24,7 +28,7 @@ for version, case in enumerate(json.loads((ROOT / 'cases.json').read_text()), 1)
                   'vars': {'narration': narration, 'label': case['label']},
                   'assert': [{'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:redLines'},
                              {'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:opening'}]})
-    llm_ready = bool((os.getenv('NARRATION_LLM_API_KEY') or os.getenv('OPENAI_API_KEY')) and os.getenv('NARRATION_LLM_MODEL'))
+    llm_ready = not a.deterministic_only and bool((os.getenv('NARRATION_LLM_API_KEY') or os.getenv('OPENAI_API_KEY')) and os.getenv('NARRATION_LLM_MODEL'))
     if llm_ready and target:
         tests[-1]['vars']['retell_target'] = target[1]
         tests[-1]['assert'].append({'type': 'javascript', 'value': f'file://{ROOT}/assertions.cjs:retell'})
@@ -50,7 +54,7 @@ with tempfile.TemporaryDirectory(prefix='narration-eval-') as temp:
             raise RuntimeError(f'promptfoo exit {run.returncode}: {(run.stderr or run.stdout)[-1500:]}')
         raw = json.loads(result_path.read_text())
         results = raw.get('results', {}).get('results', []) if isinstance(raw.get('results'), dict) else raw.get('results', [])
-        lines = ['# Narration eval', '', 'Labels: v1、v2 均为 `baidi_judged_bad`；局部检查通过不改变人工负例标签。', '',
+        lines = ['# Narration eval', '', 'Labels: v1/v2=baidi_judged_bad，v3/v3.1=pending_baidi；局部检查不改变人工标签。', '',
                  '## 实跑：promptfoo 断言（缺项不计为通过）', '', f"LLM model: {os.getenv('NARRATION_LLM_MODEL', '未配置')}；base URL: {'已配置' if os.getenv('NARRATION_LLM_BASE_URL') or os.getenv('OPENAI_BASE_URL') else '默认 OpenAI（本轮无完整凭据）'}", '']
         for r in results:
             desc = r.get('testCase', {}).get('description', 'fixture')
@@ -58,7 +62,7 @@ with tempfile.TemporaryDirectory(prefix='narration-eval-') as temp:
             lines += [f'### {desc}', f"- PASS={grading.get('pass')}，已运行断言均分={grading.get('score')}"]
             for c in grading.get('componentResults', []):
                 lines.append(f"- {'PASS' if c.get('pass') else 'FAIL'} score={c.get('score')}: {c.get('reason')}")
-        lines += ['', '## 附加断言状态（本轮缺项）', ('a) 复述断言：见上方评分；未启用的 fixture 缺目标句或 provider。' if any(any(':retell' in c['value'] for c in t['assert']) for t in tests) else '- a) 零背景复述：SKIP。缺稿内「外行复述句」；当前无配置完整的 NARRATION_LLM_MODEL + API key。不得自动编目标充当验收。'),
+        lines += ['', '## 附加断言状态（本轮缺项）', ('a) 复述断言：见上方评分；未启用的 fixture 缺目标句或 provider。' if any(any(':retell' in c['value'] for c in t['assert']) for t in tests) else '- a) 零背景复述：SKIP。本轮仅运行确定性断言或缺少目标句/完整 provider；不生成语义分数。'),
                   ('d) 盲测：见上方评分。' if a.human_reference and llm_ready else '- d) 盲测：SKIP，缺人写参照或完整 LLM provider；参见 human-reference.md。'),
                   '- b) 本轮是前15字的保守确定性矛盾词检查，不声称完成 LLM 语义判分。',
                   '', '阈值：复述 score>=0.8，其余 score=1 才 PASS；全部已运行项通过才局部关口 PASS，SKIP 不代表完整验收。任何 FAIL 退出1；评测工具失败退出2。',

@@ -7,7 +7,7 @@ npm install --prefix /tmp/narration-promptfoo promptfoo@0.125.1
 python3 evals/narration/run.py --promptfoo /tmp/narration-promptfoo/node_modules/.bin/promptfoo --report /tmp/narration-eval.md
 ```
 
-默认读主检出 `~/lemo-opuscar/films/openai-navier-stokes-lean-gap/SCRIPT_v{1,2}.md`。
+默认读主检出 `~/lemo-opuscar/films/openai-navier-stokes-lean-gap/SCRIPT_v{1,2,3,3.1}.md`。
 可用 `--project` 指定其他目录。输入仅取 `## 口播` 至下一个二级标题，不扫描来源注。
 v1、v2 均固定标 `baidi_judged_bad`，局部通过不意味着稿件合格。
 
@@ -21,3 +21,5 @@ v1、v2 均固定标 `baidi_judged_bad`，局部通过不意味着稿件合格�
 `run.py` 真正调用 promptfoo，使用本地 echo provider 与文件 JS assertions，断言全过才退出0；有失败退出1，工具失败退出2。私有临时配置、完整稿件与原始结果放在系统临时目录并在结束时清理，仅指定报告保留。报告中的0/1及均分仅属确定性检查，不是复述或盲测评分。
 
 可执行语义断言已定义在 `assertions.cjs` 的 `retell` 和 `blind` 中。配置 `NARRATION_LLM_MODEL` 及 `NARRATION_LLM_API_KEY`（或 `OPENAI_API_KEY`），可选 `NARRATION_LLM_BASE_URL`（或 `OPENAI_BASE_URL`）。稿内新增独立一行 `外行复述句：…` 才启用复述断言；`--human-reference /absolute/verified-human.md` 才启用盲测。未满足前提时不将 SKIP 计为通过或给分。
+
+四版分别运行：`--case navier-stokes-v3.1 --deterministic-only --report <notes/script-v3.1-eval.md>`。v3/v3.1 标签为 pending_baidi；该开关只运行两项确定性断言。

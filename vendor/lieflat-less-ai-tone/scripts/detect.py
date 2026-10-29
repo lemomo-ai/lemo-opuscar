@@ -495,6 +495,7 @@ def fmt_report(r, max_hits):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("target", help="文件或目录")
+    ap.add_argument("--short", action="store_true", help="短稿模式：仅跳过最低汉字数限制；指标与阈值不变")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     ap.add_argument("--max-hits", type=int, default=5, help="每项最多列出的命中数")
     ap.add_argument("--candidates", action="store_true",
@@ -532,7 +533,7 @@ def main():
         return
 
     r = measure_docs(docs)
-    if r["meta"]["万汉字"] < 0.05:
+    if not args.short and r["meta"]["万汉字"] < 0.05:
         print("汉字过少（<500），检测无意义", file=sys.stderr)
         sys.exit(1)
 

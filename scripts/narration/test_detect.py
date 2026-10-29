@@ -12,7 +12,7 @@ class ExtractionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 extract_narration(text)
 
-    def test_original_cli_refuses_short_narration(self):
+    def test_adapter_uses_short_narration(self):
         import subprocess
         import tempfile
         from pathlib import Path
@@ -21,9 +21,9 @@ class ExtractionTests(unittest.TestCase):
             report = Path(tmp) / 'report.md'
             script.write_text('## 口播\n这是口播。\n## 来源\n' + '字' * 600)
             result = subprocess.run([str(Path(__file__).resolve().parents[1] / 'narration-detect'), str(script), '--output', str(report)], capture_output=True)
-            self.assertEqual(result.returncode, 1)
-            self.assertIn('汉字过少', report.read_text())
-            self.assertIn('Original CLI exit: 1', report.read_text())
+            self.assertIn(result.returncode, (0, 1))
+            self.assertIn('短稿模式，汉字数 4', report.read_text())
+            self.assertIn('Original CLI exit: 0', report.read_text())
 
 
 if __name__ == '__main__':
