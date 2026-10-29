@@ -20,10 +20,13 @@ case "$LIB" in /*) ;; *) LIB=$(pwd)/$LIB ;; esac
 
 # Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
+# The patterns reach git as written: Git Bash on Windows would turn '/styleboard/' into 'C:/Program Files/Git/styleboard/'.
+# It runs from inside $LIB, because a -C /c/… path needs that rewriting.
+sparse() { (cd "$LIB" && MSYS_NO_PATHCONV=1 git sparse-checkout "$@"); }
 apply_sparse() {
   set -- '/*' '!/styles/*/demo/' '!/styleboard/' '!/docs/frames/' '!/docs/cover.jpg' '!/docs/opuscar98.jpg' '!/styles/*/poster.jpg' \
     $(git -C "$LIB" sparse-checkout list 2>/dev/null | grep -E '^/styles/[^/*]+/(demo/|poster\.jpg)$' || true)
-  git -C "$LIB" sparse-checkout set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
+  sparse set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
 }
 
 if [ "$(git -C "$LIB" config --get lemo.managed 2>/dev/null)" = true ]; then
@@ -75,9 +78,11 @@ case "$1" in
       if command -v uv >/dev/null; then uv venv --quiet --python 3.12 .venv
       else py=$(find_py) || { echo "✗ Python 3.11+ is needed (or install uv, which fetches it)"; exit 1; }; "$py" -m venv .venv; fi
     fi
+    # uv is a native program: on Windows it needs the venv's Scripts/python.exe, not a bin/python meant for sh
+    upy=.venv/bin/python; [ ! -f .venv/Scripts/python.exe ] || upy=.venv/Scripts/python.exe
     for t in $tiers; do
       py_ok "$t" && continue
-      if command -v uv >/dev/null; then uv pip install --quiet --python .venv/bin/python -r "$(req "$t")"
+      if command -v uv >/dev/null; then uv pip install --quiet --python "$upy" -r "$(req "$t")"
       else .venv/bin/python -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
       pysig "$(req "$t")" > ".venv/.lemo-$t"
     done
@@ -86,7 +91,7 @@ case "$1" in
   demo)
     [ -n "$2" ] && [ -f "$LIB/styles/$2/STYLE.md" ] || { echo "usage: sh setup.sh demo <slug>  (slugs: $LIB/styles/README.md)"; exit 1; }
     if git -C "$LIB" sparse-checkout list >/dev/null 2>&1 && ! git -C "$LIB" sparse-checkout list | grep -qx "/styles/$2/demo/"; then
-      git -C "$LIB" sparse-checkout add "/styles/$2/demo/" "/styles/$2/poster.jpg"
+      sparse add "/styles/$2/demo/" "/styles/$2/poster.jpg"
     fi
     echo "demo source: $LIB/styles/$2/demo"
     echo "demo poster: $LIB/styles/$2/poster.jpg"
