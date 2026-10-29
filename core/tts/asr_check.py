@@ -1,8 +1,8 @@
-"""Whisper line-by-line check: python core/tts/asr_check.py lines.json voices_dir [--lang en|zh|auto] [--model base|small|…] [--threshold 0.92]
+"""Whisper line-by-line check: python core/tts/asr_check.py lines.json voices_dir [--lang en|zh|ja|ko|auto] [--model base|small|…] [--threshold 0.92]
 Compares each line's text with its transcription (0.6 s of silence is padded on both sides first; short lines are misheard without it) and
 writes per-word timestamps to voices_dir/words.json (for lip sync and line breaks).
 A line in lines.json may carry an "asr" field that overrides the expected text (proper names, onomatopoeia, a word Whisper always hears as another).
---lang  auto (default) decides by whether the text contains CJK characters. en requires an exact word-by-word match after dropping punctuation
+--lang  auto (default) decides by the script: CJK characters mean zh, with kana ja and with hangul ko; otherwise en. en requires an exact word-by-word match after dropping punctuation
         and case (whole numbers 0–999 are turned into words on both sides, so "forty" and "40" match; larger numbers, years, ordinals like 3rd and
         numbers with punctuation (3.5, 1:30, 1,000, 40%) are not, so write the expected transcription in the "asr" field). zh (also ja / ko) compares
         by character, each number counting as one character with its value: 十九 and 19, 两千零二十六 and 2026, 一万九千 and 1.9万, 三点五 and 3.5,
@@ -130,8 +130,11 @@ def zh_check(a, b, threshold):
 
 
 def detect_lang(texts):
+    """auto: CJK script decides, then kana means Japanese and hangul Korean (Whisper is told the language, so Japanese must not be sent as zh)"""
     cjk = sum(len(CJK.findall(t)) for t in texts); latin = sum(len(re.findall('[A-Za-z]', t)) for t in texts)
-    return 'zh' if cjk and cjk >= 0.3 * (cjk + latin) else 'en'
+    if not (cjk and cjk >= 0.3 * (cjk + latin)): return 'en'
+    s = ''.join(texts)
+    return 'ja' if re.search('[぀-ヿ]', s) else 'ko' if re.search('[가-힯]', s) else 'zh'
 
 
 def compare(want, got, lang, threshold=0.92):
