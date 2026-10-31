@@ -50,7 +50,7 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | Shadow Puppetry | 皮影戏 | [`shadow-puppet`](shadow-puppet/STYLE.md) | *Hou Yi Shoots the Suns* |
 | Ukiyo-e | 浮世绘 | [`ukiyoe`](ukiyoe/STYLE.md) | *Toward the Mountain* |
 | Red Paper-cut | 红色窗花剪纸 | [`papercut-red`](papercut-red/STYLE.md) | *Nian Comes to Town* |
-| Paper-cut Lightbox | 纸雕灯影 | [`paper-lantern`](paper-lantern/STYLE.md) | *A Mooncake's Longing* |
+| Paper-cut Lightbox | 纸雕灯影 | [`paper-lantern`](paper-lantern/STYLE.md) | *The Last Night Train* |
 
 ## Print & Printmaking · 印刷与版画
 
@@ -60,7 +60,7 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | Halftone Dossier | 复古半调案卷 | [`halftone-dossier`](halftone-dossier/STYLE.md) | *Case File: Chubby* |
 | Woodcut Print | 木刻版画 | [`woodcut`](woodcut/STYLE.md) | *The Bell Founder* |
 | Copperplate Engraving | 铜版画 | [`engraving`](engraving/STYLE.md) | *The Honeybee, Plate VII* |
-| Silkscreen Travel Poster | 丝印旅行海报 | [`silkscreen-poster`](silkscreen-poster/STYLE.md) | *Three Trails* |
+| Silkscreen Travel Poster | 丝印旅行海报 | [`silkscreen-poster`](silkscreen-poster/STYLE.md) | *The Long Way Home* |
 | Printed Long Take | 印刷长镜头 | [`printed-long-take`](printed-long-take/STYLE.md) | *Thirty-Three Cranes* |
 
 ## Graphic & Type · 图形与排版
@@ -72,7 +72,7 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | Art Deco | 装饰艺术 | [`art-deco`](art-deco/STYLE.md) | *Midnight at the Starlight Hotel* |
 | Blueprint | 蓝图 / 工程制图 | [`blueprint`](blueprint/STYLE.md) | *Patent Pending: The Cloud Catcher* |
 | Stained Glass | 彩色玻璃窗 | [`stained-glass`](stained-glass/STYLE.md) | *The Dragon of the East Window* |
-| Pictogram Motion | 象形运动图形 | [`pictogram-motion`](pictogram-motion/STYLE.md) | *Aichi-Nagoya 2026 — All 43 Sports* |
+| Pictogram Motion | 象形运动图形 | [`pictogram-motion`](pictogram-motion/STYLE.md) | *Left Behind* |
 | ASCII / CRT Terminal | ASCII / CRT 终端 | [`ascii-crt`](ascii-crt/STYLE.md) | *Tranquility.log* |
 
 ## Information & Keynote · 信息与发布

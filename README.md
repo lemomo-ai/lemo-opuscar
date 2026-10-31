@@ -5,7 +5,7 @@
 
 Pick a style, bring your own story, and let Claude direct the film. Claude writes the treatment, draws every frame in code, writes an original score, mixes the sound and renders a finished MP4. No video model, no stock footage.
 
-This is the plugin directory edition (version 1.2.1): the guides, the 66 style prompts and the rendering tools, without the demo films. **The films, the gallery and the newest styles live in the main repository: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar).** Watch every demo film on the [gallery](https://lemomo-ai.github.io/lemo-opuscar/).
+This is the plugin directory edition (version 1.2.2): the guides, the 66 style prompts and the rendering tools, without the demo films. **The films, the gallery and the newest styles live in the main repository: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar).** Watch every demo film on the [gallery](https://lemomo-ai.github.io/lemo-opuscar/).
 
 ## Try it
 

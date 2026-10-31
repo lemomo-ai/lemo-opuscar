@@ -113,7 +113,7 @@ styles/watercolor/demo/
                   groundFern, rfTree, fanPalm, vine, farTree, uluru, cloud, shrub)
   scene.js        VO table, layers, zones, camera, world build, wash strips, landscape drawing, animals, fire, rain, notes
   main.js         canvas, map (deep time), mist, HUD, subtitles, title/end card, render(t), async init → READY
-  aus.js          coastline rings (from extract_aus.mjs + vendor/)   paper.jpg (paper.py)   fonts/ + fonts.css (fetch_fonts.mjs)
+  aus.js          coastline rings (from extract_aus.mjs)   paper.jpg (paper.py)   fonts/ + fonts.css (fetch_fonts.mjs)
   tts/lines.json  voice script   tts/gen.py  Kokoro   asr.py  whisper check   voices/  v01–v13.wav + dur.json
   music/          prep.sh (source files) · analyze.py · lag.py · jump.py · edit.py → score.wav
   mix.py          SFX + voice + music → mix.wav      render.mjs  stills / video / part     mux.sh  → ../watercolor.mp4
@@ -147,7 +147,7 @@ sh $D/mux.sh                                   # or: sh $D/mux.sh path/to/test.m
 ```
 
 Partial re-render (used for the end-card sign-off): `node $D/render.mjs part 99.4 113.6 $D/out/seg_7.mp4` re-creates the last 8-worker segment exactly (frames 5964–6815), then `sh $D/mux.sh`.
-One-time asset scripts (already run): `node $D/extract_aus.mjs` (coastline), `cd $D && ../../../.venv/bin/python paper.py` (paper), `node $D/fetch_fonts.mjs` (fonts, needs network).
+One-time asset scripts (already run): `node $D/extract_aus.mjs` (coastline; reads world-atlas from the npm CDN, needs network), `cd $D && ../../../.venv/bin/python paper.py` (paper), `node $D/fetch_fonts.mjs` (fonts, needs network).
 
 ## Engine reference
 

@@ -121,7 +121,7 @@ Where each move lives in the demo's code: [DEMO.md](DEMO.md) (build notes).
    - **Internet Archive**: only items whose page states public domain, CC0 or CC BY; U.S. works published before 1931 are public domain.
    - **Library of Congress / national archives**: read each rights statement; "no known restrictions" is not enough.
    - **Institutions' audiovisual services** (for example the European Commission's): read their reuse terms per item; many require attribution and forbid implying endorsement.
-   - **Maps**: Natural Earth (public domain), via `world-atlas` TopoJSON.
+   - **Maps**: Natural Earth (public domain), via `world-atlas` TopoJSON. Its default borders are not usable for China: DIRECTOR.md §13.
 5. **Before downloading, tell the user** what you will fetch, from where and under which licence. The finder copied into this style, `demo/tools/footage.py` (`search commons|archive|nasa`, `fetch`, `used`, `md`), logs licence, author, page and the seconds used into `SOURCES.jsonl` and writes `SOURCES.md`. Keep `raw/` under ~1.5 GB.
 6. **Logos**: never use a company's logo for a company in the news; set its name in type.
 7. **People**: public figures in the news can be named on a profile strap; no close-up or slow motion of private individuals.

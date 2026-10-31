@@ -1,29 +1,31 @@
 # Pictogram Motion — Style Prompt
 
-> A beat-locked flash-card film built from three things only: a **square-grid "core graphic"** of circles, half-discs and tiny patterned cells whose rows slide past each other; **geometric pictograms** made of round-capped bars and a disc head; and **bold bilingual type** that slides up out of masks. Every cut lands on a drum hit.
+> A beat-locked film built from three things only: a **square-grid "core graphic"** of circles, half-discs and tiny patterned cells whose rows slide past each other; **geometric pictograms** (objects, vehicles, weather, signs, and a disc-headed figure when one is needed) made of round-capped bars, discs and capsules; and **bold bilingual type** that slides up out of masks. Every cut lands on a drum hit.
 > References (grammar only): Otl Aicher's 1972 Munich pictograms (geometric athletes); multi-sport-games "look of the games" identity systems (a modular pattern + a colour set used for everything); Swiss sports-broadcast graphics (mono meta text, tick-bar progress). Learn the grammar; never copy any real event's pictograms, emblem, slogan, pattern artwork or colour names, and never name them in the film.
 
 ## 1. Essence, and what it is not
 
-A **catalogue film**: N items (products, dishes, steps, species…) shown one card at a time, fast, on the beat. Each card = **one pictogram doing one action + a huge title + a second-language line + a mono index "07 / N"**. Cards group into chapters; each chapter owns one hue, opened by a full-bleed pattern card.
+Either a **catalogue film**: N items (products, dishes, steps, species…) shown one card at a time, fast, on the beat; or a **story told in pictograms**: one pictogram as the hero (an object, a vehicle, a sign as often as a person), a goal, a turn, an ending, told through the same cards, walls and transitions. Each card = **one pictogram doing one action + a huge title + a second-language line + a mono index "07 / N"**. Cards group into chapters; each chapter owns one hue, opened by a full-bleed pattern card.
 
 What makes a frame read as this style at a glance:
 1. **The grid pattern**: big discs and half-discs spanning square cells, about half the cells carrying a small motif, all in **five tones of one hue**, with **whole rows cut and shifted sideways**: the signature that drives backgrounds and transitions.
-2. **The pictogram figure**: flat, faceless, rounded bars and a disc head; far-side limbs mixed toward the background. Props are discs, rings, capsules, lines.
+2. **The pictogram set**: objects, vehicles, weather and signs, and a human figure only when the film needs one, all flat and built from the same geometry: round-capped bars, discs, half-discs, rings, capsules. Pictograms combine and turn into one another (a canopy is a half-disc of the pattern, a clock face is the stage disc). A figure, when used, is faceless, rounded bars and a disc head, far-side limbs mixed toward the background.
 3. **Type as architecture**: a 900-weight grotesk title set very large, a heavy second-language line under it, small mono meta text in the corners like a broadcast HUD.
 4. **Beat lock**: every shot starts on a beat, every key action lands on a beat.
 
 Mood: premium broadcast identity; flat colour, light grain, one soft light sweep as the only gradient.
 
-Not an isometric infographic (no depth, no 3D), not Swiss motion graphics (the figure and the pattern carry as much as the type), not a cartoon (figures never emote, have no faces), not a data film (numbers are labels, not charts).
+Not an isometric infographic (no depth, no 3D), not Swiss motion graphics (the pictograms and the pattern carry as much as the type), not a cartoon (pictograms never emote, figures have no faces), not a data film (numbers are labels, not charts).
 
 ## 2. Materials & rendering
 
 - **Flat Canvas2D**, rendered clean; grain only at mux time. **One square grid** (cell ≈ 1/6 of the frame height) rules bands, transitions and walls.
 - **Pattern model**: fill with a mid-dark tone; on grid nodes randomly place cell-radius discs in random tones and discs-with-inner-discs; then a fraction of cells get one motif from a library of generic geometry (quarter-discs, fish-scale waves, dot and triangle scales, concentric arcs, sun wheels, checkers, crescents…), rotated by multiples of 90°; never mascots, landmarks or logos. Draw it wider than the screen so any row can shift one cell.
-- **Figure model**: unit = body height, origin at the hip; draw far limbs (mixed ~40 % toward the background), torso, near limbs, head. A second person sits behind, mixed further (~60 %).
-- **Stage**: the figure stands on a large **sun disc** in a neighbouring tone, crossed by one faint light sweep.
-- **Figure environments** (water, nets, ramps) live in the figure's own buffer, masked to zero before the text column.
+- **Pictogram model**: one stroke weight family per film (round caps), solid fills, at most two tones per pictogram (a darker gore, a far side). Objects keep their silhouette at icon size; anything that cannot be read as a sign at 60 px is cut.
+- **Figure model** (optional): unit = body height, origin at the hip; draw far limbs (mixed ~40 % toward the background), torso, near limbs, head. A second person sits behind, mixed further (~60 %). People can also appear only through their traces (footprints, a queue of feet).
+- **Stage**: the hero pictogram (any object or figure) sits on a large **sun disc** in a neighbouring tone, crossed by one faint light sweep.
+- **Environments** (water, nets, ramps, rails, rain) live in the hero's own buffer, masked to zero before the text column.
+- **Frame rate**: 24 fps; motion blur by sub-frame averaging only inside transitions, whips and fast camera moves.
 
 ## 3. Colour logic
 
@@ -38,7 +40,7 @@ Not an isometric infographic (no depth, no 3D), not Swiss motion graphics (the f
 - Title: a 900-weight grotesk (e.g. Inter Tight), 150–330 px at 1080p, tight tracking, auto-fitted. Second language: a heavy face under it. Meta: a mono (e.g. DM Mono) ~22 px, wide tracking; tags as mono chips.
 - **HUD** on every card: mono corner text and a **progress bar of N ticks** (current tall, done dimmed, rest faint), N derived from the item list.
 - **Bilingual rule**: one language is always the big title; the second language is chosen per version by a switch, never by hand-editing cards.
-- The card type *is* the text layer. With narration, captions are a mono line on a solid band in the chapter hue, bottom, never over the title; hold ≥ max(1.8 s, speech + 0.6 s). A card that must be read (a spec, a number) holds ≥ 1.6 s.
+- The card type *is* the text layer. With narration, captions are two lines on a solid band in the chapter's darkest tone (an ink band on light hues), bottom left, never over the title: the second language in a heavy face over the English in mono; hold ≥ max(1.8 s, speech + 0.6 s). A card that must be read (a spec, a number) holds ≥ 1.6 s.
 - Deliver an `.srt` of the title cards, generated from the edit list.
 
 ## 5. Motion quality
@@ -47,7 +49,7 @@ Not an isometric infographic (no depth, no 3D), not Swiss motion graphics (the f
 - **Pace ladder**: normal cards last one bar; related sub-items become half-length rapid-fire runs. A second tempo comes from dividing the beat, never from changing tempo.
 - Easing: exponential ease-out for entrances, exponential in-out for whips and wipes; a back ease once at most.
 - **Type enters by mask slide-up**: title first, second line ~0.08 s later, tag after; meta lines type on without a caret. Short cards compress all timings.
-- **Figure assembly**: the figure arrives as horizontal bands sliding into register from alternating sides.
+- **Pictogram assembly**: the hero pictogram and its stage arrive as horizontal bands sliding into register from alternating sides.
 - **Backgrounds breathe**: rows drift in alternating directions; on chapter cards they jump a quarter-cell on beats.
 - **Transitions** snap to the grid: sliding rows, dropping columns, a push, quarter-discs from cell corners, an iris from the last figure, a tile flip. Rotate them; each lasts a few frames around the cut.
 - **Motion blur only where things move**: sub-frame averaging inside transition and whip windows; static frames render once.
@@ -71,7 +73,7 @@ Framing: text and figure never overlap (one text column, one stage); horizontal 
 
 ## 7. Sound palette
 
-- **Type and music can carry the film alone**; a voice is optional, calm, one line per chapter at most.
+- **Type and music can carry the film alone**; a voice is optional, calm, one or two lines per chapter.
 - **Percussion is the spine**: choose a drum family that suits the topic (frame drums, taiko, marching snares, steel pans, body percussion, an electronic kit) plus rim clicks, claps, shakers and crashes.
 - Colour instruments on top: Karplus-Strong plucks (any lute, koto or harp-like voice, with pitch bends), mallets (marimba, glockenspiel), detuned-saw chord stabs, a synth bass, pads, risers and a drone.
 - **Per-family accents**: every shot onset gets a hit chosen by chapter (a splash, a pok, a clank, a crack, a whoosh, a sizzle): foley reads the chapter's matter.
@@ -102,7 +104,7 @@ A menu: use the ones your film needs.
 
 ## 10. Engine
 
-In `demo/`: `engine.js` (`G.pattern`, `G.motif`, `G.joints` / `G.drawFigure`, `G.keyPose`, `G.maskText`, easings), `poses/base.js` (pose contract, props `G.P`), `edl.js` (edit list in beats), `scenes.js` (layouts, transitions, HUD, motion blur), `lab.mjs` (pose sheets), `music/music.py` (picture-locked score with onset report). API table, pose convention and a minimal example: [DEMO.md](DEMO.md#engine-reference).
+In `demo/`: `engine.js` (palette, `G.pattern` / `G.drawPattern` with whole-row offsets, `G.motif`, pictograms such as `G.umbrella`, `G.drop`, `G.cloud`, `G.sunIcon`, `G.moon`, `G.bolt`, `G.foot`, `G.item`, `G.maskText`, easings), `film.js` (shot list in film seconds, sound events, scenes, HUD, captions, grid transitions, motion blur), `mix.py` (picture-locked score, foley and voice from the same events). API table and a minimal example: [DEMO.md](DEMO.md#engine-reference).
 
 ## 11. Variation space
 

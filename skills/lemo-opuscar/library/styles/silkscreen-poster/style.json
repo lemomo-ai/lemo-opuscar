@@ -5,14 +5,14 @@
  "cn": "丝印旅行海报",
  "category_en": "Print & Printmaking",
  "category_cn": "印刷与版画",
- "film": "Three Trails",
- "line": "Three trail posters are screen-printed one ink at a time, then climbed in one long take from noon to dusk.",
- "line_cn": "三条步道各一张丝印海报，一色一刮印出来，再沿山脊一镜到底从正午爬到黄昏。",
+ "film": "The Long Way Home",
+ "line": "A traveller crosses the world one full-bleed screen print at a time, a ticket stub counting the distance from home, until the far side turns into the way back.",
+ "line_cn": "一张满屏丝印海报一座城，票根数着离家的公里数，走到世界的另一头，才发现那是回家的路。",
  "uses": [
   "Destination guides",
   "Tourism",
   "Event posters"
  ],
- "frame_sec": 34.0,
- "dur": 38.4
+ "frame_sec": 44.5,
+ "dur": 50.0
 }

@@ -29,7 +29,7 @@ Not risograph (translucent fluorescent overprint with halftone grain), not ukiyo
 - **Ink bead**: a round tube with lit half, dark underside, rolling glints and viscous strands; a split fountain puts several colours in one bead.
 - **Screen**: a hinged frame with mesh, emulsion and tape; its shadow is a ring (even-odd), never a full rectangle.
 - **Shapes**: ridges with a jagged lit facet, pines as one outline of drooping tiers, water as a flat body with glint bars. Hard edges everywhere.
-- **Poster template** (1000×1500 u): paper border, art area, a dark **info band** at the foot holding a name, a number, a rule and a row of stats; columns sized by content.
+- **Poster templates**: a portrait sheet (1000×1500 u: paper border, art area, a dark **info band** at the foot holding a name, a number, a rule and a row of stats; columns sized by content), or a **full-bleed print** (16:9, art to every edge, the name printed into the sky, a dark info panel such as a ticket stub printed last). In a full-bleed film the camera stays inside the print.
 - **Texture budget**: fine paper tile, mottle multiply ~55 %, pinholes ~75 %, light encode grain. More reads as risograph.
 
 ## 3. Colour logic
@@ -74,7 +74,7 @@ A vocabulary, not a route. Opening and ending come from the topic.
 | Push into the mesh until the weave shows | the craft, the grain of the medium | an intimate beat; a detail |
 | Log-zoom pull-back to the wall or window | the poster in the world | a final lockup (hold ≥ 3 s) |
 
-Close-ups on a sheet keep its edge in frame; a squeegee across a close-up is tilted with the handle hidden, so it doesn't split the frame. Layers change by squeegee, posters through foreground silhouettes or a table move. No dissolves, no bare cuts.
+Close-ups on a portrait sheet keep its edge in frame (a full-bleed print has no edge to show); a squeegee across a close-up is tilted with the handle hidden, so it doesn't split the frame. Layers change by squeegee, posters through foreground silhouettes, a diagonal sweep that prints the next poster behind the blade, or a table move. No dissolves, no bare cuts.
 
 ## 7. Sound palette
 
@@ -111,7 +111,7 @@ Each serves information order. A menu: use the ones your film needs.
 
 ## 10. Engine
 
-`demo/engine/silk.js` prints **any shape** in this style from a `Path2D`: `makeTextures`, `paperSheet`, `ink(ctx, {path, knock, paint}, {color, reg, clip, sheen, trap})`, `wipeRegion`/`wipeFront` (ragged pull), `squeegee` (blade, beads, split fountain), `screenFrame`, `inkFinish`, `bandSteps` (the gradient substitute), shape helpers. `demo/engine/poster.js` (template, banner, `pickInk` contrast), `demo/engine/scenes.js` (planes you can reorder or extend), `demo/film.js` (timeline and shots). API table and a minimal example that prints a new shape: [DEMO.md](DEMO.md#engine-reference).
+`demo/engine/silk.js` prints **any shape** in this style from a `Path2D`: `makeTextures`, `paperSheet`, `ink(ctx, {path, knock, paint}, {color, reg, clip, sheen, trap})`, `wipeRegion`/`wipeFront` (ragged pull), `squeegee` (blade, beads, split fountain), `screenFrame`, `inkFinish`, `bandSteps` (the gradient substitute), shape helpers. `demo/engine/poster.js` (full-bleed print with partial pulls and loose layers, ticket stub, end card, `pickInk` contrast), `demo/engine/scenes.js` (places as ink parts in print order, any print size), `demo/film.js` (timeline, cameras, sweeps). API table and a minimal example that prints a new shape: [DEMO.md](DEMO.md#engine-reference).
 
 ## 11. Variation space
 
@@ -131,8 +131,8 @@ All far from our demo:
 - Openings: **the empty screen** (light through a blank mesh, a stencil being exposed); **the accent first** (a lone product in the bright ink on bare paper); **the finished wall at night**, then back to the table.
 - Endings: **the drying rack** (prints clipped in a row, swaying); **the poster in use** (pasted on a bus shelter, rain starting); **the last pull is paper** (the squeegee runs dry, leaving a white silhouette).
 
-Swapping `demo/content.json` and rebuilding is a technical check that the engine re-flows, not a way to make a film.
+A new place is a new scene in `demo/engine/scenes.js`; reusing the demo's places or timeline is not a way to make a film.
 
 ---
 
-How our demo was made (story, shots, score, end card, build, content fields): [DEMO.md](DEMO.md). Read it after your treatment exists.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

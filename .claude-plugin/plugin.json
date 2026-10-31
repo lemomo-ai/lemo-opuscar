@@ -1,7 +1,7 @@
 {
   "name": "lemo-opuscar",
   "displayName": "Lemo-Opuscar",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "66 film styles, each with a short film made entirely in code. Pick a style, bring your own story, and let Claude direct the film. No video model, no stock footage.",
   "author": {
     "name": "Lemomo",

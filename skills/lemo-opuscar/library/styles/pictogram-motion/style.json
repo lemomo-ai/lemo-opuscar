@@ -5,14 +5,14 @@
  "cn": "象形运动图形",
  "category_en": "Graphic & Type",
  "category_cn": "图形与排版",
- "film": "Aichi-Nagoya 2026 — All 43 Sports",
- "line": "All 43 sports of the 2026 Asian Games as beat-locked geometric pictograms.",
- "line_cn": "2026 亚运会 43 个大项，几何象形人卡着节拍快闪。",
+ "film": "Left Behind",
+ "line": "A yellow umbrella left on a bus waits out a sunny day on the lost-property shelf, then opens with 312 others when the storm comes back: objects, vehicles, weather and signs as beat-locked geometric pictograms.",
+ "line_cn": "一把被落在公交车上的黄伞，晴天里在失物招领的货架上等了一整天，暴雨回来时和另外 312 把一起撑开：物件、交通、天气和标识，都是卡着节拍的几何象形符号。",
  "uses": [
-  "Sports events",
-  "Visual identity",
-  "Event openers"
+  "Public services and city stories",
+  "Brand and event identity films",
+  "Explainers told through signs and objects"
  ],
- "frame_sec": 65.44,
- "dur": 163.6
+ "frame_sec": 9.2,
+ "dur": 50.0
 }

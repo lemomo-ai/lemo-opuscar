@@ -5,14 +5,14 @@
  "cn": "纸雕灯影",
  "category_en": "East Asian Traditions",
  "category_cn": "东方传统",
- "film": "A Mooncake's Longing",
- "line": "A single mooncake tells the Mid-Autumn story of reunion and longing inside a glowing paper-cut lightbox.",
- "line_cn": "一枚月饼讲中秋的团圆与思念，纸雕灯箱层层透光。",
+ "film": "The Last Night Train",
+ "line": "An old night train makes its last run, from a snowy mountain halt through a long tunnel to the sea, its lit windows going out one by one at the end of the line.",
+ "line_cn": "一列老夜车跑最后一趟：从雪山小站穿过长隧道开到海边，到站后车窗一扇扇熄灭。",
  "uses": [
-  "Festivals",
-  "Gift brands",
-  "Cultural stories"
+  "Journeys and travel",
+  "Farewells and anniversaries",
+  "Places and their stories"
  ],
- "frame_sec": 60.9,
- "dur": 121.8
+ "frame_sec": 9.6,
+ "dur": 51.0
 }
