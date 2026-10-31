@@ -10,6 +10,7 @@ Command reference for `core/` and `tools/`. How the pieces fit together is in [`
 | `… setup.sh deps` | core tier: npm packages, headless browser, `.venv` from `requirements.txt` |
 | `… setup.sh deps voice` | adds `requirements-voice.txt` (kokoro-onnx, edge-tts, faster-whisper) and the Kokoro model |
 | `… setup.sh deps music` | adds `requirements-music.txt` (numba, for `pluck.py`; `sampler.py` needs only the core) |
+| `… setup.sh deps mv` | adds `requirements-mv.txt` for music videos: yt-dlp, demucs (PyTorch), faster-whisper (and mlx-whisper on Apple silicon), pypinyin, librosa; ~1.3 GB |
 | `… setup.sh demo <slug>` | adds one style's demo source and poster (to read, not to render) |
 | `sh tools/fetch.sh voice` \| `hdri` \| `instruments <lib>` \| `instruments all` | Kokoro model · HDRIs · a sample library (`freepats`, `karoryfer`, `salamander`, `vcsl`, `vsco2ce`) |
 
@@ -55,6 +56,20 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 | `core/audio/sfx.py` | procedural foley and mix helpers: filters, envelopes, `click`, `whoosh`, `thump`, `ding`…, `compress`, `limit`, `add(buf, sound, at, gain, pan)` |
 | `core/audio/sampler.py`, `core/audio/pluck.py` | sampled instruments and plucked-string modelling ([`audio/INSTRUMENTS.md`](audio/INSTRUMENTS.md)). A missing library is named in the error with its `fetch.sh instruments <lib>` command. `credits(names)` writes the CREDITS lines |
 
+## Music videos
+
+How they fit together: [`MV.md`](../MV.md). All need the `mv` tier.
+
+| Command | What it does |
+|---|---|
+| `.venv/bin/python core/mv/get_song.py <url \| file> <project>/song [--video]` | the song as `song.wav` (44.1 kHz stereo) + `source.json` (+ `cover.jpg` from a platform). URLs through yt-dlp, audio only; Bilibili CDN mirrors are tried in turn. `--video` also saves `video.mp4` (≤720p, silent) for `lyrics.py ocr` |
+| `.venv/bin/python core/mv/lyrics.py search "<title>" [--artist A] [--dur s] --out <dir>` | lyrics from NetEase, LRCLIB and Kugou → `refs/<source>-<id>.lrc` (+ `.trans.lrc` translations), `refs.json` best match first |
+| `.venv/bin/python core/mv/lyrics.py align song.wav lyrics.txt\|.lrc --out <dir> [--lang auto] [--model large-v3-turbo]` | vocal split (`stems/vocals.wav`, `stems/no_vocals.wav`), Whisper in breath-cut chunks plus a second listen to skipped stretches, alignment by sound (pinyin for Chinese) → `lyrics.json`: lines and characters timed, `flag` `weak`/`guess` for lines to check by ear, `extra` for sung phrases in no line. The transcription is cached per model |
+| `.venv/bin/python core/mv/lyrics.py ocr video.mp4 --out <dir> [--fps 5] [--conf .6]` | lyrics burned into the video, read with RapidOCR → `ocr.lrc` (each line timed to when it appears) + `ocr.json`. Watermarks (text on screen most of the time) and digit-heavy text (plates, prices) are dropped |
+| `.venv/bin/python core/mv/lyrics.py transcribe song.wav --out <dir> [--lang zh]` | no lyrics anywhere: `draft.txt` from the voice, to correct before `align` |
+| `.venv/bin/python core/mv/song.py song.wav --out song.json [--bpm n] [--meter 4] [--sheet song.png] [--lyrics lyrics.json]` | beats, downbeats, bars with energy, sections (A/B/C… by sound), kick/snare/hat hits from the accompaniment stem, `moments` (drum hits right after a gap: the video's hardest hits), vocal spans, a 10 Hz energy envelope; `--sheet` draws it all with the lyric lines |
+| `.venv/bin/python core/mv/synccheck.py events.json song.json [--lyrics lyrics.json] [--fps 24] [--tol 1]` | every `window.EV` event with `on: bar\|beat\|kick\|snare\|hat\|line\|char` against the nearest such time in the song |
+
 ## Picture helpers
 
 | File | What it is |
@@ -76,6 +91,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |
 | `WHISPER_MODEL` | Whisper model name or local folder for `asr_check.py` (same as `--model`; default `base.en` for English, `small` for Chinese, `base` otherwise) |
 | `HF_ENDPOINT` | Hugging Face mirror for the Whisper download |
+| `WHISPER_MODEL` (in `lyrics.py`) | default `large-v3-turbo`: sung words need a bigger model than the TTS check |
 
 ## Exit codes
 
@@ -87,3 +103,6 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 | `tts.py`, `srt.py` | done | bad input, missing model, path too long | usage |
 | `tts_zh.py` | done | bad input | network unreachable |
 | `asr_check.py` | all lines pass | mismatches | model failed to load |
+| `get_song.py` | song written | download or conversion failed | usage |
+| `lyrics.py` | done | nothing found, failed | usage, `mv` tier missing |
+| `synccheck.py` | all events within tolerance | some off, or an unknown `on` kind | usage |

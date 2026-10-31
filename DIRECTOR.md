@@ -17,6 +17,8 @@ The user gives a style and a topic, sometimes more (length, language, voice, mus
 
 Say it in the questions when it matters: a good Chinese voice uses Microsoft's online service (edge-tts) and needs a connection; offline, Kokoro reads Chinese but sounds plain (TECHNIQUE.md §4).
 
+A user who brings a song and wants a video for it is making a music video: [`MV.md`](MV.md) changes the brief, the treatment, the timing and the sound.
+
 Requests that only change the plan:
 
 - **No voice, or no subtitles.** Drop those steps and say so in the treatment.

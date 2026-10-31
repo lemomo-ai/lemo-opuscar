@@ -1,9 +1,10 @@
 #!/bin/sh
 # Lemo-Opuscar skill: find or install the style library, then print its path.
 #   sh setup.sh                    library ready? (clone on first run, update later) → prints LIB=<path>
-#   sh setup.sh deps [voice] [music]
+#   sh setup.sh deps [voice] [music] [mv]
 #                                  install packages: core = Node packages, headless browser, Python core tier;
-#                                  voice = TTS and speech check (+ the English voice model); music = pluck.py (numba)
+#                                  voice = TTS and speech check (+ the English voice model); music = pluck.py (numba);
+#                                  mv = music videos: fetch a song, time its lyrics, find its beats (core/mv/, ~1.3 GB)
 #   sh setup.sh demo <slug>        add one style's demo source and poster to the library (reference only)
 # The library is a sparse clone of the main branch: guides, core/ tools and every STYLE.md. Big assets: tools/fetch.sh.
 # LEMO_OPUSCAR_HOME = where the library lives (default: the clone you stand in, else ~/lemo-opuscar).
@@ -59,7 +60,7 @@ find_py() {
 case "$1" in
   deps)
     shift; tiers=core
-    for t in "$@"; do case $t in voice|music) tiers="$tiers $t" ;; *) echo "usage: sh setup.sh deps [voice] [music]"; exit 1 ;; esac; done
+    for t in "$@"; do case $t in voice|music|mv) tiers="$tiers $t" ;; *) echo "usage: sh setup.sh deps [voice] [music] [mv]"; exit 1 ;; esac; done
     cd "$LIB"
     command -v npm >/dev/null || { echo "✗ npm not found: install Node 20+ first"; exit 1; }
     if ! node_ok; then
