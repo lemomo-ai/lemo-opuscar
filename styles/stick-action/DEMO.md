@@ -41,7 +41,7 @@ Foley (`demo/mix.py`, from the page's `window.EV`): pen scratches, swishes pitch
 
 ## Palette & props
 
-- Paper `#f3efe6`, ink `#16151a`, desk `#2f2a27`; RED's accent `#e8343a`, BLUE's `#1fb5e8`.
+- Paper `#f3efe6`, ink `#16151a`, outline `#ffffff` (3.4× the stroke), desk `#2f2a27`; RED's accent `#e8343a`, BLUE's `#1fb5e8`.
 - RED: 290 units tall, a longer spine, low wide stance, fists high. BLUE: 320 units tall, longer legs and arms, upright guard with one hand forward. Same stroke weight (height / 13) and ink; they differ only by build, stance and timing.
 - The sheet is a 3000 × 2300 rectangle on a dark desk; every figure and effect is clipped to it, which is what makes "off the page" literal.
 - Kept marks: the crack at the centre (from 33 s), grey scuffs where feet landed or skidded.
@@ -54,7 +54,7 @@ The pulled-back sheet with "LAST STROKE / 最后一笔" in Anton and Noto Sans S
 
 ```
 styles/stick-action/demo/
-  stick.js   rig: proportions, figure (FK + two-bone IK), lerpPose, drawFigure (halo + ink), drawFigureDrawing, shadow
+  stick.js   rig: proportions, figure (FK + two-bone IK), lerpPose, drawFigure (white outline + ink), drawFigureDrawing, shadow
   moves.js   pose library (stance, punch, block, kicks, dash, jump, tumble, hang, kneel, lying, offer…) + track() keyframes
   fx.js      paper, ground line + cracks, smear, sparks, speed lines, dust, shockwave, aura
   cam.js     world → screen camera (zoom, dutch, shake)

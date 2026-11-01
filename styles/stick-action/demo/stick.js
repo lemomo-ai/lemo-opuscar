@@ -65,17 +65,23 @@ export function mixCol(a, b, t) {
   return '#' + [16, 8, 0].map(s => c(s).toString(16).padStart(2, '0')).join('');
 }
 
-// draw: paper halo pass, then ink; far limbs lightened. o: { ink, paper, farMix, halo (width multiplier), alpha, only: ['aN', ...] }
+// draw: a white outline pass under the whole figure, then ink; far limbs lightened.
+// o: { ink, outline (colour), farMix, halo (width multiplier), alpha, only: ['aN', ...] }
+export const OUTLINE = '#ffffff';
 export function drawFigure(g, J, o = {}) {
-  const ink = o.ink || INK, paper = o.paper || PAPER, w = J.P.w * (o.wk || 1);
-  const far = mixCol(ink, paper, o.farMix ?? .16);
+  const ink = o.ink || INK, out = o.outline || o.paper || OUTLINE, w = J.P.w * (o.wk || 1);
+  const far = mixCol(ink, PAPER, o.farMix ?? .16);
   const pl = (pts) => { g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]); g.stroke(); };
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; if (o.alpha != null) g.globalAlpha = o.alpha;
   const parts = [['aF', far], ['lF', far], ['spine', ink], ['lN', ink], ['aN', ink]].filter(p => !o.only || o.only.includes(p[0]));
   const strokeOf = (name) => name === 'spine' ? [J.hip, J.neck] : J[name];
-  // the halo is drawn per part, just before it, so a near limb cuts a clean gap into whatever is behind it
+  // the outline goes under the whole figure first, so it never bites into the figure's own strokes;
+  // a figure drawn after another still cuts a clean white gap into it
+  if (o.halo !== 0) {
+    g.strokeStyle = out; g.fillStyle = out; g.lineWidth = w * (o.halo || 3.4);
+    for (const [name] of parts) { pl(strokeOf(name)); if (name === 'spine') { g.beginPath(); g.arc(J.head[0], J.head[1], J.P.head + w * 1.2, 0, 7); g.fill(); } }
+  }
   for (const [name, col] of parts) {
-    if (o.halo !== 0) { g.strokeStyle = paper; g.lineWidth = w * (o.halo || 2.4); pl(strokeOf(name)); if (name === 'spine') { g.fillStyle = paper; g.beginPath(); g.arc(J.head[0], J.head[1], J.P.head + w * .7, 0, 7); g.fill(); } }
     g.strokeStyle = col; g.lineWidth = w; pl(strokeOf(name));
     if (name === 'spine') { g.fillStyle = ink; g.beginPath(); g.arc(J.head[0], J.head[1], J.P.head, 0, 7); g.fill(); }
   }
