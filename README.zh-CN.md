@@ -403,7 +403,8 @@ claude plugin uninstall lemo-opuscar@lemolab
 
 ⭐ **点个星**<br>
 👀 **Watch → Custom → Releases**，有新版本会通知你<br>
-𝕏 关注 [@lemomo_ai](https://x.com/lemomo_ai)
+𝕏 关注 [@lemomo_ai](https://x.com/lemomo_ai)<br>
+✉️ 商业合作：[lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)
 
 <sub>LemoLab · by Lemomo</sub>
 

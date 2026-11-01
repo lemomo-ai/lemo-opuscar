@@ -403,7 +403,8 @@ You are responsible for the materials you use in your films.
 
 ⭐ **Star this repo**<br>
 👀 **Watch → Custom → Releases** to hear about new versions<br>
-𝕏 Follow [@lemomo_ai](https://x.com/lemomo_ai)
+𝕏 Follow [@lemomo_ai](https://x.com/lemomo_ai)<br>
+✉️ Business enquiries: [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)
 
 <sub>LemoLab · by Lemomo</sub>
 
