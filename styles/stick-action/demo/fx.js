@@ -120,7 +120,7 @@ export function aura(g, J, col, t, amt = 1, seed = 5) {
   if (amt <= 0) return;
   g.save();
   g.shadowColor = col; g.shadowBlur = 40 * amt;
-  drawFigure(g, J, { ink: col, paper: col, halo: 0, wk: 1 + 2.2 * amt, alpha: .35 * amt, farMix: 0 });
+  drawFigure(g, J, { ink: col, wk: 1 + 2.2 * amt, alpha: .35 * amt, farMix: 0 });
   g.shadowBlur = 0;
   const R = rng(seed + Math.floor(t * 24) * 13);
   g.fillStyle = col; g.globalAlpha = .55 * amt;

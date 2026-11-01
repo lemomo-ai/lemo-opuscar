@@ -16,7 +16,7 @@ Not Pictogram Motion (geometric signage figures, beat-locked cards), not Whitebo
 ## 2. Materials & rendering
 
 - **Strokes.** Canvas 2D paths, `lineCap` and `lineJoin` round. Stroke width is a property of the figure in world units, about **1/13 of the figure's standing height**, and scales with the camera like everything else in the world. Head diameter ≈ 2.3 stroke widths × 2.2 (about 1/5.5 of the height), always filled.
-- **White outline.** Every figure is drawn twice: first all its strokes about 3.4× wider in pure white (the head disc grown by ~1.2 stroke widths), then in ink. The whole outline goes down before any ink, so it never bites into the figure's own strokes; where two fighters overlap, the one drawn later cuts a clean white gap into the other. The far arm and leg are 12–18 % lighter (ink mixed toward paper), never coloured.
+- **No outline.** Figures are plain ink strokes straight on the paper, never outlined or haloed. Readability comes from staging instead: side-on poses, space between the fighters, and the far arm and leg drawn first and 12–18 % lighter (ink mixed toward paper), never coloured.
 - **Rig.** A skeleton with fixed bone lengths: hips → spine → neck → head; shoulders and hips each carry a two-bone limb solved by analytic IK (target point + bend direction). Poses are keyframes of joint angles or end-effector targets, interpolated per frame; nothing is drawn by hand-moving points. Bone lengths never change except in a deliberate smear (§8).
 - **Ground and contact.** One horizontal ink line, slightly thinner than the figure stroke, extending past the frame. Feet planted on it are locked to it (IK target pinned) until they lift. A flat grey ellipse under each figure shrinks and lightens with height above the ground: the only shading in the style.
 - **Paper.** A warm off-white with a very faint, static grain fixed to the screen (not the world), plus a soft vignette. No paper texture moves, no line boils.
@@ -33,7 +33,7 @@ Not Pictogram Motion (geometric signage figures, beat-locked cards), not Whitebo
 ## 4. Type & subtitles
 
 - Titles and callouts: a heavy condensed sans (e.g. Anton, OFL) in ink, set large, with a thick accent bar under or behind them; they slam in on a hit (scale 1.3 → 1 in 3 frames, one-frame hold of an offset ink shadow). CJK: a heavy sans (e.g. Noto Sans SC Black, subset).
-- On-screen sound words or move names, if used, are part of the drawing: ink letters with a white outline, tilted, held ≥ 1 s.
+- On-screen sound words or move names, if used, are part of the drawing: ink letters, tilted, held ≥ 1 s.
 - Subtitles: a semi-condensed sans (e.g. Barlow Semi Condensed 600, 46–54 px) in ink with a 7–9 px paper-colour outline, centred ~90 px above the bottom; they never sit over a figure's contact point. Hold ≥ max(1.8 s, speech + 0.6 s).
 
 ## 5. Motion quality
@@ -89,7 +89,7 @@ A menu: use the ones your story needs.
 - Limbs that stretch or shrink between keys look broken → solve with fixed-length IK; only smears may stretch.
 - Knees and elbows flipping direction mid-move → give every limb an explicit bend side and keep it unless the pose changes deliberately.
 - Feet sliding on the ground → pin planted feet with IK targets until they lift.
-- Two black figures merging into one blob → side-on staging, space between them, the white outline, the far limbs lightened.
+- Two black figures merging into one blob → side-on staging, clear space between them, the far limbs lightened; never fix it with an outline.
 - Fast motion strobing at 24 fps → smears for limbs that move more than ~1/3 of the figure height per frame.
 - Action too fast to read → holds before strikes, hit-stop on hits, never more than one new action every ~0.4 s for a reader to follow.
 - Line weight changing when the camera zooms → stroke width in world units, transformed with the camera.
@@ -98,7 +98,7 @@ A menu: use the ones your story needs.
 
 ## 10. Engine
 
-In `demo/`: `stick.js` (rig: `figure(pose)` builds joint positions from angles and IK targets with fixed bone lengths, `drawFigure(g, J, o)` draws the white outline + ink with far-limb lightening, `lerpPose`, `ik2`), `moves.js` (pose library and keyframe tracks: stance, guard, punch, kick, dash, jump, block, hit, fall, rise), `fx.js` (smears, speed lines, sparks, dust, shockwave, ground cracks, energy aura and beams), `cam.js` (world → screen camera with zoom, pan, shake, tilt, time remap), `main.js` (shots, paper, title cards, sound events), `music.py` (synthesised score), `mix.py`. A minimal new use: one figure skipping rope, with the rope as a flat ink arc and its slap on the ground as a dust puff, drawn with `figure`, `drawFigure` and `dust`.
+In `demo/`: `stick.js` (rig: `figure(pose)` builds joint positions from angles and IK targets with fixed bone lengths, `drawFigure(g, J, o)` draws the ink strokes with far-limb lightening, `lerpPose`, `ik2`), `moves.js` (pose library and keyframe tracks: stance, guard, punch, kick, dash, jump, block, hit, fall, rise), `fx.js` (smears, speed lines, sparks, dust, shockwave, ground cracks, energy aura and beams), `cam.js` (world → screen camera with zoom, pan, shake, tilt, time remap), `main.js` (shots, paper, title cards, sound events), `music.py` (synthesised score), `mix.py`. A minimal new use: one figure skipping rope, with the rope as a flat ink arc and its slap on the ground as a dust puff, drawn with `figure`, `drawFigure` and `dust`.
 
 ## 11. Variation space
 
