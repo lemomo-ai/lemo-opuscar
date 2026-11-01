@@ -901,6 +901,27 @@
   "dur": 40.0
  },
  {
+  "slug": "stick-action",
+  "num": "78",
+  "en": "Stickman Action",
+  "cn": "火柴人动作",
+  "cat": "卡通与动画",
+  "cat_en": "Cartoon & Anime",
+  "film": "Last Stroke",
+  "line": "Two stick-figure rivals drawn on one sheet fight anime-style until a single pass-through stroke decides it.",
+  "line_cn": "一张纸上画出的两个火柴人宿敌，打到最后一笔定胜负，再伸手把对方拉起。",
+  "uses": [
+   "Action explainers",
+   "Sports moments",
+   "Product showdowns"
+  ],
+  "dur": 57.5,
+  "by": {
+   "name": "khubaib-ctrl",
+   "url": "https://github.com/khubaib-ctrl"
+  }
+ },
+ {
   "slug": "pixel-rpg",
   "num": "29",
   "en": "16-bit Pixel RPG",

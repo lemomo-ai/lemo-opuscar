@@ -2,7 +2,7 @@
 
 # Lemo-Opuscar
 
-**一套用代码做片的风格工具箱：<!--n-->66<!--/n--> 种现成风格，也能做出你自己的。**<br>
+**一套用代码做片的风格工具箱：<!--n-->67<!--/n--> 种现成风格，也能做出你自己的。**<br>
 选一个风格，或者从头做一个，带上你的故事，让编程 agent 来当导演。
 
 <a href="https://lemomo-ai.github.io/lemo-opuscar/"><img alt="看图鉴" src="https://img.shields.io/badge/-%E2%96%B6%20%E7%9C%8B%E5%9B%BE%E9%89%B4-E8553A?style=for-the-badge"></a> <a href="README.md"><img alt="English" src="https://img.shields.io/badge/README-English-555?style=for-the-badge"></a> <a href="https://github.com/lemomo-ai/lemo-opuscar/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/lemomo-ai/lemo-opuscar?style=for-the-badge&color=F5B700&label=stars"></a> <a href="#授权"><img alt="MIT · CC BY 4.0" src="https://img.shields.io/badge/%E6%8E%88%E6%9D%83-MIT%20%C2%B7%20CC%20BY%204.0-2EA44F?style=for-the-badge"></a>
@@ -316,6 +316,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 </tr>
 <tr>
 <td width="33%" valign="top"><a href="styles/midcentury-toon/STYLE.md"><img src="docs/frames/midcentury-toon.jpg" alt="50s 扁平卡通"></a><br><b>50s 扁平卡通</b><br>Mid-century Cartoon<br><i>Meet Pip</i><br><sub>用 50 年代教育片的口吻，三步教你装好一台扫地机。</sub></td>
+<td width="33%" valign="top"><a href="styles/stick-action/STYLE.md"><img src="docs/frames/stick-action.jpg" alt="火柴人动作"></a><br><b>火柴人动作</b><br>Stickman Action<br><i>Last Stroke</i><br><sub>一张纸上画出的两个火柴人宿敌，打到最后一笔定胜负，再伸手把对方拉起。</sub><br><sub>由 <a href="https://github.com/khubaib-ctrl">@khubaib-ctrl</a> 提供</sub></td>
 </tr>
 </table>
 
