@@ -2,9 +2,9 @@
 
 # Lemo-Opuscar
 
-**A toolbox of film styles made in code: <!--n-->66<!--/n--> ready to use, and your own.**<br>
+**A toolbox of film styles made in code: <!--n-->67<!--/n--> ready to use, and your own.**<br>
 Pick a style or make one from scratch, bring your story, and let your coding agent direct.<br>
-<sub><!--n-->66<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片 · 🇨🇳 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></sub>
+<sub><!--n-->67<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片 · 🇨🇳 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></sub>
 
 <a href="https://lemomo-ai.github.io/lemo-opuscar/"><img alt="Watch the gallery" src="https://img.shields.io/badge/-%E2%96%B6%20Watch%20the%20gallery-E8553A?style=for-the-badge"></a> <a href="README.zh-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/README-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-555?style=for-the-badge"></a> <a href="https://github.com/lemomo-ai/lemo-opuscar/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/lemomo-ai/lemo-opuscar?style=for-the-badge&color=F5B700&label=stars"></a> <a href="#licence"><img alt="MIT · CC BY 4.0" src="https://img.shields.io/badge/licence-MIT%20%C2%B7%20CC%20BY%204.0-2EA44F?style=for-the-badge"></a>
 
@@ -244,6 +244,7 @@ Click a frame for its `STYLE.md`.
 </tr>
 <tr>
 <td width="33%" valign="top"><a href="styles/urban-sketch/STYLE.md"><img src="docs/frames/urban-sketch.jpg" alt="Urban Sketch · Pen &amp; Wash"></a><br><b>Urban Sketch · Pen &amp; Wash</b><br><i>Where the Wind Went</i><br><sub>A park that is only a pen sketch; wherever the wind carries her straw hat, colour follows.</sub></td>
+<td width="33%" valign="top"><a href="styles/ruach/STYLE.md"><img src="docs/frames/ruach.jpg" alt="Ruach"></a><br><b>Ruach</b><br><i>After the Fire</i><br><sub>A burnt hillside glows red, then waits under a blue night of ash; one small walker carries a sapling across it, and when the sun breaks over the ridge the light turns the dead trunks green again.</sub></td>
 </tr>
 </table>
 

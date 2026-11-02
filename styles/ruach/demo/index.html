@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Ruach</title>
+<style>
+@font-face { font-family: EBGaramond; src: url(fonts/EBGaramond-VF.ttf); font-weight: 400 800; }
+@font-face { font-family: EBGaramond; src: url(fonts/EBGaramond-Italic-VF.ttf); font-weight: 400 800; font-style: italic; }
+@font-face { font-family: FrankRuhl; src: url(fonts/FrankRuhlLibre-VF.ttf); font-weight: 300 900; }
+@font-face { font-family: Inter; src: url(fonts/Inter-VF.ttf); font-weight: 100 900; }
+html, body { margin: 0; background: #000; overflow: hidden; width: 100vw; height: 100vh; }
+#c { position: absolute; left: 0; top: 0; }
+#quote { position: absolute; left: 9vw; top: 17vh; max-width: 34vw; color: #f6ead0; opacity: 0; text-shadow: 0 1px 12px rgba(10, 8, 30, .35); }
+#quote p { margin: 0; font: italic 500 34px/1.32 EBGaramond; }
+#quote .ref { margin-top: 14px; font: 500 19px EBGaramond; letter-spacing: .22em; font-variant: small-caps; opacity: .85; }
+#word { position: absolute; left: 9vw; top: 12vh; color: #efe2cf; opacity: 0; text-shadow: 0 2px 18px rgba(10, 8, 30, .4); }
+#word .orig { font: 500 34px EBGaramond; letter-spacing: .06em; opacity: .85; }
+#word .tr { font: italic 500 120px/1.05 EBGaramond; }
+#word .gloss { margin-top: 10px; font: 500 22px EBGaramond; letter-spacing: .2em; font-variant: small-caps; opacity: .85; }
+body.v #quote { left: 9vw; top: 8vh; max-width: 80vw; }
+body.v #quote p { font-size: 44px; }
+body.v #word { left: 9vw; top: 8vh; }
+</style>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+</head><body><canvas id="c"></canvas>
+<div id="word"><div class="orig">φύσις</div><div class="tr">phúsis</div><div class="gloss">nature · growth · what springs up</div></div>
+<div id="quote"><p>Heaven is under our feet<br>as well as over our heads.</p><div class="ref">Henry David Thoreau · Walden</div></div>
+<script>if (innerHeight > innerWidth) document.body.classList.add('v');</script>
+<script type="module" src="src/main.js"></script>
+</body></html>

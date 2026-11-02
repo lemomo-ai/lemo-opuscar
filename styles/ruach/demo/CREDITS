@@ -1,0 +1,17 @@
+After the Fire — Ruach demo
+
+Fonts (SIL Open Font License 1.1, licence files in fonts/):
+- EB Garamond — The EB Garamond Project Authors — https://github.com/google/fonts/tree/main/ofl/ebgaramond
+- Frank Ruhl Libre — The Frank Ruhl Libre Project Authors — https://github.com/google/fonts/tree/main/ofl/frankruhllibre
+- Inter — The Inter Project Authors — https://github.com/google/fonts/tree/main/ofl/inter
+
+Music samples:
+- Samples (CC0): VS Chamber Orchestra: Community Edition (Versilian Studios) — upright piano, violins, violas, cellos, contrabass, timpani
+- The wordless choir, wind, fire crackle, shimmer and birds are synthesised in audio/score.py.
+
+Quote (public domain): Henry David Thoreau, Walden (1854).
+
+Code:
+- src/lib.js and src/post.js are adapted from Lemo-Opuscar's Paper-cut Lightbox demo (styles/paper-lantern/demo/src), MIT License, Copyright (c) 2026 LemoLab.
+- core/ render, sampler and mix tools from Lemo-Opuscar (MIT).
+- three.js (MIT).

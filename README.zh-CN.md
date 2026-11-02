@@ -2,7 +2,7 @@
 
 # Lemo-Opuscar
 
-**一套用代码做片的风格工具箱：<!--n-->66<!--/n--> 种现成风格，也能做出你自己的。**<br>
+**一套用代码做片的风格工具箱：<!--n-->67<!--/n--> 种现成风格，也能做出你自己的。**<br>
 选一个风格，或者从头做一个，带上你的故事，让编程 agent 来当导演。
 
 <a href="https://lemomo-ai.github.io/lemo-opuscar/"><img alt="看图鉴" src="https://img.shields.io/badge/-%E2%96%B6%20%E7%9C%8B%E5%9B%BE%E9%89%B4-E8553A?style=for-the-badge"></a> <a href="README.md"><img alt="English" src="https://img.shields.io/badge/README-English-555?style=for-the-badge"></a> <a href="https://github.com/lemomo-ai/lemo-opuscar/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/lemomo-ai/lemo-opuscar?style=for-the-badge&color=F5B700&label=stars"></a> <a href="#授权"><img alt="MIT · CC BY 4.0" src="https://img.shields.io/badge/%E6%8E%88%E6%9D%83-MIT%20%C2%B7%20CC%20BY%204.0-2EA44F?style=for-the-badge"></a>
@@ -244,6 +244,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 </tr>
 <tr>
 <td width="33%" valign="top"><a href="styles/urban-sketch/STYLE.md"><img src="docs/frames/urban-sketch.jpg" alt="钢笔淡彩"></a><br><b>钢笔淡彩</b><br>Urban Sketch · Pen &amp; Wash<br><i>Where the Wind Went</i><br><sub>公园只是一张钢笔速写，风把草帽吹到哪里，哪里才有颜色。</sub></td>
+<td width="33%" valign="top"><a href="styles/ruach/STYLE.md"><img src="docs/frames/ruach.jpg" alt="灵息"></a><br><b>灵息</b><br>Ruach<br><i>After the Fire</i><br><sub>烧焦的山坡先是一片暗红，又在灰烬般的蓝夜里等待；一个小小的身影扛着树苗走过山脊，太阳破岭而出，光所到之处，枯干重新变绿。</sub></td>
 </tr>
 </table>
 
