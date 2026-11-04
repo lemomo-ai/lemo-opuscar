@@ -16,7 +16,7 @@ if [ -n "$LEMO_OPUSCAR_HOME" ]; then LIB=$LEMO_OPUSCAR_HOME
 elif top=$(git rev-parse --show-toplevel 2>/dev/null) && is_lib "$top"; then LIB=$top
 else LIB=$HOME/lemo-opuscar
 fi
-case "$LIB" in /*) ;; *) LIB=$(pwd)/$LIB ;; esac
+case "$LIB" in /*|[A-Za-z]:/*|[A-Za-z]:\\*) ;; *) LIB=$(pwd)/$LIB ;; esac
 
 # Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
