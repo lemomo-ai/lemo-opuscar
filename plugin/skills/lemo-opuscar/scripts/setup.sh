@@ -44,7 +44,9 @@ LIB=$(cd "$LIB" && pwd -P)
 # Installed packages are tracked by content: a marker holds a checksum of the files they came from (and the Python
 # version), so a changed package.json or requirements file triggers a reinstall.
 sig() { cat "$@" 2>/dev/null | cksum | cut -d' ' -f1; }
-pysig() { echo "$(sig "$1")-$("$LIB/.venv/bin/python" -V 2>&1 | cut -d. -f1,2)"; }
+# the venv's Python: Scripts/python.exe in a Windows venv, bin/python everywhere else
+vpy() { for v in "$LIB/.venv/Scripts/python.exe" "$LIB/.venv/bin/python"; do [ -x "$v" ] && { echo "$v"; return 0; }; done; return 1; }
+pysig() { echo "$(sig "$1")-$(p=$(vpy) && "$p" -V 2>&1 | cut -d. -f1,2)"; }
 req() { [ "$1" = core ] && echo "$LIB/requirements.txt" || echo "$LIB/requirements-$1.txt"; }
 node_ok() { [ "$(cat "$LIB/node_modules/.lemo-ok" 2>/dev/null)" = "$(sig "$LIB/package.json" "$LIB/package-lock.json")" ]; }
 py_ok() { [ "$(cat "$LIB/.venv/.lemo-$1" 2>/dev/null)" = "$(pysig "$(req "$1")")" ]; }
@@ -62,6 +64,16 @@ case "$1" in
     for t in "$@"; do case $t in voice|music) tiers="$tiers $t" ;; *) echo "usage: sh setup.sh deps [voice] [music]"; exit 1 ;; esac; done
     cd "$LIB"
     command -v npm >/dev/null || { echo "✗ npm not found: install Node 20+ first"; exit 1; }
+    # one deps run per library at a time (sessions can share one library); a lock whose run is gone is taken over
+    lock=$LIB/.deps.lock; n=0
+    until mkdir "$lock" 2>/dev/null; do
+      pid=$(cat "$lock/pid" 2>/dev/null || true)
+      if { [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; } || { [ -z "$pid" ] && [ $n -ge 10 ]; }; then rm -rf "$lock"; n=0; continue; fi
+      [ $n -eq 1 ] && echo "… another 'setup.sh deps' is installing into $LIB; waiting for it"
+      n=$((n + 1)); sleep 1
+    done
+    echo $$ > "$lock/pid"
+    trap 'rm -rf "$lock"' EXIT; trap 'exit 1' HUP INT TERM
     if ! node_ok; then
       npm install --no-audit --no-fund --loglevel=error
       # npm may rewrite package-lock.json; in our own clone put it back, so the checksum stays the same
@@ -70,15 +82,15 @@ case "$1" in
     fi
     node node_modules/playwright-core/cli.js install chromium-headless-shell   # the renderer's browser (a no-op when present)
     # a venv whose Python is gone (after a Python upgrade) can't be repaired in place: make it again
-    [ ! -e .venv ] || .venv/bin/python -c pass 2>/dev/null || { echo "! $LIB/.venv is broken; making it again"; rm -rf .venv; }
-    if [ ! -x .venv/bin/python ]; then
+    [ ! -e .venv ] || { p=$(vpy) && "$p" -c pass 2>/dev/null; } || { echo "! $LIB/.venv is broken; making it again"; rm -rf .venv; }
+    if ! vpy >/dev/null; then
       if command -v uv >/dev/null; then uv venv --quiet --python 3.12 .venv
       else py=$(find_py) || { echo "✗ Python 3.11+ is needed (or install uv, which fetches it)"; exit 1; }; "$py" -m venv .venv; fi
     fi
     for t in $tiers; do
       py_ok "$t" && continue
-      if command -v uv >/dev/null; then uv pip install --quiet --python .venv/bin/python -r "$(req "$t")"
-      else .venv/bin/python -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
+      if command -v uv >/dev/null; then uv pip install --quiet --python "$(vpy)" -r "$(req "$t")"
+      else "$(vpy)" -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
       pysig "$(req "$t")" > ".venv/.lemo-$t"
     done
     case " $tiers " in *" voice "*) [ -f core/tts/kokoro-v1.0.onnx ] && [ -f core/tts/voices-v1.0.bin ] || sh tools/fetch.sh voice ;; esac
