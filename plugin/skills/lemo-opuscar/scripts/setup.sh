@@ -16,7 +16,7 @@ if [ -n "$LEMO_OPUSCAR_HOME" ]; then LIB=$LEMO_OPUSCAR_HOME
 elif top=$(git rev-parse --show-toplevel 2>/dev/null) && is_lib "$top"; then LIB=$top
 else LIB=$HOME/lemo-opuscar
 fi
-case "$LIB" in /*) ;; *) LIB=$(pwd)/$LIB ;; esac
+case "$LIB" in /*|[A-Za-z]:*) ;; *) LIB=$(pwd)/$LIB ;; esac   # a Windows drive path (C:/…) is absolute too
 
 # Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
@@ -40,17 +40,19 @@ elif ! is_lib "$LIB"; then
   git -C "$LIB" config lemo.managed true
 fi
 LIB=$(cd "$LIB" && pwd -P)
+# The venv's Python: Scripts/python.exe on Windows (Git Bash, MSYS), bin/python elsewhere
+vpy() { if [ -x "$LIB/.venv/Scripts/python.exe" ]; then echo "$LIB/.venv/Scripts/python.exe"; else echo "$LIB/.venv/bin/python"; fi; }
 
 # Installed packages are tracked by content: a marker holds a checksum of the files they came from (and the Python
 # version), so a changed package.json or requirements file triggers a reinstall.
 sig() { cat "$@" 2>/dev/null | cksum | cut -d' ' -f1; }
-pysig() { echo "$(sig "$1")-$("$LIB/.venv/bin/python" -V 2>&1 | cut -d. -f1,2)"; }
+pysig() { echo "$(sig "$1")-$("$(vpy)" -V 2>&1 | cut -d. -f1,2)"; }
 req() { [ "$1" = core ] && echo "$LIB/requirements.txt" || echo "$LIB/requirements-$1.txt"; }
 node_ok() { [ "$(cat "$LIB/node_modules/.lemo-ok" 2>/dev/null)" = "$(sig "$LIB/package.json" "$LIB/package-lock.json")" ]; }
 py_ok() { [ "$(cat "$LIB/.venv/.lemo-$1" 2>/dev/null)" = "$(pysig "$(req "$1")")" ]; }
 # a Python 3.11+ for the venv when uv is absent; kokoro-onnx (voice tier) needs < 3.14, so those come first
 find_py() {
-  for c in python3.12 python3.13 python3.11 python3; do
+  for c in python3.12 python3.13 python3.11 python3 python; do
     "$c" -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>/dev/null && { echo "$c"; return 0; }
   done
   return 1
@@ -70,15 +72,17 @@ case "$1" in
     fi
     node node_modules/playwright-core/cli.js install chromium-headless-shell   # the renderer's browser (a no-op when present)
     # a venv whose Python is gone (after a Python upgrade) can't be repaired in place: make it again
-    [ ! -e .venv ] || .venv/bin/python -c pass 2>/dev/null || { echo "! $LIB/.venv is broken; making it again"; rm -rf .venv; }
-    if [ ! -x .venv/bin/python ]; then
+    [ ! -e .venv ] || "$(vpy)" -c pass 2>/dev/null || { echo "! $LIB/.venv is broken; making it again"; rm -rf .venv; }
+    if [ ! -x "$(vpy)" ]; then
       if command -v uv >/dev/null; then uv venv --quiet --python 3.12 .venv
       else py=$(find_py) || { echo "✗ Python 3.11+ is needed (or install uv, which fetches it)"; exit 1; }; "$py" -m venv .venv; fi
     fi
+    # Windows: the guides and tools call .venv/bin/python; give the venv that path too (a copy of its launcher)
+    if [ -x .venv/Scripts/python.exe ] && [ ! -x .venv/bin/python ]; then mkdir -p .venv/bin && cp .venv/Scripts/python.exe .venv/bin/python.exe; fi
     for t in $tiers; do
       py_ok "$t" && continue
-      if command -v uv >/dev/null; then uv pip install --quiet --python .venv/bin/python -r "$(req "$t")"
-      else .venv/bin/python -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
+      if command -v uv >/dev/null; then uv pip install --quiet --python "$(vpy)" -r "$(req "$t")"
+      else "$(vpy)" -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
       pysig "$(req "$t")" > ".venv/.lemo-$t"
     done
     case " $tiers " in *" voice "*) [ -f core/tts/kokoro-v1.0.onnx ] && [ -f core/tts/voices-v1.0.bin ] || sh tools/fetch.sh voice ;; esac
