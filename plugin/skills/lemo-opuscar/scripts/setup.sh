@@ -20,10 +20,11 @@ case "$LIB" in /*) ;; *) LIB=$(pwd)/$LIB ;; esac
 
 # Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
+# The patterns go in on stdin: as arguments, Git for Windows (MSYS) would rewrite /styleboard/ into C:/Program Files/Git/styleboard/.
 apply_sparse() {
   set -- '/*' '!/styles/*/demo/' '!/styleboard/' '!/docs/frames/' '!/docs/cover.jpg' '!/docs/opuscar98.jpg' '!/styles/*/poster.jpg' \
     $(git -C "$LIB" sparse-checkout list 2>/dev/null | grep -E '^/styles/[^/*]+/(demo/|poster\.jpg)$' || true)
-  git -C "$LIB" sparse-checkout set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
+  printf '%s\n' "$@" | git -C "$LIB" sparse-checkout set --no-cone --stdin 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
 }
 
 if [ "$(git -C "$LIB" config --get lemo.managed 2>/dev/null)" = true ]; then
@@ -86,7 +87,7 @@ case "$1" in
   demo)
     [ -n "$2" ] && [ -f "$LIB/styles/$2/STYLE.md" ] || { echo "usage: sh setup.sh demo <slug>  (slugs: $LIB/styles/README.md)"; exit 1; }
     if git -C "$LIB" sparse-checkout list >/dev/null 2>&1 && ! git -C "$LIB" sparse-checkout list | grep -qx "/styles/$2/demo/"; then
-      git -C "$LIB" sparse-checkout add "/styles/$2/demo/" "/styles/$2/poster.jpg"
+      printf '%s\n' "/styles/$2/demo/" "/styles/$2/poster.jpg" | git -C "$LIB" sparse-checkout add --stdin   # stdin: see apply_sparse
     fi
     echo "demo source: $LIB/styles/$2/demo"
     echo "demo poster: $LIB/styles/$2/poster.jpg"
