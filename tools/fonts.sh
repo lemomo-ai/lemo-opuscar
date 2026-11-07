@@ -796,6 +796,26 @@ for s in styles:
 
 print('\n%d fetched (%s), %d unresolved' % (len(done), kb(bytes_got), len(failed)))
 
+# A fetch must not quietly edit a file git tracks.  The author tier runs the
+# demo's own fetcher, and several of those regenerate the demo's fonts.css from
+# the live CSS API -- so when Google moves a range upstream (U+20AD-20C0 became
+# U+20AD-20C4 while this was written) a fetch rewrites a committed file as a
+# side effect.  That is the author's file and the author's fetcher; this tool
+# will not second-guess either.  It will not let it pass unsaid either.
+try:
+    r = subprocess.run(['git', 'diff', '--name-only', '--', 'styles'],
+                       capture_output=True, text=True, timeout=30)
+    dirty = [l for l in r.stdout.splitlines() if l.endswith('.css')] if r.returncode == 0 else []
+except Exception:
+    dirty = []
+if dirty:
+    print('\n%d tracked file%s rewritten by the author fetchers (the CSS API moved a'
+          ' unicode-range):' % (len(dirty), '' if len(dirty) == 1 else 's'))
+    for f in dirty[:12]: print('    %s' % f)
+    if len(dirty) > 12: print('    ... and %d more' % (len(dirty) - 12))
+    print('  keep them if you want today\'s subsets, or: git checkout -- %s'
+          % ' '.join(dirty[:3]) + (' ...' if len(dirty) > 3 else ''))
+
 if VERIFY:
     print('\nverify — family name inside each file')
     bad, unknown, seen_n = 0, 0, 0
