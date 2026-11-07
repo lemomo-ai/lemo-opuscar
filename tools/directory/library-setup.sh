@@ -1,6 +1,6 @@
 #!/bin/sh
 # Lemo-Opuscar library (plugin directory edition): check the tools and install packages. Run from anywhere.
-#   sh tools/setup.sh                       report what is missing → prints LIB=<path>
+#   sh tools/setup.sh                       report what is missing and which package tiers are installed → LIB=<path>
 #   sh tools/setup.sh deps [voice] [music]  install packages: core = Node packages, headless browser, Python core tier;
 #                                           voice = TTS and speech check (+ the English voice model); music = pluck.py (numba)
 # Everything installs inside this library folder (node_modules/, .venv/, core/tts/); nothing outside it changes.
@@ -88,4 +88,12 @@ command -v ffmpeg >/dev/null || miss="$miss ffmpeg"
 command -v uv >/dev/null || find_py >/dev/null || miss="$miss python3.11+(or uv)"
 [ -n "$miss" ] && echo "! missing:$miss"
 node_ok && py_ok core || echo "! packages not installed yet: run 'sh tools/setup.sh deps' (a few minutes) before the first render"
+# Package tiers: core renders; voice (TTS + speech check) and music (pluck.py) are added when a film needs them
+mark() { if "$@"; then printf '✓'; else printf '✗'; fi; }
+core_ok() { node_ok && py_ok core; }
+voice_ok() { py_ok voice && [ -f "$LIB/core/tts/kokoro-v1.0.onnx" ] && [ -f "$LIB/core/tts/voices-v1.0.bin" ]; }
+add=""; voice_ok || add="$add voice"; py_ok music || add="$add music"
+tline="packages: core $(mark core_ok) · voice $(mark voice_ok) · music $(mark py_ok music)"
+core_ok && [ -n "$add" ] && tline="$tline  (when a film needs them: sh tools/setup.sh deps$add)"
+echo "$tline"
 echo "LIB=$LIB"

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Lemo-Opuscar skill: find or install the style library, then print its path.
-#   sh setup.sh                    library ready? (clone on first run, update later) → prints LIB=<path>
+#   sh setup.sh                    library ready? (clone on first run, update later) → which package tiers are installed, LIB=<path>
 #   sh setup.sh deps [voice] [music]
 #                                  install packages: core = Node packages, headless browser, Python core tier;
 #                                  voice = TTS and speech check (+ the English voice model); music = pluck.py (numba)
@@ -134,4 +134,12 @@ else miss="$miss ffmpeg"; fi
 command -v uv >/dev/null || find_py >/dev/null || miss="$miss python3.11+(or uv)"
 [ -n "$miss" ] && echo "! missing:$miss"
 node_ok && py_ok core || echo "! packages not installed yet: run 'sh setup.sh deps' (a few minutes) before the first render"
+# Package tiers: core renders; voice (TTS + speech check) and music (pluck.py) are added when a film needs them
+mark() { if "$@"; then printf '✓'; else printf '✗'; fi; }
+core_ok() { node_ok && py_ok core; }
+voice_ok() { py_ok voice && [ -f "$LIB/core/tts/kokoro-v1.0.onnx" ] && [ -f "$LIB/core/tts/voices-v1.0.bin" ]; }
+add=""; voice_ok || add="$add voice"; py_ok music || add="$add music"
+tline="packages: core $(mark core_ok) · voice $(mark voice_ok) · music $(mark py_ok music)"
+core_ok && [ -n "$add" ] && tline="$tline  (when a film needs them: sh setup.sh deps$add)"
+echo "$tline"
 echo "LIB=$LIB"
