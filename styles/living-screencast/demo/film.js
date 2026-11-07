@@ -265,7 +265,7 @@ export function build(words) {
   T.paneX = 43.2; ev(T.paneX, 'whoosh', { d: -1 });
   T.cmdN = W('v14', 'start') - .4; ev(T.cmdN, 'key', { v: 1 }); ev(T.cmdN + .05, 'pop');
   T.split = 45.0; ev(T.split - .1, 'split'); ev(T.split + .15, 'mitosis');
-  T.cmdClick = T.split - .25; CUR.show(T.cmdN + .1, T.split + .3).move(T.cmdN + .1, T.cmdN + .1, pt(700, 700)).move(T.cmdN + .15, T.cmdClick - .03, at('s-1', .5, .5), 30).click(T.cmdClick);
+  T.optClick = T.split - .25; CUR.show(T.cmdN + .1, T.split + .3).move(T.cmdN + .1, T.cmdN + .1, pt(700, 700)).move(T.cmdN + .15, T.optClick - .03, at('s-1', .5, .5), 30).click(T.optClick);
   T.side = W('v15', 'side') - .02; T.merged = 48.3; ev(T.merged, 'merge'); T.pass = 47.7; ev(T.pass, 'tool');
   for (let i = 0; i < 6; i++) ev(45.9 + i * .3, 'tick');
   cam(T.paneX, .9, [960, 600, 1.0], 'eio');
@@ -403,7 +403,7 @@ function appState(A, t) {
   }
   // F: split screen
   if (t >= T.cmdN) {
-    A.sessions.push({ name: 'Fix flaky timer test', run: 1, on: t > T.cmdClick, p: back(seg(t, T.cmdN + .05, T.cmdN + .35)) });
+    A.sessions.push({ name: 'Fix flaky timer test', run: 1, on: t > T.optClick, p: back(seg(t, T.cmdN + .05, T.cmdN + .35)) });
     A.newHot = t > T.cmdN - .05 && t < T.cmdN + .25;
   }
   if (t >= T.split - .05) {
@@ -443,7 +443,7 @@ function hud(F, t) {
   if (t >= 43.2 && t < 49.2) H.chap = { no: '05', nm: 'Side by side', op: Math.min(seg(t, 43.2, 43.5), 1 - seg(t, 48.9, 49.2)) };
   // keystroke HUD
   const KC = [[T.atKey - .1, ['@'], 'mention a file', [T.atKey]], [T.menu - .35, ['⇧', '⌘', 'M'], 'permission mode', [T.menu - .05]], [T.cmSend - .45, ['⌘', '↵'], 'send comments', [T.cmSend]],
-    [T.cmdN - .35, ['⌘', 'N'], 'new session', [T.cmdN]], [T.cmdClick - .3, ['⌘', 'click'], 'split view', [T.cmdClick]]];
+    [T.cmdN - .35, ['⌘', 'N'], 'new session', [T.cmdN]], [T.optClick - .3, ['⌥', 'click'], 'split view', [T.optClick]]];
   for (const [t0, keys, label, press] of KC) if (t >= t0 && t < t0 + 1.5) { const nxt = KC.find(k => k[0] > t0); if (nxt && t >= nxt[0]) continue;
     H.keys = { keys, label, op: Math.min(seg(t, t0, t0 + .15), 1 - seg(t, t0 + 1.25, t0 + 1.5)), dn: press.some(p => t >= p && t < p + .18), y: (1 - back(seg(t, t0, t0 + .3))) * 20 }; }
   // 4× fast-forward label

@@ -8,7 +8,7 @@ const VO = [ // id, start, duration, English, Chinese
   ['v05', 34.3, 6.26, 'Then come the eucalypts. More than 800 species, making up three quarters of Australia’s forests.', '接着是桉树。八百多个物种，占澳洲森林的四分之三。'],
   ['v06', 41.8, 1.71, 'Fire is part of the rhythm here.', '在这里，火是节奏的一部分。'],
   ['v07', 47.2, 4.55, 'Within weeks, blackened trunks sprout again, from buds hidden deep beneath the bark.', '几周之内，烧黑的树干重新发芽——芽就藏在树皮深处。'],
-  ['v08', 53.4, 6.2, 'In the wet mountains, mountain ash, the tallest flowering plant on Earth, reaches for a hundred metres.', '在湿润的山区，王桉——地球上最高的开花植物——向着一百米伸展。'],
+  ['v08', 53.4, 6.8, 'In the wet mountains, mountain ash, one of the tallest flowering plants on Earth, reaches for a hundred metres.', '在湿润的山区，王桉——地球上最高的开花植物之一——向着一百米伸展。'],
   ['v09', 61.5, 6.26, 'And where the rain barely stops: rainforest. Layer upon layer, on less than one percent of the land.', '而在雨几乎不停的地方：雨林。层层叠叠，只占国土的不到百分之一。'],
   ['v10', 75.0, 4.5, 'But this walk, from desert to rainforest, is also a walk back in time.', '但这段从沙漠到雨林的路，也是一段回到过去的路。'],
   ['v11', 80.8, 4.06, 'Fifty million years ago, rainforest spread across much of Australia.', '五千万年前，雨林铺满了澳洲的大部分土地。'],
