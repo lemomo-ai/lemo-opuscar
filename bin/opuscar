@@ -20,7 +20,18 @@
 set -euo pipefail
 
 # Repo root: derived from this script's location, overridable for odd layouts.
-REPO="${OPUSCAR_REPO:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)}"
+# Follow symlinks first: the common install is a link in /usr/local/bin, and
+# dirname on the link would make the root /usr/local.  readlink -f is absent on
+# macOS, so walk the chain by hand.
+SELF="${BASH_SOURCE[0]}"
+while [[ -L "$SELF" ]]; do
+  LINK="$(readlink -- "$SELF")"
+  case "$LINK" in
+    /*) SELF="$LINK" ;;
+     *) SELF="$(cd -- "$(dirname -- "$SELF")" && pwd)/$LINK" ;;
+  esac
+done
+REPO="${OPUSCAR_REPO:-$(cd -- "$(dirname -- "$SELF")/.." && pwd)}"
 
 # --- 1. graphics backend --------------------------------------------------
 if [[ -z "${LEMO_ANGLE:-}" ]]; then
