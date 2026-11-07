@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# opuscar — run this repo's renderers on a GPU-less Linux box (cloud VM / CI runner).
+#
+# It pins the two things `node core/render/*.mjs` needs there and cannot infer:
+#
+#   1) LEMO_ANGLE — with no ANGLE backend pinned, the WebGL canvas initialises and then
+#      draws nothing: shader/3D styles (ascii-crt and friends) write a blank film and
+#      still exit 0.  `swiftshader` rasterises on the CPU.  See PR #35.
+#   2) PLAYWRIGHT_CHROME — playwright-core asks for the exact browser build it was
+#      pinned to; a box whose ~/.cache/ms-playwright holds an older build aborts at
+#      launch() with "Executable doesn't exist".  The wrapper picks the newest local
+#      build, preferring chrome-headless-shell.
+#
+# Usage:
+#   opuscar core/render/video.mjs styles/ascii-crt/demo --fps 24 --workers 3 --out /tmp/x.mp4
+#   opuscar core/render/still.mjs  styles/ascii-crt/demo 39.4 --q 'nosub=1' --out /tmp/s
+#
+# Anything already exported in the shell wins, so `LEMO_ANGLE=metal opuscar ...` still
+# works on macOS.  OPUSCAR_QUIET=1 silences the one-line banner.
+set -euo pipefail
+
+# Repo root: derived from this script's location, overridable for odd layouts.
+REPO="${OPUSCAR_REPO:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)}"
+
+# --- 1. graphics backend --------------------------------------------------
+if [[ -z "${LEMO_ANGLE:-}" ]]; then
+  if [[ "$(uname -s)" == "Darwin" ]]; then LEMO_ANGLE=metal
+  else LEMO_ANGLE=swiftshader; fi
+fi
+export LEMO_ANGLE
+
+# --- 2. chromium executable ----------------------------------------------
+if [[ -z "${PLAYWRIGHT_CHROME:-}" ]]; then
+  CAND=""
+  for d in "${PLAYWRIGHT_BROWSERS_PATH:-}" "${HOME:-/root}/.cache/ms-playwright" /root/.cache/ms-playwright; do
+    [[ -n "$d" && -d "$d" ]] || continue
+    # newest build first; chrome-headless-shell is preferred over full chromium
+    while read -r f; do [[ -x "$f" ]] && { CAND="$f"; break; }; done < <(
+      ls -d "$d"/chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell \
+            "$d"/chromium-*/chrome-linux/chrome \
+            "$d"/chromium-*/chrome-linux64/chrome 2>/dev/null | sort -t- -k2 -rn)
+    [[ -n "$CAND" ]] && break
+  done
+  if [[ -z "$CAND" ]]; then
+    for f in /usr/bin/chromium-browser /usr/bin/chromium /usr/bin/google-chrome /snap/bin/chromium; do
+      [[ -x "$f" ]] && { CAND="$f"; break; }
+    done
+  fi
+  if [[ -n "$CAND" ]]; then
+    export PLAYWRIGHT_CHROME="$CAND"
+  else
+    echo "opuscar: no chromium found; run 'npx playwright install chromium-headless-shell'" >&2
+    exit 127
+  fi
+fi
+
+# --- 3. the repo's python venv (tts, mix, score) -------------------------
+[[ -x "$REPO/.venv/bin/python" ]] && export PATH="$REPO/.venv/bin:$PATH"
+
+[[ "${OPUSCAR_QUIET:-0}" == "1" ]] || \
+  echo "[opuscar] LEMO_ANGLE=$LEMO_ANGLE  chrome=$(basename "$(dirname "$(dirname "$PLAYWRIGHT_CHROME")")")" >&2
+
+cd "$REPO"
+case "${1:-}" in
+  ""|-h|--help) echo "usage: opuscar <script.mjs|command> [args...]   (cwd = $REPO)"; exit 0 ;;
+  *.mjs|*.js)   exec node "$@" ;;
+  *.py)         exec python "$@" ;;
+  *)            exec "$@" ;;
+esac
