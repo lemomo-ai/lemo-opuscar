@@ -21,7 +21,7 @@ The window: four lancets side by side plus a rose above, in a thick splayed wall
 
 Structure used: one scene per lancet, each lit in turn (dawn → noon → afternoon → dusk), the rose as the sun clock, opening in darkness with a knife-thin ray, one hard crack at the emotional peak, then silence, a slow reveal, re-leading on the beat, a single bell, night. Native moves spent: light is time (throughout), glass projects onto stone (the duel, 24–30 s), cracks and mending leads (31.8–44.6 s), a window that holds its own light (47–53 s). Rhymes: the dawn ray at 0.5 s and a thin blue dawn ray on the end card at 55.2 s play the same glass note; the new lead lines remain as a scar where the story changed.
 
-How the old guide suggested adapting topics (our demo's reading of the style, kept for reference): a sequence of stations the light visits in order; a product launch as stages of making with the product as the pane that glows at night; a biography in four panes with the one choice as the crack; history as eras across the day.
+Ways to adapt other topics (for reference): a sequence of stations the light visits in order; a product launch as stages of making with the product as the pane that glows at night; a biography in four panes with the one choice as the crack; history as eras across the day.
 
 ## Shots
 
@@ -39,7 +39,7 @@ How the old guide suggested adapting topics (our demo's reading of the style, ke
 | S8 | 30.0–31.8 | Back up to the window, red light on pane IV: knight raises sword, dragon curled, wings over its chest | low medium, charge | timpani roll |
 | S9 | 31.8 | The blow (two stepped frames) → the pane cracks: 9 white lines in 0.28 s, flash 0.45 s, 2-frame shake | same framing, no cut | all music hard-cut, glass shatter + long reverb |
 | S10 | 31.8–33.8 | Stillness; dust falls in red light; 33.0 wing pieces slide along the leads to reveal an amber ember | slow push to the ember | silence: reverb tail, lead creak, glass friction |
-| S11 | 33.8–41.3 | The ember breathes; knight's face swaps from stern to astonished (one face piece) | close: face + ember in one frame | soft organ, sparse chimes; L5 33.8, L6 37.9 |
+| S11 | 33.8–41.3 | The ember breathes; knight's face swaps from stern to astonished (one face piece) | close: face + ember in one frame | soft organ, sparse chimes; L5 33.8, L6 38.3 |
 | S12 | 41.3–44.6 | **Re-leading**: groups (sword → legs → torso → arms) slide to kneeling, sword flat before the ember; a weld spark per beat | locked medium | one rising Dorian note per weld |
 | S13 | 44.6–47.2 | Last weld = one bell; mending leads remain | still frame | tubular bell D, long reverb; L7 at 45.0 |
 | S14 | 47.2–52.9 | Night: red → violet → moonlight; all panes grey-blue except pane IV, glowing warm from inside | slow pull back to the S2 wide | recorder reprise, harp harmonics; L8 at 49.2 |
@@ -47,7 +47,7 @@ How the old guide suggested adapting topics (our demo's reading of the style, ke
 
 Why this route, for this story: the knife-thin ray gave the spectacle in the first second; the pull-back taught the light rule; trucking with the light made time visible; the floor was the only place the duel could be bigger than its lancet; holding through the crack let the medium break instead of the edit; the return to the S2 wide showed the light had moved from outside the window to inside it. Each is one choice from STYLE.md §6, not the style's default opening or ending.
 
-Staging in pane IV: close-ups at 1.3–2.3× on a 300-unit lancet; knight lower-left, dragon upper-right. The reveal was re-staged at the final zoom: both figures shrunk, the ember moved to frame centre at ≥ ~1/8 of the frame width with its glow, the knight on the left third looking at it, the dragon whole inside the pane, then a pull-back to both.
+Staging in pane IV: close-ups at 1.3–2.3× on a 300-unit lancet; knight lower-left, dragon upper-right. Stage the reveal at the final zoom: both figures small, the ember at frame centre at ≥ ~1/8 of the frame width with its glow, the knight on the left third looking at it, the dragon whole inside the pane, then a pull-back to both.
 
 ## Score structure
 
@@ -67,7 +67,7 @@ Original score (`demo/music/score.py`), medieval / plainchant feel, **D Dorian**
 
 Foley specific to this film: the ember's quiet crackle, far pigeons in the vault, the dove's wings, sword and shield clashes. Music ducked ~9 dB under the voice; timpani and heavy glass hits avoid word onsets.
 
-Voice: Kokoro `bf_alice`, speed .86–.88, "like a nun telling an old story", 8 short lines (`demo/lines.json`). Whisper heard "knight" as "night": the expected transcription goes in the line's `asr` field.
+Voice: Kokoro `bf_alice`, speed .86–.88, "like a nun telling an old story", 8 short lines (`demo/lines.json`). Whisper hears "knight" as "night": the expected transcription goes in the line's `asr` field.
 
 ## Palette & props
 
@@ -107,7 +107,7 @@ styles/stained-glass/demo/
 5. `CRF=22 sh demo/tools/mux.sh out/video24.mp4 mix.wav stained-glass.mp4 24 4` (grain 4). Or simply `sh styles/stained-glass/demo/build.sh`.
 
 Pitfalls tied to this demo's props:
-- A folded wing built from the open-wing rig looked like a pile of sticks → a dedicated folded silhouette (knuckle up, pleated blade sweeping back), far wing hidden.
-- The turning-point reveal was unreadable in v1: the knight filled the frame and the dragon was cut by the lancet edge → re-staged at the final zoom (see Shots).
-- The carved end card at night was unreadable in the wide shot → push in and park the sweep light on the text.
-- Duration grew from the planned 45 s to 56.5 s: L6 moved to 38.3 s so it wouldn't collide with L5's reading time, and the end card got its push-in so the credit stays legible.
+- A folded wing built from the open-wing rig looks like a pile of sticks: draw a dedicated folded silhouette (knuckle up, pleated blade sweeping back), far wing hidden.
+- The turning-point reveal is unreadable when the knight fills the frame and the lancet edge cuts the dragon: stage it at the final zoom (see Shots).
+- The carved end card at night is unreadable in the wide shot: push in and park the sweep light on the text.
+- Give lines and the end card their reading time even if the film runs long (56.5 s here): L6 starts at 38.3 s so it doesn't collide with L5's reading time, and the end card has its push-in so the credit stays legible.

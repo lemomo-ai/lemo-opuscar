@@ -101,10 +101,10 @@ styles/impasto/demo/
 Engine-level traps: `half` is a reserved word in GLSL ES 3.00; binding the composite quad while a stroke VAO is still bound silently rewires attribute 0 ("vertex buffer not big enough" on the next frame): unbind the VAO first.
 
 Pitfalls tied to this demo's props:
-- Umbrella radius 0.46 × body height looked like a parasol table; 0.34 reads as an umbrella.
+- Keep the umbrella radius at 0.34 × body height: 0.46 looks like a parasol table.
 - Coats as plain rectangles read as bollards: A-line taper + lit edge + shoulder dab + hair dab.
-- A global index in the per-shot ribbon loop flung control points off-screen (a streak from the sky).
-- Painting the ground after the buildings covered their feet.
+- Use a per-shot index in the per-shot ribbon loop: a global index flings control points off-screen (a streak from the sky).
+- Paint the ground before the buildings: painted after, it covers their feet.
 
 ## Engine reference
 

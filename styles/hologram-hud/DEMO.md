@@ -40,7 +40,7 @@ Motion numbers: the target box starts at 1.9× the rest-pose bounding box, at 30
 - No drums on part 1, + hats on part 2, + claps and the arpeggio up an octave on part 3. Regroup decelerates (16ths → 8ths → one quarter gliding down). One beat of true silence. Drop at ignition (808-style sine glide + 7-voice wide saw chord). Half-time under the lockup. The arpeggio is removed note by note under the end card.
 - Silences: the half beat before the first lock (only the room hum remains; the lock hit is the first sound after it) and one full beat of true zero before ignition.
 - Detect blips D–F–A; amber confirm = D6 + A6 + E7. J/L-cuts: the motor whine starts 0.4 s before the whip lands on the motor, the hydraulic hiss 0.4 s before the brake lock; hum and chord tail carry over the scan-erase into the end card.
-- Voice: Kokoro `af_heart`, speed 1.0 (`af_nicole` was too breathy and slow: 7.0 s against 4.4 s for the same line). Music ducks −16.5 dB and foley −15 dB under the voice, with a 0.5 s max-filter hold; only the first 0.2 s of lock / confirm hits escape.
+- Voice: Kokoro `af_heart`, speed 1.0 (not `af_nicole`: too breathy and slow, 7.0 s against 4.4 s for the same line). Music ducks −16.5 dB and foley −15 dB under the voice, with a 0.5 s max-filter hold; only the first 0.2 s of lock / confirm hits escape.
 
 ## Palette & props
 
@@ -52,7 +52,7 @@ Motion numbers: the target box starts at 1.9× the rest-pose bounding box, at 30
 - Type: Rajdhani 300 for big numbers and the product name (26 px tracking), 500/600 labels (2–3 px tracking); Share Tech Mono 20–22 px. Plates `rgba(1,8,12,.72)`, border 28 %, 10 px corner ticks (`plate()` in hud.js).
 - HUD: 46 px corner brackets 44 px from the edge; rulers tick every 24 px (every 5th long). Top-left: product // SPEC SCAN. Status: SCANNING 042% → SCAN COMPLETE · 3 SYSTEMS → TARGET 2/3 · MOTOR → HOLO SOLID · 360° → SPEC SHEET · READY.
 - Subtitles: plate `rgba(1,8,12,.62)`, two diagonal cyan brackets, four voiceprint bars, Rajdhani Medium 38 px, wrap 1180 px; in 0.1 s before the voice, out 0.12 s before the next line.
-- The e-bike model: tube frame, wheels with tyre (3 rings + cross ribs), rim, spokes and hub; battery in the down tube; hub motor; disc brake with caliper. The caliper needed an arc-shaped body hugging the rotor edge, round piston faces, pads following the rotor curve and vent holes on the rotor.
+- The e-bike model: tube frame, wheels with tyre (3 rings + cross ribs), rim, spokes and hub; battery in the down tube; hub motor; disc brake with caliper. The caliper needs an arc-shaped body hugging the rotor edge, round piston faces, pads following the rotor curve and vent holes on the rotor.
 
 ## End card
 
@@ -76,16 +76,16 @@ styles/hologram-hud/demo/
 3. Review stills (`node core/render/still.mjs <demo> t… [--q content=…]`) and 1 s contact sheets, twice, plus strips around every lock, whip, silence and ignition.
 4. `sh demo/build.sh` rebuilds everything: model → TTS → whisper → export → score → cuecheck → mix → srt → render (~45 s for 936 frames with 2 workers; whip frames cost 5×) → mux (−14 LUFS, grain 0) → final whisper check.
 
-Pitfalls met in this build:
-- Scrolling the interlace with `setTransform(…, offset)` and then `destination-in` cleared everything outside the shifted rect → `offset % patternHeight`, or the fills vanish after the first second.
-- The brake hose inflated the target box → `box:false`.
+Pitfalls:
+- Scrolling the interlace with `setTransform(…, offset)` and then `destination-in` clears everything outside the shifted rect → `offset % patternHeight`, or the fills vanish after the first second.
+- The brake hose inflates the target box → `box:false`.
 - Hotspot labels on long diagonal leaders read as pointing to the wrong part → ring on the part body, chip beside it, flash the part.
-- A whip written inside the next segment played as a hard cut → start it in the previous segment and check a 0.1 s frame strip.
-- The light with no bracket and the saddle with no clamp; in the swap model, the drone's landing legs started outside the hull (belly mounts and fold hinges at the arm roots fixed it).
-- Two parallel boxes (cover and cells both moved) didn't read as an explode.
-- In-band (300–4 kHz), rolls, servos and the confirm chord were only 3 dB under the voice.
-- The beam drawn from separate shapes gave dark wedges or double-bright seams → one path with three subpaths, nonzero winding.
-- Scan-erase first clipped only edges, and translucent faces lingered.
+- A whip written inside the next segment plays as a hard cut → start it in the previous segment and check a 0.1 s frame strip.
+- Mount every part: the light on a bracket, the saddle on a clamp; in the swap model, give the drone's landing legs belly mounts and fold hinges at the arm roots, or they start outside the hull.
+- Two parallel boxes moving together (cover and cells) don't read as an explode: slide the cover, keep the cells.
+- Rolls, servos and the confirm chord sit in the voice band (300–4 kHz): without ducking they are only 3 dB under the voice.
+- A beam drawn from separate shapes gives dark wedges or double-bright seams → one path with three subpaths, nonzero winding.
+- Scan-erase must clip the translucent faces as well as the edges, or the faces linger.
 
 ## content.json fields
 
@@ -112,7 +112,7 @@ The check, from the repo root (voice, whisper check, score, cue check, mix, subt
 ```
 CONTENT=content_alt.json NAME=kite sh styles/hologram-hud/demo/build.sh
 ```
-Outputs go to `demo/out/kite/` (`kite.mp4`, `kite.srt`, `poster.jpg`). The swap test (a four-part folding drone in blue / orange) came out at 43 s, 4 parts, −14.0 LUFS, 0 cue mismatches; stills `demo/stills/alt_title.jpg`, `alt_signature.jpg`, `alt_lockup.jpg`. Preview content without building: `node core/render/still.mjs styles/hologram-hud/demo 12 --q content=<file>.json`.
+Outputs go to `demo/out/kite/` (`kite.mp4`, `kite.srt`, `poster.jpg`). The swap test (a four-part folding drone in blue / orange) runs 43 s, 4 parts, −14.0 LUFS, 0 cue mismatches; stills `demo/stills/alt_title.jpg`, `alt_signature.jpg`, `alt_lockup.jpg`. Preview content without building: `node core/render/still.mjs styles/hologram-hud/demo 12 --q content=<file>.json`.
 
 Minimal content example (two parts):
 ```json

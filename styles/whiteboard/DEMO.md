@@ -5,11 +5,11 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 Demo: *Einstein in Your Pocket* (111 s) · `whiteboard.mp4` · source in [`demo/`](demo/)
 
 
-The demo's original one-line pitch: A science explainer drawn live on one glossy dry-erase board: single-line handwriting that is actually *written* stroke by stroke, floating markers with no hand, a magnet that can move, an eraser that can rewind time — and a camera that never leaves the board until the final pull-back shows the whole lesson hanging on the wall.
+In one line: a science explainer drawn live on one glossy dry-erase board: single-line handwriting that is actually *written* stroke by stroke, floating markers with no hand, a magnet that can move, an eraser that can rewind time — and a camera that never leaves the board until the final pull-back shows the whole lesson hanging on the wall.
 
 ## Story & structure
 
-Why GPS needs relativity, told from the map pin on your phone. This is an unofficial educational film: Albert Einstein appears only as the historical scientist, by name, and his estate and the holders of rights in his name and image did not make or endorse it; nor did the operators of GPS. The original style notes, as written for this demo:
+Why GPS needs relativity, told from the map pin on your phone. This is an unofficial educational film: Albert Einstein appears only as the historical scientist, by name, and his estate and the holders of rights in his name and image did not make or endorse it; nor did the operators of GPS. Style notes for this demo:
 
 A lesson on **one physical whiteboard**. Everything the viewer learns is drawn in dry-erase marker in front of them, in real handwriting order. The board is a *map*: each idea lives in its own region, and the camera travels between regions, usually **led by the pen** (the pen draws a line, the camera rides it). At the end the camera pulls back and the viewer sees that the whole explanation was one picture.
 
@@ -23,13 +23,13 @@ What makes it feel real rather than "animated text": ink that pools where the ni
 | **One board, one camera** | Distance on the board = distance in the argument. Returning to an earlier drawing is a free callback (the demo returns to its first equation to compute 38 μs × c ≈ 11 km). |
 | **The pen leads the camera** | Transitions are drawn: an orbit, a signal line, a trail. The camera follows the line to the next idea. |
 | **Magnets** | The only objects allowed to *move* on a whiteboard. Give the hero (the "you are here" pin) to a magnet; it can be lifted off, dropped, slid, sunk. |
-| **The eraser rewinds** | Wiping a trail backwards reads as undoing time. The demo used it once, right after the joke. |
+| **The eraser rewinds** | Wiping a trail backwards reads as undoing time. The demo uses it once, right after the joke. |
 | **Two pens at once** | A duet: two quantities compared live (the demo: ground clock vs orbit clock ticking at two tempi). |
 | **Full-board reveal** | The demo's ending: pull back past the frame to the wall and the pen tray. Every earlier scene reappears at once. |
 
 **Demo story shape:** hook on one tiny object (the pin) → scale reveal → title on the first downbeat → mechanism in 3 steps → **silence + "But, there's a catch."** → the twist explained with a visual duet → a joke that shows the consequence (the pin drifts one day per beat into the sea) → the eraser rewinds → the fix, in sync → pull back to the whole board → end card written under the title.
 
-How we found the topic's handle (the same recipe works for others): find **one object the viewer owns** (the phone, a loaf, a lightbulb), one number that surprises, and one consequence you can *walk* across the board. Put the surprise in the middle, after a silence.
+Finding the topic's handle (the same recipe works for others): find **one object the viewer owns** (the phone, a loaf, a lightbulb), one number that surprises, and one consequence you can *walk* across the board. Put the surprise in the middle, after a silence.
 
 ## Shots
 
@@ -38,9 +38,9 @@ How we found the topic's handle (the same recipe works for others): find **one o
 - Real 180° **motion blur**: when the camera moves more than 14 px per frame, render up to 12 sub-frames and average them.
 - Keep the bottom 12 % of the frame for subtitles in every shot.
 
-In the demo the camera never left the board until the final pull-back, which showed the whole lesson hanging on the wall with its aluminium frame and pen tray.
+In the demo the camera never leaves the board until the final pull-back, which shows the whole lesson hanging on the wall with its aluminium frame and pen tray.
 
-Demo motion numbers: pen hop lift 35 % of the window max; gaps > 0.75 s send the pen to park, returning 0.42 s before its next stroke; magnet drop 0.3 s, sink = tilt 0.5 rad and drop 40 px; eraser band 90–230 px at 90 % strength; title 3 s, a label 0.3–0.8 s, a full satellite ~1 s. The original motion section:
+Demo motion numbers: pen hop lift 35 % of the window max; gaps > 0.75 s send the pen to park, returning 0.42 s before its next stroke; magnet drop 0.3 s, sink = tilt 0.5 rad and drop 40 px; eraser band 90–230 px at 90 % strength; title 3 s, a label 0.3–0.8 s, a full satellite ~1 s. Motion:
 
 - **Hand speed**: every stroke follows `u − sin(2πu)/2π × 0.8` — slow landing, fast middle, slow lift. Strokes are scheduled into a **time window** (the engine solves the speed), so writing always finishes on the word.
 - **Pen hops** between strokes: lift proportional to distance (shadow slides away and blurs), 35 % of the window max. Gaps > 0.75 s: the pen flies off to a parking spot outside the frame and returns 0.42 s before its next stroke.
@@ -82,16 +82,16 @@ The demo's end card is written under the title in the same hand (`demo/film.js`,
 5. `node core/render/video.mjs demo --fps 24` → `core/render/mux.sh … 24 2`. Whole film renders in ~30 s.
 6. `demo/build.sh` does steps 3–5 plus subtitles, poster and stills; `--vo` also redoes step 1.
 
-### Pitfalls we hit
+### Pitfalls
 
-- **One pen, too many jobs**: a single pen scheduled back-to-back drifts later and later (satellites arrived 12 s late). Give every drawing a window (`by:`) and let overlapping jobs go to another pen.
+- **One pen, too many jobs**: a single pen scheduled back-to-back drifts later and later (satellites can arrive 12 s late). Give every drawing a window (`by:`) and let overlapping jobs go to another pen.
 - **Minimum stroke duration × dashes**: a 60-dash line with a 0.09 s floor takes 6 s. Dashes need their own tiny floor.
 - **Pooled-ink dot bigger than the stroke start** → grey halos on every letter. Keep the dot inside the stroke.
 - **Punctuation vanishes**: a font period is a 1 px stroke. Render sub-width strokes as dots.
 - **Labels half-cut by a push-in** look sloppy: a label must be either fully in or fully out of every shot it appears in.
 - **Motion blur with few sub-frames** strobes text. Step ≤ 4 px between sub-frames.
-- **British voice + US phonemes**: Kokoro `bm_george` with `lang: en-us` said "clocks" like "Clarks". Use `en-gb` for British voices; check with `medium.en`.
-- Keep eraser paths off labels you want to keep (it wiped half of "orbit" once).
+- **British voice + US phonemes**: Kokoro `bm_george` with `lang: en-us` says "clocks" like "Clarks". Use `en-gb` for British voices; check with `medium.en`.
+- Keep eraser paths off labels you want to keep.
 
 ## Engine reference
 

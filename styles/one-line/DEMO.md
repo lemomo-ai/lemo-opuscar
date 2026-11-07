@@ -58,9 +58,9 @@ The camera is one continuous move: keyframes of composition centre, zoom, a few 
 
 ## Palette, props & the reverse-designed face
 
-**Reverse design is the core technique.** Draw the final picture first, then cut it into chapters, then design each chapter so it reads as its own scene in close-up *and* as a feature of the final picture. Rules that made this work in the demo:
+**Reverse design is the core technique.** Draw the final picture first, then cut it into chapters, then design each chapter so it reads as its own scene in close-up *and* as a feature of the final picture. Rules:
 - **Each region of the final picture is drawn exactly once.** Connectors between chapters must fall on natural lines of the final picture: lens rims, nasolabial folds, crow's feet, the jaw contour, a hair. Every "extra" connector becomes a stray wrinkle, a jowl or a beard in the reveal.
-- **Plan the topology like an Euler path.** A closed motif such as a mouth (smile + upper lip + two profiles) is a circuit: you leave where you came in. Either route the next chapter from the same point (a retraced fold is invisible) or reorder the chapters. We moved "loss" before "child" purely for topology, then made it the emotional point ("and then it goes on").
+- **Plan the topology like an Euler path.** A closed motif such as a mouth (smile + upper lip + two profiles) is a circuit: you leave where you came in. Either route the next chapter from the same point (a retraced fold is invisible) or reorder the chapters. In the demo "loss" comes before "child" purely for topology, and is made the emotional point ("and then it goes on").
 - **Retracing is legal and invisible:** going back over an existing line only thickens it slightly. In the demo the pen "reels in" the kite by retracing its tail and string back down to the head.
 - **Test the reveal early and often:** render the whole path at once, at final scale, after every change (`?all=1&cam=0,-170,1`).
 
@@ -87,10 +87,10 @@ The camera is one continuous move: keyframes of composition centre, zoom, a few 
 - Title: Sacramento (a monoline connected script — itself a one-line drawing) 76 px, written on over 1.6 s in empty paper away from the current vignette, with a small Caveat sub-line. Keep it short enough to disappear before the camera moves into it.
 - End card: Sacramento title on two lines, "ONE-LINE DRAWING" in Caveat 600 with wide tracking, the credit line below, written in the empty paper beside the final picture while the new line is still being drawn. Its "LemoLab × Claude Opus 5.5" line (`subs.js`) belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
-- **Stray connectors ruin the reveal.** Every early version had lines that read as a beard, jowls, a bib or a mask. Fix the topology (which chapter enters and leaves where), not the drawing.
-- **A kite drawn straight up from the head made a pointed onion dome.** Let the string be the single hair and retrace (reel in) back to the crown so the dome stays a clean arc.
+- **Stray connectors ruin the reveal.** They read as a beard, jowls, a bib or a mask. Fix the topology (which chapter enters and leaves where), not the drawing.
+- **A kite drawn straight up from the head makes a pointed onion dome.** Let the string be the single hair and retrace (reel in) back to the crown so the dome stays a clean arc.
 - **Hands jutting sideways from the temples read as bolts.** Curl the baby fist into the vertical C of an ear, fingertip hidden inside, knuckles as four short round bumps (long loops read as springs).
 - **Two profiles closed by an arc over their heads read as a goblet** (Rubin's vase). Let their crowns become the M of the upper lip instead, and join their necks into the smile at one point.
 - **Profiles too close braid together** once line width is applied; keep ≥ 5 units between lips, touch only at the nose tips.
@@ -99,7 +99,7 @@ The camera is one continuous move: keyframes of composition centre, zoom, a few 
 - **Thin lines at the reveal.** Clamp the width zoom (see "Palette, props & the reverse-designed face").
 - **Hand shadows as separate translucent shapes** double-darken where fingers overlap — composite each hand as one layer.
 - **Titles collide with the vignette as the camera moves.** Check the title against every frame of its window, not just the first.
-- **Whisper mishears**: "Sometimes it stops" was heard as "But sometimes it stops" and "Your turn." as "Your turns" — rephrase ("Sometimes the line stops.", "Your turn now.") rather than fight it.
+- **Whisper mishears**: "Sometimes it stops" is heard as "But sometimes it stops" and "Your turn." as "Your turns" — rephrase ("Sometimes the line stops.", "Your turn now.") rather than fight it.
 - **zsh**: `=====` as an echo separator is expanded; heavy machine load makes `still.mjs` slow — the page supports `?cams=` / `?camt=` to render many views in one browser session.
 
 ## Build notes

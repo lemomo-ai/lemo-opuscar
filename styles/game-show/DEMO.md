@@ -26,7 +26,7 @@ How the demo spent the native moves:
 
 **Demo shape:** cold open on the cast + count-in (4 bars) → 7 levels of 9 bars (card + 8) → 1-bar REMIX card → 16-bar remix (7 items × 2 bars + 2-bar finale) → 9-bar ending (egg 2 bars, "Hi!" 1 bar, report card 3 bars, credit 3 bars incl. 0.8 s fade). Total 93 bars = 148.8 s.
 
-How we adapted the topic: we listed the phases, gave each one *one verb that can repeat on a beat* (place, buzz, pump, splat, sing, hammer, stamp), a year range and a set colour, and picked one "Perfect!" moment per level. The topic had a crowd (many companies and products), so they became bean contestants with name tags dropping in one per beat.
+How the topic is adapted: list the phases, give each one *one verb that can repeat on a beat* (place, buzz, pump, splat, sing, hammer, stamp), a year range and a set colour, and pick one "Perfect!" moment per level. The topic has a crowd (many companies and products), so they become bean contestants with name tags dropping in one per beat.
 
 ## Shots
 
@@ -82,9 +82,9 @@ The demo's last card carries **"LemoLab × Claude Opus 5.5"** (× is U+00D7). It
 
 ## Rights & facts
 
-- **The shouts are outside the CC BY 4.0 licence.** They are macOS system voices (`say`), which Apple licenses for personal, non-commercial use under the macOS licence, so the voice track of `game-show.mp4` and `demo/voices/*.wav` are not covered by the library's CC BY 4.0 licence for demo films. We plan to re-voice them with Kokoro (`core/tts/`). In your own film, use Kokoro or a voice you have the right to use; `make_voices.sh` is only a quick way to sketch timings.
+- **The shouts are outside the CC BY 4.0 licence.** They are macOS system voices (`say`), which Apple licenses for personal, non-commercial use under the macOS licence, so the voice track of `game-show.mp4` and `demo/voices/*.wav` are not covered by the library's CC BY 4.0 licence for demo films. In your own film, use Kokoro or a voice you have the right to use; `make_voices.sh` is only a quick way to sketch timings.
 - **Real brands:** the contestants stand for real AI products (GPT, Claude, Gemini, DeepSeek, Kimi, Grok, Midjourney…): names only on name tags, original mascots, loose colour nods; never official logos, wordmarks or product UI. Real people (Kasparov, Lee Sedol, the KEN / BRAD podiums) appear only as generic cartoon stand-ins in factual banners.
-- **Facts date fast.** The 2026 remix (Sonnet 5 as default, WAIC 2026, DeepSeek V4-Pro, "GPT-6 Astra", token-volume figures) was written as current news at production time. Re-check every figure and name before reusing any of it.
+- **Facts date fast.** The 2026 remix (Sonnet 5 as default, WAIC 2026, DeepSeek V4-Pro, "GPT-6 Astra", token-volume figures) states them as current news. Re-check every figure and name before reusing any of it.
 - The G7 task note on screen literally says "做一个节奏天国风格的视频" (names a real game series). In new films describe the genre, don't name it.
 
 ## Switching the text to English
@@ -122,14 +122,14 @@ All commands from `styles/game-show/demo/` (the scripts also `chdir` there thems
 4. **Look at it:** `STILLS_DIR=out/check node render.mjs stills 5.5 20.4 45 78.3 116.5 145` (≈1 s for six frames). Or open `index.html?t=78.3` in a browser.
 5. **Events:** `node render.mjs events` → `events.json` (demo: 474 events, `dur 148.80`).
 6. **Score + mix:** `$PY music.py` → `music.wav` (≈2 s; deterministic, seed 7). `$PY music.py out/test.wav` writes elsewhere.
-7. **Render:** `node render.mjs video 2` → `out/seg_0..1.mp4` + `out/list.txt`. The demo used 6 workers (120 s total); on a shared machine keep 2 (≈3–4 min). `SEGS=5 node render.mjs video 6` re-renders only one of 6 equal segments.
-8. **Finish:** `sh finish.sh out/test.mp4` (concat → loudnorm → x264 slow crf 16 + AAC 256k 48 kHz). With no argument it writes `../game-show.mp4` and **overwrites the library film** (back it up first). `AUDIO_FROM=old.mp4 sh finish.sh …` skips the remix and copies the old film's audio track unchanged (used for the sign-off re-render).
+7. **Render:** `node render.mjs video 2` → `out/seg_0..1.mp4` + `out/list.txt`. 6 workers take 120 s in total; on a shared machine keep 2 (≈3–4 min). `SEGS=5 node render.mjs video 6` re-renders only one of 6 equal segments.
+8. **Finish:** `sh finish.sh out/test.mp4` (concat → loudnorm → x264 slow crf 16 + AAC 256k 48 kHz). With no argument it writes `../game-show.mp4` and **overwrites the library film** (back it up first). `AUDIO_FROM=old.mp4 sh finish.sh …` skips the remix and copies the old film's audio track unchanged (for a picture-only re-render).
 9. **Subtitles:** `$PY make_srt.py` → `../game-show.srt`.
 10. **Review:** `ffmpeg -i out/test.mp4 -vf fps=1/4,scale=384:-1,tile=6x7 -frames:v 1 out/sheet.jpg` plus stills around every slam.
 
-### Pitfalls we hit
+### Pitfalls
 
-- **`render(t)` must be a pure function of `t`.** The remix thumbnails only updated while `t < t1 + 0.01`, so their final pose depended on having rendered the frames before. The 6-worker render starts worker 5 cold at 124.0 s, and in the shipped v3 film the bottom thumbnails (robot arm stack, dancing robots, bar chart, Gemini card) show their *initial* state from 124.0 s to 131.2 s. Fixed in `main_b.js` during import (the thumbnail is recomputed at `t1 − 0.001` every frame), and the film's last segment (124.0–148.8 s) was re-rendered with the fix.
+- **`render(t)` must be a pure function of `t`.** `main_b.js` recomputes each remix thumbnail at `t1 − 0.001` every frame. A thumbnail that only updates while `t < t1 + 0.01` gets a final pose that depends on having rendered the frames before: the 6-worker render starts worker 5 cold at 124.0 s, so the bottom thumbnails (robot arm stack, dancing robots, bar chart, Gemini card) would show their *initial* state from 124.0 s to 131.2 s.
 - **`main.js` and `index.html` are generated.** Edit `main_v1.js` (palette, beat helpers, banner/judge/burst, 1990s robots) or `main_b.js` (characters v2, stage, all scenes, render/init), then run `assemble.py` → `build.py`. Edits made straight into `main.js` are overwritten.
 - **`BPM` and `END_BAR` are patched by string replace** in `assemble.py` (`'const BPM = 140,'` → 150, `'const END_BAR = 61;'` → 93). If you edit those lines in `main_v1.js` the replace silently stops matching. Change the replace targets instead.
 - **Add every new shout in three places**: the `.wav` in `voices/`, a line in `voices/lines*.txt` (so it can be regenerated), and the `VO` list at the top of `music.py` (otherwise `KeyError`).
@@ -137,7 +137,7 @@ All commands from `styles/game-show/demo/` (the scripts also `chdir` there thems
 - `synth_lib.py` allocates a fixed `DUR = 150.0` s buffer. A longer film needs a bigger `DUR` or the tail is cut.
 - Fonts: `measure()` uses a canvas, so glyph widths are wrong until the webfont has loaded. `init()` loads every family for the page text before `buildAll()` and again for the built stage text. Keep that when adding text.
 - `say` pronunciation: write "A. I.", "G P T one", "Nine point eleven", "Move thirty seven" — spelled-out forms.
-- The frame template (`frame_head.html`, inherited from an earlier film) still declares `#paper`/`#fx` canvases and ink/boil filters; `init()` hides the canvases and the style doesn't use the filters. Leave them alone or delete them together.
+- The frame template (`frame_head.html`) declares `#paper`/`#fx` canvases and ink/boil filters that this style doesn't use; `init()` hides the canvases. Leave them alone or delete them together.
 - zsh does not word-split `$TS`; pass timestamps as an array (`TS=(1 2 3); … $TS`) or literally.
 
 ## Engine reference

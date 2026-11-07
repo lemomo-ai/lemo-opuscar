@@ -8,7 +8,7 @@ Demo: *Rocket from Spare Parts* (54 s) · `brick-toy.mp4` · source in [`demo/`]
 
 A brick astronaut builds a rocket; it collapses; he rebuilds it from the fallen parts and flies to the "moon" (a stack of books). Failure isn't the end, it's just spare parts. One character, one goal.
 
-The old guide told agents to "turn the topic into something being built" and to use at least three of the four native powers; the demo used all four: snap-together building (open on one brick, end on one brick), break without harm (the collapse becomes the parts for a better rocket), toy on a real desk (a teapot is a mountain, a stack of books is the moon, the lamp is the sun), hand-made stop-motion (12 fps, even the flames and smoke are bricks). The old guide also listed adaptation examples: a product launch → the product is assembled brick by brick; a love story → two characters build a bridge between two books; a history lesson → an era is built, falls, is rebuilt.
+The approach: turn the topic into something being built and use at least three of the four native powers; the demo uses all four: snap-together building (open on one brick, end on one brick), break without harm (the collapse becomes the parts for a better rocket), toy on a real desk (a teapot is a mountain, a stack of books is the moon, the lamp is the sun), hand-made stop-motion (12 fps, even the flames and smoke are bricks). Other adaptations: a product launch → the product is assembled brick by brick; a love story → two characters build a bridge between two books; a history lesson → an era is built, falls, is rebuilt.
 
 Arc (45–60 s, as written for this film): curiosity → excitement → a setback (collapse) → a quiet beat → rebuilding → climax → a warm scale-reveal. Acts: opening 0:00–0:06 (one red brick, the first snap), act one 0:06–0:18 (fast building, pride), act two 0:18–0:30 (collapse, silence, picking up the parts), act three 0:30–0:50 (countdown, ignition, launch, landing on the moon), end card after.
 
@@ -39,7 +39,7 @@ Voice: warm British storyteller, Kokoro `bm_george`, speed ~0.9, 4–6 short lin
 
 ## Palette & props
 
-- Classic brick palette: red `#c91a09`, blue `#0055bf`, yellow `#f2cd37`, green `#237841`, white `#f2f2ee`, black `#1b2a34`, plus orange, light/dark grey, tan, azure. Bevel radius 0.06; baseplate matte green (it turned cyan with full clearcoat).
+- Classic brick palette: red `#c91a09`, blue `#0055bf`, yellow `#f2cd37`, green `#237841`, white `#f2f2ee`, black `#1b2a34`, plus orange, light/dark grey, tan, azure. Bevel radius 0.06; baseplate matte green (full clearcoat turns it cyan).
 - Set: walnut desk (Poly Haven `american_walnut_veneer`), `photo_studio_loft_hall` HDRI, tea set (teapot mountain, cup), pencil, books (the moon), desk lamp (the sun). Key light `#fff4e8` from upper left; softboxes key front-left, cool rim behind, one over the finale set. GTAO radius ~3.5 studs, scale 2.5. Grade: contrast +0.26, saturation ×1.1, slightly cool.
 - The astronaut: 1×1 columns for legs, a 2×2 brick torso, round-brick arms, a round 2×2 helmet with a curved visor panel.
 - The rocket, fire (translucent orange/yellow round plates jittered every frame), smoke (white round bricks that grow and roll outward), the moon (grey round plates with crater tiles).
@@ -67,8 +67,8 @@ styles/brick-toy/demo/
 5. `core/render/mux.sh out/video24.mp4 mix.wav brick-toy.mp4 24`.
 
 Pitfalls tied to this demo's props:
-- The helmet visor made from a sphere segment disappeared inside the cylinder helmet; a curved open-cylinder panel fixed it.
-- The rocket simply accelerating upward became a dot on a blank wall; a tracking shot aimed at the moon fixed it.
-- The desk lamp, placed on the camera axis of a later shot, kept sneaking into the background.
-- Stepping the camera at 12 fps too was tried and looked unsmooth; the camera moved to ones.
-- Spare-parts piles kept blocking the lens at frame edges.
+- Build the helmet visor as a curved open-cylinder panel: a sphere segment disappears inside the cylinder helmet.
+- Follow the launch with a tracking shot aimed at the moon: a rocket simply accelerating upward becomes a dot on a blank wall.
+- Keep props such as the desk lamp off the camera axis of later shots, or they sneak into the background.
+- Move the camera on ones: stepping it at 12 fps like the animation looks unsmooth.
+- Keep spare-parts piles away from the frame edges, where they block the lens.

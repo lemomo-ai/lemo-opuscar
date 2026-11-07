@@ -9,9 +9,9 @@ Demo: *Toward the Mountain · 山へ五景* (44 s) · `ukiyoe.mp4` · source in 
 
 A traveller in a straw hat walks from the rice fields toward a distant mountain: across a bridge in the rain, past a teahouse where the mountain waits in a round window, to a sea that stands up between them. The wave washes the print back to a blank sheet; the next print is the mountain, and he takes off his hat. Five views, one constant subject; the story is told by *where the mountain sits in the frame* each time (tiny on the horizon → framed by a window → dwarfed by a wave → filling the sheet). One character, one goal, one turn.
 
-Arc: jo-ha-kyū (序破急), slow, open, still (jo) → gathering pulse (ha) → rapid rush to a peak (kyū) → a hard cut to silence (ma, 間) → a quiet resolution and a scale reveal. The old guide asked every film to rest on at least three of the five native moves with the strongest at the peak; that was this demo's choice, not a rule.
+Arc: jo-ha-kyū (序破急), slow, open, still (jo) → gathering pulse (ha) → rapid rush to a peak (kyū) → a hard cut to silence (ma, 間) → a quiet resolution and a scale reveal. This demo rests on at least three of the five native moves, with the strongest at the peak; that is this demo's choice, not a rule.
 
-Native moves spent: a series of views (the whole film), the handscroll (every transition), printing block by block (the opening and the rebirth after the wave), paper is the white (the foam that erases the print), the frame is an object (the wave breaking out of the border). How the old guide suggested adapting a topic, for this kind of story: make it a journey or a series with one constant subject (a product launch → five views of the product in five places; a city → a day in five prints; a life → five ages, the same tree in every print).
+Native moves spent: a series of views (the whole film), the handscroll (every transition), printing block by block (the opening and the rebirth after the wave), paper is the white (the foam that erases the print), the frame is an object (the wave breaking out of the border). One way to adapt a topic for this kind of story: make it a journey or a series with one constant subject (a product launch → five views of the product in five places; a city → a day in five prints; a life → five ages, the same tree in every print).
 
 Views: 一 田毎の朝 (rice fields at dawn) · 二 雨の橋 (bridge in the rain) · 三 茶屋の窓 (teahouse window) · 四 海立つ (the sea stands up) · 五 山 (the mountain).
 
@@ -27,16 +27,16 @@ Views: 一 田毎の朝 (rice fields at dawn) · 二 雨の橋 (bridge in the ra
 | After the climax | Hard cut to a blank sheet, hold (間), then reprint |
 | Ending | Pull back from the last print to reveal the whole scroll: every view side by side (scale reveal); end card on the scroll |
 
-The climax got the **only big camera move** of the film, played in four beats (~4.5 s total; 25.4–30.4 s in the final cut):
+The climax gets the **only big camera move** of the film, played in four beats (~4.5 s total; 25.4–30.4 s in the final cut):
 
 1. **Rise** (~1.9 s): the sea swells into a wall; the camera tilts up past the top border and widens slightly so the figure shrinks.
 2. **Hang / 亮相** (~1.2 s): the crest stands outside the border in the mounting paper, claws open and nearly frozen (jitter ×0.25); the whole print is visible as an object. The drum roll peaks, then an 80 ms silent intake of breath.
 3. **Fall** (~1.2 s): the lip lengthens and rotates down toward the lens, claws grow ×2.5, camera pushes to 3× with a small roll.
 4. **Foam** (~0.7 s): fractal claws burst from the lip to fill the screen, fade to bare paper → hard cut to silence (ma, 30.4–32.2 s).
 
-Then four reprints (32.2 / 32.7 / 33.2 / 33.7 s), the last line at 34.4 s, the final print at 38.4 s, the pull-back 38.9–40.9 s, the end card from 40.3 s. The first cut's climax lasted 0.7 s and read as "some foam flashed"; the four-beat version is why STYLE.md asks for a held beat of about a second.
+Then four reprints (32.2 / 32.7 / 33.2 / 33.7 s), the last line at 34.4 s, the final print at 38.4 s, the pull-back 38.9–40.9 s, the end card from 40.3 s. A climax of only 0.7 s reads as "some foam flashed": that is why STYLE.md asks for a held beat of about a second.
 
-Subtitles stay clear of the figure: bottom band ~80 px from the edge; figures were moved up where needed.
+Subtitles stay clear of the figure: bottom band ~80 px from the edge; move figures up where needed.
 
 ## Score structure
 
@@ -119,10 +119,10 @@ Or simply `sh styles/ukiyoe/demo/build.sh`.
 
 Pitfalls tied to this demo's props:
 - A zig-zag snow line looks like a crown; smooth waves look like icing. Use narrow pointed drips of random length, and force control points to be x-monotonic (otherwise tiny self-intersecting loops appear).
-- The first wave looked like a waterfall curtain (flow lines fanning from the base). Flow lines must follow the back-slope contour; the body needs banded blues; claws must branch and hook inward: a single curled strip reads as a ribbon.
+- A wave with flow lines fanning from the base looks like a waterfall curtain. Flow lines must follow the back-slope contour; the body needs banded blues; claws must branch and hook inward: a single curled strip reads as a ribbon.
 - Offset curves self-intersect at the tight lip → only use the back slope for inner flow lines.
 - The wave breaking the border must escape **both** the sheet clip and the frame clip; its sides are clipped to the frame so only the top breaks out.
-- `mountain()` filled only when a flat colour was passed, so gradient bodies were transparent: watch option flags.
-- A seal drawn with `multiply` vanished on the dark end card and on the wave → `source-over` there.
-- The traveller walking past a foreground tree read as "in front of" it; keep low branches clear of the walking path.
-- The subtitle band covers anything in the bottom 150 px: ground lines and figures were raised.
+- `mountain()` fills only when a flat colour is passed, so gradient bodies come out transparent: watch option flags.
+- A seal drawn with `multiply` vanishes on the dark end card and on the wave: draw it `source-over` there.
+- The traveller walking past a foreground tree reads as "in front of" it; keep low branches clear of the walking path.
+- The subtitle band covers anything in the bottom 150 px: raise ground lines and figures above it.

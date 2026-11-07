@@ -24,7 +24,7 @@ How the demo used the native moves:
 | **Exhibit cards** | The "in summary" beat: the counts come back as three pinned evidence cards with icons, then shake. |
 | **Dot density = emotion** | Dots swell into a halo around the hero, pile up at the frame edges for tension, bloom radially for joy. |
 
-How we shaped this topic: a **lovable offender** and three **specific, visual** misdeeds (a cup that falls, 04:00 on a clock, a document that fills with garbage). Our twist was a verdict that contradicts the evidence ("guilty on every count → acquitted: too cute").
+How this topic is shaped: a **lovable offender** and three **specific, visual** misdeeds (a cup that falls, 04:00 on a clock, a document that fills with garbage). The twist is a verdict that contradicts the evidence ("guilty on every count → acquitted: too cute").
 
 **Demo arc (30 s, 120 BPM, one bar = 2 s)**: title (1 bar) → accusation + first stamp (1 bar) → mugshot (2 bars) → Count 01 (2) → Count 02 (2, the "night" change of palette) → Count 03 (2) → summary + build (1) → verdict stamp on the drop (1) → reason (1) → case closed + credit (2). Every cut sits on a bar line.
 
@@ -42,7 +42,7 @@ The camera is a 2D group (`#cam`); there is no 3D.
 
 Compose flat and frontal like a printed page: headline top-left, hero right-centre, caption bar bottom-centre (y = 980), HUD in the corners.
 
-Demo motion numbers: CHUBBY letters fall 700 px in 0.2 s each, 0.25 s apart (one per 8th note), then squash with a damped `cos` wobble. Stamp slam (`stampAnim`) 0.09 s from 2.6× to 1× with a white flash at 23.0 s. Squash landings: loaf at 17.45, curl at 26.6 (`sq = 1 − k·e^(−a·7)·cos(a·20…22)`). Run cycle (`runCycle`): 4 capsule legs swinging ±50° at 30 rad/s, body bob `|sin(28t)|·12`, stretch `scaleX 1 + 0.35·speed`, 4 speed lines. Dot wipe (`wipeUpdate`): 80 px grid, r → 62, 0.44 s centred on each cut; cuts at 22 and 24 are hard cuts on the drop. The original "Motion language" section in full:
+Demo motion numbers: CHUBBY letters fall 700 px in 0.2 s each, 0.25 s apart (one per 8th note), then squash with a damped `cos` wobble. Stamp slam (`stampAnim`) 0.09 s from 2.6× to 1× with a white flash at 23.0 s. Squash landings: loaf at 17.45, curl at 26.6 (`sq = 1 − k·e^(−a·7)·cos(a·20…22)`). Run cycle (`runCycle`): 4 capsule legs swinging ±50° at 30 rad/s, body bob `|sin(28t)|·12`, stretch `scaleX 1 + 0.35·speed`, 4 speed lines. Dot wipe (`wipeUpdate`): 80 px grid, r → 62, 0.44 s centred on each cut; cuts at 22 and 24 are hard cuts on the drop. The motion rules:
 
 - **Everything enters with overshoot**: `E.back` (overshoot 1.9) over 0.3–0.45 s. Objects rise from below the frame (`lerp(1200, 470, E.back(...))`) or scale from 0 (`pop()`).
 - **Per-character pop** (`charsPop`): each glyph drops 30–100 px and scales in with squash-and-stretch, stagger 0.05–0.08 s (0.02 s for small subtitles). Headlines always build this way; never fade text in.
@@ -111,7 +111,7 @@ Demo motion numbers: CHUBBY letters fall 700 px in 0.2 s each, 0.25 s apart (one
 
 ## End card
 
-**End card**: the case folder with the file label, the sleeping mascot, the 结案 stamp, and a speech bubble with the closing joke (「本片由 Claude 用代码一帧一帧画完。胖橘表示：全程没有配合。」). Our demo ends with "LemoLab × Claude Opus 5.5" (× = U+00D7). This sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card or its closing joke. In the demo it is a single centred line at the bottom of the end card (added 2026-09-26, `index.html` S10): `txt(g, 'LemoLab × Claude Opus 5.5', {x: 960, y: 1040, 'font-size': 30, 'font-family': F.mono, 'font-weight': 800, fill: C.navy, 'text-anchor': 'middle', 'letter-spacing': 3})`, faded in with a 12 px rise over 27.6–27.9 s (0.3 s after the bubble pops) and held until the navy fade. Keep it in the empty band under the folder; never cover the mascot or the stamp. Write the string literally in the source so `init()` preloads its glyphs.
+**End card**: the case folder with the file label, the sleeping mascot, the 结案 stamp, and a speech bubble with the closing joke (「本片由 Claude 用代码一帧一帧画完。胖橘表示：全程没有配合。」). Our demo ends with "LemoLab × Claude Opus 5.5" (× = U+00D7). This sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card or its closing joke. In the demo it is a single centred line at the bottom of the end card (`index.html` S10): `txt(g, 'LemoLab × Claude Opus 5.5', {x: 960, y: 1040, 'font-size': 30, 'font-family': F.mono, 'font-weight': 800, fill: C.navy, 'text-anchor': 'middle', 'letter-spacing': 3})`, faded in with a 12 px rise over 27.6–27.9 s (0.3 s after the bubble pops) and held until the navy fade. Keep it in the empty band under the folder; never cover the mascot or the stamp. Write the string literally in the source so `init()` preloads its glyphs.
 
 ## Making an English version
 
@@ -137,7 +137,7 @@ Run from the repo root (`lemo-opuscar/`); all paths inside the scripts are relat
 5. Render: `node styles/halftone-dossier/demo/render.mjs video 2` → `demo/out/seg_*.mp4` + `demo/out/video_noaudio.mp4` (CRF 12 master). 900 frames ≈ 0.24 s/frame/worker → about 2 min with 2 workers on an idle machine (5.6 min measured while six other renders shared the CPU).
 6. Mux: `node styles/halftone-dossier/demo/render.mjs mux` → `styles/halftone-dossier/halftone-dossier.mp4` (x264 CRF 16 + music at −1.6 dB, AAC 256 k/48 kHz; ≈15 s; reproduces the published video stream bit-for-bit from the same master). Pass another path to avoid overwriting the published film.
 
-### Pitfalls we hit
+### Pitfalls
 
 - **Fonts must be loaded before `buildAll()`**: layout uses canvas `measureText`; if a Google-Fonts unicode-range slice is not loaded yet, per-character positions are computed with the fallback font and glyphs overlap. `init()` preloads every family against the **whole page source** (`documentElement.innerHTML` includes the script, so every string literal in the code is covered) and then again against the built SVG text. Any string you generate at runtime must contain only characters that also appear literally somewhere in the file (or ASCII).
 - Use `font-display: block` (already in `fonts.css`) — `swap` shows fallback glyphs in the first rendered frames.

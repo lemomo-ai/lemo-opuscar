@@ -9,11 +9,11 @@ Demo: *Nian Comes to Town* (49 s) · `papercut-red.mp4` · source in [`demo/`](d
 
 New Year's Eve: the monster Nian comes into the village and every house puts out its lights. A little girl folds a sheet of red paper three times and makes one cut; the unfolded rosette goes on her window, a candle is lit, eight cut lanterns fly to eight dark windows and the whole village lights up again; the scraps she cut off become firecrackers, and Nian runs from the red light and the noise. At dawn the camera pulls back: the whole film was one window flower pasted on a real window.
 
-The brief this film was written to (and the rule it followed for itself): choose a story where **the craft of cutting paper is the plot**, use several native moves, and make one of them the *cause* of the ending, not decoration. Here the fold – cut – unfold is the cause: one lantern cut in the wedge = eight lanterns in the rosette = eight houses lit.
+Choose a story where **the craft of cutting paper is the plot**, use several native moves, and make one of them the *cause* of the ending, not decoration. Here the fold – cut – unfold is the cause: one lantern cut in the wedge = eight lanterns in the rosette = eight houses lit.
 
-How the demo framed "adapting any topic": find the **one thing that gets cut** and make its *unfolded* form the answer (a product's silhouette folded into a wedge that unfolds into all its uses; two lovers cut from one folded sheet; one house cut in a folded strip that unfolds into a street). Treat these as examples of the fold move, not as a required structure.
+Adapting any topic: find the **one thing that gets cut** and make its *unfolded* form the answer (a product's silhouette folded into a wedge that unfolds into all its uses; two lovers cut from one folded sheet; one house cut in a folded strip that unfolds into a street). Treat these as examples of the fold move, not as a required structure.
 
-Arc (40–55 s as planned, 49 s delivered): cold open on the scissors (0–3 s) → title → peaceful world → threat (the world goes dark and silent) → a quiet decision → **fold–cut–unfold** on the downbeat → the pattern becomes light and fixes the world → dawn → scale reveal.
+Arc (40–55 s; 49 s here): cold open on the scissors (0–3 s) → title → peaceful world → threat (the world goes dark and silent) → a quiet decision → **fold–cut–unfold** on the downbeat → the pattern becomes light and fixes the world → dawn → scale reveal.
 
 Native moves spent: fold – cut – unfold (the climax), holes are light (the backlit rosette on the window, its pattern projected across the snow onto Nian's face), symmetry replicates (the rosette's lanterns fly off; small rosettes unfold as fireworks), scraps have a future (the offcuts come back as firecrackers), everything is one flat sheet (the sawtooth ridge of the far hills stands up and is Nian's back; the final pull-back to the window).
 
@@ -80,7 +80,7 @@ Whisper hears "Nian" as "Nyan"/"Nion", the correct pronunciation of nián, so it
 - Backlit window flower: radial light `#fff6d6 → #ffc46e → #ec782e`, rice-paper fibres multiplied at 50 %, the rosette's transmission sprite in `#b51d18`. Projected pattern squashed onto the ground with `[1.25,0,-0.9,0.3]`.
 - The rosette: middle ring *yang* cut (lanterns, ruyi scrolls on the fold lines, sawtooth on the ring edges), inner and outer rings *yin* cut.
 - The girl: head, coat, 2 × (upper arm, forearm + hand), 2 × (thigh, shin + shoe), scissors (2 blades on a rivet); face pieces smile ∩, surprise, scared, determined almond eye, asleep ∪; cheek rosettes.
-- Nian: body, head (big, ×1.32), hinged jaw, mane, tail, 4 × (upper leg, lower leg + paw); sturdy legs with four curved claw tips and swirl knee joints (the first version's crescent-striped shins were dropped). When the light hits him, pattern + solid warm spot are added inside his layer, so the squint and big tears are holes that read on the lit face (the gag); unlit parts darken to silhouette.
+- Nian: body, head (big, ×1.32), hinged jaw, mane, tail, 4 × (upper leg, lower leg + paw); sturdy legs with four curved claw tips and swirl knee joints (no crescent-striped shins). When the light hits him, pattern + solid warm spot are added inside his layer, so the squint and big tears are holes that read on the lit face (the gag); unlit parts darken to silhouette.
 - Cutting: reveal circles r ≈ 62 units; blades open/close every 0.25 s (each snip = one eighth note); the camera holds the tip at ~32 %. Each fold ≈ 0.55 s on a woodblock; three unfolds 0.25 s apart.
 
 ## End card
@@ -112,11 +112,11 @@ styles/papercut-red/demo/
 5. `sh core/render/mux.sh out/video24.mp4 mix.wav papercut-red.mp4 24 0`, then `check_final.py` (per-line whisper on the final mix + blackdetect).
 Or simply `sh styles/papercut-red/demo/build.sh`.
 
-Engine traps: `put()` uses `setTransform`, so it ignores an enclosing `translate`: pass absolute matrices. Test-mode pages must not throw to stop the module (the render harness exits on any page error): guard the `window.render` assignment instead. Engine numbers as used: paper grain mottling ±7 % at ~130 px; edge wobble ≈ 0.35 units; `sawRow`, `sawEdge`, `crescent` / `crescentRows`, `swirl` / `doubleSwirl`, `cloudCut`, `rosette`, `plum`, `coin` in `motifs.js`; half-res bloom blurs; smoothing turned the houses into bread loaves.
+Engine traps: `put()` uses `setTransform`, so it ignores an enclosing `translate`: pass absolute matrices. Test-mode pages must not throw to stop the module (the render harness exits on any page error): guard the `window.render` assignment instead. Engine numbers as used: paper grain mottling ±7 % at ~130 px; edge wobble ≈ 0.35 units; `sawRow`, `sawEdge`, `crescent` / `crescentRows`, `swirl` / `doubleSwirl`, `cloudCut`, `rosette`, `plum`, `coin` in `motifs.js`; half-res bloom blurs; don't smooth the houses: smoothing turns them into bread loaves.
 
 Pitfalls tied to this demo's props:
-- Storing the wall height in a house piece's `p.h` stretched the house (`x0,y0,w,h` is the drawing box).
-- Darkening the snow layer through the light map made ghost legs visible through the snow.
-- The folding scissors first pointed backwards.
-- The projected pattern centred on Nian's eye hid the eye; it was centred on the snout with a solid warm spot so the squint and tears read.
+- Don't store the wall height in a house piece's `p.h`: it stretches the house (`x0,y0,w,h` is the drawing box).
+- Don't darken the snow layer through the light map: it makes ghost legs visible through the snow.
+- Check that the folding scissors point forwards, not backwards.
+- Centre the projected pattern on Nian's snout with a solid warm spot, not on his eye: on the eye it hides the eye; on the snout the squint and tears read.
 - The cold open's flying sheet overlaps the title card to avoid blank frames.

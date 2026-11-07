@@ -9,7 +9,7 @@ Brief the demo was made to: a 30–60 second film in the ASCII / CRT Terminal st
 
 ## Story & structure
 
-A machine left on the Moon has logged `NO SIGNAL` for 40 years. A message arrives; it replies `I AM STILL HERE.`, and the letters of that reply become an earthrise. We picked a story where **text is the only way the character can act**: a machine, a remote operator, a message across distance or time. How the native powers were used:
+A machine left on the Moon has logged `NO SIGNAL` for 40 years. A message arrives; it replies `I AM STILL HERE.`, and the letters of that reply become an earthrise. The story is one where **text is the only way the character can act**: a machine, a remote operator, a message across distance or time. How the native powers were used:
 
 | Native power | Story use |
 |---|---|
@@ -19,7 +19,7 @@ A machine left on the Moon has logged `NO SIGNAL` for 40 years. A message arrive
 | **CRT physics** | The screen powers on as a dot, then a line, then the full frame, and powers off by collapsing to a dot. Used for the opening and the ending. |
 | **A single color change** | Blue-white `#BFE4FF` for Earth, the only non-amber thing, is the emotional peak. Switched on a musical downbeat. |
 
-Adapting ideas we noted while writing it (examples, not rules): a product launch becomes a spec sheet that assembles into the product's silhouette; a love letter becomes its own words raining into a face; a history lesson becomes a log file whose dates zoom out into a map.
+Other adaptations (examples, not rules): a product launch becomes a spec sheet that assembles into the product's silhouette; a love letter becomes its own words raining into a face; a history lesson becomes a log file whose dates zoom out into a map.
 
 **Emotional arc (59.8 s):** dark and a cursor, then waking (boot log, a date jumping), then disturbance (handshake noise, a line of text), then holding breath (cursor blinks), then setback (`NOT FOUND` ×3 on three beats), then decision (typing the reply), then **near-silence for 1–1.5 s**, then the climax (letters become the image, the one color appears), then the scale reveal, then waiting, then a tiny reply, then an echo (pull out of the screen, power off to a dot).
 
@@ -102,9 +102,9 @@ styles/ascii-crt/demo/
 
 Pitfalls tied to this demo's props:
 
-- **Offscreen negative drift** showed up as doubled stars and misaligned crater edges across 200 columns.
+- **Offscreen negative drift** shows up as doubled stars and misaligned crater edges across 200 columns.
 - **A noise-textured Earth reads as a textured ball.** Use continent silhouettes, a dark sparse ocean and a dot-only night side.
 - **Particles bursting from 13 letter centers stack into a glowing bar.**
 - **Earth letters rising through the still-visible sentence look messy.** Send them all behind the horizon first, then rise.
 - **The thick (stroked) atlas glyph closes the gaps of `M`.** For the fractal mask, sample a separate *thin* (fill-only) glyph bitmap.
-- **Lazily built data**: without building the particle schedule first, the foley for the fall was silent.
+- **Lazily built data**: build the particle schedule before the foley pass, or the fall's foley is silent.

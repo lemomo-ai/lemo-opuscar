@@ -69,9 +69,9 @@ Adapting any topic: make the topic the **MacGuffin** and the title its destinati
 - **Title**: custom cut glyphs; the MacGuffin's slot is a letter (here the I of CIPHER is a black "lock plate" with a red keyhole; the key's outline fills it).
 - **End card**: small title, "60s SPY TITLE SEQUENCE" in cut League Gothic, "LemoLab × Claude Opus 5.5" in red Spartan, tiny agent tipping his hat. The LemoLab sign-off (and the "A LEMOLAB PICTURE" credit) belong to this library's demo only: a user's film carries no LemoLab credit and no copy of this card; its fictional credits name the user's own roles.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
-- Every internal piece outlined with a gap made the figures look like wooden-mannequin diagrams. Draw each figure into an offscreen layer where pieces merge, cut only joint slits (`destination-out`), then composite with an 8-direction ground-color outline + one shadow.
+- Every internal piece outlined with a gap makes the figures look like wooden-mannequin diagrams. Draw each figure into an offscreen layer where pieces merge, cut only joint slits (`destination-out`), then composite with an 8-direction ground-color outline + one shadow.
 - `clear()` that resets the transform silently kills the camera → keep the camera matrix across the background fill.
 - The hero fully hidden behind the I reads as "nobody there": shift him so hat brim, nose, tie knot and the fluttering tie stick out past the pillar. The tie must wave (multi-segment ribbon with travelling sine + width wobble) or it reads as a tongue.
 - A credit that is only ever seen partially ("R R I N") is uncomfortable to read: always open wide on the full line.

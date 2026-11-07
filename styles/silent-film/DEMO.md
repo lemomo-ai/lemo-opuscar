@@ -5,7 +5,7 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 Demo: *The Runaway Loaf* (54.2 s) · `silent-film.mp4` · source in [`demo/`](demo/)
 
 
-A 40–60 second one-reel comedy: a baker's perfect round loaf escapes and ends up with a hungry girl. The references it leaned on hardest: Keaton's locked-off chain gag and Lloyd's near-miss; the score follows a photoplay cue sheet (Maestoso / Andante / Hurry / Misterioso / Agitato / Tenderly).
+A 40–60 second one-reel comedy: a baker's perfect round loaf escapes and ends up with a hungry girl. The references it leans on hardest: Keaton's locked-off chain gag and Lloyd's near-miss; the score follows a photoplay cue sheet (Maestoso / Andante / Hurry / Misterioso / Agitato / Tenderly).
 
 ## Story & structure
 
@@ -23,7 +23,7 @@ How the demo used the medium:
 | **The iris** | Open on the object of the story, close on the last glance. An iris that stops half-way lets a character look at the audience (a wink). |
 | **Ageing as mood** | More damage when things go wrong, a warmer sepia and a cleaner print when the film turns tender. |
 
-**Story shape (proven in the demo):** pride (a baker lifts his perfect round loaf high) → the object escapes (it wobbles on the sill, rolls off and away down the hill — a *round* loaf, so it can really roll) → the chase with one near-miss (he grabs, it hops over his hand, he stares into his empty fist) → the chain gag in one take (see-saw → a melon flies out of frame → the constable strolls in → the melon lands on his helmet) → it stops at the feet of someone who needs it more (a hungry girl) → silence → a small act (he breaks the loaf in two) → echo (she lifts her half high, as he did) → the iris closes on her wink. **Cut rather than add**: an earlier version with a tram, a fog chase, a rooftop hang and an eight-step market chain was unreadable in thumbnails. One legible chain beats three busy ones.
+**Story shape (as in the demo):** pride (a baker lifts his perfect round loaf high) → the object escapes (it wobbles on the sill, rolls off and away down the hill — a *round* loaf, so it can really roll) → the chase with one near-miss (he grabs, it hops over his hand, he stares into his empty fist) → the chain gag in one take (see-saw → a melon flies out of frame → the constable strolls in → the melon lands on his helmet) → it stops at the feet of someone who needs it more (a hungry girl) → silence → a small act (he breaks the loaf in two) → echo (she lifts her half high, as he did) → the iris closes on her wink. **Cut rather than add**: a tram, a fog chase, a rooftop hang and an eight-step market chain in one film are unreadable in thumbnails. One legible chain beats three busy ones.
 
 Adapting any topic: find the object that escapes, the person it should end up with, one mechanical chain that can happen in a single wide frame, and a gesture that can be repeated at the end with a new meaning.
 
@@ -68,18 +68,18 @@ Adapting any topic: find the object that escapes, the person it should end up wi
 - Title: THE RUNAWAY LOAF / *a photoplay in one reel*.
 - End card (tender border): The End · title and style name · LEMO-OPUSCAR · LemoLab × Claude Opus 5.5 · asset credits; the curtains close over it. The LemoLab sign-off belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
-- **Puppet arms** (first cut): each arm was a separate tube with its full outline over the shirt, the shoulder pivot never moved, and abduction was applied after flexion — so a "spread" overhead arm actually swung inward and the lift became an X. Fixes in `engine/figure.js`: abduction first, then flexion; the shoulder joint rises and swings forward as the arm goes up (clavicle); the torso's shoulder corner slims on the raised side; arms carry a deltoid and a biceps/forearm profile; the arm's contour is hidden where it lies over the torso near the shoulder.
+- **Puppet arms**: an arm drawn as a separate tube with its full outline over the shirt, a shoulder pivot that never moves, and abduction applied after flexion make a "spread" overhead arm swing inward, so the lift becomes an X. `engine/figure.js` does it this way: abduction first, then flexion; the shoulder joint rises and swings forward as the arm goes up (clavicle); the torso's shoulder corner slims on the raised side; arms carry a deltoid and a biceps/forearm profile; the arm's contour is hidden where it lies over the torso near the shoulder.
 - **Pose pops**: switching poses in `if` branches makes figures jump. Every character is driven by keyframe lists (`poseAt`, `numAt` in `shots.js`) so poses, position and facing are always eased; only deliberate gags (the double take) snap.
 - **Floating props**: a prop "held" at the average of the hands drawn on top of everything floats. Hold it *between* the palms at the depth between the two arms (`props.between`), size it to the gap between the palms, and hand it over by interpolating between the giver's and the receiver's palm positions (`palmsAt`). A long loaf can't roll along its length — use a round one, and tie its rotation to distance (angle = distance / radius).
 
-- **Too much content kills a silent film.** An eight-step chain gag at 64 px per head is noise in a thumbnail; the first version never reached its first review. One chain, with a pause in the middle, reads.
+- **Too much content kills a silent film.** An eight-step chain gag at 64 px per head is noise in a thumbnail. One chain, with a pause in the middle, reads.
 - The rig's faces look like mannequins in big close-ups: stay in wide and medium shots (which is Keaton's grammar anyway) and keep the only close-up inside the iris.
-- A raised arm crossed the girl's face and hid the wink: turn her toward the camera and raise the arm by abduction.
-- Brow angles flip with the facing direction: "worried" (inner brows up) read as angry on the girl facing left; check expressions in a crop at final size.
+- A raised arm can cross the girl's face and hide the wink: turn her toward the camera and raise the arm by abduction.
+- Brow angles flip with the facing direction: "worried" (inner brows up) reads as angry on the girl facing left; check expressions in a crop at final size.
 - The iris centre must track the face in *film* coordinates after the camera zoom (`girlFace()` maps world → film).
-- In the chase the hero first never got within arm's reach of the loaf, so the grab didn't read: put the hand exactly where the object is at the beat, bend the body down, make the hop big (210 px).
+- In the chase the grab reads only if the hero gets within arm's reach of the loaf: put the hand exactly where the object is at the beat, bend the body down, make the hop big (210 px).
 - Closed curtains lit only by the dark screen are pure black (blackdetect): add footlights.
 - Heavy grain makes big files (170 MB at CRF 19); re-encode with `-tune grain -crf 25` (≈ 77 MB).
 

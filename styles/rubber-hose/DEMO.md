@@ -11,7 +11,7 @@ A just-woken diner mug tastes itself: bitter! It chases a runaway sugar cube aro
 
 Arc (40–55 s): hook on frame 1 (bouncing title letters, band hit) → a small want → a chase in 3 escalating set pieces, one visual gag each → danger → the stretch → dead silence → a quiet, kind turn → release: the whole world dances → iris out with a gag. One hero, one goal, one turn.
 
-The old guide asked for at least three of the four native powers with the strongest at the peak, and suggested adapting any topic as **a chase or a performance inside one lively location** (a kitchen, an office, a toy shop, a factory) with a supporting cast of 5–8 living objects. That was this demo's shape, not a rule of the style.
+The demo's shape: the strongest native power at the peak, and **a chase or a performance inside one lively location** (a kitchen, an office, a toy shop, a factory) with a supporting cast of 5–8 living objects. That is one way to adapt a topic, not a rule of the style.
 
 Native moves spent:
 - **Everything breathes on the beat**: the kitchen is a character; at the climax the whole world dances in sync, walls included (the payoff shot).
@@ -48,7 +48,7 @@ Voice: an old radio announcer calling the action like a horse race (Kokoro `bm_l
 ## Palette & props
 
 - Grey ramp: paper `#F1EEE6` · light `#C8C5BC` · mid `#9A978F` · dark-mid `#6B6963` · dark `#3B3A37` · ink `#0E0D0C` · character white `#FCFBF7`.
-- Contrast fix (the first style frame was too flat): walls `#8C8981`, tiles `#A29F97`, cabinets `#66635D`–`#7C7972`; `contrast(1.14)` in the final composite.
+- Contrast (the grey ramp alone reads too flat): walls `#8C8981`, tiles `#A29F97`, cabinets `#66635D`–`#7C7972`; `contrast(1.14)` in the final composite.
 - Ink outline 6 px in screen space; limbs 13 px on a 280 px character; film damage: gate weave ±1.2 px with a rare 3–6 px jump, vignette 0 → 62 % black at the corners, 3 px vertical jump on every cut, 0.55 px blur; walk bob 10 px (sad walk: steps 34, bob 4), run lean 0.24 rad.
 - **The Mug** (hero): a squat diner mug, white porcelain, two thin black rings at the rim, full of black coffee (black ellipse + a white crescent highlight); face on the body, pie eyes, small black nose, big mouth; handle at the back like a little tail. Its **steam** carries the mood: lazy waves / bitter zigzag / straight-up alarm / wilted droop / heart.
 - **The Sugar Cube**: a real projected 3D cube with a slight top-down view (elevation ≈ 0.26 rad), face mapped onto the front face with an affine transform.
@@ -89,12 +89,12 @@ styles/rubber-hose/demo/
 Or simply `sh styles/rubber-hose/demo/build.sh`.
 
 Pitfalls tied to this demo:
-- **Kokoro heard "bitter" as "better"** after an ellipsis (`is... bitter!`). "And boy, is this coffee bitter!" passes. Check every line with whisper; also check the final mp4 (whisper writes "7am" / "they're": normalise before comparing).
-- The cube read as a tall box in pure front view: elevation ~0.26 and a slight 3/4 turn for expressions.
+- **Kokoro's "bitter" is heard as "better"** after an ellipsis (`is... bitter!`). "And boy, is this coffee bitter!" passes. Check every line with whisper; also check the final mp4 (whisper writes "7am" / "they're": normalise before comparing).
+- The cube reads as a tall box in pure front view: use elevation ~0.26 and a slight 3/4 turn for expressions.
 - A far shot of the plate-xylophone and of the dance climax kills both gags: shoot them medium / medium-full.
-- A kicking leg drawn behind the mug body was hidden by the handle: kick outward past the silhouette.
-- A pot "grew" out of the mug's head at one camera position: check every shot's final frame.
-- A leap arc that was too high left the frame; keep arcs inside the gate at the camera's zoom.
+- A kicking leg drawn behind the mug body is hidden by the handle: kick outward past the silhouette.
+- A prop can "grow" out of a character's head at one camera position (a pot out of the mug's head): check every shot's final frame.
+- A leap arc that is too high leaves the frame; keep arcs inside the gate at the camera's zoom.
 - `sfx`-style clips of different lengths → numpy broadcast errors. Place clips into a fixed-length buffer (`seq()` in `mix.py`).
 - zsh: `echo =====` fails (`=word` expansion) and `timeout` doesn't exist on macOS.
 - JS: `-x ** 6` is a syntax error; write `-(x ** 6)`.

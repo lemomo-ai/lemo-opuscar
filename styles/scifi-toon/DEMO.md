@@ -5,13 +5,13 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 Demo: *Coffee Run* (57.5 s) · `scifi-toon.mp4` · source in [`demo/`](demo/)
 
 
-The original brief: a 30–60 second film in this style; the director decides premise, jokes, cast, shots, timing, music and sound and delivers without asking for approval.
+A 30–60 second film in this style: premise, jokes, cast, shots, timing, music and sound are the director's choice.
 
 ## Story & structure
 
 The lab is out of coffee. A jaded genius in a bathrobe crosses universes for a refill with his nervous sidekick, Gary; every universe has a worse coffee; the one they bring back is decaf. Tiny, mundane goal + absurdly large sci-fi means.
 
-Ways we sketched to turn other topics into an errand (for reference only):
+Ways to turn other topics into an errand (for reference only):
 - Product launch → the genius crosses dimensions looking for a working version of the product; every universe has a worse one; the one they bring back has a twist.
 - A lesson / explainer → the sidekick asks a simple question; each universe is a wrong answer taken literally; the last one is right but has a cost.
 - A holiday / event → "we're out of X for the party" → universes of increasingly wrong X.
@@ -47,7 +47,7 @@ Ways we sketched to turn other topics into an errand (for reference only):
 - Silences: music (and reverb tails) hard-cut on the jelly reveal insert and for the 2+ s cold pause after "decaf"; only fluorescent hum + clock ticks remain.
 - Foley used: portal open/hum/close, swirl whoosh per wipe, pop/boing on spit-out and landing, glorp/squish/blink for the slime creature, straw slurp, teeth chomp, pigeon coo, shop bell, bubble bloops, blink "blip", remote click-beep.
 - Voices: deadpan genius = Kokoro `am_onyx`, speed 0.82–0.9, light saturation + 180 Hz bump; sidekick = Kokoro `am_eric`, speed 1.1–1.15, presence boost; a tiny creature = Kokoro `af_sky` pitched +7 semitones for one or two words. Cast by generating test lines and measuring median f0 / pitch variance. Music ducked ~−7 dB under dialogue; master −14 LUFS.
-- The final bass note sits on D2: a sustained D1 (37 Hz) was only rumble on laptop speakers.
+- The final bass note sits on D2: a sustained D1 (37 Hz) is only rumble on laptop speakers.
 
 ## Palette & props
 
@@ -60,7 +60,7 @@ Ways we sketched to turn other topics into an errand (for reference only):
 - Cast: the genius in a bathrobe + fuzzy slippers + goggles; the sidekick Gary in a bike helmet + giant round glasses.
 - The portal: a vertical oval (x-scale ~0.74), lumpy goo rim `#3fd93a` with a 7–8 px outline, 5 spiral arms alternating `#b8ff5a`/`#21b33c` rotating **on ones**, a pale core, orbiting sparks, drips off the bottom, a flat green wash over the scene while open; ~12 % overshoot, back-ease 0.32 s. Opened with a remote.
 - The universe readout: VT323 tag top-left, typed in, coloured per world.
-- Coffee: a latte-art heart, drips over the rim and steam (a plain brown blob read as a potato).
+- Coffee: a latte-art heart, drips over the rim and steam (a plain brown blob reads as a potato).
 
 ## Titles & end card
 
@@ -89,6 +89,6 @@ styles/scifi-toon/demo/
 5. `sh demo/build.sh` reproduces everything: TTS → voices → events → score → mix → SRT → render (1380 frames ≈ 15 s with 4 workers) → mux at −14 LUFS. Full rebuild ≈ 1 minute on an M-series Mac.
 
 Pitfalls tied to this demo:
-- Kokoro + whisper: the name "Pim" in a deep voice read as "Pam"; "Gary" worked. "b-broken" was read as "be broken"; "buh, buh-broken", "Wh, wh, why" worked. "decaf" came out "D-cuff"; "dee-caf" was reliable.
-- A springy portal (lib `spring`) overshot to ~135 % and swallowed the actors.
-- Creatures placed behind the shop counter vanished; they were moved so face and upper body show.
+- Kokoro + whisper: the name "Pim" in a deep voice is heard as "Pam"; "Gary" passes. "b-broken" is heard as "be broken"; write "buh, buh-broken", "Wh, wh, why". "decaf" comes out "D-cuff"; write "dee-caf".
+- A springy portal (lib `spring`) overshoots to ~135 % and swallows the actors.
+- Creatures placed behind the shop counter vanish: place them so face and upper body show.

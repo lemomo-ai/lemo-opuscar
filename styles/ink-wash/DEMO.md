@@ -35,7 +35,7 @@ Original guqin score (`demo/music/score.py`), F-gong pentatonic (F G A C D), cue
 
 Foley specific to this film: sword draw (scabbard scrape + long thin metallic ring, cut before the second silence), the cut (tearing air + river roar + low boom). The sword ring and a single drip are the only sounds allowed inside the silences; the ambience hard-cuts into the first silence.
 
-Voice: calm British narrator, Kokoro `bm_george`, lang `en-gb`, speed .82–.86, 4–6 lines. Music ducked ~8 dB under voice, ambience ducked too: a river roar under a line made whisper hear "Halfway" as "This way". Every line checked with whisper and again on the final mix.
+Voice: calm British narrator, Kokoro `bm_george`, lang `en-gb`, speed .82–.86, 4–6 lines. Music ducked ~8 dB under voice, ambience ducked too: a river roar under a line makes whisper hear "Halfway" as "This way". Every line checked with whisper and again on the final mix.
 
 ## Palette & props
 
@@ -79,7 +79,7 @@ styles/ink-wash/demo/
 4. Or simply `sh styles/ink-wash/demo/build.sh`.
 
 Pitfalls tied to this demo's props:
-- Subtitles inherited the world camera transform in panning shots and slid off screen.
-- A cliff drawn with `flip=-1` put the figure in mid-air; the back of a cliff polygon showed a straight vertical edge; a rock's base was cut by the layer canvas bottom → compute screen extents after flipping, slant the back side, fade layer bottoms with a `destination-in` gradient.
-- The cut began splitting the wave while the stroke was still crossing the frame.
+- Draw subtitles outside the world camera transform: inheriting it, they slide off screen in panning shots.
+- A cliff drawn with `flip=-1` puts the figure in mid-air; the back of a cliff polygon shows a straight vertical edge; a rock's base is cut by the layer canvas bottom → compute screen extents after flipping, slant the back side, fade layer bottoms with a `destination-in` gradient.
+- Start splitting the wave only after the stroke has crossed the frame, not while it is still crossing.
 - A scene with rare, heavy per-pixel steps can exceed Playwright's default screenshot timeout; just retry the still render (the frame itself is deterministic).
