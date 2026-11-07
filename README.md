@@ -387,7 +387,7 @@ Made by **LemoLab × Claude Opus 5.5**.
 - **Demo films and their stills** (in `styles/`, the gallery and the Releases): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may share, adapt and use them commercially; credit **LemoLab** with a link to this repository, and say if you changed them.
 - **Films you make with the library**: yours, no credit needed.
 - **Third-party assets in the demos**: they keep their own licences (see each demo's `CREDITS`).
-- **Three voice tracks are not CC BY 4.0**: the narration in Chalkboard and in Isometric Picture Book (Microsoft Edge TTS) and in Broadcast News Package (Doubao TTS, under Volcengine's terms). They are excluded from the licence above. Don't reuse them; in your own films use Kokoro (the default) or a voice you have the right to use.
+- **Six voice tracks are not CC BY 4.0**: the narration in Chalkboard, Circuit Board, Desktop Flythrough, Isometric Picture Book and Printed Long Take (Microsoft Edge TTS, an online service) and in Broadcast News Package (Doubao TTS, under Volcengine's terms). They are excluded from the licence above. Don't reuse them; in your own films use Kokoro (the default) or a voice you have the right to use.
 
 You are responsible for the materials you use in your films.
 
