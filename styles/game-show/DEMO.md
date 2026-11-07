@@ -58,13 +58,13 @@ No camera travel anywhere in the demo: a frontal, symmetrical proscenium through
 | Candy primaries | `yellow #FFD23F`, `orange #FF8C42`, `red #FF5A5F`, `pink #FF8FB1`, `green #5BD68A`, `lime #C6F16D`, `sky #8ED1FC`, `blue #4D7CFE` |
 | Deep sets | `purple #6B4FBB` / `purpleD #46318F`, `teal #3FB8AF` / `tealD #2B8F88`, `navy #26264A` (ending) |
 | Props | `wood #C98A52` / `woodD #8E5530`, `gray #C3CAD9`, `chalk #2F5D50`, `skin #FFD1A8` |
-| Character hues | `gpt #19B388`, `claude #D97757`, `gem1 #4E7CF6` / `gem2 #9B6CF0`, `llama #F4E9D8`, `whale #4D6BFE`, `dblue #2B59C3` |
+| Character hues | `gpt #19B388`, `claude #D97757`, `gem1 #4E7CF6` / `gem2 #9B6CF0`, `llama #F4E9D8`, `seek #5A78E8`, `dblue #2B59C3` |
 
 Sets use `stripes()` (diagonal bands, often slowly scrolling), `dots()` (offset polka dots at 18–25 % white) or `raysEl()` (a rotating sunburst). Floor band at y = 860–900 with an 8 px ink line on top.
 
 **Type:** Chinese = **Noto Sans SC 900** (`F.sans`) everywhere; Latin display = **Fredoka 700** (`F.round`: GAME N, years, "Perfect!", name tags, numbers); **ZCOOL KuaiLe** (`F.cute`) only for hand-written props. Big words use `gtext()`; title text uses `chars()`.
 
-**Characters (`bean()` in `main_b.js`):** a rounded bean body (160 px wide, 172 px tall at scale 1), two stubby arms with white mitten hands, two foot ovals, oval eyes with a white catch-light, pink blush, a small curved mouth that swaps to an open red mouth. Identity = body colour + belly patch + **one** head mark (antenna ball, heart, "?", moon, bolt, cloud, sprout, brush, beret, captain hat, llama wool, whale spout) + an ink name-tag pill under the feet. Gemini is two half-size beans (`twins()`). Humans (`human()`) have a shirt, a round head, hair cap, optional glasses and a sweat drop. Machines of the 1990s–2010s are boxier robots (`robotDB`, `robotAG`, `robotT`, `robotW`).
+**Characters (`bean()` in `main_b.js`):** a rounded bean body (160 px wide, 172 px tall at scale 1), two stubby arms with white mitten hands, two foot ovals, oval eyes with a white catch-light, pink blush, a small curved mouth that swaps to an open red mouth. Identity = body colour + belly patch + **one** head mark (antenna ball, heart, "?", moon, bolt, cloud, sprout, brush, beret, captain hat, llama wool, magnifier) + an ink name-tag pill under the feet. Gemini is two half-size beans (`twins()`). Humans (`human()`) have a shirt, a round head, hair cap, optional glasses and a sweat drop. Machines of the 1990s–2010s are boxier robots (`robotDB`, `robotAG`, `robotT`, `robotW`).
 
 **Recurring UI:**
 - **Level card** (`card()`): full-bleed set colour + scrolling stripes, a cream panel (1240×460, r 50, 10 px outline, 14 px shadow), a pill tag "GAME N", the level name auto-fitted to 720 px, the years in the set colour, an icon hopping on the left.
@@ -160,7 +160,7 @@ All commands from `styles/game-show/demo/` (the scripts also `chdir` there thems
 | | `burst(p, x, y, t0, col, size)` · `judge(p, word, x, y, t0, col, dur)` | return `f(t)`; push into `s.fx` and call each frame |
 | | `banner(p, year, name, sub, col)` + `bannerAnim(b, t, t0, t1, x=56, y=44)` | year sticker |
 | | `robotDB/robotAG/robotT(p)` · `quad(u, v)` · `pawn(p, col, king)` | era robots, perspective board |
-| main_b | `bean(p, {color, belly, antenna, name, kind, eyeFill, acc, ant, tagCol})` | a contestant; `kind` bot/llama/whale; `acc` noise/mask/beret/captain/mustache; `ant` q/bolt/moon/heart/cloud/sprout/brush |
+| main_b | `bean(p, {color, belly, antenna, name, kind, eyeFill, acc, ant, tagCol})` | a contestant; `kind` bot/llama; `acc` noise/mask/beret/captain/mustache; `ant` lens/q/bolt/moon/heart/cloud/sprout/brush |
 | | `pose(c, {hey 0..1, open, sq, lean, face 'x'/'up', blink, armsL, armsR})` · `poseAny(c, o)` | pose any bean or twins |
 | | `CAST.<key>(p, name?)` · `ALL` | 16 ready contestants (gpt, claude, gemini, llama, deepseek, ernie, qwen, mistral, kimi, grok, bert, dalle, mj, sd, sora, baby) |
 | | `human(p, shirt, glasses, hair)` + `humanFace(h, open, sweat)` + `setArm(arm, x1, y1, x2, y2)` | cartoon humans |

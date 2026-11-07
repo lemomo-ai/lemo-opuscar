@@ -489,9 +489,10 @@ function buildAll() {
     const fxG = el('g', {}, g);
     const moves = []; const r = rng(3); const used = new Set();
     const cell = (n) => { let i, j; do { i = Math.floor(r() * n); j = Math.floor(r() * n); } while (used.has(`${n}${i},${j}`)); used.add(`${n}${i},${j}`); return [i, j]; };
-    // Chess: sides alternate every beat; the human resigns in bar 4 ("Game over.": Game 6 of 1997 ended in resignation, not mate)
+    // Chess: sides alternate every beat; the machine presses in bar 4 and on its last beat the human lays down his own king
+    // (Game 6 of 1997 ended in resignation, not mate: hence "Game over.")
     for (let bar = 0; bar < 4; bar++) for (let bt = 0; bt < 4; bt++) {
-      const who = bar === 3 && bt >= 1 ? 'a' : (bt % 2 ? 'a' : 'h');
+      const who = bar === 3 && bt === 3 ? 'h' : bar === 3 && bt >= 1 ? 'a' : (bt % 2 ? 'a' : 'h');
       const t0 = T(bar, bt); const [i, j] = cell(8);
       const [x, y] = quad((i + 0.5) / 8, (j + 0.5) / 8);
       const pg = el('g', {}, piecesG); const mate = bar === 3 && bt === 3;

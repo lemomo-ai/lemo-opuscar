@@ -414,7 +414,7 @@ function buildAll() {
       ev(t0, sp ? 'bigslam' : 'stone'); punch(t0, sp ? 0.05 : 0.01);
       s.fx.push(burst(fxG, x, y - 10, t0, sp ? K.yellow : K.white, sp ? 1.6 : 0.5));
     }
-    ev(at(9, 2), 'v:checkmate'); ev(at(13, 0), 'v:move37'); ev(at(10, 0), 'poof');
+    ev(at(9, 2), 'v:gameover'); ev(at(13, 0), 'v:move37'); ev(at(10, 0), 'poof');
     ev(at(13, 2), 'v:whoa');
     const b1 = banner(g, '1997', '深蓝', '击败国际象棋世界冠军', K.dblue);
     const b2 = banner(g, '2016', 'AlphaGo', '4 : 1 战胜李世石', K.purple);
@@ -711,8 +711,8 @@ function buildAll() {
     el('rect', { x: 460, y: 60, width: 1000, height: 230, rx: 16, fill: K.woodD, ...SO }, board);
     el('rect', { x: 480, y: 80, width: 960, height: 190, rx: 10, fill: K.chalk }, board);
     txt(board, '9.11 和 9.9，哪个大？', { x: 960, y: 200, 'font-size': 76, 'font-family': F.cute, fill: K.white, 'text-anchor': 'middle' });
-    const X = [560, 960, 1360], ks = ['gpt', 'claude', 'gemini'];
-    const cast = ks.map((k, i) => { const w = el('g', {}, g); return { w, c: CAST[k](w), x: X[i] }; });
+    const X = [560, 960, 1360], cols = [K.pink, K.lime, K.orange];   // generic bots: no record says which models answered 9.11
+    const cast = X.map((x, i) => { const w = el('g', {}, g); return { w, c: smallBot(w, cols[i]), x }; });
     const desks = el('g', {}, g);
     X.forEach(x => { el('rect', { x: x - 170, y: 820, width: 340, height: 60, rx: 10, fill: K.wood, ...SO }, desks); el('rect', { x: x - 150, y: 880, width: 300, height: 200, fill: K.woodD, ...SO }, desks); });
     const bubbles = X.map(x => {
@@ -795,7 +795,7 @@ function buildAll() {
     ev(at(40, 0), 'land'); ev(at(42, 2), 'v:whoa'); ev(at(43, 0), 'slam'); punch(at(43, 0), 0.04);
     ev(at(42, 0), 'v:cheaper');
     const ratio = el('g', {}, g); gtext(ratio, '≈ 1/27', 0, 0, 170, { family: F.round, weight: 700, fill: K.yellow, sw: 24 });
-    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，价格打到约 1/27', K.seek);
+    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，输出价约为 o1 的 1/27', K.seek);
     s.fx.push(judge(g, 'Perfect!', 1560, 330, at(43, 2), K.yellow, 0.8));
     return (t) => {
       const squash = slams.filter(t0 => t >= t0).length;
@@ -981,7 +981,7 @@ function buildAll() {
     lines.forEach((l, i) => { for (let c = 0; c < [...l].length; c++) if (c % 2 === 0) ev(at(53 + i) + c * B / 4, 'type'); });
     const sup = el('g', {}, g);
     el('path', { d: starPath(12, 230, 170), fill: K.yellow, ...SO, 'stroke-width': 10 }, sup);
-    gtext(sup, 'Superb', 0, 40, 130, { family: F.round, weight: 700, fill: K.red, sw: 20 });
+    gtext(sup, 'Encore!', 0, 36, 100, { family: F.round, weight: 700, fill: K.red, sw: 20 });
     ev(at(56), 'fanfare'); ev(at(56), 'v:superb'); punch(at(56), 0.05);
     s.fx.push(burst(g, 1500, 520, at(56), K.yellow, 2.2));
     const load = el('g', {}, g);

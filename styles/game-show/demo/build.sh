@@ -11,10 +11,12 @@ set -e
 HERE=$(cd "$(dirname "$0")" && pwd)                 # .../game-show/demo
 FILM=$(cd "$HERE/.." && pwd)                         # .../game-show
 LIB=${LIB:-$(cd "$HERE/../../.." && pwd)}            # styles/<slug>/demo -> library root
+export LIB                                           # make_voices.py and finish.sh read it too
 [ -f "$LIB/core/tts/tts.py" ] || { echo "set LIB to the library folder"; exit 1; }
 PY="$LIB/.venv/bin/python"
 NAME=game-show
 DEST=${OUT:-$FILM}; unset OUT
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 mkdir -p "$DEST" "$HERE/out"
 cd "$HERE"
 
