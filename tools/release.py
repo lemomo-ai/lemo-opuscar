@@ -172,6 +172,8 @@ PROCESS_WORDS = ('PRODUCTION_LOG', '返修', '定稿版', '定稿片', '审片',
                  'LemoOpuscarTrial', r'lemomo\.studio')
 PROCESS = re.compile('|'.join(PROCESS_WORDS))
 PROCESS_EXEMPT = re.compile(r'(?:^|/)\.gitignore$|^MAINTAINING\.md$|^tools/release\.py$')   # files that state the rules
+CONTACT = re.compile(r'\blemomo\.studio@gmail\.com\b')   # the business address the two READMEs publish on purpose
+CONTACT_OK = re.compile(r'^README(?:\.zh-CN)?\.md$')
 
 
 def text_index(t):
@@ -235,7 +237,7 @@ def hygiene(files, slugs, warn):
     for f, t in sorted(texts.items()):
         if PROCESS_EXEMPT.search(f): continue
         for i, line in enumerate(t.splitlines(), 1):
-            m = PROCESS.search(line)
+            m = PROCESS.search(CONTACT.sub('', line) if CONTACT_OK.search(f) else line)
             if m: warn.append(f'{f}:{i}: process wording "{m.group(0)}" (internal notes stay local)')
 
 
