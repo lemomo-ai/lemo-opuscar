@@ -162,8 +162,8 @@ MIX = limit(MIX, .92)
 sf.write(os.path.join(HERE, 'mix.wav'), MIX.astype(np.float32), SR)
 # level meter
 def db(x): return 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-9)
-for name, (a, b) in {'印刷': (0, 2.9), '序': (2.9, 10.5), '雨': (10.5, 17.3), '茶屋': (17.3, 22.9), '急': (22.9, 30.4), '間': (30.46, 32.2), '回响': (32.2, 38.8), '尾': (38.8, 44)}.items():
-    s = slice(int(a * SR), int(b * SR)); print(f'{name:4s} mix {db(MIX[s]):6.1f}  vo {db(vo[s] * 1.25):6.1f}  mu {db(mu[s]):6.1f}  fx {db(fx[s]):6.1f}  amb {db(ab[s]):6.1f}')
+for name, (a, b) in {'printing': (0, 2.9), 'jo': (2.9, 10.5), 'rain': (10.5, 17.3), 'teahouse': (17.3, 22.9), 'kyū': (22.9, 30.4), 'ma': (30.46, 32.2), 'echo': (32.2, 38.8), 'coda': (38.8, 44)}.items():
+    s = slice(int(a * SR), int(b * SR)); print(f'{name:8s} mix {db(MIX[s]):6.1f}  vo {db(vo[s] * 1.25):6.1f}  mu {db(mu[s]):6.1f}  fx {db(fx[s]):6.1f}  amb {db(ab[s]):6.1f}')
 print('peak', np.abs(MIX).max())
 for id_, (t0, d) in VOICE.items():
     s = slice(int(t0 * SR), int((t0 + d) * SR)); print(id_, f'vo {db(vo[s] * 1.25):6.1f}  bed {db((mu + fx + ab)[s]):6.1f}')

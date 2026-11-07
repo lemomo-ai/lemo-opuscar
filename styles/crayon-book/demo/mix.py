@@ -203,7 +203,7 @@ elif os.path.exists(mp):
     if m.ndim == 1: m = np.stack([m, m], 1)
     mus = np.zeros((N, 2)); L = min(N, len(m)); mus[:L] = m[:L]
 else:
-    print('!! music/score.wav 不存在，先跑 music/score.py'); mus = np.zeros((N, 2))
+    print('!! music/score.wav is missing; run music/score.py first'); mus = np.zeros((N, 2))
 # duck about −7 dB under narration (smoothed)
 duck = uniform_filter1d(vmask, int(0.25 * SR)); duck = np.clip(duck * 1.6, 0, 1)
 g = 1 - duck * (1 - 10 ** (-7 / 20))

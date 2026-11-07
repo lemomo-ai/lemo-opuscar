@@ -104,11 +104,11 @@ def make(cid):
         fr = done.pop(nxt, None)
         if fr is None:
             fr = last
-            print(f'  ⚠ {cid}: 源帧不足，第 {nxt} 帧补帧', flush=True)
+            print(f'  ⚠ {cid}: source ran out of frames; frame {nxt} repeats the last one', flush=True)
         enc.stdin.write(fr.tobytes()); nxt += 1
     enc.stdin.close(); enc.wait()
     os.replace(out + '.part.mp4', out)
-    return f'{cid}: {n} 帧，源 {edges[-1]:.2f} s，最多融合 {max(len(j) for j in need)} 帧'
+    return f'{cid}: {n} frames from {edges[-1]:.2f} s of source, up to {max(len(j) for j in need)} frames blended'
 
 
 if __name__ == '__main__':

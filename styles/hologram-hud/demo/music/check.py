@@ -16,8 +16,8 @@ print('onsets', len(S['onsets']), 'off-grid', len(off)); ok &= not off
 h0 = TL['high'][0]
 pre, drop, post = rms(h0 - 2, h0 - 0.5), rms(h0, h0 + 1), rms(h0 + 4, h0 + 6)
 print(f'drop: pre {db(pre):.1f}  drop {db(drop):.1f}  lock {db(post):.1f}'); ok &= drop > pre * 1.4 and drop > post * 1.4
-segs = [('扫描', 0, 4), ('定场', 4, TL['intro'][1] - .5)] + [(f"部件{c['i']+1}", c['t0'], c['t1']) for c in TL['calls']] + \
-       [('重组', TL['regroup'][0], TL['regroup'][1] - .5), ('点亮', *TL['high']), ('落版', *TL['lock']), ('片尾', *TL['end'])]
-for n, a, b in segs: r = db(rms(a, b)); print(f'{n:4s} {a:5.1f}-{b:5.1f}  {r:6.1f} dBFS  ' + '#' * max(0, int((r + 45))))
+segs = [('scan', 0, 4), ('establish', 4, TL['intro'][1] - .5)] + [(f"part {c['i']+1}", c['t0'], c['t1']) for c in TL['calls']] + \
+       [('regroup', TL['regroup'][0], TL['regroup'][1] - .5), ('light-up', *TL['high']), ('lock-up', *TL['lock']), ('end', *TL['end'])]
+for n, a, b in segs: r = db(rms(a, b)); print(f'{n:9s} {a:5.1f}-{b:5.1f}  {r:6.1f} dBFS  ' + '#' * max(0, int((r + 45))))
 print(f'last 20ms max {np.abs(x[-int(.02*sr):]).max():.2e}')
 print('ALL OK' if ok else 'FAIL')

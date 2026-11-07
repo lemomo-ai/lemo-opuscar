@@ -135,7 +135,7 @@ if os.path.exists(mp):
     k = uniform_filter1d(vo_env, int(.25 * SR)); k = np.clip(k * 1.6, 0, 1)
     duck = 10 ** (-12 * k / 20); mus *= duck[:, None]
 else:
-    print('!! music/score.wav 不存在，先跑 music/score.py')
+    print('!! music/score.wav is missing; run music/score.py first')
 
 fx = verb(fx, room_ir(.6), .18)
 fx *= (10 ** (-4 * k / 20))[:, None] if os.path.exists(mp) else 1

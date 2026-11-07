@@ -4,11 +4,11 @@ D = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 S = json.load(open(os.path.join(D, 'music/score.json')))['keys']; EV = json.load(open(os.path.join(D, 'events.json')))['ev']
 pic = {}
 for e in EV:
-    if e['type'] == 'dot': pic[f"dot_{e['year']}"] = (e['t'], f"{e['year']} 点落下")
-b = [e for e in EV if e['type'] == 'break']; pic['break1'] = (b[0]['t'], '1998 破顶'); pic['break2'] = (b[1]['t'], '2024 破顶')
-for ty, nm, lab in [('stop', 'stop', '硬切 / 静音开始'), ('tap2026', 'tap2026', '2026 落点'), ('end', 'final_note', '片尾卡 / 1926 的音')]:
+    if e['type'] == 'dot': pic[f"dot_{e['year']}"] = (e['t'], f"{e['year']} dot lands")
+b = [e for e in EV if e['type'] == 'break']; pic['break1'] = (b[0]['t'], '1998 breaks through the top'); pic['break2'] = (b[1]['t'], '2024 breaks through the top')
+for ty, nm, lab in [('stop', 'stop', 'hard cut / silence starts'), ('tap2026', 'tap2026', '2026 dot lands'), ('end', 'final_note', 'end card / the 1926 note')]:
     pic[nm] = ([e for e in EV if e['type'] == ty][0]['t'], lab)
-pic['morph_start'] = (min(e['t'] for e in EV if e['type'] == 'morph'), '变形开始')
+pic['morph_start'] = (min(e['t'] for e in EV if e['type'] == 'morph'), 'morph starts')
 worst, worstf, n = 0, 0, 0
 rows = []
 for k, (tp, lab) in pic.items():
@@ -19,5 +19,5 @@ for k, (tp, lab) in pic.items():
 rows.sort()
 for tp, k, s, d, fr, lab in rows:
     if not k.startswith('dot_') or k in ('dot_1926', 'dot_1933', 'dot_1958', 'dot_1998', 'dot_2024', 'dot_2025', 'dot_2026'):
-        print(f'{k:12s} 配乐 {s:8.3f}  画面 {tp:8.3f}  偏差 {d:+6.2f} ms  帧取整 {fr:+6.1f} ms  {lab}')
-print(f'共 {n} 项（含 101 个数据点），配乐↔画面最大偏差 {worst:.2f} ms；24fps 帧取整最大 {worstf:.1f} ms')
+        print(f'{k:12s} score {s:8.3f}  picture {tp:8.3f}  diff {d:+6.2f} ms  frame rounding {fr:+6.1f} ms  {lab}')
+print(f'{n} items (101 of them data points), max score ↔ picture offset {worst:.2f} ms; max 24 fps frame rounding {worstf:.1f} ms')

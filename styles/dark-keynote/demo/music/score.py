@@ -51,7 +51,7 @@ NOTES, PERC = [], []
 def win_of(t):
     for w, (a, b) in WIN.items():
         if a - 0.01 <= t < b: return w
-    raise ValueError(f'{t} 不在任何音乐窗内')
+    raise ValueError(f'{t} is not inside any music window')
 
 
 def ramp(t, t0, t1, v0, v1, p=1.0):

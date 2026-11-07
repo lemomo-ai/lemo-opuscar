@@ -19,7 +19,7 @@ def get(url, dest):
             open(dest, 'wb').write(data); print('ok', dest, f'{len(data) / 1e6:.1f} MB'); return
         except Exception as e:
             print('retry', dest, e, file=sys.stderr); time.sleep(20 * (k + 1))
-    sys.exit(f'下载失败：{url}')
+    sys.exit(f'download failed: {url}')
 
 
 for dest, url in FONTS.items():

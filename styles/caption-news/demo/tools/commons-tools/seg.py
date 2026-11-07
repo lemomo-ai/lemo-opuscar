@@ -14,7 +14,7 @@ if not dest.exists():
             "-c:a", "aac", "-b:a", "192k", str(dest) + ".part.mp4"], capture_output=True, text=True)
         if r.returncode == 0: os.rename(str(dest) + ".part.mp4", dest); break
         print("retry", r.stderr[-300:], file=sys.stderr); time.sleep(30 * (a + 1))
-    else: sys.exit("下载失败")
+    else: sys.exit("download failed")
 pr = json.loads(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,width,height,r_frame_rate:format=duration", "-of", "json", str(dest)], capture_output=True, text=True).stdout)
 v = next(s for s in pr["streams"] if s["codec_type"] == "video")
 rec = {"name": name, "file": str(dest), "url": url, "input": f"commons:{t}", "page": "https://commons.wikimedia.org/wiki/" + urllib.parse.quote(t.replace(" ", "_")),

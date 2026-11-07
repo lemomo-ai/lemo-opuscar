@@ -125,30 +125,30 @@ def put(k, x, t, g=1.0, pan=0.0, note=None):
 
 # ================= C1 printing: hyoshigi =================
 for i, t in enumerate([.35, 1.05, 1.70, 2.30]):
-    put('hyoshigi', hyoshigi(.8 + .07 * i), t, 1.0, (-.25, .2, -.1, .15)[i], f'拍子木 {i+1}（第{i+1}版）')
+    put('hyoshigi', hyoshigi(.8 + .07 * i), t, 1.0, (-.25, .2, -.1, .15)[i], f'hyoshigi {i+1} (block {i+1})')
 
 # ================= C2 jo (序, opening) 2.9–10.5 =================
-put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .85, spread=.018, buzz=.8, t60=2.2), 2.9, 1.1, -.15, '片名：三味线和弦')
+put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .85, spread=.018, buzz=.8, t60=2.2), 2.9, 1.1, -.15, 'title: shamisen chord')
 # shakuhachi opening motif M: A4 (slid in) — Bb4 — A4 (meri drop) … G4
-put('shakuhachi', shaku('A4', 1.55, .75, slide=-2, swell=.6), 3.05, 1, .1, '尺八：动机 A4')
+put('shakuhachi', shaku('A4', 1.55, .75, slide=-2, swell=.6), 3.05, 1, .1, 'shakuhachi: motif A4')
 put('shakuhachi', shaku('Bb4', .42, .6, slide=0, swell=.1, breath=.7), 4.72, 1, .1)
 put('shakuhachi', shaku('A4', .95, .66, slide=0, fall=-1.2, swell=.3), 5.12, 1, .1)
 put('shamisen', sam('A3', .45), 4.72, .7, -.2)
 # narration L1 6.0–9.5: keep only one low held note + sparse shamisen
-put('shakuhachi', shaku('D4', 2.9, .42, slide=-1, swell=.8, breath=.8, rel=.6), 6.35, 1, .1, '尺八：低音 ro 长音（让位旁白）')
+put('shakuhachi', shaku('D4', 2.9, .42, slide=-1, swell=.8, breath=.8, rel=.6), 6.35, 1, .1, 'shakuhachi: low ro long note (makes room for the narration)')
 put('shamisen', sam('D3', .4), 7.6, .6, -.2)
-put('shamisen', sam('D5', .75, t60=.8, buzz=.5), 10.1, .9, .15, '印章：三味线 チン')
+put('shamisen', sam('D5', .75, t60=.8, buzz=.5), 10.1, .9, .15, 'seal: shamisen "chin"')
 
 # ================= C3 rain 72 BPM =================
 bt = 60 / 72
 beats = [11.5 + i * bt for i in range(7)]
 for i, b in enumerate(beats):
     quiet = 12.2 < b < 14.3
-    put('shamisen', sam('D3' if i % 2 == 0 else 'A2', (.5 if quiet else .66)), b, .8, -.15, '三味线慢脉动 72BPM' if i == 0 else None)
+    put('shamisen', sam('D3' if i % 2 == 0 else 'A2', (.5 if quiet else .66)), b, .8, -.15, 'shamisen slow pulse 72 BPM' if i == 0 else None)
     if b + bt / 2 < 16.9:
         put('shamisen', sam('A3' if i % 3 else 'D4', .3 if quiet else .38, buzz=.4), b + bt / 2, .6, .1)   # sukui (すくい), light upstroke
-put('shamisen', sam('Eb5', .72, t60=.8, buzz=.5), 16.0, .9, .15, '印章：三味线')
-put('shakuhachi', shaku('G4', .7, .55, slide=-1.5, swell=.3), 14.45, 1, .05, '尺八应答')
+put('shamisen', sam('Eb5', .72, t60=.8, buzz=.5), 16.0, .9, .15, 'seal: shamisen')
+put('shakuhachi', shaku('G4', .7, .55, slide=-1.5, swell=.3), 14.45, 1, .05, 'shakuhachi answers')
 put('shakuhachi', shaku('A4', .95, .58, slide=0, kari=.8, swell=.4), 15.15, 1, .05)
 
 # ================= C4 ha (破, development) 96 BPM =================
@@ -158,13 +158,13 @@ t = 17.3; i = 0
 while t < 22.25:
     quiet = 18.0 < t < 20.7
     v = (.44 if quiet else .56) * (1.0 if i % 2 == 0 else .75)
-    put('shamisen', sam(pat[i % 8], v, buzz=.55), t, .75, -.1 + .2 * (i % 2), '三味线固定音型 96BPM' if i == 0 else None)
-    if i % 4 == 2: put('taiko', shime(.42 if quiet else .55), t, .9, .3, '締太鼓' if i == 2 else None)
+    put('shamisen', sam(pat[i % 8], v, buzz=.55), t, .75, -.1 + .2 * (i % 2), 'shamisen ostinato 96 BPM' if i == 0 else None)
+    if i % 4 == 2: put('taiko', shime(.42 if quiet else .55), t, .9, .3, 'shime-daiko' if i == 2 else None)
     if i % 8 == 7: put('taiko', shime(.3), t + e8 / 2, .9, .3)
     t += e8; i += 1
-put('shamisen', sam('D5', .75, t60=.8, buzz=.5), 21.95, .9, .15, '印章：三味线')
+put('shamisen', sam('D5', .75, t60=.8, buzz=.5), 21.95, .9, .15, 'seal: shamisen')
 for k, p in enumerate(['D3', 'A3', 'D4', 'Eb4', 'G4', 'A4', 'Bb4', 'D5']):
-    put('shamisen', sam(p, .5 + k * .04, buzz=.6), 22.32 + k * .06, .8, -.3 + k * .08, '急平移：上行快速琶音' if k == 0 else None)
+    put('shamisen', sam(p, .5 + k * .04, buzz=.6), 22.32 + k * .06, .8, -.3 + k * .08, 'kyū pan: fast rising arpeggio' if k == 0 else None)
 
 # ================= C5 kyū (急, rush) (44 s cut: rise → hang → fall → impact) =================
 # heartbeat: from 23.2 the interval starts at 0.9 and shrinks by × 0.84 (before 25.4 identical to the 42 s cut), keeps shrinking to 0.15 during the rise, hands over to the hang roll at 27.3
@@ -175,15 +175,15 @@ for j, t in enumerate(ts):
     prog = (t - 23.2) / 4.1
     v = .55 + .33 * prog
     if 23.5 < t < 25.4: v *= .8
-    put('taiko', cut(odaiko(min(1, v)), max(.45, 3 * (ts[j + 1] - t)) if j + 1 < len(ts) else .45), t, .85, (rng.random() - .5) * .3, '大太鼓心跳起（渐快）' if j == 0 else None)
-mark(25.4, 'taiko', '起浪：心跳继续加速 0.45→0.15 s')
+    put('taiko', cut(odaiko(min(1, v)), max(.45, 3 * (ts[j + 1] - t)) if j + 1 < len(ts) else .45), t, .85, (rng.random() - .5) * .3, 'ōdaiko heartbeat starts (accelerating)' if j == 0 else None)
+mark(25.4, 'taiko', 'wave rises: heartbeat keeps speeding up 0.45→0.15 s')
 # hang 27.3–28.42: one hit every 0.07 s, crescendo to the densest and loudest
 t = 27.3; j = 0
 while t < 28.40:
     k = (t - 27.3) / 1.1
-    put('taiko', cut(odaiko(min(1, .82 + .18 * k)), .28), t, .42 + .2 * k, (-.2, .2)[j % 2], '高悬：太鼓滚奏 0.07 s 渐强' if j == 0 else None)
+    put('taiko', cut(odaiko(min(1, .82 + .18 * k)), .28), t, .42 + .2 * k, (-.2, .2)[j % 2], 'crest: taiko roll at 0.07 s, crescendo' if j == 0 else None)
     t += .07; j += 1
-mark(28.42, 'other', '吸气：28.42–28.5 全部收住')
+mark(28.42, 'other', 'inhale: everything stops 28.42–28.5')
 # low-frequency swell (other): brown noise + low sine, crescendo from rise → hang
 def swell(d, f0, f1, g0=.05, g1=1.0):
     n = int(d * SR); tt = np.arange(n) / SR
@@ -192,37 +192,37 @@ def swell(d, f0, f1, g0=.05, g1=1.0):
     env = (g0 + (g1 - g0) * (tt / d) ** 1.8); y = (.7 * br + .45 * sn) * env
     y[:int(.2 * SR)] *= np.linspace(0, 1, int(.2 * SR))
     return (y / np.abs(y).max()).astype(np.float32)
-put('other', swell(3.02, 42, 55), 25.4, .55, 0, '低频涌起')
+put('other', swell(3.02, 42, 55), 25.4, .55, 0, 'low-frequency swell')
 # shamisen tremolo crescendo from 25.4 → sustained through the hang to the peak
 tr = P.pluck('shamisen', 'D4', 3.02, .75, trem=13, buzz=.8, t60=1.0)
 tr = (tr * np.linspace(.15, 1, len(tr)) ** 1.5).astype(np.float32)
-put('shamisen', tr, 25.4, .7, -.25, '三味线震音渐强')
+put('shamisen', tr, 25.4, .7, -.25, 'shamisen tremolo crescendo')
 tr2 = P.pluck('shamisen', 'A4', 2.12, .7, trem=14, buzz=.8, t60=1.0); tr2 = (tr2 * np.linspace(.1, 1, len(tr2)) ** 2).astype(np.float32)
 put('shamisen', tr2, 26.3, .55, .25)
 tr3 = P.pluck('shamisen', 'D5', 1.12, .7, trem=15, buzz=.8, t60=.8); tr3 = (tr3 * np.linspace(.3, 1, len(tr3))).astype(np.float32)
-put('shamisen', tr3, 27.3, .5, 0, '高悬：三味线震音最高点')
+put('shamisen', tr3, 27.3, .5, 0, 'crest: shamisen tremolo at its peak')
 # shakuhachi high shriek (muraiki) 27.6–28.4
-put('shakuhachi', shaku('D6', .72, .9, slide=-2, kari=.7, swell=.5, breath=2.2, rel=.08), 27.6, .62, .1, '尺八高音嘶鸣 muraiki')
+put('shakuhachi', shaku('D6', .72, .9, slide=-2, kari=.7, swell=.5, breath=2.2, rel=.08), 27.6, .62, .1, 'shakuhachi high shriek (muraiki)')
 # fall 28.5: heavy hit
 FALL = 28.5
-put('taiko', odaiko(.95, big=True), FALL, .9, 0, '倒下：重击（太鼓 + 拍子木 + 三味线和弦）')
+put('taiko', odaiko(.95, big=True), FALL, .9, 0, 'fall: heavy hit (taiko + hyoshigi + shamisen chord)')
 put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4', 'A4'], .3, .9, spread=.008, buzz=1.0), FALL, .75, 0)
 put('hyoshigi', hyoshigi(.85), FALL, .7, .2)
 # second roll: slightly sparser than the hang, heavier lows, crescendo pushing into the impact
 t = 28.75; j = 0
 while t < 30.28:
     k = (t - 28.75) / 1.53
-    put('taiko', cut(odaiko(min(1, .6 + .38 * k), big=True), .35), t, .38 + .2 * k, (-.15, .15)[j % 2], '第二波滚奏' if j == 0 else None)
+    put('taiko', cut(odaiko(min(1, .6 + .38 * k), big=True), .35), t, .38 + .2 * k, (-.15, .15)[j % 2], 'second roll' if j == 0 else None)
     t += .095 - .02 * k; j += 1
 put('other', swell(1.8, 36, 48, .15, 1.0), 28.56, .7, 0)
 # shamisen descending glissando
 for k, p in enumerate(['D5', 'Bb4', 'A4', 'G4', 'Eb4', 'D4', 'A3', 'G3', 'Eb3', 'D3']):
-    put('shamisen', sam(p, .55 + k * .035, buzz=.8), 29.05 + k * .065, .8, .3 - k * .06, '三味线下行刮奏' if k == 0 else None)
+    put('shamisen', sam(p, .55 + k * .035, buzz=.8), 29.05 + k * .065, .8, .3 - k * .06, 'shamisen descending glissando' if k == 0 else None)
 trl = P.pluck('shamisen', 'D3', .9, .8, trem=14, buzz=.9, t60=1.0); trl = (trl * np.linspace(.3, 1, len(trl)) ** 1.5).astype(np.float32)
 put('shamisen', trl, 29.75, .7, -.1)
 # impact 30.36 (foam fills the frame)
 IMP = 30.36
-put('taiko', odaiko(1.0, big=True), IMP, 1.5, 0, '冲击：大太鼓 + 三味线和弦 + 拍子木')
+put('taiko', odaiko(1.0, big=True), IMP, 1.5, 0, 'impact: ōdaiko + shamisen chord + hyoshigi')
 put('taiko', odaiko(.9, big=True), IMP + .004, .8, -.3)
 put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4', 'A4'], .3, 1.0, spread=.008, buzz=1.0), IMP, 1.0, 0)
 put('hyoshigi', hyoshigi(.9), IMP, .8, .2)
@@ -230,21 +230,21 @@ put('hyoshigi', hyoshigi(.9), IMP, .8, .2)
 # ================= C7 echo (everything shifted +2.0 s) =================
 O = 2.0
 for i, t in enumerate([30.2, 30.7, 31.2, 31.7]):
-    put('taiko', odaiko(.72 + .09 * i, big=True), t + O, 1.0, (-.1, .1, -.05, .05)[i], f'太鼓第{i+1}版')
-put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .5, spread=.12, buzz=.6, t60=1.8), 32.1 + O, .5, -.2, '三味线轻分解和弦')
-put('shakuhachi', shaku('A4', 1.3, .55, slide=-2, swell=.5), 32.05 + O, .62, .1, '尺八：动机回响')
+    put('taiko', odaiko(.72 + .09 * i, big=True), t + O, 1.0, (-.1, .1, -.05, .05)[i], f'taiko, block {i+1}')
+put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .5, spread=.12, buzz=.6, t60=1.8), 32.1 + O, .5, -.2, 'shamisen soft broken chord')
+put('shakuhachi', shaku('A4', 1.3, .55, slide=-2, swell=.5), 32.05 + O, .62, .1, 'shakuhachi: the motif echoes')
 put('shakuhachi', shaku('Bb4', .4, .46, slide=0, swell=.1, breath=.7), 33.5 + O, .62, .1)
 put('shakuhachi', shaku('A4', .75, .5, slide=0, fall=-.8, swell=.3), 33.9 + O, .62, .1)
 put('shakuhachi', shaku('G4', .55, .5, slide=0, swell=.2), 34.75 + O, .75, .1)
-put('shakuhachi', shaku('D4', 1.05, .55, slide=-1, swell=.5, rel=.4), 35.3 + O, 1, .1, '尺八：落在主音 D')
-put('shamisen', sam('A4', .38, harmonic=True), 35.1 + O, .7, .3, '摘斗笠：三味线泛音')
-put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .9, spread=.02, buzz=.85, t60=2.4), 36.3 + O, 1.1, 0, '终印：三味线终止和弦 + 太鼓 + 拍子木')
+put('shakuhachi', shaku('D4', 1.05, .55, slide=-1, swell=.5, rel=.4), 35.3 + O, 1, .1, 'shakuhachi: lands on the tonic D')
+put('shamisen', sam('A4', .38, harmonic=True), 35.1 + O, .7, .3, 'hat comes off: shamisen harmonic')
+put('shamisen', P.strum('shamisen', ['D3', 'A3', 'D4'], None, .9, spread=.02, buzz=.85, t60=2.4), 36.3 + O, 1.1, 0, 'final print: shamisen closing chord + taiko + hyoshigi')
 put('taiko', odaiko(.85, big=True), 36.3 + O, .9, 0)
 put('hyoshigi', hyoshigi(.7), 36.3 + O, .7, .25)
 
 # ================= C8 coda =================
-put('shakuhachi', shaku('D5', 3.6, .5, slide=-2, fall=-1.0, swell=.7, breath=1.1, rel=.9), 37.0 + O, 1, .1, '尺八最后长音')
-put('shamisen', sam('D3', .7, t60=4.2, buzz=.9), 38.4 + O, 1.0, -.1, '三味线末音 sawari 长余振')
+put('shakuhachi', shaku('D5', 3.6, .5, slide=-2, fall=-1.0, swell=.7, breath=1.1, rel=.9), 37.0 + O, 1, .1, 'shakuhachi final long note')
+put('shamisen', sam('D3', .7, t60=4.2, buzz=.9), 38.4 + O, 1.0, -.1, 'shamisen last note, long sawari ring')
 
 # ================= reverb, silence, sum =================
 wet = {'shamisen': (.45, .2), 'shakuhachi': (.6, .3), 'taiko': (.65, .22), 'hyoshigi': (.35, .12), 'other': (.5, .2)}
@@ -281,7 +281,7 @@ def cent(a, b):
     s = mono[int(a * SR):int(b * SR)]
     if np.abs(s).max() == 0: return 0
     sp = np.abs(np.fft.rfft(s * np.hanning(len(s)))); f = np.fft.rfftfreq(len(s), 1 / SR); return round(float((sp * f).sum() / sp.sum()), 0)
-CUES = [('C1 印刷', 0, 2.9), ('C2 序', 2.9, 10.5), ('C3 雨', 10.5, 17.3), ('C4 破', 17.3, 22.9), ('C5a 急·心跳', 22.9, 25.4), ('C5b 起浪', 25.4, 27.3), ('C5c 高悬', 27.3, 28.5), ('C5d 倒下', 28.5, 30.4), ('C6 間', 30.4, 32.2), ('C7 回响', 32.2, 38.8), ('C8 尾', 38.8, 44.0)]
+CUES = [('C1 printing', 0, 2.9), ('C2 jo', 2.9, 10.5), ('C3 rain', 10.5, 17.3), ('C4 ha', 17.3, 22.9), ('C5a kyū · heartbeat', 22.9, 25.4), ('C5b wave rises', 25.4, 27.3), ('C5c crest', 27.3, 28.5), ('C5d fall', 28.5, 30.4), ('C6 ma', 30.4, 32.2), ('C7 echo', 32.2, 38.8), ('C8 coda', 38.8, 44.0)]
 table = [dict(cue=n, t0=a, t1=b, rms_db=rms_db(a, b), peak=round(float(np.abs(mix[int(a * SR):int(b * SR)]).max()), 3), centroid_hz=cent(a, b)) for n, a, b in CUES]
 VO = [('L1', 6.0, 9.5), ('L2', 12.3, 14.2), ('L3', 18.0, 20.6), ('L4', 23.5, 25.4), ('L5', 34.4, 37.1)]
 vo = [dict(line=n, rms_db=rms_db(a, b), mid_1_4k_db=round(20 * np.log10(np.sqrt(np.mean(bpf(mono[int(a * SR):int(b * SR)], 1000, 4000) ** 2)) + 1e-12), 1)) for n, a, b in VO]
@@ -294,7 +294,7 @@ def onset_err(t, win=.03):
 ons = {str(t): dict(zip(['err_ms', 'peak'], onset_err(t))) for t in [.35, 1.05, 1.70, 2.30, 32.2, 32.7, 33.2, 33.7, FALL, IMP]}
 report = dict(dur=len(mix) / SR, sr=SR, peak=round(float(np.abs(mix).max()), 3), ma_silent_30_46_to_32_2=silent, inhale_silent_28_42_to_28_498=bool(np.all(mix[int(28.42 * SR):int(IN1 * SR)] == 0)),
               impact=IMP, cues=table, voice_windows=vo, onsets=ons, events=EVENTS,
-              notes='都节音阶 D Eb G A Bb；开场动机 A4–Bb4–A4(meri)；C7 回响落在 D4。44 s 版：25.4 后拉长巨浪（起浪/高悬/吸气/倒下/冲击 30.36），間 30.4–32.2，其后整体 +2 s。拍子木=合成硬木共振+claves+woodblock；太鼓=合成鼓皮(120→58Hz)+gran_cassa+toms low_mallet+frame_drum large；尺八=recorder62%+flute38% 采样→除以平滑包络去幅度颤动、f0 跟踪反向变速去音高颤动、滑入/meri/kari 变速、1–4k 气声。')
+              notes='miyako-bushi scale D Eb G A Bb; opening motif A4–Bb4–A4 (meri); C7 echo lands on D4. 44 s version: the great wave is stretched after 25.4 (wave rises / crest / inhale / fall / impact at 30.36), ma 30.4–32.2, everything after it +2 s. hyoshigi = synthesised hardwood resonance + claves + woodblock; taiko = synthesised drum head (120→58 Hz) + gran_cassa + toms low_mallet + frame_drum large; shakuhachi = recorder 62% + flute 38% samples → divided by a smoothed envelope to remove amplitude wobble, f0-tracked inverse varispeed to remove pitch wobble, varispeed slides / meri / kari, 1–4 kHz breath noise.')
 json.dump(report, open(os.path.join(HERE, 'score.json'), 'w'), ensure_ascii=False, indent=1, default=float)
 print(json.dumps({k: report[k] for k in ['dur', 'peak', 'ma_silent_30_46_to_32_2', 'inhale_silent_28_42_to_28_498', 'onsets']}, ensure_ascii=False))
 for r in table: print(r)

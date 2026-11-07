@@ -19,5 +19,5 @@ print('\n'.join(rows))
 sil = [(e['t'], e['t'] + e['d']) for e in EV if e['type'] == 'silence']
 for a, b in sil:
     ms = [s for s in S.get('silence', []) if abs(s[0] - a) < .02 and abs(s[1] - b) < .02]
-    print(f"silence {a:.2f}-{b:.2f}: {'OK' if ms else 'BAD（配乐没有对应静音）'}"); bad += not ms
+    print(f"silence {a:.2f}-{b:.2f}: {'OK' if ms else 'BAD (no matching silence in the score)'}"); bad += not ms
 print('mismatches:', bad)

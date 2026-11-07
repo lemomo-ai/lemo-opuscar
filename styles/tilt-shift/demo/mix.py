@@ -115,7 +115,7 @@ if os.path.exists(mp):
     if m.ndim == 1: m = np.stack([m, m], 1)
     if sr != SR: m = librosa.resample(m.T, orig_sr=sr, target_sr=SR).T
     mus[:min(N, len(m))] = m[:N]
-else: print('!! 没有 music/score.wav，只混环境+拟音+旁白')
+else: print('!! no music/score.wav; mixing only ambience + foley + narration')
 # The tuned-horn chords (20.0 / 22.0) don't stand out enough when the skeleton is completely full: push the brass stem up another +4 dB at those two points
 bp_ = os.path.join(HERE, 'music', 'stems', 'brass.wav')
 if os.path.exists(bp_):

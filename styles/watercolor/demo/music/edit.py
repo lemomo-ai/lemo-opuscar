@@ -15,7 +15,7 @@ json.dump({'cut':a,'lag':b-a,'beats':[float(v) for v in beats if v<a]+[float(v-(
 try:
     import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
 except ImportError:
-    print('matplotlib 不在 .venv 里，跳过 score_curve.png'); raise SystemExit
+    print('matplotlib is not in .venv; skipping score_curve.png'); raise SystemExit
 
 m=y.mean(1); hop=sr//10; n=len(m)//hop; fr=m[:n*hop].reshape(n,hop)
 db=10*np.log10((fr**2).mean(1)+1e-10)

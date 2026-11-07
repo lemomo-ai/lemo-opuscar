@@ -130,7 +130,7 @@ if os.path.exists(mp):
     if msr != SR: m = np.stack([librosa.resample(m[:, c], orig_sr=msr, target_sr=SR) for c in range(2)], 1)
     m = m[:N] if len(m) >= N else np.pad(m, ((0, N - len(m)), (0, 0)))
 else:
-    print('!! music/score.wav 不存在，先用静音'); m = np.zeros((N, 2))
+    print('!! music/score.wav is missing; using silence for now'); m = np.zeros((N, 2))
 from scipy.ndimage import uniform_filter1d
 duck = 1 - (1 - db(-9.5)) * np.clip(uniform_filter1d(vox_on, int(.25 * SR)), 0, 1)
 m = m + np.stack([hp(m[:, c], 3000) for c in range(2)], 1) * .45   # the score is on the dark side: gently lift above 3 kHz so the kalimba is brighter
@@ -142,4 +142,4 @@ sf.write(os.path.join(HERE, 'mix.wav'), mix.astype(np.float32), SR)
 def rms(x): return 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)
 on = vox_on > 0
 print('mix.wav', mix.shape, 'peak', round(20 * np.log10(np.abs(mix).max()), 2), 'dB')
-print('RMS  vo(说话时)', round(rms(vo[on]), 1), ' music(说话时)', round(rms(mus[on]), 1), ' music(全片)', round(rms(mus), 1), ' fx', round(rms(fx), 1), ' amb', round(rms(amb), 1))
+print('RMS  vo(while speaking)', round(rms(vo[on]), 1), ' music(while speaking)', round(rms(mus[on]), 1), ' music(whole film)', round(rms(mus), 1), ' fx', round(rms(fx), 1), ' amb', round(rms(amb), 1))

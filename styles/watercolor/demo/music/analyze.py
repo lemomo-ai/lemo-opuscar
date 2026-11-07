@@ -20,7 +20,7 @@ json.dump({'beats':beats.tolist(),'rms':R.tolist(),'onset':O.tolist()}, open(os.
 try:
     import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
 except ImportError:
-    print('matplotlib 不在 .venv 里，跳过 wf_ssm.png'); raise SystemExit
+    print('matplotlib is not in .venv; skipping wf_ssm.png'); raise SystemExit
 
 fig,ax=plt.subplots(2,1,figsize=(14,20),gridspec_kw={'height_ratios':[4,1]})
 bt=np.r_[0,beats]

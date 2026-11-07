@@ -270,10 +270,10 @@ for k in stems: sf.write(os.path.join(HERE, 'stems', k + '.wav'), (stems[k] * g)
 sf.write(os.path.join(HERE, 'score.wav'), mix.astype(np.float32), SR, subtype='FLOAT')
 
 # ================= score.json + self-check =================
-cues = [('C0 醒木', 0, 2.4), ('C1 起板', 2.4, 7.2), ('C2 十日', 7.2, 12.0), ('C3 焦土', 12.0, 18.0), ('C4 急急风', 18.0, 21.6),
-        ('C5 亮相/英雄动机', 21.6, 25.2), ('C6 开弓', 25.2, 30.0), ('C7 连射', 30.0, 34.8), ('C8 静场', 34.8, 37.2),
-        ('C9 回春', 37.2, 43.2), ('C10 幕后', 43.2, 50.4), ('C11 收板', 50.4, 54.4)]
-json.dump(dict(dur=DUR, bpm=100, beat=.6, key='D（苦音偏音 fa↑=+5.4、si↓=+10.5 半音；欢音 D E F# A B）',
+cues = [('C0 clapper', 0, 2.4), ('C1 opening', 2.4, 7.2), ('C2 ten suns', 7.2, 12.0), ('C3 scorched earth', 12.0, 18.0), ('C4 jijifeng drums', 18.0, 21.6),
+        ('C5 pose / hero motif', 21.6, 25.2), ('C6 drawing the bow', 25.2, 30.0), ('C7 volley', 30.0, 34.8), ('C8 silence', 34.8, 37.2),
+        ('C9 spring returns', 37.2, 43.2), ('C10 backstage', 43.2, 50.4), ('C11 closing', 50.4, 54.4)]
+json.dump(dict(dur=DUR, bpm=100, beat=.6, key='D (kuyin inflected notes fa↑=+5.4, si↓=+10.5 semitones; huanyin D E F# A B)',
                hits=dict(titleSet=T['titleSet'], flares=T['flares'], hot=T['hot'], liang=T['liang'], release=T['rel'], sunHit=[round(h, 3) for h in HIT],
                          hardStop=T['stop'], softGong=T['softGong'], scrape=T['truck0'] - .1, clapGap=[50.5, 50.7], endGong=50.7),
                cues=[dict(name=n, t0=a, t1=b) for n, a, b in cues], stems=list(stems)), open(os.path.join(HERE, 'score.json'), 'w'), ensure_ascii=False, indent=1)
@@ -286,9 +286,9 @@ def seg_stats(a, b):
     return r, hf
 print('peak dBFS', round(20 * np.log10(np.abs(mix).max()), 2))
 for n, a, b in cues:
-    r, hf = seg_stats(a, b); print(f'{n:14s} {a:5.1f}-{b:5.1f}  RMS {r:7.1f} dB  8-20k {hf*100:5.2f}%')
-r, _ = seg_stats(34.83, 36.85); print('静场 34.83-36.85 RMS', round(r, 1), 'dB', 'OK' if r < -70 else 'FAIL')
-r, _ = seg_stats(50.5, 50.7); print('醒木留空 50.5-50.7 RMS', round(r, 1), 'dB')
+    r, hf = seg_stats(a, b); print(f'{n:22s} {a:5.1f}-{b:5.1f}  RMS {r:7.1f} dB  8-20k {hf*100:5.2f}%')
+r, _ = seg_stats(34.83, 36.85); print('silence 34.83-36.85 RMS', round(r, 1), 'dB', 'OK' if r < -70 else 'FAIL')
+r, _ = seg_stats(50.5, 50.7); print('gap for the clapper 50.5-50.7 RMS', round(r, 1), 'dB')
 used = ['gong2', 'sus_cymbal', 'crash', 'woodblock', 'frame_drum', 'bass_drum', 'log_drum', 'erhu', 'oboe', 'cellos', 'contrabass']
 open(os.path.join(HERE, 'credits.txt'), 'w').write('\n'.join(S.credits(used)) + '\n')
 print('\n'.join(S.credits(used)))

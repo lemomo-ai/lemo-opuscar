@@ -96,7 +96,7 @@ def resolve(src):
                 imgs = [f for f in files if f["name"].lower().endswith((".jpg", ".jpeg", ".png", ".tif", ".tiff"))]
                 vids = imgs
             if not vids:
-                sys.exit("这个条目里没有视频或图片文件，用 files 看一下再指定文件名")
+                sys.exit("no video or image file in this item; list them with `files` and name one")
             vids.sort(key=lambda f: int(f.get("size", 0) or 0), reverse=True)
             fname = vids[0]["name"]
         meta.update(page=f"https://archive.org/details/{ident}", title=m.get("title"),
@@ -112,7 +112,7 @@ def resolve(src):
             "iiprop": "url|size|mime|extmetadata", "format": "json"})
         p = next(iter(getjson(url)["query"]["pages"].values()))
         if "imageinfo" not in p:
-            sys.exit(f"Commons 找不到 {title}")
+            sys.exit(f"not found on Commons: {title}")
         ii = p["imageinfo"][0]; em = ii.get("extmetadata", {})
         v = lambda k: strip_html(em.get(k, {}).get("value", ""))
         meta.update(page=ii.get("descriptionurl"), title=title, date=v("DateTimeOriginal"),
@@ -128,7 +128,7 @@ def resolve(src):
             if pick:
                 break
         if not pick:
-            sys.exit("NASA 条目里没找到 mp4/jpg：\n" + "\n".join(items[:20]))
+            sys.exit("no mp4/jpg in the NASA item:\n" + "\n".join(items[:20]))
         d = getjson(f"https://images-api.nasa.gov/search?nasa_id={urllib.parse.quote(nid)}")["collection"]["items"]
         d = d[0]["data"][0] if d else {}
         meta.update(page=f"https://images.nasa.gov/details/{nid}", title=d.get("title"),
@@ -144,7 +144,7 @@ def download(url, dest, max_mb):
         total = int(r.headers.get("Content-Length") or 0)
         if total and total > max_mb * 1e6:
             f.close(); os.remove(dest)
-            sys.exit(f"文件 {total/1e6:.0f} MB 超过 --max-mb {max_mb}；确实要的话调大")
+            sys.exit(f"file is {total/1e6:.0f} MB, over --max-mb {max_mb}; raise it if you really need it")
         got, last = 0, time.time()
         while True:
             b = r.read(1 << 20)
@@ -174,9 +174,9 @@ def cmd_fetch(a):
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     dest = out / f"{a.name}{ext}"
     if dest.exists() and not a.force:
-        print(f"已存在 {dest}（--force 重下）")
+        print(f"already there: {dest} (--force downloads it again)")
     else:
-        print(f"下载 {url}", file=sys.stderr)
+        print(f"downloading {url}", file=sys.stderr)
         download(url, dest, a.max_mb)
     for k in ("page", "license", "credit", "date", "title"):
         if getattr(a, k):
@@ -188,7 +188,7 @@ def cmd_fetch(a):
     print(json.dumps({k: rec.get(k) for k in ("file", "w", "h", "dur", "audio", "license", "credit", "page")},
                      ensure_ascii=False))
     if not rec.get("license"):
-        print("⚠ 没拿到许可信息：用 --license 补上，许可不清楚就别用", file=sys.stderr)
+        print("⚠ no licence information found: add it with --license, and if the licence is unclear, don't use it", file=sys.stderr)
 
 
 def load():
@@ -204,7 +204,7 @@ def cmd_used(a):
     for r in recs:
         if r["name"] == a.name:
             r.setdefault("used", []).append(a.span); save(recs); return
-    sys.exit(f"SOURCES.jsonl 里没有 {a.name}")
+    sys.exit(f"{a.name} is not in SOURCES.jsonl")
 
 
 def cmd_md(a):
@@ -217,7 +217,7 @@ def cmd_md(a):
         rows.append(f"| {r['name']} | {cell(who)} | {cell(r.get('license'))} | {cell(r.get('page') or r.get('url'))} "
                     f"| {spec} | {cell('; '.join(r.get('used', [])) or 'not marked')} |")
     Path("SOURCES.md").write_text("\n".join(rows) + "\n")
-    print("写好 SOURCES.md")
+    print("wrote SOURCES.md")
 
 
 def main():

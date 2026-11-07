@@ -16,5 +16,5 @@ for k, c in enumerate(json.load(open(os.path.join(HERE, 'cues.json')))):
     ok = norm(got) == norm(c['text'])
     homo = not ok and [HOMO.get(w, w) for w in norm(got)] == [HOMO.get(w, w) for w in norm(c['text'])]   # homophone mishearings (hear/here) are judged a pass by hand
     bad += not (ok or homo)
-    print('OK  ' if ok else 'OK~ (同音)' if homo else 'DIFF', c['t0'], c['text'], '→', got)
+    print('OK  ' if ok else 'OK~ (homophone)' if homo else 'DIFF', c['t0'], c['text'], '→', got)
 print('mismatches:', bad)
