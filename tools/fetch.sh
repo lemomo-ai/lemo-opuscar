@@ -25,7 +25,8 @@ esac
 # the library's own Python when it has one; the system's python3 otherwise (3.8+ is enough here)
 if [ -x .venv/bin/python ]; then PY=.venv/bin/python; else PY=python3; fi
 command -v "$PY" >/dev/null || { echo "✗ python3 is needed to run this script"; exit 1; }
-"$PY" - $PACKS <<'PY'
+# -X utf8: on Windows the console's legacy code page (cp1252) can't encode ↓ ✓ ✗, and Python would stop with UnicodeEncodeError
+"$PY" -X utf8 - $PACKS <<'PY'
 import hashlib, json, os, shutil, subprocess, sys, tarfile, time, urllib.error, urllib.request
 man = json.load(open('tools/assets.json'))
 packs = sys.argv[1:]
