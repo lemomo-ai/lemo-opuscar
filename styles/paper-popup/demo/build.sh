@@ -21,6 +21,7 @@ WORKERS=${WORKERS:-8}                                # the published film used 8
 POSTER=14.8                                          # the whole Papervale spread popped up, book edge and desk visible
 FRAME=79.6                                           # the whale spouting confetti, Pip in the boat: gallery style frame
 DEST=${OUT:-$FILM}; unset OUT                        # mux.sh reads OUT itself (as a file name)
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out" "$HERE/assets"
 cd "$LIB"
@@ -48,17 +49,18 @@ done
 # music: three Kevin MacLeod tracks, decoded to 48 kHz stereo for music/edit.py
 IC=https://incompetech.com/music/royalty-free/mp3-royaltyfree
 for f in Dreamy_Flashback Jaunty_Gumption Heartwarming; do
-  [ -f "$HERE/music/$f.mp3" ] || curl -sfL -o "$HERE/music/$f.mp3" "$IC/$(echo $f | sed 's/_/%20/g').mp3"
+  [ -f "$HERE/music/$f.mp3" ] || curl -sSfL -o "$HERE/music/$f.mp3" "$IC/$(echo $f | sed 's/_/%20/g').mp3"
   [ -f "$HERE/music/$f.wav" ] || ffmpeg -v error -y -i "$HERE/music/$f.mp3" -ar 48000 -ac 2 "$HERE/music/$f.wav"
 done
 
 # 1. voice: Kokoro af_bella, speed 0.9 -> voices/v01..v15.wav + dur.json; every line checked by Whisper
-#    (tts/lines.json is [[id, text], ...]; asr_check.py reads [{id, text}], so a converted copy goes to out/)
+#    (tts/lines.json is [[id, text], ...]; asr_check.py reads [{id, text, asr}], so a converted copy goes to out/, with
+#    tts/asr.json's known transcriptions as "asr": names and spellings Whisper writes its own way)
 "$PY" "$HERE/tts/gen.py" af_bella
-"$PY" -c 'import json, sys; json.dump([{"id": i, "text": t} for i, t in json.load(open(sys.argv[1]))], open(sys.argv[2], "w"), ensure_ascii=False)' \
-  "$HERE/tts/lines.json" "$HERE/out/lines_check.json"
-#    Two known differences are names: v04 "Papervale" is heard as "paper veil", v06 "Pip" as "pips"; listen to any other DIFF
-"$PY" core/tts/asr_check.py "$HERE/out/lines_check.json" "$HERE/voices" || echo "(asr_check: v04 Papervale / v06 Pip are expected; listen to any other DIFF)"
+"$PY" -c 'import json, sys; a = json.load(open(sys.argv[2])); json.dump([dict(id=i, text=t, **({"asr": a[i]} if i in a else {})) for i, t in json.load(open(sys.argv[1]))], open(sys.argv[3], "w"), ensure_ascii=False)' \
+  "$HERE/tts/lines.json" "$HERE/tts/asr.json" "$HERE/out/lines_check.json"
+#    Any DIFF stops the build: listen to that line
+"$PY" core/tts/asr_check.py "$HERE/out/lines_check.json" "$HERE/voices"
 
 # 2. score: Dreamy Flashback -> Jaunty Gumption (bar-aligned jump cut) -> Heartwarming -> music/score.wav
 "$PY" "$HERE/music/edit.py"

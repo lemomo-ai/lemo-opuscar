@@ -19,6 +19,7 @@ FPS=60
 POSTER=16.9                                          # the harbour lamp lit
 FRAME=26.2                                           # gallery style frame
 DEST=${OUT:-$FILM}; unset OUT
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out" "$HERE/music/src"
 cd "$LIB"
@@ -28,17 +29,18 @@ cd "$LIB"
 for i in 0 1 2 3 4; do [ -f "$HERE/fonts/h$i.woff2" ] || MISSING=1; done
 if [ -n "$MISSING" ]; then
   UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
-  curl -sf -A "$UA" 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=block' |
+  curl -sSf -A "$UA" 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=block' |
     awk '/\/\* latin \*\//{f=1} f&&/src:/{match($0,/https:[^)]*/); print substr($0,RSTART,RLENGTH); f=0}' |
-    { i=0; while read -r u; do curl -sfL -o "$HERE/fonts/h$i.woff2" "$u"; i=$((i+1)); done; }
+    { i=0; while read -r u; do curl -sSfL -o "$HERE/fonts/h$i.woff2" "$u"; i=$((i+1)); done; }
+  for i in 0 1 2 3 4; do [ -s "$HERE/fonts/h$i.woff2" ] || { echo "build.sh: could not download the Google Fonts slices (fonts/h$i.woff2 missing)" >&2; exit 1; }; done
 fi
-[ -f "$HERE/music/src/sb_precipice.mp3" ] || curl -sfL -o "$HERE/music/src/sb_precipice.mp3" \
+[ -f "$HERE/music/src/sb_precipice.mp3" ] || curl -sSfL -o "$HERE/music/src/sb_precipice.mp3" \
   https://www.scottbuckley.com.au/library/wp-content/uploads/2021/01/sb_precipice.mp3
 
 # 1. voice: Kokoro af_heart (narrator) and bm_george (the Old Keeper), checked by Whisper.
-#    One known difference: n1 "Graywater" is heard as "gray water"; any other DIFF needs a listen.
+#    n1's "asr" field holds how Whisper writes "Greywater" ("gray water"); any DIFF stops the build: listen to that line.
 "$PY" core/tts/tts.py "$HERE/lines.json" "$HERE/voices"
-"$PY" core/tts/asr_check.py "$HERE/lines.json" "$HERE/voices" || echo "(asr_check: n1 'Graywater' -> 'gray water' is expected; listen to any other DIFF)"
+"$PY" core/tts/asr_check.py "$HERE/lines.json" "$HERE/voices"
 
 # 2. score: "Precipice" cut and re-timed to the picture -> music/score.wav (+ measure.json, CUES.md)
 (cd "$HERE/music" && "$PY" edit.py)

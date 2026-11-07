@@ -18,6 +18,7 @@ FPS=24
 POSTER=16.2                                          # side-on ride past the neon shopfronts (no subtitles)
 FRAME=21.3                                           # the courier's close-up in the speed lines: gallery style frame (no subtitles)
 DEST=${OUT:-$FILM}; unset OUT
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out"
 cd "$LIB"
@@ -26,7 +27,7 @@ cd "$LIB"
 GF=https://github.com/google/fonts/raw/main/ofl
 for f in delagothicone/DelaGothicOne-Regular kanit/Kanit-BlackItalic kanit/Kanit-ExtraBoldItalic kanit/Kanit-SemiBoldItalic \
          barlowsemicondensed/BarlowSemiCondensed-Medium barlowsemicondensed/BarlowSemiCondensed-SemiBold barlowsemicondensed/BarlowSemiCondensed-Bold; do
-  [ -f "$HERE/fonts/${f#*/}.ttf" ] || curl -sfL -o "$HERE/fonts/${f#*/}.ttf" "$GF/$f.ttf"
+  [ -f "$HERE/fonts/${f#*/}.ttf" ] || curl -sSfL -o "$HERE/fonts/${f#*/}.ttf" "$GF/$f.ttf"
 done
 
 # 1. voice: Kokoro am_michael (base, "D" lines) and af_bella (the courier, "G" lines), every line checked by Whisper

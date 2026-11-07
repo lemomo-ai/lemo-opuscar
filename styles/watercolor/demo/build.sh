@@ -20,6 +20,7 @@ WORKERS=${WORKERS:-8}                                # the published film used 8
 POSTER=29                                            # acacia shrubland: seal sun, budgerigars, rain running down the branches, kangaroo
 FRAME=38                                             # eucalypt woodland and the koala: gallery style frame
 DEST=${OUT:-$FILM}; unset OUT                        # tts/gen.py, music/*.py and render.mjs read OUT themselves
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out"
 cd "$LIB"
@@ -32,13 +33,13 @@ sh "$HERE/music/prep.sh"
 [ -f "$HERE/music/wf_beats.json" ] || "$PY" "$HERE/music/analyze.py"   # beat grid of the source (in git)
 
 # 1. voice: Kokoro af_heart, speed 0.93 -> voices/v01..v13.wav + dur.json; every line checked by Whisper
-#    (tts/lines.json is [[id, text], ...]; asr_check.py reads [{id, text}], so a converted copy goes to out/)
+#    (tts/lines.json is [[id, text], ...]; asr_check.py reads [{id, text, asr}], so a converted copy goes to out/, with
+#    tts/asr.json's known transcriptions as "asr": names and spellings Whisper writes its own way)
 "$PY" "$HERE/tts/gen.py"
-"$PY" -c 'import json, sys; json.dump([{"id": i, "text": t} for i, t in json.load(open(sys.argv[1]))], open(sys.argv[2], "w"), ensure_ascii=False)' \
-  "$HERE/tts/lines.json" "$HERE/out/lines_check.json"
-#    Known differences are spelling, not speech: Whisper writes US spelling (center, meters, funneling), digits
-#    (250, 100, 1%) and "rain forest(s)" for v02 v04 v08 v09 v11; listen to any other DIFF
-"$PY" core/tts/asr_check.py "$HERE/out/lines_check.json" "$HERE/voices" || echo "(asr_check: US spellings, digits and 'rain forest' in v02 v04 v08 v09 v11 are expected)"
+"$PY" -c 'import json, sys; a = json.load(open(sys.argv[2])); json.dump([dict(id=i, text=t, **({"asr": a[i]} if i in a else {})) for i, t in json.load(open(sys.argv[1]))], open(sys.argv[3], "w"), ensure_ascii=False)' \
+  "$HERE/tts/lines.json" "$HERE/tts/asr.json" "$HERE/out/lines_check.json"
+#    Any DIFF stops the build: listen to that line
+"$PY" core/tts/asr_check.py "$HERE/out/lines_check.json" "$HERE/voices"
 
 # 2. score: one jump cut in "Wildflowers" (beats[85] -> beats[437]) -> music/score.wav + score_beats.json
 "$PY" "$HERE/music/edit.py"

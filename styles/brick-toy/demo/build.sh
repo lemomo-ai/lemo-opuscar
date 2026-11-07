@@ -19,6 +19,7 @@ FPS=24
 POSTER=45.925                                        # the astronaut on the brick moon, "...starts with one brick": poster (frames 1102-1103)
 FRAME=45.84                                          # the 12 fps pose just before it: gallery style frame (frames 1100-1101)
 DEST=${OUT:-$FILM}; unset OUT
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out"
 cd "$LIB"
@@ -26,8 +27,8 @@ cd "$LIB"
 # 0. sources not in git: the HDRI pack, the two tracks and their beat grids (librosa beat_track at 22.05 kHz)
 [ -f core/assets/polyhaven/photo_studio_loft_hall_2k.hdr ] || sh tools/fetch.sh hdri
 M="$HERE/music"; IC=https://incompetech.com/music/royalty-free/mp3-royaltyfree
-[ -f "$M/Monkeys_Spinning_Monkeys.mp3" ] || curl -sfL -o "$M/Monkeys_Spinning_Monkeys.mp3" "$IC/Monkeys%20Spinning%20Monkeys.mp3"
-[ -f "$M/Heroic_Age.mp3" ] || curl -sfL -o "$M/Heroic_Age.mp3" "$IC/Heroic%20Age.mp3"
+[ -f "$M/Monkeys_Spinning_Monkeys.mp3" ] || curl -sSfL -o "$M/Monkeys_Spinning_Monkeys.mp3" "$IC/Monkeys%20Spinning%20Monkeys.mp3"
+[ -f "$M/Heroic_Age.mp3" ] || curl -sSfL -o "$M/Heroic_Age.mp3" "$IC/Heroic%20Age.mp3"
 for s in Monkeys_Spinning_Monkeys Heroic_Age; do
   [ -f "$M/${s}_beats.npy" ] || "$PY" -c 'import sys, numpy as np, librosa
 y, sr = librosa.load(sys.argv[1]); np.save(sys.argv[2], librosa.beat.beat_track(y=y, sr=sr, units="time")[1])' "$M/$s.mp3" "$M/${s}_beats.npy"

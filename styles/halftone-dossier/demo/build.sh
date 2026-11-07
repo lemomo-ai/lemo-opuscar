@@ -19,6 +19,7 @@ NAME=halftone-dossier
 POSTER=7.2                                           # the mugshot against the height chart
 FRAME=11.1667                                        # frame 335: the "testing gravity" numeral, cat and starburst: gallery style frame
 DEST=${OUT:-$FILM}; unset OUT
+mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the steps below run from other folders
 STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out"
 cd "$LIB"
