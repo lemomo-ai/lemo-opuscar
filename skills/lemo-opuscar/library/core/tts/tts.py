@@ -51,6 +51,6 @@ for L in lines:
     nz = np.where(np.abs(a) > (np.abs(a).max() if len(a) else 0) * .02)[0]
     if len(nz): a = a[max(0, nz[0] - int(.03 * sr)): nz[-1] + int(.08 * sr)]   # trim leading/trailing silence; if the whole clip is nearly silent, keep it as is
     else: print('warning: line', L['id'], 'is silent', file=sys.stderr)
-    sf.write(os.path.join(out, L['id'] + '.wav'), a, sr); dur[L['id']] = round(len(a) / sr, 3)
+    sf.write(os.path.join(out, f"{L['id']}.wav"), a, sr); dur[L['id']] = round(len(a) / sr, 3)
     print(L['id'], dur[L['id']], L['text'])
 json.dump(dur, open(os.path.join(out, 'dur.json'), 'w', encoding='utf-8'), indent=1)

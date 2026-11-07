@@ -1,8 +1,9 @@
-"""Whisper line-by-line check: python core/tts/asr_check.py lines.json voices_dir [--lang en|zh|auto] [--model base|small|…] [--threshold 0.92]
+"""Whisper line-by-line check: python core/tts/asr_check.py lines.json voices_dir [--lang en|zh|ja|ko|auto] [--model base|small|…] [--threshold 0.92]
 Compares each line's text with its transcription (0.6 s of silence is padded on both sides first; short lines are misheard without it) and
 writes per-word timestamps to voices_dir/words.json (for lip sync and line breaks).
 A line in lines.json may carry an "asr" field that overrides the expected text (proper names, onomatopoeia, a word Whisper always hears as another).
---lang  auto (default) decides by whether the text contains CJK characters. en requires an exact word-by-word match after dropping punctuation
+--lang  auto (default) decides by the script: CJK characters mean zh, ja when kana make up a tenth of them or more, ko when hangul does; otherwise en
+        (so 列夫・托尔斯泰 or a stray の in a Chinese script stays zh). en requires an exact word-by-word match after dropping punctuation
         and case (whole numbers 0–999 are turned into words on both sides, so "forty" and "40" match; larger numbers, years, ordinals like 3rd and
         numbers with punctuation (3.5, 1:30, 1,000, 40%) are not, so write the expected transcription in the "asr" field). zh (also ja / ko) compares
         by character, each number counting as one character with its value: 十九 and 19, 两千零二十六 and 2026, 一万九千 and 1.9万, 三点五 and 3.5,
@@ -20,6 +21,10 @@ Exit codes: 0 all lines pass; 1 some lines differ; 2 the check could not run (mo
 import sys, json, re, os, argparse, difflib, unicodedata
 
 CJK = re.compile('[㐀-鿿豈-﫿぀-ヿ가-힯]')
+# kana for telling Japanese apart: hiragana and katakana letters, small and half-width katakana; not ・ ー ゠ or the iteration marks,
+# which Chinese text uses too (列夫・托尔斯泰)
+KANA = re.compile('[\u3041-\u3096\u30a1-\u30fa\u31f0-\u31ff\uff66-\uff9d]')
+HANGUL = re.compile('[\u1100-\u11ff\u3131-\u318e\uac00-\ud7a3]')
 CHAR_LANGS = {'zh', 'ja', 'ko'}           # these languages are compared by character, the rest by word
 _ZH_DIGIT = dict(zip('零〇一二三四五六七八九两兩', '0012345678922'))   # 萬 億 兩: Whisper sometimes writes traditional characters
 _ZH_UNIT = {'十': 10, '百': 100, '千': 1000, '万': 10 ** 4, '萬': 10 ** 4, '亿': 10 ** 8, '億': 10 ** 8}
@@ -126,12 +131,19 @@ def zh_check(a, b, threshold):
     src = {c[1]: c[2] for c in a if not isinstance(c, str)}
     flat = lambda t: ''.join(c if isinstance(c, str) else src[c[1]] if c[1] in both else c[2] for c in t)
     x, y = flat(a), flat(b); r = difflib.SequenceMatcher(None, x, y).ratio() if (x or y) else 1.0
-    return r >= threshold, '' if r >= threshold else f'similarity {r:.2f} < {threshold}'
+    return r >= threshold, '' if r >= threshold else f'similarity {r:.3f} < {threshold}'
 
 
 def detect_lang(texts):
-    cjk = sum(len(CJK.findall(t)) for t in texts); latin = sum(len(re.findall('[A-Za-z]', t)) for t in texts)
-    return 'zh' if cjk and cjk >= 0.3 * (cjk + latin) else 'en'
+    """auto: CJK script decides, then kana mean Japanese and hangul Korean (Whisper is told the language, so Japanese must not be sent as zh).
+    Kana or hangul have to be a real part of the text, a tenth of its CJK characters or more: Japanese and Korean lines are mostly kana or
+    hangul, while a Chinese script may write a name with ・ or use a single の."""
+    s = ''.join(texts)
+    cjk = len(CJK.findall(s)); latin = len(re.findall('[A-Za-z]', s))
+    if not (cjk and cjk >= 0.3 * (cjk + latin)): return 'en'
+    kana, hangul = len(KANA.findall(s)), len(HANGUL.findall(s))
+    if hangul >= 0.1 * cjk and hangul >= kana: return 'ko'
+    return 'ja' if kana >= 0.1 * cjk else 'zh'
 
 
 def compare(want, got, lang, threshold=0.92):
@@ -167,14 +179,14 @@ def main():
     lines = json.load(open(a.lines, encoding='utf-8'))
     want = {L['id']: L.get('asr', L['text']) for L in lines}
     lang = detect_lang(list(want.values())) if a.lang == 'auto' else a.lang
-    name = a.model or os.environ.get('WHISPER_MODEL') or {'en': 'base.en', 'zh': 'small'}.get(lang, 'base')
+    name = a.model or os.environ.get('WHISPER_MODEL') or ('base.en' if lang == 'en' else 'small')   # base mishears Japanese and Korean too
     if lang != 'en' and os.path.basename(name.rstrip('/')).endswith('.en'):
         print(f"asr_check.py: model '{name}' is English-only but the lines are '{lang}'. Use a multilingual model (e.g. --model base or --model small).", file=sys.stderr); sys.exit(2)
     import numpy as np, soundfile as sf, soxr
     m = load_model(name)
     bad, words = 0, {}
     for L in lines:
-        y, sr = sf.read(os.path.join(a.voices_dir, L['id'] + '.wav'))
+        y, sr = sf.read(os.path.join(a.voices_dir, f"{L['id']}.wav"))
         if y.ndim > 1: y = y.mean(1)
         y = soxr.resample(y, sr, 16000, quality='HQ'); pad = np.zeros(int(.6 * 16000))   # same as librosa's default soxr_hq
         kw = dict(initial_prompt='以下是普通话的句子。') if lang == 'zh' else {}          # prompt in Simplified Chinese so the transcription doesn't come out in Traditional

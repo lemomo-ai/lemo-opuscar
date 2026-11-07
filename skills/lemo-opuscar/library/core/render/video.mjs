@@ -15,7 +15,10 @@ const outDir = path.dirname(out), base = path.basename(out, path.extname(out));
 fs.mkdirSync(outDir, { recursive: true });
 
 // —— only one render may write a given --out: <out>.lock holds the pid ——
-const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+const alive = pid => {
+  if (!Number.isInteger(pid) || pid <= 0) return false;   // an empty pid file reads as 0, and kill(0) would hit the whole process group (same guard as slot.mjs)
+  try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; }
+};
 const lock = out + '.lock', LOCK_MAX_AGE = 12 * 3600 * 1000;
 try { fs.writeFileSync(lock, String(process.pid), { flag: 'wx' }); } catch {
   const other = Number(fs.readFileSync(lock, 'utf8')), age = Date.now() - fs.statSync(lock).mtimeMs;
