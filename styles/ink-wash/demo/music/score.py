@@ -25,7 +25,7 @@ def H(t, pitch, vel=.55, pan=0., gain=1., dur=1.2, **kw):   # harmonic
 
 rng = np.random.default_rng(11)
 def xiao(t, pitch, dur, vel=.55, pan=-.15, gain=1., att=.5):
-    """Xiao: flute samples, low register (notes below C4 transposed down) + 3 kHz low-pass to remove brightness + breath noise (band-pass 800–3k, following the amplitude envelope), soft attack"""
+    """Xiao: flute samples, low register (notes below C4 transposed down) + 2.6 kHz low-pass to remove brightness + breath noise (band-pass 800–3k, following the amplitude envelope), soft attack"""
     x = S.note('flute', pitch, dur, vel, release=.6, attack=att).astype(np.float64)
     x = sosfilt(butter(2, 2600, 'low', fs=SR, output='sos'), x)
     env = np.abs(x); env = np.convolve(env, np.ones(960) / 960, 'same')

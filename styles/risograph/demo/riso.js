@@ -28,7 +28,7 @@ uniform float uBoil;       // share of ink grain that boils 0..1
 uniform float uSheet;      // sheet-level variation (ink streaks / density): changes only on shot cuts, to avoid full-screen flicker
 uniform float uPeriod;     // halftone dot period px
 uniform float uGate[3];    // whether this plate is on the machine yet 0..1
-uniform float uSweep[3];   // inking reveal: the x (px) this plate has advanced to from right to left; >= uRes.x+200 means fully revealed
+uniform float uSweep[3];   // inking reveal: the x (px) this plate has advanced to from left to right; >= uRes.x+200 means fully revealed
 uniform float uGrain;      // ink grain strength
 uniform float uWaterY;     // water line (px, canvas coordinates); <0 means no water
 uniform float uWaterAmp;   // reflection sway amplitude (px)
@@ -76,7 +76,6 @@ void main(){
     if (uGate[i] <= 0.001) continue;
     vec2 q = rot(px - uRes * .5, uRot[i]) + uRes * .5 - uOff[i];
     float d = dens(i, px);
-    // inking reveal: advances from right to left, with a slightly denser ink band at the edge
     // inking reveal: inked area = x < uSweep (advances from left to right), with a slightly denser ink band at the advancing edge
     float reveal = 1. - smoothstep(-5., 5., px.x - uSweep[i]);
     float band = exp(-pow((px.x - uSweep[i]) / 22., 2.));
