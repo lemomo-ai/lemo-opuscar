@@ -43,7 +43,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 
 **readcheck** asks the page for `window.TEXTS(t)` at every step. Each text must stay fully in frame, unchanged, for at least CJK characters ÷ 4.5 + other non-space characters ÷ 15 + 1.5 s, and never less than `--min`. A new `text` under the same `id` starts a new piece. Text marked `pass: true` (a shop sign in a fly-through, a label the camera sweeps past, fine-print licence credits on the end card) is listed as passing and not timed; never mark text the film needs read. Subtitles are checked by their `.srt`, not here.
 
-**mux** runs a two-pass `loudnorm` to −14 LUFS / true peak −1.2 dB and a 4× oversampled limiter that keeps the encoded film at or under −1 dBTP (if AAC still pushes a peak over, it encodes the audio again, picture copied), adds film grain (`grain` 0 = none) and prints the measured loudness. Silent audio is left at its level with a warning; short audio is padded, long audio cut at the picture's end; missing, damaged or truncated audio is refused. It never leaves a partial file.
+**mux** runs a two-pass `loudnorm` to −14 LUFS / true peak −1.2 dB and a 4× oversampled, delay-compensated limiter for a true peak at or under −1 dBTP (if AAC still pushes a peak over, it encodes the audio again with a lower ceiling, picture copied, up to three times, and warns if the peak is still over), adds film grain (`grain` 0 = none) and prints the measured loudness. Silent audio is left at its level with a warning; short audio is padded, long audio cut at the picture's end; missing, damaged or truncated audio is refused. It never leaves a partial file.
 
 ## Audio
 

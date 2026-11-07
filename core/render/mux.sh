@@ -1,7 +1,7 @@
 #!/bin/sh
 # Mux the finished film: mux.sh video.mp4 mix.wav out.mp4 [fps] [grain]
 # Video is output at the target frame rate (held segments get duplicated frames automatically); grain = grain strength (default 2, 0 = none; use 0 for pixel/vector styles)
-# Audio: two-pass loudnorm → −14 LUFS / TP −1.2 (a single pass is off by about 0.5 LU), then a 4× oversampled limiter at −1.6 dBFS, because AAC encoding adds
+# Audio: two-pass loudnorm → −14 LUFS / TP −1.2 (a single pass is off by about 0.5 LU), then a 4× oversampled limiter at −1.6 dBFS (its look-ahead compensated), because AAC encoding adds
 #   inter-sample peaks loudnorm can't see. If the encoded film still peaks above −1 dBTP, the audio alone is encoded again with the limiter lower (the picture is copied, up to 3 times).
 #   Finally prints the measured I / LRA / true peak and warns if off target (loudness outside ±1 LU or peak above −1 dB)
 # (when the mix itself clips or has extremely high peaks, loudnorm's dynamic mode misses both targets; measured −20 LUFS / +5 dBTP)
@@ -71,9 +71,10 @@ else
   echo "mux.sh: warning: the audio is silent or quieter than -70 LUFS, so loudness normalisation was skipped" >&2
 fi
 
-# true-peak guard: the limiter ceiling in dBFS → its filter, run at 192 kHz so it sees the peaks between samples
+# true-peak guard: the limiter ceiling in dBFS → its filter, run at 192 kHz so it sees the peaks between samples;
+# latency=1 takes back the limiter's 10 ms look-ahead, so the sound stays on the frames it was cut to
 CEIL=-1.6
-lim() { [ "$NORM" = 1 ] || return 0; echo ",aresample=192000,alimiter=limit=$(awk -v d="$1" 'BEGIN { printf "%.4f", 10 ^ (d / 20) }'):attack=10:release=200:level=disabled"; }
+lim() { [ "$NORM" = 1 ] || return 0; echo ",aresample=192000,alimiter=limit=$(awk -v d="$1" 'BEGIN { printf "%.4f", 10 ^ (d / 20) }'):attack=10:release=200:level=disabled:latency=1"; }
 
 # pad with silence if the audio is shorter than the picture
 dur() { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1" 2>/dev/null | head -1; }
@@ -103,10 +104,11 @@ ffmpeg -y -loglevel error -i "$V" -i "$A" \
 [ -s "$TMP" ] || die "no output was written to '$O'"
 mv -f "$TMP" "$O" || die "could not move the finished film to '$O'"
 echo "$O"
-measure() { ffmpeg -hide_banner -nostats -i "$O" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3; }
+measure() { ffmpeg -hide_banner -nostats -i "$O" -vn -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3; }
 R=$(measure); N=0
 while [ "$NORM" = 1 ] && [ $N -lt 3 ]; do
   OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
+  [ -n "$OP" ] || break                       # no measurement: don't re-encode blind
   awk -v p="$OP" 'BEGIN { exit !(p + 0 > -1) }' || break
   CEIL=$(awk -v c="$CEIL" -v p="$OP" 'BEGIN { printf "%.2f", c - (p + 1.3) }'); N=$((N + 1))
   echo "mux.sh: note: true peak $OP dB after encoding; encoding the audio again with the limiter at $CEIL dBFS (picture copied)" >&2
