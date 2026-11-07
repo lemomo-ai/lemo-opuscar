@@ -41,9 +41,11 @@ case "$1" in
       if command -v uv >/dev/null; then uv venv --quiet --python 3.12 .venv
       else py=$(find_py) || { echo "✗ Python 3.11+ is needed (or install uv, which fetches it)"; exit 1; }; "$py" -m venv .venv; fi
     fi
+    # uv is a native program: on Windows it needs the venv's Scripts/python.exe, not a bin/python meant for sh
+    upy=.venv/bin/python; [ ! -f .venv/Scripts/python.exe ] || upy=.venv/Scripts/python.exe
     for t in $tiers; do
       py_ok "$t" && continue
-      if command -v uv >/dev/null; then uv pip install --quiet --python .venv/bin/python -r "$(req "$t")"
+      if command -v uv >/dev/null; then uv pip install --quiet --python "$upy" -r "$(req "$t")"
       else .venv/bin/python -m pip install --quiet --disable-pip-version-check -r "$(req "$t")"; fi
       pysig "$(req "$t")" > ".venv/.lemo-$t"
     done
