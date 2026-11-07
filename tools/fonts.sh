@@ -415,10 +415,30 @@ _core = {f: os.path.join('core', 'fonts', f)
          for f in (os.listdir(os.path.join('core', 'fonts'))
                    if os.path.isdir(os.path.join('core', 'fonts')) else [])}
 
+# The family core/fonts/fonts.css declares for each of those files.  Needed
+# because the names are anonymised and collide with the demos' own.
+_corefam = {}
+_ccss = os.path.join('core', 'fonts', 'fonts.css')
+if os.path.exists(_ccss):
+    for _b in FF.findall(io.open(_ccss, encoding='utf-8', errors='ignore').read()):
+        _m = LOCAL.search(_b)
+        if _m: _corefam.setdefault(os.path.basename(_m.group(1)), prop(_b, 'font-family'))
+
+
 def tier_bundled(face, demo, log):
     base = os.path.basename(face['path'])
     src  = _core.get(base)
     if not src: return None
+    # hard gate: core/fonts/ ships f0..f7.woff2 and so do game-show,
+    # halftone-dossier, paper-popup and watercolor -- four different sets of
+    # families under one set of names.  Matching on basename alone handed
+    # watercolor's f4.woff2, declared Cormorant Garamond, the core face, which
+    # is ZCOOL KuaiLe.  Wrong type, exit 0, nobody told.
+    cf, df = norm(_corefam.get(base, '')), norm(face['family'] or '')
+    if cf and df and cf != df:
+        log.append('    bundled %s: core/fonts is %s, demo asks %s'
+                   % (base, _corefam.get(base), face['family']))
+        return None
     cdir = os.path.join('core', 'fonts')
     cmap = {re.sub(r'\s+', '', prop(b, 'unicode-range')): LOCAL.search(b).group(1)
             for b in FF.findall(open(os.path.join(cdir, 'fonts.css'), encoding='utf-8',
