@@ -4,7 +4,7 @@
 import fs from 'fs';
 const UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
 const fams=[['ZCOOL+KuaiLe','f'],['Noto+Serif+SC:wght@900','f'],['Bagel+Fat+One','f'],['JetBrains+Mono:wght@500;800','f'],['Noto+Sans+SC:wght@500;900','f'],['Fredoka:wght@600;700','fr']];
-const n={};let out='';
+const n={};let out='';fs.mkdirSync('fonts',{recursive:true});
 for(const [f,pre] of fams){
   const res=await fetch(`https://fonts.googleapis.com/css2?family=${f}&display=block`,{headers:{'User-Agent':UA}});
   if(!res.ok) throw new Error(`Google Fonts: ${f}: HTTP ${res.status}`);
