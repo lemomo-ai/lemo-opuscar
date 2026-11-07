@@ -16,6 +16,8 @@
 #   One case it can't detect: a streamed WAV truncated exactly on a sample boundary (no header length to compare, and decoding shows no error).
 # Audio shorter than the picture: padded with silence to the picture's length (the video is never cut short); audio longer: cut to the picture's length as before (-shortest).
 # Colour: by default exactly as before (keeps the yuvj420p full range / bt470bg tags that video.mjs outputs); LEMO_COLOR=bt709 switches to standard yuv420p limited range / bt709 (picture values differ by ±3 at most, but there's a slight colour difference from older films).
+# awk prints and reads decimals the way the locale says: under de_DE or fr_FR macOS awk writes 0,8318, and a comma splits an ffmpeg filter graph
+LC_ALL=C; export LC_ALL
 die() { echo "mux.sh: $*" >&2; exit 1; }
 V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 [ -n "$V" ] && [ -n "$A" ] && [ -n "$O" ] || die "usage: sh core/render/mux.sh video.mp4 mix.wav out.mp4 [fps=24] [grain=2]"
