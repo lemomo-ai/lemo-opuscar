@@ -20,3 +20,6 @@ The seven microgame looks are simplified re-drawings written from scratch after 
 Genre reference: the WarioWare series (Nintendo) — format grammar only; no characters, UI, microgames or music reused.
 
 Code: shaders and Canvas2D renderers in this folder; core/lib.js, core/render/*, core/audio/* from this repository.
+
+ON SCREEN
+The CC BY material above is credited on the end card, in fine print held at least 2.5 s: Piano: “Salamander Grand Piano V3” by Alexander Holm, CC BY 3.0 · Drums: “MuldjordKit” by Lars Muldjord, CC BY 4.0.

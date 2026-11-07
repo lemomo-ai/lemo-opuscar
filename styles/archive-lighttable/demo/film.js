@@ -362,7 +362,7 @@ function text(c, id, s, x, y, font, color, opt = {}) {
   if (id && c.globalAlpha * (opt.alpha ?? 1) > 0.6) {
     const m = c.measureText(s), wdt = m.width, x0 = opt.align === 'right' ? x - wdt : opt.align === 'center' ? x - wdt / 2 : x;
     const tf = c.getTransform(), p0 = tf.transformPoint({ x: x0, y: y - m.actualBoundingBoxAscent }), p1 = tf.transformPoint({ x: x0 + wdt, y: y + m.actualBoundingBoxDescent });
-    TXT.push({ id, text: opt.full || s, x0: Math.min(p0.x, p1.x), y0: Math.min(p0.y, p1.y), x1: Math.max(p0.x, p1.x), y1: Math.max(p0.y, p1.y) });
+    TXT.push({ id, text: opt.full || s, pass: !!opt.pass, x0: Math.min(p0.x, p1.x), y0: Math.min(p0.y, p1.y), x1: Math.max(p0.x, p1.x), y1: Math.max(p0.y, p1.y) });
   }
   c.textAlign = 'left';
 }
@@ -676,14 +676,15 @@ function indexPanel(c, t, st) {
 function endCard(c, t) {
   const k = eo(seg(t, HIT.endCard, HIT.endCard + 0.6)); if (k <= 0) return;
   const x = 96, y = 700;
-  c.save(); c.globalAlpha = k; wipe(c, x - 10, y - 90, 900, 260, k);
-  plate(c, x - 28, y - 86, 760, 236, 1.15);
+  c.save(); c.globalAlpha = k; wipe(c, x - 10, y - 90, 900, 296, k);
+  plate(c, x - 28, y - 86, 760, 272, 1.15);
   text(c, 'end-a', '差两秒', x, y, '600 76px SS', 'rgba(250,250,247,0.98)');
   text(c, 'end-b', 'Two Seconds Short', x + 262, y - 6, '400 34px PS', 'rgba(250,250,247,0.9)');
   c.fillStyle = ORANGE; c.fillRect(x, y + 28, 680, 2);
   text(c, 'end-c', 'ARCHIVE LIGHT TABLE', x, y + 72, '500 22px PM', 'rgba(250,250,247,0.85)');
   text(c, 'end-c2', '档案灯台', x + 290, y + 72, '500 22px SC', 'rgba(250,250,247,0.85)');
   text(c, 'end-d', 'LemoLab × Claude Opus 5.5', x, y + 116, '400 22px PS', 'rgba(250,250,247,0.75)');
+  text(c, 'end-e', 'Piano samples: “Salamander Grand Piano V3” by Alexander Holm, CC BY 3.0', x, y + 154, '400 18px PS', 'rgba(250,250,247,0.62)', { pass: true });   // licence credit (fine print)
   c.restore();
 }
 

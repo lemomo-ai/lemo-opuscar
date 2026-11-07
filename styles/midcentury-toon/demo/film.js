@@ -787,7 +787,7 @@ function sceneEnd(ctx, t, s) {
   shape(ctx, ellipse(W / 2, H / 2, R, R, 90), { fill: COL.paper, line: 0, grain: 0.2, off: [0, 0] });
   ink(ctx, ellipse(W / 2, H / 2, R + 18, R + 18, 90), 4, { closed: true, color: COL.paper, seed: 951, breaks: 0.3 });
   const ka = seg(t, b(2.2), b(2.8));
-  if (ka <= 0) return;
+  if (ka <= 0 && seg(t, b(1.9), b(2.4)) <= 0) return;
   ctx.save(); ctx.globalAlpha = ka;
   const F = C.film || {};
   text(ctx, F.name || C.hook.kicker, W / 2, 380, { font: '700 96px Oleo', fill: COL.ink, plate: COL.hook, off: [5, 4], align: 'center', maxW: 760 });
@@ -796,7 +796,9 @@ function sceneEnd(ctx, t, s) {
   text(ctx, 'Lemo-Opuscar', W / 2, 560, { font: '44px Slab', fill: COL.ink, align: 'center' });
   text(ctx, 'LemoLab × Claude Opus 5.5', W / 2, 612, { font: '500 32px Jost', fill: COL.ink, align: 'center' });
   const cf = fit(ctx, F.credits || '', '400 {px}px Jost', 21, 620, 4, 16);
+  ctx.globalAlpha = seg(t, b(1.9), b(2.4));   // the licence credits come in a little earlier, so they hold at least 2.5 s
   cf.lines.forEach((l, i) => text(ctx, l, W / 2, 668 + i * cf.px * 1.35, { font: cf.font, fill: PAL.inkSoft, align: 'center' }));
+  ctx.globalAlpha = ka;
   drawPip(ctx, W / 2, 882, { view: 'top', s: 0.34, ang: -Math.PI / 2, colors: colsOf() });
   ctx.restore();
 }

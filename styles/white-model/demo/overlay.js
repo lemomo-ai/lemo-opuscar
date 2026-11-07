@@ -18,7 +18,7 @@ export function makeOverlay(canvas) {
     if (o.shadow) { g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = o.shadow; }
     const w = g.measureText(s).width, xx = o.right ? x - w : o.center ? x - w / 2 : x;
     g.fillText(s, xx, y); g.restore();
-    if (id && a > .98) TX.push({ id, text: s, x0: xx, y0: y - px * .9, x1: xx + w, y1: y + px * .25 });
+    if (id && a > .98) TX.push({ id, text: s, pass: !!o.pass, x0: xx, y0: y - px * .9, x1: xx + w, y1: y + px * .25 });
     return w;
   }
   const width = (s, k, px, ls = 0) => { g.save(); g.font = font(k, px); g.letterSpacing = ls + 'px'; const w = g.measureText(s).width; g.restore(); return w; };
@@ -103,7 +103,10 @@ export function makeOverlay(canvas) {
     g.save(); g.globalAlpha = a; g.fillStyle = '#ffa13d'; g.fillRect(X, Y + 96, 120 * k, 2); g.restore();
     txt('end_style', '白模投影 · PROJECTION ON WHITE MODEL', X, Y + 140, 'mono', 22, 'rgba(230,234,240,.85)', a, { ls: 2 });
     txt('end_data', '3DBAG · BAG · BGT · 鹿特丹市档案馆', X, Y + 176, 'sc3', 21, 'rgba(225,230,236,.7)', a, { ls: 1 });
-    txt('end_sign', 'LemoLab × Claude Opus 5.5', X, Y + 236, 'num4', 26, '#ffffff', a);
+    // licence credit (fine print)
+    txt('end_lic', '3DBAG by 3DGI and the 3D geoinformation research group,', X, Y + 206, 'mono', 17, 'rgba(225,230,236,.72)', a, { pass: true });
+    txt('end_lic2', 'TU Delft, CC BY 4.0', X, Y + 229, 'mono', 17, 'rgba(225,230,236,.72)', a, { pass: true });
+    txt('end_sign', 'LemoLab × Claude Opus 5.5', X, Y + 280, 'num4', 26, '#ffffff', a);
   }
 
   return { g, begin, txt, width, env, scrims, readout, pin, rangeLine, subtitle, endCard, texts: () => TX };

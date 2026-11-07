@@ -403,6 +403,7 @@ function sEnd(t) {
   drawLine(L1, 960 - L1.width / 2 + (1 - p) * 300, 770, { col: C.ink, seed: 91, jit: .8, amp: 1.3 });
   label('LemoLab × Claude Opus 5.5', 960, 858, '600 44px LSpartan', C.red, 'center', 1);
   label('a LemoLab picture  ·  music by the sampler  ·  cut from paper', 960, 912, '400 24px LSpartan', C.ink, 'center', 1);
+  label('Drums: “MuldjordKit” by Lars Muldjord, CC BY 4.0', 960, 952, '400 22px LSpartan', C.ink, 'center', 1);   // licence credit (fine print)
   agentSide(1610, 940, .36, { ...AGENT_POSE.stand, shF: 2.9, elF: 1.9, eye: 'open' });
 }
 

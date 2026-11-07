@@ -5,7 +5,7 @@ import { LOOK, sit, run, walk, stand, cycle, dive, prone, wave, mixPose } from '
 const { V } = R3;
 
 export const BPM = 150, BEAT = 60 / BPM, BAR = BEAT * 3;
-const DUR = 32.4;
+const DUR = 33.4;   // the picture holds the end card 1 s past the score (32.4 s), so the last colophon line stays 2.5 s
 const q = new URLSearchParams(location.search);
 await Promise.all([document.fonts.load('80px Caveat'), document.fonts.load('80px "Reenie Beanie"')]);
 
@@ -292,11 +292,11 @@ function ripples(t) {
 const NOTE = 'Sun. 3:40 pm — windy';
 function notes(t) {
   handwrite(ctx, NOTE, 2640, 2010, 46, eo(seg(t, 1.55, 2.35)), { font: '"Reenie Beanie"', col: INK, alpha: .9, rot: -.03 });
-  handwrite(ctx, 'Where the wind went.', 150, 2660, 190, seg(t, 28.2, 29.5), { font: 'Caveat', weight: 500, col: INK });
-  const ex = 175, ey = 2870;   // small colophon text below the title (left-aligned, in the same column as the title)
-  handwrite(ctx, 'Urban Sketch \u00b7 Pen & Wash  \u2014  a Lemo-Opuscar style', ex, ey, 74, seg(t, 30.1, 30.8), { font: 'Caveat', alpha: .88 });
-  handwrite(ctx, 'LemoLab \u00d7 Claude Opus 5.5', ex, ey + 100, 92, seg(t, 30.6, 31.2), { font: 'Caveat', weight: 600 });
-  handwrite(ctx, 'music & sound: original, played on CC0 samples (VSCO 2 CE \u00b7 VCSL \u00b7 Karoryfer)   \u00b7   fonts: Caveat, Reenie Beanie (OFL)', ex, ey + 180, 48, seg(t, 31.0, 31.8), { font: 'Caveat', alpha: .78 });
+  handwrite(ctx, 'Where the wind went.', 250, 2660, 190, seg(t, 28.2, 29.5), { font: 'Caveat', weight: 500, col: INK });
+  const ex = 275, ey = 2870;   // small colophon text below the title (left-aligned, in the same column as the title)
+  handwrite(ctx, 'Urban Sketch \u00b7 Pen & Wash  \u2014  a Lemo-Opuscar style', ex, ey, 74, seg(t, 29.6, 30.2), { font: 'Caveat', alpha: .88 });
+  handwrite(ctx, 'LemoLab \u00d7 Claude Opus 5.5', ex, ey + 100, 92, seg(t, 29.9, 30.4), { font: 'Caveat', weight: 600 });
+  handwrite(ctx, 'music & sound: original, played on CC0 samples (VSCO 2 CE \u00b7 VCSL \u00b7 Karoryfer)   \u00b7   fonts: Caveat, Reenie Beanie (OFL)', ex, ey + 180, 48, seg(t, 30.2, 30.9), { font: 'Caveat', alpha: .78 });
 }
 
 window.DUR = DUR;

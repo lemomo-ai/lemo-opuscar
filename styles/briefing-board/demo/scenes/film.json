@@ -3726,6 +3726,136 @@
      "track": 1
     }
    ]
+  },
+  {
+   "type": "card",
+   "id": "credits",
+   "xy": [
+    3170,
+    1290
+   ],
+   "w": 1180,
+   "h": 930,
+   "rot": -1.2,
+   "z": 7,
+   "magnetR": 18,
+   "magnets": [
+    [
+     -520,
+     -400,
+     "blue"
+    ],
+    [
+     520,
+     -400,
+     "graphite"
+    ]
+   ],
+   "arrive": {
+    "t": 36.9,
+    "kind": "fade",
+    "d": 0.4
+   },
+   "lines": [
+    {
+     "text": "CREDITS",
+     "font": "mono",
+     "weight": 600,
+     "size": 62,
+     "x": 52,
+     "y": -300,
+     "color": "graphite",
+     "track": 3
+    },
+    {
+     "rule": true,
+     "x": 54,
+     "y": -268,
+     "w": 150,
+     "h": 6,
+     "color": "blue"
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "blue",
+     "pass_": true,
+     "text": "Photos",
+     "x": 52,
+     "y": -180
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "BAW – Bundesanstalt für",
+     "x": 52,
+     "y": -108
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "Wasserbau, CC BY 4.0",
+     "x": 52,
+     "y": -36
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "“Bear mountain bridge west II”",
+     "x": 52,
+     "y": 36
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "by Russ, CC BY 2.0",
+     "x": 52,
+     "y": 108
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "blue",
+     "pass_": true,
+     "text": "Drums",
+     "x": 52,
+     "y": 200
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "“MuldjordKit” by Lars",
+     "x": 52,
+     "y": 272
+    },
+    {
+     "font": "mono",
+     "weight": 500,
+     "size": 52,
+     "color": "graphite",
+     "pass_": true,
+     "text": "Muldjord, CC BY 4.0",
+     "x": 52,
+     "y": 344
+    }
+   ]
   }
  ],
  "ev": [

@@ -69,7 +69,7 @@ Palette as in STYLE.md §3 (paper, concrete, carpet, ink, persimmon accent, subj
 
 ## End card
 
-On the stand, "LemoLab × Claude Opus 5.5" lands word by word in the floor-type serif and holds 3 s, fully inside the frame. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+On the stand, "LemoLab × Claude Opus 5.5" lands word by word in the floor-type serif and holds 3 s, fully inside the frame. Under it, in the small floor-type serif, the licence credit for the Salamander piano samples (CC BY 3.0) fades in as the shot opens, so it holds to the end. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 

@@ -84,7 +84,7 @@ Demo numbers behind the STYLE.md rules: register offset `(6, 4)` px re-rolled at
 
 ## End card
 
-After the lockup, inside the iris circle: film title, style name, `Lemo-Opuscar`, `LemoLab × Claude Opus 5.5`, asset credits. The LemoLab sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+After the lockup, inside the iris circle: film title, style name, `Lemo-Opuscar`, `LemoLab × Claude Opus 5.5`, asset credits. The asset credits name the MuldjordKit drums (CC BY 4.0) and come in a little before the title so they hold 2.5 s. The LemoLab sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 

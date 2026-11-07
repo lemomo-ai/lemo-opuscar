@@ -75,7 +75,7 @@ No subtitles are needed. All text is **handwriting on the page**, written on wit
 
 The text stays in the world and moves with the camera, never as an overlay.
 
-End card (`demo/film.js`, `notes()`): the title "Where the wind went." written in Caveat 500 at 190 px in the lower-left margin (28.2–29.5 s), then the colophon in the same column: "Urban Sketch · Pen & Wash — a Lemo-Opuscar style" (30.1–30.8 s), "LemoLab × Claude Opus 5.5" in Caveat 600 (30.6–31.2 s), and the music, sample and font credits (31.0–31.8 s). The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card (take those `handwrite()` lines out when reusing the code).
+End card (`demo/film.js`, `notes()`): the title "Where the wind went." written in Caveat 500 at 190 px in the lower-left margin, about 120 px in from the edge (28.2–29.5 s), then the colophon in the same column: "Urban Sketch · Pen & Wash — a Lemo-Opuscar style" (29.6–30.2 s), "LemoLab × Claude Opus 5.5" in Caveat 600 (29.9–30.4 s), and the music, sample and font credits (30.2–30.9 s). The picture runs 1 s past the score (33.4 s) so the last line holds 2.5 s. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card (take those `handwrite()` lines out when reusing the code).
 
 ## Build notes
 

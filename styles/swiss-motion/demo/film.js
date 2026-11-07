@@ -386,8 +386,9 @@ function drawEndCard(g, t, opt = {}) {
   x = fx(0); revealText(g, 'Graphics', x, 276, 120, snap(t, T.home + E8 + 2 * E8, E16));
   font(g, 600, 36); revealText(g, 'LemoLab × Claude Opus 5.5', fx(0), 372, 36, snap(t, T.home + BEAT * 2, E16));
   font(g, 500, 19); g.fillStyle = C.ink;
-  ['Typeface Archivo', 'Score A dorian · 120 bpm', 'Voice Kokoro af_sarah'].forEach((s, i) => revealText(g, s, fx(4), 992 + i * 26, 19, snap(t, T.home + BEAT * 3 + i * E16, E16)));
-  g.fillRect(fx(4), 962, (FC * 2 + FG) * snap(t, T.home + BEAT * 3, E8), 1);
+  // the last two lines are the licence credit for the drum samples (fine print); the list comes in early enough to hold ≥ 2.5 s
+  ['Typeface Archivo', 'Score A dorian · 120 bpm', 'Voice Kokoro af_sarah', 'Drums MuldjordKit', 'Lars Muldjord · CC BY 4.0'].forEach((s, i) => revealText(g, s, fx(4), 940 + i * 26, 19, snap(t, T.home + BEAT * 1.5 + i * E16, E16)));
+  g.fillRect(fx(4), 910, (FC * 2 + FG) * snap(t, T.home + BEAT * 1.5, E8), 1);
 }
 
 // ======================================================================

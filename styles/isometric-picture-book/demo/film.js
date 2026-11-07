@@ -308,6 +308,9 @@ const PH = {
   ft12: { x: -6.2, y: -12.6, z: 0, t0: T.FT12, t1: sh(13)[0], step: .12, scale: 1.25, lines: [[['2012', 'n'], [' · 72 名乘客', 's']]] },
   ft13: { x: 2.3, y: 5.7, z: 0, t0: T.BAND + .2, t1: sh(14)[0], step: .14, scale: .85, lines: [[['同', 'A'], ['一段过道', 'B']]] },
   end: { x: -3.2, y: -11.0, z: 0, t0: T.END0, t1: 99, step: .16, scale: 1.25, lines: [[['LemoLab', 'e'], [' × ', 'e'], ['Claude', 'e'], [' Opus', 'e'], [' 5.5', 'e']]] },
+  // licence credit (fine print, not timed by readcheck): fades in under the sign-off as the shot opens, so it holds to the end (≥ 2.5 s)
+  endcr: { x: -3.2 + 1.25 * 1.25, y: -11.0, z: 0, t0: T.END0 - .1, t1: 99, step: .05, lineGap: 0, scale: 1.25, dv: 1.0, indent: 0, pass: true,
+    lines: [[['Piano samples: “Salamander Grand Piano V3”', 'en']], [['by Alexander Holm, CC BY 3.0', 'en']]] },
 };
 const LAY = {}; for (const k in PH) LAY[k] = phraseLayout(PH[k]);
 const typeAt = (g, t, Q, keys) => { if (!Q.has('notype')) for (const k of keys) floorType(g, t, PH[k], LAY[k]); };
@@ -530,7 +533,7 @@ function shot13(g, t, Q) { // back in the aisle: the jammed stretch lit in persi
     floorDecal: aisleBand(DOORY + .4, rowY(9) + .3, .8 * a), people: () => queuePeople(ts, 'cabin'), bridgePeople: () => queuePeople(ts, 'bridge'),
   });
 }
-function shot14(g, t, Q) { exterior(g, t, Q, { type: ['end'], glassH: 1.1 }); }
+function shot14(g, t, Q) { exterior(g, t, Q, { type: ['end', 'endcr'], glassH: 1.1 }); }
 const SHOTS = [shot1, shot2, shot3, shot4, shot5, shot6, shot7, shot8, shot9, shot10, shot11, shot12, shot13, shot14];
 
 // ======================================================================
@@ -547,13 +550,13 @@ function planeBox(x, y, z, plane, u0, u1, v0, v1) {
   const pts = [P(u0, v0), P(u1, v0), P(u0, v1), P(u1, v1)];
   return { x0: Math.min(...pts.map(p => p[0])), x1: Math.max(...pts.map(p => p[0])), y0: Math.min(...pts.map(p => p[1])), y1: Math.max(...pts.map(p => p[1])) };
 }
-const KEYS = [['title'], ['title', 'ft1'], ['ft2'], ['ft3'], ['ft5'], ['ft4'], ['ft4', 'ft7'], ['ft8'], ['ft9'], ['ft10'], ['b1', 'b2'], ['ft12'], ['ft13'], ['end']];
+const KEYS = [['title'], ['title', 'ft1'], ['ft2'], ['ft3'], ['ft5'], ['ft4'], ['ft4', 'ft7'], ['ft8'], ['ft9'], ['ft10'], ['b1', 'b2'], ['ft12'], ['ft13'], ['end', 'endcr']];
 export function texts(t) {
   const out = []; iso.cam = camAt(t);
   let i = S.findIndex(([a, b]) => t >= a && t < b); if (i < 0) i = S.length - 1;
   for (const k of KEYS[i]) {
     const P = PH[k], L = LAY[k]; if (t < L[0].tc || t >= P.t1) continue;
-    for (const li of [...new Set(L.map(c => c.li))]) out.push({ id: `${k}.${li}`, text: L.filter(c => c.li === li).map(c => c.ch).join(''), ...phraseBox(P, L, li) });
+    for (const li of [...new Set(L.map(c => c.li))]) out.push({ id: `${k}.${li}`, text: L.filter(c => c.li === li).map(c => c.ch).join(''), pass: !!P.pass, ...phraseBox(P, L, li) });
   }
   if (i === 1 && t >= T.MOVE1) {
     const D = DOOR_SIGN; out.push({ id: 'doorSign', text: 'B12 登机口 GATE', ...planeBox(D.x, D.y, D.z, 'yz', 0, D.w, -D.h, 0) });

@@ -211,6 +211,9 @@ export function build(W = 1920, H = 1080) {
   const e1 = add(centred('汉字的故事', 4800, 740, 200, T.back0 + .2, { seed: 98, speed: 170 }), 'FR');
   const e1e = add(centredLatin('The Story of Chinese Characters', 4800, 990, 70, T.back0 + .7, { seed: 99, lspeed: 420 }), 'FR');
   const c2 = add(centredLatin('LemoLab × Claude Opus 5.5', 4800, 1240, 80, T.back0 + .45, { seed: 97, lspeed: 240 }), 'FR');
+  // licence credit for the chalk recording: already on the clean panel when it slides back (t < 0: drawn whole, never heard)
+  const cr = add(centredLatin('Chalk sound: “WWS Chalk” by Work With Sounds / La Fonderie, CC BY 4.0', 4800, 1400, 30, -3, { seed: 96, lspeed: 4000 }), 'FR');
+  cr.forEach(s => { s.t0 = -3; s.t1 = -2; });
   text('end-title', '汉字的故事', 'FR', e1); text('end-title-en', 'The Story of Chinese Characters', 'FR', e1e); text('end-credit', 'LemoLab × Claude Opus 5.5', 'FR', c2);
   T.DUR = +Math.max(c2[0].t0 + 3.0, e1e[0].t0 + needOf('The Story of Chinese Characters') + .05).toFixed(2);
 

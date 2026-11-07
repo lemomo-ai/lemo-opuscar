@@ -251,6 +251,17 @@ el(type='card', id='endcard', xy=[CARD['x'], CARD['y']], w=CARD['w'], h=CARD['h'
           dict(text='BRIEFING BOARD', font='mono', weight=600, size=72, x=72, y=48, color='graphite', track=3),
           dict(text='工程简报板', font='sc', weight=700, size=78, x=72, y=160, color='graphite', track=10),
           dict(text='LemoLab × Claude Opus 5.5', font='mono', weight=500, size=60, x=72, y=290, color='grey', track=1)])
+# licence credits: a card that fades in on the empty middle of the board as the camera pulls back to the whole board
+CL = dict(font='mono', weight=500, size=52, color='graphite', pass_=True)
+el(type='card', id='credits', xy=[3170, 1290], w=1180, h=930, rot=-1.2, z=7, magnetR=18,
+   magnets=[[-520, -400, 'blue'], [520, -400, 'graphite']], arrive=dict(t=36.9, kind='fade', d=.4),
+   lines=[dict(text='CREDITS', font='mono', weight=600, size=62, x=52, y=-300, color='graphite', track=3),
+          dict(rule=True, x=54, y=-268, w=150, h=6, color='blue'),
+          dict(CL, text='Photos', x=52, y=-180, color='blue'),
+          dict(CL, text='BAW – Bundesanstalt für', x=52, y=-108), dict(CL, text='Wasserbau, CC BY 4.0', x=52, y=-36),
+          dict(CL, text='“Bear mountain bridge west II”', x=52, y=36), dict(CL, text='by Russ, CC BY 2.0', x=52, y=108),
+          dict(CL, text='Drums', x=52, y=200, color='blue'),
+          dict(CL, text='“MuldjordKit” by Lars', x=52, y=272), dict(CL, text='Muldjord, CC BY 4.0', x=52, y=344)])
 
 # ================================================================= camera
 r1, r2, r3, r4 = (rows[n] for n in ('beam', 'arch', 'cable', 'suspension'))

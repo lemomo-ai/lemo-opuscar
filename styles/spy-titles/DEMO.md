@@ -67,7 +67,7 @@ Adapting any topic: make the topic the **MacGuffin** and the title its destinati
 - **Subtitles**: a narrow paper strip (scissor-cut ends, tilted −1°) bottom-left at (96, 958), a small red keyhole glyph as the bullet, League Spartan 600 44 px. Cream strip with ink text on dark scenes; ink strip with cream text on cream scenes. Slides in 60 px from the left in 0.18 s. Display ≥ max(1.8 s, voice + 0.6 s).
 - **Credits live in the set**, never in the subtitle band. One line per location.
 - **Title**: custom cut glyphs; the MacGuffin's slot is a letter (here the I of CIPHER is a black "lock plate" with a red keyhole; the key's outline fills it).
-- **End card**: small title, "60s SPY TITLE SEQUENCE" in cut League Gothic, "LemoLab × Claude Opus 5.5" in red Spartan, tiny agent tipping his hat. The LemoLab sign-off (and the "A LEMOLAB PICTURE" credit) belong to this library's demo only: a user's film carries no LemoLab credit and no copy of this card; its fictional credits name the user's own roles.
+- **End card**: small title, "60s SPY TITLE SEQUENCE" in cut League Gothic, "LemoLab × Claude Opus 5.5" in red Spartan, tiny agent tipping his hat. Under the credit line, the licence credit for the MuldjordKit drums (CC BY 4.0). The LemoLab sign-off (and the "A LEMOLAB PICTURE" credit) belong to this library's demo only: a user's film carries no LemoLab credit and no copy of this card; its fictional credits name the user's own roles.
 
 ## Pitfalls
 

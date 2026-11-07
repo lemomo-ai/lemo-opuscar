@@ -58,7 +58,7 @@ Slate #0f1c15 with slow mottling; white chalk, orange chalk (the bow, 身, the �
 
 ## End card
 
-The front panel slides back over the rewritten board; on the clean right panel 汉字的故事 / The Story of Chinese Characters and "LemoLab × Claude Opus 5.5" are written in chalk and held about 3.5 s. The sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+The front panel slides back over the rewritten board; on the clean right panel 汉字的故事 / The Story of Chinese Characters and "LemoLab × Claude Opus 5.5" are written in chalk and held about 3.5 s. The licence credit for the chalk recording (Work With Sounds, CC BY 4.0) is already on that panel in small chalk when it slides back: its strokes are dated before the film starts, so they draw whole and add no chalk sound. The sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 

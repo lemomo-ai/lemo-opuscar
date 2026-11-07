@@ -684,10 +684,10 @@ export function subCheck() {   // every cue: each language must fit on one line 
 // ---------------------------------------------------------------- readcheck + sound events
 export function sceneTexts(t) {
   const out = [], c = camAt(t);
-  const box = (id, text, pts, z) => {
+  const box = (id, text, pts, z, pass = false) => {
     const sp = pts.flatMap(p => [toScreen(p, z, t, c), toScreen([p[0], pts[1 - pts.indexOf(p)][1]], z, t, c)]);
     const xs = sp.map(p => p[0]), ys = sp.map(p => p[1]);
-    out.push({ id, text, x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) });
+    out.push({ id, text, pass, x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) });
   };
   for (const e of els) {
     if (e.type === 'tag' && e.text) {
@@ -700,7 +700,7 @@ export function sceneTexts(t) {
       if (t < e.t) continue; const s = (e.size || 160); box(e.id || 'stamp', e.text, [[e.xy[0] - s, e.xy[1] - s * .6], [e.xy[0] + s, e.xy[1] + s * .6]], 0);
     } else if (e.type === 'card') {
       const m = motion(e, t); if (!m.vis) continue;
-      (e.lines || []).forEach((l, i) => { if (l.text) box((e.id || 'card') + ':' + i, l.text, cardLineBox(e, l, m), m.z); });
+      (e.lines || []).forEach((l, i) => { if (l.text) box((e.id || 'card') + ':' + i, l.text, cardLineBox(e, l, m), m.z, l.pass_); });   // pass_: fine-print credits, not timed
     }
   }
   return out;

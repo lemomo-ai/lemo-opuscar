@@ -284,8 +284,9 @@ export function s6(E) {
     text(c, '末班夜车', MX, .0, .0066, '"NotoSerifSC"', { fill: ink, weight: 600 });
     c.fillStyle = '#b89a6a'; c.fillRect(MX - .03, -.0072, .06, .0005);
     { const a = '纸雕灯影', b = 'Paper-cut Lightbox', sa = .0042, sb = .0046, gap = .003, wa = run(a, '"NotoSerifSC"', sa, 500), wb = run(b, SERIF, sb, 600), x0 = MX - (wa + gap + wb) / 2;
-      text(c, a, x0, -.0125, sa, '"NotoSerifSC"', { fill: soft, weight: 500, align: 'left' }); text(c, b, x0 + wa + gap, -.0125, sb, SERIF, { fill: soft, weight: 600, align: 'left' }); }
-    text(c, 'LemoLab × Claude Opus 5.5', MX, -.0228, .0062, SERIF, { fill: ink, weight: 700 });
+      text(c, a, x0, -.0118, sa, '"NotoSerifSC"', { fill: soft, weight: 500, align: 'left' }); text(c, b, x0 + wa + gap, -.0118, sb, SERIF, { fill: soft, weight: 600, align: 'left' }); }
+    text(c, 'LemoLab × Claude Opus 5.5', MX, -.0212, .0062, SERIF, { fill: ink, weight: 700 });
+    text(c, 'Piano: “Salamander Grand Piano V3”, Alexander Holm, CC BY 3.0', MX, -.0266, .0035, SERIF, { fill: soft, weight: 600 });   // licence credit (fine print)
     c.save(); c.translate((PERF + TW / 2) / 2, 0); c.rotate(-.22); c.strokeStyle = '#b3302a'; c.lineWidth = .0013; c.beginPath(); c.arc(0, 0, .0105, 0, TAU); c.stroke();
     c.lineWidth = .0006; c.beginPath(); c.arc(0, 0, .0085, 0, TAU); c.stroke();
     text(c, '车', 0, .0006, .0092, '"NotoSerifSC"', { fill: '#b3302a', weight: 700 }); c.restore();
