@@ -9,5 +9,5 @@ for i, ((t, txt), id_) in enumerate(zip(vo, ids)):
     nxt = vo[i + 1][0] - .15 if i + 1 < len(vo) else DUR
     cues.append({'t0': round(t - .05, 3), 't1': round(min(nxt, t + max(1.8, dur[id_] + .7)), 3), 'text': txt})
 json.dump(cues, open(os.path.join(D, 'out', 'cues.json'), 'w'), ensure_ascii=False, indent=1)
-subprocess.run([os.path.join(ROOT, '.venv/bin/python'), os.path.join(ROOT, 'core/render/srt.py'), os.path.join(D, 'out', 'cues.json'), os.path.join(D, '..', 'papercut-red.srt')], check=True)
+subprocess.run([sys.executable, os.path.join(ROOT, 'core/render/srt.py'), os.path.join(D, 'out', 'cues.json'), os.path.join(D, '..', 'papercut-red.srt')], check=True)
 for c in cues: print(c)
