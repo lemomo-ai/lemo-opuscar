@@ -1,5 +1,5 @@
 // ============================================================
-// "AI 进化节拍" (AI Evolution Beat) — Rhythm Heaven (节奏天国) style, 140 BPM
+// "AI 进化节拍" (AI Evolution Beat) — rhythm-game style, 140 BPM
 // Every "hit" is registered through ev(); the renderer exports events.json, and the music script places SFX/voices from it
 // ============================================================
 const K = {
@@ -7,7 +7,7 @@ const K = {
   pink: '#FF8FB1', purple: '#6B4FBB', purpleD: '#46318F', teal: '#3FB8AF', tealD: '#2B8F88', blue: '#4D7CFE',
   navy: '#26264A', sky: '#8ED1FC', green: '#5BD68A', wood: '#C98A52', woodD: '#8E5530', gray: '#C3CAD9',
   skin: '#FFD1A8', gpt: '#19B388', claude: '#D97757', gem1: '#4E7CF6', gem2: '#9B6CF0', llama: '#F4E9D8',
-  whale: '#4D6BFE', dblue: '#2B59C3', chalk: '#2F5D50', lime: '#C6F16D',
+  seek: '#5A78E8', dblue: '#2B59C3', chalk: '#2F5D50', lime: '#C6F16D',
 };
 F.round = "'Fredoka', 'Noto Sans SC'";
 const OW = 8;
@@ -194,7 +194,6 @@ function bean(parent, o) {
   const armL = mkArm(), armR = mkArm();
   for (const x of [-34, 34]) el('ellipse', { cx: x, cy: -8, rx: 30, ry: 15, fill: color, ...SO }, body);
   if (kind === 'llama') for (const sx of [-1, 1]) el('path', { d: `M ${sx * 30} -160 C ${sx * 34} -230 ${sx * 60} -250 ${sx * 64} -210 C ${sx * 66} -180 ${sx * 56} -160 ${sx * 50} -150 Z`, fill: color, ...SO }, body);
-  if (kind === 'whale') el('path', { d: 'M 70 -60 C 120 -70 140 -120 130 -150 C 110 -130 90 -120 76 -110 Z', fill: color, ...SO }, body);
   el('path', { d: 'M -80 -20 C -88 -112 -52 -172 0 -172 C 52 -172 88 -112 80 -20 C 72 -2 -72 -2 -80 -20 Z', fill: color, ...SO }, body);
   if (belly) el('ellipse', { cx: 0, cy: -48, rx: 44, ry: 32, fill: belly }, body);
   if (acc === 'noise') { const r = rng(77); for (let i = 0; i < 26; i++) el('circle', { cx: (r() - .5) * 120, cy: -30 - r() * 120, r: 3 + r() * 5, fill: [K.pink, K.yellow, K.lime, K.white][i % 4] }, body); }
@@ -202,8 +201,6 @@ function bean(parent, o) {
   // Top of the head
   if (kind === 'llama') {
     for (const [x, y, r] of [[-22, -168, 20], [0, -176, 22], [22, -168, 20]]) el('circle', { cx: x, cy: y, r, fill: K.white, ...SO, 'stroke-width': 6 }, body);
-  } else if (kind === 'whale') {
-    el('path', { d: 'M 0 -172 C -6 -196 -30 -206 -40 -196 M 0 -172 C 6 -196 30 -206 40 -196 M 0 -172 L 0 -206', fill: 'none', stroke: K.sky, 'stroke-width': 10, 'stroke-linecap': 'round' }, body);
   } else if (acc === 'beret') {
     el('ellipse', { cx: 12, cy: -168, rx: 74, ry: 24, fill: '#2B2F77', ...SO, transform: 'rotate(-12 12 -168)' }, body);
     el('circle', { cx: 16, cy: -196, r: 9, fill: '#2B2F77', ...SO, 'stroke-width': 5 }, body);
@@ -214,6 +211,7 @@ function bean(parent, o) {
   } else if (ant) {
     el('line', { x1: 0, y1: -172, x2: 0, y2: -206, stroke: K.ol, 'stroke-width': 7 }, body);
     const a = el('g', { transform: 'translate(0 -222)' }, body);
+    if (ant === 'lens') { el('line', { x1: 8, y1: 10, x2: 20, y2: 24, stroke: K.ol, 'stroke-width': 9, 'stroke-linecap': 'round' }, a); el('circle', { cx: -4, cy: -4, r: 17, fill: '#E8F4FF', ...SO, 'stroke-width': 6 }, a); el('path', { d: 'M -13 -8 Q -10 -16 -2 -17', fill: 'none', stroke: K.white, 'stroke-width': 4, 'stroke-linecap': 'round' }, a); }   // a magnifier: "seek", not a logo
     if (ant === 'q') txt(a, '?', { x: 0, y: 18, 'font-size': 56, 'font-family': F.round, 'font-weight': 700, fill: K.yellow, stroke: K.ol, 'stroke-width': 7, 'paint-order': 'stroke', 'text-anchor': 'middle' });
     if (ant === 'bolt') el('path', { d: 'M 6 -26 L -14 4 L 0 4 L -6 28 L 16 -4 L 2 -4 Z', fill: K.yellow, ...SO, 'stroke-width': 5 }, a);
     if (ant === 'moon') el('path', { d: 'M 8 -22 A 22 22 0 1 0 8 22 A 16 16 0 1 1 8 -22 Z', fill: K.yellow, ...SO, 'stroke-width': 5 }, a);
@@ -271,7 +269,7 @@ const CAST = {
   claude: (p, n = 'Claude') => bean(p, { color: K.claude, belly: '#F6D3BE', antenna: K.cream, name: n }),
   gemini: (p, n = 'Gemini') => twins(p, n),
   llama: (p) => bean(p, { color: K.llama, belly: K.white, kind: 'llama', name: 'Llama' }),
-  deepseek: (p) => bean(p, { color: K.whale, belly: '#BFD0FF', kind: 'whale', name: 'DeepSeek' }),
+  deepseek: (p) => bean(p, { color: K.seek, belly: '#C9D6FF', ant: 'lens', name: 'DeepSeek' }),
   ernie: (p) => bean(p, { color: '#3AA0FF', belly: '#C9E6FF', ant: 'heart', name: '文心一言' }),
   qwen: (p) => bean(p, { color: '#7B5CFF', belly: '#D7CCFF', ant: 'q', name: '通义千问' }),
   mistral: (p) => bean(p, { color: '#FF7A1A', belly: '#FFD2A8', acc: 'beret', name: 'Mistral' }),
@@ -312,12 +310,16 @@ function setArm(a, x1, y1, x2, y2) {
   for (const l of [a.aO, a.aI]) { l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2); }
   if (a.hand) { a.hand.setAttribute('cx', x2); a.hand.setAttribute('cy', y2); }
 }
-function robotW(parent) {
+function robotW(parent) {   // a generic quiz bot (screen face on a box head), not IBM's Watson avatar
   const g = el('g', {}, parent);
-  el('circle', { cx: 0, cy: 0, r: 110, fill: '#16307A', ...SO }, g);
-  const lines = el('g', { fill: 'none', stroke: '#5CF2FF', 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
-  for (let i = 0; i < 5; i++) el('path', { d: `M ${-80 + i * 8} ${-40 + i * 20} Q 0 ${-90 + i * 45} ${80 - i * 8} ${-40 + i * 20}`, opacity: 0.4 + 0.12 * i }, lines);
-  const glow = el('circle', { cx: 0, cy: 0, r: 110, fill: '#5CF2FF', opacity: 0 }, g);
+  el('line', { x1: 0, y1: -110, x2: 0, y2: -146, stroke: K.ol, 'stroke-width': 8 }, g);
+  el('circle', { cx: 0, cy: -156, r: 16, fill: K.yellow, ...SO, 'stroke-width': 6 }, g);
+  el('rect', { x: -120, y: -110, width: 240, height: 200, rx: 44, fill: K.gray, ...SO }, g);
+  el('rect', { x: -92, y: -82, width: 184, height: 132, rx: 26, fill: K.navy, ...SO, 'stroke-width': 6 }, g);
+  const lines = el('g', {}, g);   // the face on the screen
+  for (const x of [-40, 40]) el('rect', { x: x - 16, y: -52, width: 32, height: 40, rx: 12, fill: '#5CF2FF' }, lines);
+  el('path', { d: 'M -32 12 Q 0 30 32 12', fill: 'none', stroke: '#5CF2FF', 'stroke-width': 8, 'stroke-linecap': 'round' }, lines);
+  const glow = el('rect', { x: -120, y: -110, width: 240, height: 200, rx: 44, fill: '#5CF2FF', opacity: 0 }, g);
   return { g, lines, glow };
 }
 function podium(parent, col, label) {
@@ -487,7 +489,7 @@ function buildAll() {
     const fxG = el('g', {}, g);
     const moves = []; const r = rng(3); const used = new Set();
     const cell = (n) => { let i, j; do { i = Math.floor(r() * n); j = Math.floor(r() * n); } while (used.has(`${n}${i},${j}`)); used.add(`${n}${i},${j}`); return [i, j]; };
-    // Chess: sides alternate every beat; checkmate in bar 4
+    // Chess: sides alternate every beat; the human resigns in bar 4 ("Game over.": Game 6 of 1997 ended in resignation, not mate)
     for (let bar = 0; bar < 4; bar++) for (let bt = 0; bt < 4; bt++) {
       const who = bar === 3 && bt >= 1 ? 'a' : (bt % 2 ? 'a' : 'h');
       const t0 = T(bar, bt); const [i, j] = cell(8);
@@ -498,7 +500,7 @@ function buildAll() {
       ev(t0, who === 'h' ? 'tock' : 'bleep'); punch(t0, 0.012);
       s.fx.push(burst(fxG, x, y - 30, t0, who === 'h' ? K.white : K.yellow, 0.55));
     }
-    ev(T(3, 2), 'v:checkmate');
+    ev(T(3, 2), 'v:gameover');
     // Go: sides alternate on eighth notes; move 37 in bar 8
     for (let bar = 4; bar < 7; bar++) for (let k = 0; k < 8; k++) {
       const t0 = T(bar, k / 2); const who = k % 2 ? 'a' : 'h'; const [i, j] = cell(9);
@@ -548,7 +550,7 @@ function buildAll() {
     };
   }); }
 
-  // ================= G2 Quiz buzzer (智力抢答, Watson) =================
+  // ================= G2 Quiz buzzer (智力抢答, 2011) =================
   { const b0 = SECT.g2 + 1, T = (bar, bt = 0) => at(b0 + bar, bt);
   card(SECT.g2, 'GAME 2', '智力抢答', '2011', '#2F6BFF', '#4A80FF', (p) => { const w = el('g', { transform: 'scale(1.6)' }, p); el('circle', { cx: 0, cy: 0, r: 60, fill: K.red, ...SO }, w); el('rect', { x: -70, y: 30, width: 140, height: 40, rx: 12, fill: K.gray, ...SO }, w); });
   scene(T(0), T(8), (g, s) => {
@@ -600,7 +602,7 @@ function buildAll() {
       [h1, h2].forEach(h => { humanFace(h, lb !== null || t >= T(7, 3), bar >= 2); h.sweat.setAttribute('transform', `translate(0 ${(t * 60) % 24})`); setArm(h.arm, 60, -150, 110, lb !== null ? -250 : -60); });
       tf(wW, 1400, 640 + hopY(t, 10), 1, 0);
       op(wat.glow, wb !== null ? 0.5 * (1 - seg(t, wb, wb + 0.3)) : 0);
-      wat.lines.setAttribute('transform', `rotate(${t * 60})`);
+      wat.lines.setAttribute('transform', `translate(0 ${wb !== null ? -6 : 0})`);
       tf(host, 170, 1000 + hopY(t, 6), 0.75, 0);
       humanFace(hh, heyAt(qs.concat([T(6, 0)]), t, 0.35), false);
       setArm(hh.arm, 60, -150, heyAt(qs, t, 0.3) ? 200 : 110, heyAt(qs, t, 0.3) ? -260 : -60);
@@ -884,8 +886,9 @@ function buildAll() {
     el('rect', { x: 460, y: 50, width: 1000, height: 220, rx: 16, fill: K.woodD, ...SO }, board);
     el('rect', { x: 480, y: 70, width: 960, height: 180, rx: 10, fill: K.chalk }, board);
     txt(board, '9.11 和 9.9，哪个大？', { x: 960, y: 185, 'font-size': 76, 'font-family': F.cute, fill: K.white, 'text-anchor': 'middle' });
-    const X = [420, 800, 1180, 1560], ks = ['gpt', 'claude', 'gemini', 'qwen'];
-    const cast = ks.map((k, i) => { const w = el('g', {}, g); return { w, c: CAST[k](w, k === 'gpt' ? 'o1' : undefined), x: X[i] }; });
+    // Generic bots, no names: no official record says which models answered 9.11 (it was a 2024 internet test)
+    const X = [420, 800, 1180, 1560], cols = [K.pink, K.lime, K.orange, '#B39DFF'];
+    const cast = X.map((x, i) => { const w = el('g', {}, g); return { w, c: smallBot(w, cols[i]), x }; });
     const desks = el('g', {}, g);
     X.forEach(x => { el('rect', { x: x - 160, y: 830, width: 320, height: 56, rx: 10, fill: K.wood, ...SO }, desks); el('rect', { x: x - 140, y: 886, width: 280, height: 200, fill: K.woodD, ...SO }, desks); });
     const bubbles = X.map(x => {
@@ -934,8 +937,9 @@ function buildAll() {
     el('rect', { x: 0, y: 880, width: 1920, height: 200, fill: '#C8383D' }, g);
     el('line', { x1: 0, y1: 880, x2: 1920, y2: 880, stroke: K.ol, 'stroke-width': OW }, g);
     const mkSign = (x, label, price, col) => { const sg = el('g', {}, g); el('rect', { x: -12, y: -220, width: 24, height: 220, fill: K.gray, ...SO }, sg); const bd = el('g', {}, sg); el('rect', { x: -150, y: -400, width: 300, height: 190, rx: 22, fill: col, ...SO }, bd); txt(bd, label, { x: 0, y: -350, 'font-size': 32, 'font-family': F.round, 'font-weight': 700, fill: K.ol, 'text-anchor': 'middle' }); const pt = gtext(bd, price, 0, -250, 88, { family: F.round, weight: 700, fill: K.ol, stroke: col, sw: 0 }); return { sg, bd, pt, x }; };
-    const signs = [mkSign(300, 'o1', '$60', K.white), mkSign(640, 'Claude', '$15', K.white), mkSign(980, 'Gemini', '$10', K.white)];
+    const signs = [mkSign(300, 'o1', '$60', K.white), mkSign(640, 'Claude', '$15', K.white), mkSign(980, 'Gemini', '$5', K.white)];
     const r1 = mkSign(1310, 'DeepSeek-R1', '$2.19', K.lime);
+    const unit = el('g', {}, g); gtext(unit, '每百万输出 token', 0, 0, 44, { family: F.sans, weight: 900, fill: K.white, sw: 10 });   // the four tags are output prices per 1M tokens
     const ww = el('g', {}, g); const wh = CAST.deepseek(ww);
     const hammer = el('g', {}, g);
     el('rect', { x: -12, y: -330, width: 24, height: 330, rx: 10, fill: K.woodD, ...SO }, hammer);
@@ -946,7 +950,7 @@ function buildAll() {
     slams.forEach(([t0, i]) => { ev(t0, 'hammer'); punch(t0, 0.025); s.fx.push(burst(fxG, signs[i].x, 520, t0, K.yellow, 0.9)); });
     ev(T(4, 0), 'land'); ev(T(4, 0), 'v:cheaper'); ev(T(7, 3), 'slam'); punch(T(7, 3), 0.045); ev(T(6, 0), 'v:whoa');
     const ratio = el('g', {}, g); gtext(ratio, '≈ 1/27', 0, 0, 160, { family: F.round, weight: 700, fill: K.yellow, sw: 22 });
-    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，价格打到约 1/27，全行业跟着降价', K.whale);
+    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，输出价约为 o1 的 1/27', K.seek);
     s.fx.push(judge(g, 'Perfect!', 1500, 300, T(7, 3), K.yellow, 0.7));
     return (t) => {
       signs.forEach((sg, i) => {
@@ -967,6 +971,7 @@ function buildAll() {
       op(hammer, t >= T(4, 1) && t < T(7, 3) ? 1 : 0);
       pose(wh, { hey: t >= T(7, 3) ? 1 : 0.3, open: hr > 0.8 || t >= T(7, 3), sq: hitSq(t, T(4), 0.3) });
       op(ratio, t >= T(7, 3) ? 1 : 0); tf(ratio, 980, 280, E.back(seg(t, T(7, 3), T(7, 3) + 0.2)), -6);
+      op(unit, t >= T(4, 1) && t < T(7, 3) ? 1 : 0); tf(unit, 805, 420);
       bannerAnim(b1, t, T(4), T(8));
       s.fx.forEach(f => f(t));
     };
@@ -999,7 +1004,7 @@ function buildAll() {
     ev(T(7, 0), 'land'); ev(T(7, 2), 'stamp'); ev(T(7, 2), 'v:done'); punch(T(7, 2), 0.04); ev(T(7, 3), 'slam');
     const note = el('g', {}, g);
     el('rect', { x: -330, y: -50, width: 660, height: 100, rx: 20, fill: K.white, ...SO }, note);
-    txt(note, '任务：做一个节奏天国风格的视频', { x: 0, y: 16, 'font-size': 40, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' });
+    txt(note, '任务：做一个节拍游戏风格的视频', { x: 0, y: 16, 'font-size': 40, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' });
     const mini = el('g', {}, g);
     el('rect', { x: -65, y: -35, width: 130, height: 70, fill: K.yellow }, mini);
     txt(mini, 'AI 进化节拍', { x: 0, y: 8, 'font-size': 22, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' });
@@ -1086,7 +1091,7 @@ function buildAll() {
     const plate = (p, text, col = K.ol) => { const w = measure(text, 60, F.sans, 900) + 60; el('rect', { x: -w / 2, y: 200, width: w, height: 90, rx: 45, fill: col, stroke: K.white, 'stroke-width': 6 }, p); txt(p, text, { x: 0, y: 265, 'font-size': 60, 'font-family': F.sans, 'font-weight': 900, fill: K.white, 'text-anchor': 'middle' }); };
 
     // 1. Jan, CES: "physical AI" — a robot arm stacks blocks beat by beat in a "simulated world"
-    item(0, 1, 1, '1月 · CES：「物理 AI」登场', (p, t0) => {
+    item(0, 1, 1, '1月 · CES：「物理 AI」唱主角', (p, t0) => {
       const grid = el('g', { stroke: '#2BB5C9', 'stroke-width': 3, opacity: 0.8 }, p);
       for (let i = -6; i <= 6; i++) el('line', { x1: i * 40, y1: 60, x2: i * 90, y2: 190 }, grid);
       for (let j = 0; j < 5; j++) { const y = 60 + j * 32, k = 240 + j * 70; el('line', { x1: -k, y1: y, x2: k, y2: y }, grid); }
@@ -1112,8 +1117,8 @@ function buildAll() {
       };
     });
 
-    // 2. Feb, Year-of-the-Horse Spring Festival Gala (春晚): four companies' humanoid robots on one stage
-    item(1, 2, 2, '2月 · 马年春晚：四家人形机器人同台', (p, t0) => {
+    // 2. Feb, Year-of-the-Horse Spring Festival Gala (春晚): robots from four companies on the same Gala (separate acts)
+    item(1, 2, 2, '2月 · 马年春晚：四家机器人企业登台', (p, t0) => {
       for (const sx of [-1, 1]) { const l = el('g', { transform: `translate(${sx * 400} -230)` }, p); el('line', { x1: 0, y1: -80, x2: 0, y2: -40, stroke: K.ol, 'stroke-width': 6 }, l); el('ellipse', { cx: 0, cy: 0, rx: 50, ry: 44, fill: K.red, ...SO }, l); el('rect', { x: -20, y: 40, width: 40, height: 14, fill: K.yellow, ...SO, 'stroke-width': 4 }, l); txt(l, '福', { x: 0, y: 16, 'font-size': 44, 'font-family': F.sans, 'font-weight': 900, fill: K.yellow, 'text-anchor': 'middle' }); }
       const bots = [-315, -105, 105, 315].map((x, i) => { const w = el('g', {}, p); return { w, h: humanoid(w, ['#E8ECF4', '#FFD6A5', '#CDE7FF', '#FFC8DD'][i]), x }; });
       for (let k = 0; k < 8; k++) { ev(t0 + k * B, 'servo'); punch(t0 + k * B, 0.015); }
@@ -1130,33 +1135,33 @@ function buildAll() {
       };
     });
 
-    // 3. Feb, Chinese models' weekly call volume overtakes the US for the first time
-    item(2, 2, 2, '2月 · 国产模型周调用量首超美国', (p, t0) => {
+    // 3. Feb, Gemini 3.1 Pro: ARC-AGI-2 score more than doubles (Google DeepMind's model page: 3 Pro 31.1 %, 3.1 Pro 77.1 %)
+    item(2, 2, 2, '2月 · Gemini 3.1 Pro：推理分翻倍', (p, t0) => {
       el('line', { x1: -360, y1: 100, x2: 360, y2: 100, stroke: K.ol, 'stroke-width': 8 }, p);
-      const bars = [[-120, K.red, '中国', 4.12], [120, K.blue, '美国', 2.94]].map(([x, col, name, v]) => { const bg2 = el('g', { transform: `translate(${x} 100)` }, p); const r = el('rect', { x: -80, y: 0, width: 160, height: 0, rx: 16, fill: col, ...SO }, bg2); txt(bg2, name, { x: 0, y: 58, 'font-size': 46, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' }); const val = gtext(bg2, '', 0, 0, 58, { family: F.round, weight: 700, fill: K.white, sw: 10 }); return { r, val, v }; });
-      txt(p, '单周 Token 调用量', { x: 0, y: -310, 'font-size': 44, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' });
-      const kw = el('g', {}, p), dw = el('g', {}, p); const kc = CAST.kimi(kw), dc = CAST.deepseek(dw);
-      const first = el('g', {}, p); gtext(first, '首超！', 0, 0, 100, { fill: K.yellow, sw: 18 });
+      const bars = [[-120, '#8FB4FF', '3 Pro', 31.1], [120, K.gem1, '3.1 Pro', 77.1]].map(([x, col, name, v]) => { const bg2 = el('g', { transform: `translate(${x} 100)` }, p); const r = el('rect', { x: -80, y: 0, width: 160, height: 0, rx: 16, fill: col, ...SO }, bg2); txt(bg2, name, { x: 0, y: 58, 'font-size': 46, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' }); const val = gtext(bg2, '', 0, 0, 58, { family: F.round, weight: 700, fill: K.white, sw: 10 }); return { r, val, v }; });
+      txt(p, 'ARC-AGI-2 得分', { x: 0, y: -310, 'font-size': 44, 'font-family': F.sans, 'font-weight': 900, fill: K.ol, 'text-anchor': 'middle' });
+      const gw = el('g', {}, p); const gm = CAST.gemini(gw);
+      const first = el('g', {}, p); gtext(first, '翻倍！', 0, 0, 100, { fill: K.yellow, sw: 18 });
       for (let k = 0; k < 7; k++) { ev(t0 + k * B, 'blip', { f: 700 + k * 90 }); punch(t0 + k * B, 0.01); }
-      ev(t0 + 7 * B, 'slam'); punch(t0 + 7 * B, 0.03); ev(t0, 'v:tokens');
-      plate(p, '4.12 万亿 > 2.94 万亿');
+      ev(t0 + 7 * B, 'slam'); punch(t0 + 7 * B, 0.03); ev(t0, 'v:double');
+      plate(p, '31.1% → 77.1%');
       return (t) => {
         const step = clamp(Math.floor((t - t0) / B) + 1, 0, 8) / 8;
-        bars.forEach(b => { const h = b.v / 4.12 * 330 * lerp(step - 0.125, step, E.back(clamp(frac(t) * 3))); b.r.setAttribute('y', -h); b.r.setAttribute('height', h); b.val.textContent = step >= 1 ? `${b.v} 万亿` : ''; b.val.setAttribute('y', -h - 20); });
-        tf(kw, -330, 95 + hopY(t, 14), 0.5); tf(dw, 330, 95 + hopY(t + B / 2, 14), 0.5);
-        poseAny(kc, { hey: step >= 1 ? 1 : 0.3, open: step >= 1 }); poseAny(dc, { hey: step >= 1 ? 1 : 0.3, open: step >= 1 });
+        bars.forEach(b => { const h = b.v / 77.1 * 330 * lerp(step - 0.125, step, E.back(clamp(frac(t) * 3))); b.r.setAttribute('y', -h); b.r.setAttribute('height', h); b.val.textContent = step >= 1 ? `${b.v}%` : ''; b.val.setAttribute('y', -h - 20); });
+        tf(gw, 360, 95 + hopY(t, 14), 0.5);
+        poseAny(gm, { hey: step >= 1 ? 1 : 0.3, open: step >= 1 });
         op(first, t >= t0 + 7 * B ? 1 : 0); tf(first, 0, -330, E.back(seg(t, t0 + 7 * B, t0 + 7 * B + 0.2)), -6);
       };
     });
 
-    // 4. Gemini：3.1 → 3.8
-    item(3, 2, 9, 'Gemini：从 3.1 一路升到 3.8', (p, t0) => {
+    // 4. Gemini：3.5 → 3.8
+    item(3, 5, 9, 'Gemini：从 3.5 一路升到 3.8', (p, t0) => {
       const w = el('g', {}, p); const gm = CAST.gemini(w);
       const disp = el('g', {}, p);
       el('rect', { x: -300, y: -110, width: 600, height: 170, rx: 30, fill: K.ol, stroke: K.white, 'stroke-width': 6 }, disp);
       const vT = txt(disp, '', { x: 0, y: -10, 'font-size': 84, 'font-family': F.round, 'font-weight': 700, fill: '#8FB4FF', 'text-anchor': 'middle' });
       const mT = txt(disp, '', { x: 0, y: 42, 'font-size': 40, 'font-family': F.sans, 'font-weight': 900, fill: K.white, 'text-anchor': 'middle' });
-      const V = [['3.1 Pro', '2 月'], ['3.5 Flash-Lite', '7 月'], ['3.6 Flash', '7 月'], ['3.8 Flash', '9 月']];
+      const V = [['3.5 Flash', '5 月'], ['3.6 Flash', '7 月'], ['3.7 Flash', '8 月'], ['3.8 Flash', '9 月']];
       const speed = el('g', { stroke: K.white, 'stroke-width': 8, 'stroke-linecap': 'round' }, p);
       for (let i = 0; i < 5; i++) el('line', { x1: -380, y1: 20 + i * 36, x2: -250, y2: 20 + i * 36 }, speed);
       for (let k = 0; k < 4; k++) { ev(t0 + k * 2 * B, 'pop', { f: 900 + k * 150 }); punch(t0 + k * 2 * B, 0.02); }
@@ -1208,9 +1213,9 @@ function buildAll() {
       const sign = el('g', {}, p); el('rect', { x: -260, y: -60, width: 520, height: 120, rx: 20, fill: K.ol, stroke: K.white, 'stroke-width': 6 }, sign); txt(sign, 'WAIC 2026', { x: 0, y: 24, 'font-size': 70, 'font-family': F.round, 'font-weight': 700, fill: K.yellow, 'text-anchor': 'middle' });
       const walkers = []; const cols = ['#E8ECF4', '#FFD6A5', '#CDE7FF', '#FFC8DD', '#D8F8B7', '#E4D4FF'];
       for (let k = 0; k < 12; k++) { const w = el('g', {}, p); walkers.push({ w, h: humanoid(w, cols[k % 6]), t0: t0 + k * B / 2 }); ev(t0 + k * B / 2, 'step'); }
-      const pct = el('g', {}, p); el('circle', { cx: 0, cy: 0, r: 110, fill: K.red, ...SO }, pct); gtext(pct, '88.7%', 0, 10, 62, { family: F.round, weight: 700, fill: K.white, sw: 8 }); txt(pct, '出货占全球', { x: 0, y: 56, 'font-size': 28, 'font-family': F.sans, 'font-weight': 900, fill: K.white, 'text-anchor': 'middle' });
+      const pct = el('g', {}, p); el('circle', { cx: 0, cy: 0, r: 110, fill: K.red, ...SO }, pct); gtext(pct, '300+', 0, 10, 62, { family: F.round, weight: 700, fill: K.white, sw: 8 }); txt(pct, '款全球首发', { x: 0, y: 56, 'font-size': 28, 'font-family': F.sans, 'font-weight': 900, fill: K.white, 'text-anchor': 'middle' });
       ev(t0, 'v:march'); ev(t0 + 6 * B, 'slam'); punch(t0 + 6 * B, 0.03);
-      plate(p, '人形机器人大游行');
+      plate(p, '具身机器人齐亮相');
       return (t) => {
         tf(sign, 0, -230);
         walkers.forEach((wk, k) => {
@@ -1229,7 +1234,7 @@ function buildAll() {
     // 7. Aug DeepSeek V4-Pro · Sep GPT-6 Astra
     item(6, 8, 9, '8月 DeepSeek V4-Pro · 9月 GPT-6 Astra', (p, t0) => {
       const ww = el('g', {}, p); const wh = CAST.deepseek(ww);
-      const v4 = el('g', {}, p); gtext(v4, 'V4', 0, 0, 120, { family: F.round, weight: 700, fill: K.whale, stroke: K.white, sw: 14 });
+      const v4 = el('g', {}, p); gtext(v4, 'V4', 0, 0, 120, { family: F.round, weight: 700, fill: K.seek, stroke: K.white, sw: 14 });
       const rocket = el('g', {}, p);
       const flame = el('path', { d: 'M -40 120 Q 0 260 40 120 Z', fill: K.orange, ...SO, 'stroke-width': 6 }, rocket);
       el('path', { d: 'M -80 120 L -120 150 L -80 40 Z M 80 120 L 120 150 L 80 40 Z', fill: K.red, ...SO }, rocket);
@@ -1320,8 +1325,8 @@ function buildAll() {
     const lines = ['下棋、抢答：早就赢了人类', '画画、拍片：从牛油果椅子到会动的电影', '2026：机器人上春晚，新模型天天发'];
     const lineEls = lines.map((l, i) => txt(res, '', { x: -700, y: -100 + i * 90, 'font-size': 50, 'font-family': F.sans, 'font-weight': 900, fill: K.ol }));
     lines.forEach((l, i) => { for (let c = 0; c < [...l].length; c += 2) ev(E0(3 + i * 0.5) + c * B / 8, 'type'); });
-    const sup = el('g', {}, res); el('path', { d: starPath(12, 190, 140), fill: K.yellow, ...SO, 'stroke-width': 9 }, sup); gtext(sup, 'Superb', 0, 34, 110, { family: F.round, weight: 700, fill: K.red, sw: 18 });
-    ev(E0(5), 'fanfare'); ev(E0(5), 'v:superb'); punch(E0(5), 0.05);
+    const sup = el('g', {}, res); el('path', { d: starPath(12, 190, 140), fill: K.yellow, ...SO, 'stroke-width': 9 }, sup); gtext(sup, 'Encore!', 0, 30, 84, { family: F.round, weight: 700, fill: K.red, sw: 18 });
+    ev(E0(5), 'fanfare'); ev(E0(5), 'v:encore'); punch(E0(5), 0.05);
     const credit = el('g', {}, g);
     // End credit: box height 360, first line LemoLab × Claude Opus 5.5, the two text lines below shifted down together
     el('rect', { x: -720, y: -180, width: 1440, height: 360, rx: 40, fill: K.cream, ...SO }, credit);

@@ -1,0 +1,105 @@
+# Facts on screen and in the shouts
+
+*AI进化节拍 · Rhythm of AI, 1997 → 2026.* Every factual claim the film shows (level cards, year banners, name tags, props, price tags, remix labels, report card) or shouts, where it comes from and the source's own words. All strings are literals in `main_b.js` (search for the wording; the same strings are copied into the generated `main.js` and `index.html`). Shouts are in `voices/shouts.json`; subtitles `../game-show.srt` carry the shouts only. Times are film times from the tempo grid (`at(bar, beat)`, 150 BPM). The film was made in September 2026; checked on 2026-11-07, and the claims found wrong or unsourced were changed the same day (last section).
+
+Sources marked *(not fetched)* refused automated access during this check; their quoted wording has to be confirmed by hand.
+
+## Sources
+
+History
+
+- [S1] IBM, "Deep Blue" — https://www.ibm.com/history/deep-blue — "Kasparov won the first game. Deep Blue took the next." … "But Deep Blue prevailed in the tension-filled Game 6" … "a resounding victory, 3.5–2.5, in the rematch" … "the first computer system to defeat a reigning world champion under standard tournament time controls." (Game 6 ended with Kasparov resigning, not with a mate on the board.)
+- [S2] Google DeepMind, "AlphaGo" — https://deepmind.google/research/breakthroughs/alphago/ — "AlphaGo's 4-1 victory in Seoul, South Korea, in March 2016" … "In game two, it played Move 37 — a move that had a 1 in 10,000 chance of being used."
+- [S3] IBM, "Watson, 'Jeopardy!' champion" — https://www.ibm.com/history/watson-jeopardy — Watson defeated "the TV quiz show's two foremost all-time champions, Brad Rutter and Ken Jennings"; Watson won USD 77,147, "besting Ken Jennings's USD 24,000 and Brad Rutter's USD 21,600."
+- [S4] NPR, "I'll Take 'New Computer Overlords' For $1,000, Alex" (19 Feb 2011) — https://www.npr.org/2011/02/19/133894553/ill-take-new-computer-overlords-for-1-000-alex — Jennings wrote "I for one welcome our new computer overlords" under his Final Jeopardy answer (reputable news, not the show's own record).
+- [S5] A. Vaswani et al., "Attention Is All You Need", NeurIPS 2017 — https://arxiv.org/abs/1706.03762 — "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms".
+- [S6] J. Devlin et al., "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" (Oct 2018) — https://arxiv.org/abs/1810.04805 — a "masked language model" (MLM) pre-training objective, "inspired by the Cloze task".
+- [S7] A. Radford et al., "Language Models are Unsupervised Multitask Learners" (OpenAI, 2019) — https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf — "GPT-2, is a 1.5B parameter Transformer"; Table 2: the smallest model, 117M parameters, "is equivalent to the original GPT" (GPT-1, 2018). *(not fetched)*
+- [S8] T. Brown et al., "Language Models are Few-Shot Learners" (May 2020) — https://arxiv.org/abs/2005.14165 — "GPT-3, an autoregressive language model with 175 billion parameters".
+- [S9] OpenAI, "DALL·E: Creating images from text" (5 Jan 2021) — https://openai.com/index/dall-e/ — example prompt "an armchair in the shape of an avocado". *(not fetched)*
+- [S10] Stability AI, "Stable Diffusion Public Release" (22 Aug 2022) — https://stability.ai/news-updates/stable-diffusion-public-release *(not fetched)*; Midjourney entered open beta on 12 July 2022 (Midjourney's own announcement on its Discord/X; no stable web URL found).
+- [S11] OpenAI, "Sora: Creating video from text" (15 Feb 2024) — https://openai.com/index/sora/ *(not fetched)*.
+- [S12] OpenAI, "Introducing ChatGPT" (30 Nov 2022) — https://openai.com/index/chatgpt/ *(not fetched)*; Sam Altman on X, 5 Dec 2022 — https://x.com/sama/status/1599668808285028353 — "ChatGPT launched on wednesday. today it crossed 1 million users!" *(not fetched; X requires login)*.
+- [S13] First releases of the chorus contestants: Meta, LLaMA, 24 Feb 2023 — https://ai.meta.com/blog/large-language-model-llama-meta-ai/ ; Anthropic, "Introducing Claude", 14 Mar 2023 — https://www.anthropic.com/news/introducing-claude ; Baidu 文心一言 launch, 16 Mar 2023 (Baidu press event) ; Alibaba Cloud 通义千问, April 2023 (Alibaba Cloud Summit, 11 Apr 2023) ; Mistral AI, "Mistral 7B", 27 Sep 2023 — https://mistral.ai/news/announcing-mistral-7b ; Moonshot AI Kimi Chat, October 2023 ; xAI, "Announcing Grok", 4 Nov 2023 — https://x.ai/news/grok ; Google, "Introducing Gemini", 6 Dec 2023 — https://blog.google/technology/ai/google-gemini-ai/ *(dates from the companies' own announcements; individual pages not re-fetched in this pass)*.
+- [S14] OpenAI, "Introducing OpenAI o1-preview" (12 Sep 2024) — https://openai.com/index/introducing-openai-o1-preview/ — "a new series of AI models designed to spend more time thinking before they respond." *(not fetched)*
+- [S15] OpenAI API docs, model "o1" — https://developers.openai.com/api/docs/models/o1 — price per 1M tokens: input "$15", output "$60".
+- [S16] Anthropic, "Claude 3.5 Sonnet" (21 Jun 2024) — https://www.anthropic.com/news/claude-3-5-sonnet — "The model costs $3 per million input tokens and $15 per million output tokens".
+- [S17] Google for Developers, "Updated production-ready Gemini models, reduced 1.5 Pro pricing…" (24 Sep 2024) — https://developers.googleblog.com/en/updated-gemini-models-reduced-15-pro-pricing-increased-rate-limits-and-more/ — "a 52% price reduction on output tokens" for "prompts less than 128K tokens", effective "October 1st, 2024" (i.e. Gemini 1.5 Pro output $10.50 → $5.00 per 1M tokens under 128K; $10 for longer prompts).
+- [S18] DeepSeek, "DeepSeek-R1 发布，性能对标 OpenAI o1 正式版" (2025/01/20) — https://api-docs.deepseek.com/zh-cn/news/news250120 — "DeepSeek-R1 遵循 MIT License"; "每百万输出 tokens 16 元". The USD list price at launch, $2.19 per 1M output tokens, was on DeepSeek's English pricing page (not retrievable today; the endpoint has since moved to V4). Repository: https://github.com/deepseek-ai/DeepSeek-R1 — "This code repository and the model weights are licensed under the MIT License."
+- [S19] Agents of 2025: Anthropic, "Claude 3.7 Sonnet and Claude Code" (24 Feb 2025) — https://www.anthropic.com/news/claude-3-7-sonnet — "introducing Claude Code—our first agentic coding tool—in a limited research preview"; OpenAI, "Introducing Codex" (16 May 2025) — https://openai.com/index/introducing-codex/ *(not fetched)*; Google, "Gemini CLI" (25 Jun 2025) — https://blog.google/technology/developers/introducing-gemini-cli-open-source-ai-agent/ — "Gemini CLI brings Gemini directly into developers' terminals".
+
+2026
+
+- [S20] NVIDIA Newsroom, "NVIDIA Releases New Physical AI Models as Global Partners Unveil Next-Generation Robots" (5 Jan 2026, CES) — https://nvidianews.nvidia.com/news/nvidia-releases-new-physical-ai-models-as-global-partners-unveil-next-generation-robots — "CES—NVIDIA today announced new open models, frameworks and AI infrastructure for physical AI"; "NVIDIA releases new NVIDIA Cosmos and GR00T open models". Cosmos itself, and NVIDIA's "physical AI" push, were first launched at CES a year earlier (NVIDIA Newsroom, 6 Jan 2025, "NVIDIA Launches Cosmos World Foundation Model Platform to Accelerate Physical AI Development" — https://nvidianews.nvidia.com/news/nvidia-launches-cosmos-world-foundation-model-platform-to-accelerate-physical-ai-development, not re-fetched).
+- [S21] Xinhua, 人形机器人"春节档"吸睛 (25 Feb 2026) — https://www.news.cn/tech/20260225/4a5f60c6f016484098c0f3eee3d864d2/c.html — "在2026年央视春晚上，宇树科技、松延动力、魔法原子、银河通用等公司的多款人形机器人集中“炫技”". Programme: CCTV 2026 Gala, https://chunwan.cctv.com/ (acts 《武BOT》 宇树, 《奶奶的最爱》 松延动力, 《智造未来》 魔法原子, 微电影《我最难忘的今宵》 银河通用). The four acts were separate numbers, not one shared act; 银河通用's robot is wheeled.
+- [S22] Google DeepMind, Gemini 3.1 Pro — https://deepmind.google/models/gemini/pro/ — ARC-AGI-2: "Gemini 3.1 Pro Thinking (High)" "77.1%", "Gemini 3 Pro Thinking (High)" "31.1%". (Used for claim 28.)
+- [S23] Google AI Studio / Gemini API changelog — https://aistudio.google.com/docs/changelog — Feb 19, 2026: Gemini 3.1 Pro Preview; May 19: Gemini 3.5 Flash GA; Jul 21: Gemini 3.6 Flash and Gemini 3.5 Flash-Lite GA; Aug 13: Gemini 3.7 Flash GA; Sep 2: Gemini 3.8 Flash GA (paraphrased by the fetch tool; the page's exact lines to be copied by hand).
+- [S24] Anthropic, "Claude Sonnet 5" (30 Jun 2026, edited 10 Aug 2026) — https://www.anthropic.com/news/claude-sonnet-5 — "it is the default model for Free and Pro plans"; "It can make plans, use tools like browsers and terminals, and run autonomously".
+- [S25] Shanghai Municipal Government press conference on WAIC 2026 (7 Jul 2026) — https://www.shanghai.gov.cn/nw12344/20260707/deee99228f02433e9b0fb8f9447e8b34.html — "智算、具身两大赛道各汇聚超200家企业"; "1100余家企业参展，3000余项展品集中亮相，其中300余款产品将全球首发". Dates "07.17 - 07.20", Shanghai: https://www.worldaic.com.cn/
+- [S26] DeepSeek API Docs, "DeepSeek-V4-Pro GA Release" (2026/08/13) — https://api-docs.deepseek.com/news/news260813 — "We’re launching DeepSeek-V4-Pro today!" (V4 preview, incl. V4-Pro, 2026/04/24.)
+- [S27] OpenAI: model page https://developers.openai.com/api/docs/models/gpt-6-astra — model ID "gpt-6-astra"; guide https://developers.openai.com/api/docs/guides/latest-model — "GPT-6 Astra is our most intelligent model yet"; launch post on OpenAI's X account, 3 Sep 2026 — https://x.com/OpenAI/status/2095595741528125780 — "This is GPT-6 Astra." (date as shown in the OpenAI Developer Community repost of 3 Sep 2026, https://community.openai.com/t/introducing-gpt-6-astra-the-most-intelligent-and-aligned-model-in-the-world/1394703; announcement page https://openai.com/index/gpt-6-astra/ *(not fetched)*).
+
+Searched and not found in any official source, so taken out of the film: the weekly token-volume comparison "中国 4.12 万亿 / 美国 2.94 万亿" (it is a media tally of OpenRouter's per-model rankings for 9–15 Feb 2026; OpenRouter itself publishes no country split, https://openrouter.ai/rankings), and "88.7%" as China's share of global humanoid-robot shipments (published figures differ by analyst and period, from about 78 % to over 97 %; none says 88.7 %).
+
+## Claims
+
+| # | Where (time · channel) | Wording in the film | Source | Verdict |
+|---|---|---|---|---|
+| 1 | 6.4 s · screen (level card) | 「人机棋局」「1997 – 2016」 | [S1] [S2] | supported |
+| 2 | 8.0–14.4 s · screen (banner) | 「1997 深蓝 · 击败国际象棋世界冠军卡斯帕罗夫」 | [S1] "first computer system to defeat a reigning world champion" | supported |
+| 3 | 13.6 s · shout + subtitle; the human's king tips over at 14.15 s | "Game over." | [S1]: Deep Blue won the match 3.5–2.5; the deciding Game 6 ended in resignation | supported (the tipping king shows the resignation) |
+| 4 | 14.4–20.8 s · screen | 「2016 AlphaGo · 4 : 1 战胜李世石」 | [S2] "4-1 victory … March 2016" | supported |
+| 5 | 19.2 s · screen + shout "Move thirty seven." + "Whoa!" | 「第 37 手！」 | [S2] "In game two, it played Move 37" | supported |
+| 6 | 20.8–35.2 s · screen | 「智力抢答 · 2011」「IBM Watson · 智力问答节目击败两位人类冠军」 | [S3] | supported |
+| 7 | 33.6–34.4 s · screen (podiums) | KEN $24,000 · BRAD $21,600 · WATSON $77,147 | [S3] same three figures (two-game totals) | supported |
+| 8 | 34.3 s · screen (Ken's sign) | 「我，欢迎新的 / 电脑霸主。」 | [S4] | supported (news source; the line quotes *The Simpsons*, see rights) |
+| 9 | 22.4–32.0 s · screen (quiz board) | 世界最高峰？珠穆朗玛峰 · 水的化学式？H₂O · 太阳系最大行星？木星 · π 的前三位？3.14 · 《哈姆雷特》作者？莎士比亚 · 光速约每秒几公里？30 万 | general knowledge (c = 299 792.458 km/s, SI definition) | supported (these are not the show's real clues, and the film doesn't say they are) |
+| 10 | 35.2–40.0 s · screen | 「注意力工厂 · 2017 – 2020」「2017 Transformer · 论文：注意力就是你需要的全部」 | [S5] | supported |
+| 11 | 40.0–43.2 s · screen + shout "Mask." | 「2018 BERT · 会做完形填空的模型」, 猫 坐在 [MASK] 上 | [S6] "inspired by the Cloze task" | supported |
+| 12 | 43.2–49.6 s · screen + shouts "GPT one/two/three." | GPT-1「1.17 亿参数」· GPT-2「15 亿参数」· GPT-3「1750 亿参数」, banner years 2018–2020 | [S7] [S8] | supported |
+| 13 | 49.2 s · screen | 「参数量涨了约 1500 倍」「× 1500」 | 175 B / 117 M = 1 496 | supported |
+| 14 | 51.2–54.4 s · screen + "Paint!" | 「2021 DALL·E · 画出「牛油果扶手椅」」 | [S9] | supported |
+| 15 | 54.4–60.8 s · screen | 「2022 Midjourney · SD · 人人都能用 AI 画画」 | [S10]: both opened to the public in mid-2022 | simplified but defensible: "everyone" = open public access, not literally everyone |
+| 16 | 60.8–64.0 s · screen + "Action!" "Cut!" | 「2024 Sora · 画面动起来了」, clapper 「SORA」 | [S11] announced 15 Feb 2024 | supported (earlier text-to-video existed; Sora is the landmark, not the first) |
+| 17 | 65.6–68.8 s · screen | 「2022.11 ChatGPT · 5 天用户破百万」, counter 「用户 1,000,000」 | [S12] launched Wed 30 Nov, 1 M on 5 Dec | supported |
+| 18 | 68.8–78.4 s · screen | 「2023 百模大战 · 谁都想上台唱两句」 | common 2023 Chinese industry label, no figure | simplified but defensible (a nickname, not a count) |
+| 19 | 68.8–72.0 s · screen (date tags over name tags) | Llama 2023.2 · Claude 2023.3 · 文心一言 2023.3 · 通义千问 2023.4 · Mistral 2023.9 · Kimi 2023.10 · Grok 2023.11 · Gemini 2023.12 · GPT 2022.11 | [S13] [S12] | supported (month of first public release) |
+| 20 | 80.0–86.4 s · screen | 「2024.9 o1 · 推理模型：先想，再回答」 | [S14] | supported (September 2024 was o1-preview; full o1 followed in December) |
+| 21 | 80.0–86.4 s · screen + shouts "Nine point eleven!" "Aha!" | 「9.11 和 9.9，哪个大？」; four generic, unnamed bots first answer 「9.11！」 then 「9.9 ✓」 under the banner 「2024.9 o1 · 推理模型：先想，再回答」 | the maths is true; no model is named as having answered 9.11 | supported (a gag about the question, not a claim about any model) |
+| 22 | 86.4–92.8 s · screen (price tags, caption 「每百万输出 token」) | o1 $60 · Claude $15 · Gemini $5 · DeepSeek-R1 $2.19 | [S15] o1 output $60/1M; [S16] Claude 3.5 Sonnet output $15/1M; [S17] Gemini 1.5 Pro output $5/1M for prompts ≤ 128K (from 1 Oct 2024); [S18] R1 output $2.19/1M | supported |
+| 23 | 91.6 s · screen | 「≈ 1/27」 | $2.19 / $60 = 1/27.4 [S15] [S18] | supported |
+| 24 | 86.4–92.8 s · screen (banner) | 「2025.1 DeepSeek-R1 · 开源，输出价约为 o1 的 1/27」 | [S18] 2025/01/20, MIT; ratio as #23 | supported |
+| 25 | 92.8–107.2 s · screen | 「智能体流水线 · 2025」「2025 智能体 · 自己写代码、自己干活」, desks Claude Code · Codex · Gemini CLI | [S19] Feb, May, Jun 2025 | supported |
+| 26 | 108.8–112.0 s · screen + shout "Physical A. I.!" | 「1月 · CES：「物理 AI」唱主角」, 「Cosmos」, plate 「物理 AI」 | [S20] at CES 2026 NVIDIA's announcements were about physical AI, incl. new Cosmos models | supported |
+| 27 | 112.0–115.2 s · screen + shout "Robots!" | 「2月 · 马年春晚：四家机器人企业登台」, plate 「机器人上春晚」, four humanoids dancing in a row | [S21] four companies' robots in the 2026 (Year of the Horse) Gala | supported (separate acts, drawn as one row; one robot is wheeled) |
+| 28 | 115.2–118.4 s · screen + shout "Double!" | 「2月 · Gemini 3.1 Pro：推理分翻倍」「ARC-AGI-2 得分」 3 Pro 31.1% · 3.1 Pro 77.1% 「翻倍！」 plate 「31.1% → 77.1%」 | [S22] [S23] (3.1 Pro preview, 19 Feb 2026) | supported (77.1 / 31.1 = 2.5×: "more than doubled") |
+| 29 | 118.4–121.6 s · screen + shout "Gemini!" | 「Gemini：从 3.5 一路升到 3.8」: 3.5 Flash 5 月 · 3.6 Flash 7 月 · 3.7 Flash 8 月 · 3.8 Flash 9 月; plate 「Gemini 连续升级」 | [S23] | supported (3.5 Flash-Lite in July is skipped) |
+| 30 | 121.6–124.8 s · screen + shout "Sonnet five!" | 「6月 · Claude Sonnet 5：成为默认模型」, tag 「Sonnet 5」, badge 「默认模型」 | [S24] 30 Jun 2026, "the default model for Free and Pro plans" | supported (default in the Claude apps' Free and Pro plans) |
+| 31 | 121.6–124.8 s · screen (browser, terminal, checklist icons) | 「自己规划，自己动手」 | [S24] "make plans, use tools like browsers and terminals, and run autonomously" | supported |
+| 32 | 124.8–128.0 s · screen + shout "March!" | 「7月 · WAIC：超 200 家具身智能企业」, sign 「WAIC 2026」 | [S25] 17–20 July 2026, "具身…赛道…汇聚超200家企业" | supported |
+| 33 | 124.8–128.0 s · screen (red disc) | 「300+」「款全球首发」 | [S25] "300余款产品将全球首发" | supported |
+| 34 | 124.8–128.0 s · screen | plate 「具身机器人齐亮相」 (12 humanoids walk across) | [S25] "具身…赛道…汇聚超200家企业" | supported |
+| 35 | 128.0–129.6 s · screen + shout "V four!" | 「8月 DeepSeek V4-Pro」, stamp 「V4」 | [S26] V4-Pro GA 2026/08/13 (preview 2026/04/24) | supported |
+| 36 | 129.6–131.2 s · screen + shouts "Three! Two! One! Liftoff!" | 「9月 GPT-6 Astra」, rocket 「GPT-6」 | [S27] OpenAI, 3 Sep 2026, model ID gpt-6-astra | supported (date from OpenAI's X post; the openai.com page is to be checked by hand) |
+| 37 | 139.2–144.0 s · screen (report card, line 1) | 「下棋、抢答：早就赢了人类」 | #2, #4, #6 | supported |
+| 38 | report card, line 2 | 「画画、拍片：从牛油果椅子到会动的电影」 | #14, #16 | simplified but defensible (Sora makes short clips, "电影" loosely) |
+| 39 | report card, line 3 | 「2026：机器人上春晚，新模型天天发」 | #27; "every day" is hyperbole for #29, #30, #35, #36 | simplified but defensible (comic exaggeration) |
+
+Not claims: the title 「AI 进化节拍」/「RHYTHM OF AI · 1997 → 2026」, the count-in, 「GAME N」, 「Perfect!」 judgements, the robot chest label 「注意力」, the G4 prompts 「星空下的城堡」「一只橘猫」「橘猫在跳舞」, the G7 task icons and the 「AI 进化节拍」 mini poster, 「REMIX 2026!」「今年的热点，全堆上来！」, the month ribbon (1–9 lit: the film's own "now"), 「新模型，接着发」, 「2026 · 未完待续」「还没唱完 →」, 「NEXT」 egg and the 「???」 baby, 「Encore!」, and the credit card (「LemoLab × Claude Opus 5.5」「本片由 Claude Opus 5.5 全程代码生成」「下一关：正在训练中……」: a statement about the film itself, see `CREDITS`).
+
+## Changed after the check (2026-11-07)
+
+| # | Was | Now | Source |
+|---|---|---|---|
+| 3 | shout "Checkmate." | "Game over." | [S1] |
+| 21 | the four 9.11 desks were named o1, Claude, Gemini, 通义千问 | generic unnamed bots | — (no source for the named version) |
+| 22 | Gemini 「$10」, no unit on screen | 「$5」, caption 「每百万输出 token」 over the four tags | [S17] |
+| 24 | 「开源，价格打到约 1/27，全行业跟着降价」 | 「开源，输出价约为 o1 的 1/27」 | [S15] [S18] |
+| 26 | 「1月 · CES：「物理 AI」登场」 | 「1月 · CES：「物理 AI」唱主角」 | [S20] |
+| 27 | 「2月 · 马年春晚：四家人形机器人同台」 | 「2月 · 马年春晚：四家机器人企业登台」 | [S21] |
+| 28 | 「2月 · 国产模型周调用量首超美国」, bars 中国 4.12 / 美国 2.94 万亿, 「首超！」, shout "Tokens!" | Gemini 3.1 Pro ARC-AGI-2 31.1% → 77.1%, 「翻倍！」, shout "Double!" | [S22] |
+| 29 | 「Gemini：从 3.1 一路升到 3.8」 (3.1 Pro · 3.5 Flash-Lite · 3.6 Flash · 3.8 Flash) | 「从 3.5 一路升到 3.8」 (3.5 · 3.6 · 3.7 · 3.8 Flash) | [S23] |
+| 33 | 「88.7%」「出货占全球」 | 「300+」「款全球首发」 | [S25] |
+| 34 | plate 「人形机器人大游行」 | 「具身机器人齐亮相」 | [S25] |
+
+Not facts, changed at the same time: the quiz machine is a generic bot (it was drawn like IBM's Watson avatar); the report-card grade is 「Encore!」 (it was 「Superb」, a grade word of a real rhythm-game series); DeepSeek is a bean with a magnifier (it was a whale); the G7 task note names no game.

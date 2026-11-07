@@ -1,5 +1,5 @@
 // ============================================================
-// "AI 进化节拍" (AI Evolution Beat) — Rhythm Heaven (节奏天国) style, 140 BPM
+// "AI 进化节拍" (AI Evolution Beat) — rhythm-game style, 140 BPM
 // Every "hit" is registered through ev(); the renderer exports events.json, and the music script places SFX/voices from it
 // ============================================================
 const K = {
@@ -7,7 +7,7 @@ const K = {
   pink: '#FF8FB1', purple: '#6B4FBB', purpleD: '#46318F', teal: '#3FB8AF', tealD: '#2B8F88', blue: '#4D7CFE',
   navy: '#26264A', sky: '#8ED1FC', green: '#5BD68A', wood: '#C98A52', woodD: '#8E5530', gray: '#C3CAD9',
   skin: '#FFD1A8', gpt: '#19B388', claude: '#D97757', gem1: '#4E7CF6', gem2: '#9B6CF0', llama: '#F4E9D8',
-  whale: '#4D6BFE', dblue: '#2B59C3', chalk: '#2F5D50', lime: '#C6F16D',
+  seek: '#5A78E8', dblue: '#2B59C3', chalk: '#2F5D50', lime: '#C6F16D',
 };
 F.round = "'Fredoka', 'Noto Sans SC'";
 const OW = 8;
@@ -119,17 +119,10 @@ function bean(parent, o) {
   if (kind === 'llama') {
     for (const sx of [-1, 1]) el('path', { d: `M ${sx * 30} -160 C ${sx * 34} -230 ${sx * 60} -250 ${sx * 64} -210 C ${sx * 66} -180 ${sx * 56} -160 ${sx * 50} -150 Z`, fill: color, ...SO }, body);
   }
-  if (kind === 'whale') {
-    el('path', { d: 'M 70 -60 C 120 -70 140 -120 130 -150 C 110 -130 90 -120 76 -110 Z', fill: color, ...SO }, body);
-  }
   el('path', { d: 'M -80 -20 C -88 -112 -52 -172 0 -172 C 52 -172 88 -112 80 -20 C 72 -2 -72 -2 -80 -20 Z', fill: color, ...SO }, body);
   if (belly) el('ellipse', { cx: 0, cy: -48, rx: 44, ry: 32, fill: belly }, body);
   if (kind === 'llama') {
     for (const [x, y, r] of [[-22, -168, 20], [0, -176, 22], [22, -168, 20]]) el('circle', { cx: x, cy: y, r, fill: K.white, ...SO, 'stroke-width': 6 }, body);
-  } else if (kind === 'whale') {
-    const sp = el('g', {}, body);
-    el('path', { d: 'M 0 -172 C -6 -196 -30 -206 -40 -196 M 0 -172 C 6 -196 30 -206 40 -196 M 0 -172 L 0 -206', fill: 'none', stroke: K.sky, 'stroke-width': 10, 'stroke-linecap': 'round' }, sp);
-    el('path', { d: 'M 0 -172 C -6 -196 -30 -206 -40 -196 M 0 -172 C 6 -196 30 -206 40 -196 M 0 -172 L 0 -206', fill: 'none', stroke: K.ol, 'stroke-width': 3, 'stroke-linecap': 'round', opacity: .5 }, sp);
   } else if (antenna) {
     el('line', { x1: 0, y1: -172, x2: 0, y2: -214, stroke: K.ol, 'stroke-width': 7 }, body);
     el('circle', { cx: 0, cy: -220, r: 15, fill: antenna, ...SO, 'stroke-width': 6 }, body);
@@ -180,7 +173,7 @@ const CAST = {
   claude: (p) => bean(p, { color: K.claude, belly: '#F6D3BE', antenna: K.cream, name: 'Claude' }),
   gemini: (p) => twins(p),
   llama: (p) => bean(p, { color: K.llama, belly: K.white, kind: 'llama', name: 'Llama' }),
-  deepseek: (p) => bean(p, { color: K.whale, belly: '#BFD0FF', kind: 'whale', name: 'DeepSeek' }),
+  deepseek: (p) => bean(p, { color: K.seek, belly: '#C9D6FF', name: 'DeepSeek' }),
 };
 function smallBot(parent, col) { return bean(parent, { color: col, antenna: K.yellow }); }
 
@@ -802,7 +795,7 @@ function buildAll() {
     ev(at(40, 0), 'land'); ev(at(42, 2), 'v:whoa'); ev(at(43, 0), 'slam'); punch(at(43, 0), 0.04);
     ev(at(42, 0), 'v:cheaper');
     const ratio = el('g', {}, g); gtext(ratio, '≈ 1/27', 0, 0, 170, { family: F.round, weight: 700, fill: K.yellow, sw: 24 });
-    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，价格打到约 1/27', K.whale);
+    const b1 = banner(g, '2025.1', 'DeepSeek-R1', '开源，价格打到约 1/27', K.seek);
     s.fx.push(judge(g, 'Perfect!', 1560, 330, at(43, 2), K.yellow, 0.8));
     return (t) => {
       const squash = slams.filter(t0 => t >= t0).length;

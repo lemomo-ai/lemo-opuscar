@@ -23,10 +23,10 @@ def addv(sig, t0, gain=1.0, pan=0.0):
 def load(name):
     w = wave.open(f'voices/{name}.wav'); x = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(float) / 32768
     return x / (np.max(np.abs(x)) + 1e-9)
-VO = {n: load(n) for n in ['title', 'count1', 'count2', 'count3', 'count4', 'checkmate', 'move37', 'whoa', 'attention', 'gpt1', 'gpt2', 'gpt3',
-                           'hey_a', 'hey_b', 'hey_c', 'hey_d', 'hey_e', 'hey_f', 'wrong', 'aha', 'cheaper', 'remix', 'next', 'superb',
+VO = {n: load(n) for n in ['title', 'count1', 'count2', 'count3', 'count4', 'gameover', 'move37', 'whoa', 'attention', 'gpt1', 'gpt2', 'gpt3',
+                           'hey_a', 'hey_b', 'hey_c', 'hey_d', 'hey_e', 'hey_f', 'wrong', 'aha', 'cheaper', 'remix', 'next', 'encore',
                            'question', 'final', 'mask', 'paint', 'action', 'cut', 'done', 'hi',
-                           'physical', 'robots', 'tokens', 'gemini', 'sonnet', 'march', 'v4', 'liftoff']}
+                           'physical', 'robots', 'double', 'gemini', 'sonnet', 'march', 'v4', 'liftoff']}
 
 # ---------------- Instruments ----------------
 def square_lead(m, dur=0.2, vib=0.004):

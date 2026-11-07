@@ -1,8 +1,0 @@
-question|Fred|210|1.2|Question!
-final|Fred|200|1.2|Final question!
-mask|Zarvox|210|1.0|Mask.
-paint|Samantha|200|1.2|Paint!
-action|Fred|200|1.2|Action!
-cut|Fred|200|1.2|Cut!
-done|Samantha|210|1.2|Done!
-hi|Junior|190|1.35|Hi!

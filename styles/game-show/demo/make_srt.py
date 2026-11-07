@@ -1,14 +1,10 @@
-# Builds ../game-show.srt from the v:* hits in events.json + the lines in voices/lines*.txt
+# Builds ../game-show.srt from the v:* hits in events.json + the lines in voices/shouts.json
 # The film only has English shouted calls (the on-screen title cards are Chinese and burned into the picture), so the srt holds only the calls; the same line repeated back-to-back (gap < 0.15 s) is merged into one entry.
 # Usage: python make_srt.py [out.srt]
 import json, os, sys, wave
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 OUT = sys.argv[1] if len(sys.argv) > 1 else '../game-show.srt'
-TXT = {}
-for f in ('lines.txt', 'lines2.txt', 'lines3.txt'):
-    for l in open(f'voices/{f}', encoding='utf-8'):
-        p = l.rstrip('\n').split('|')
-        if len(p) == 5: TXT[p[0]] = p[4]
+TXT = {l['id']: l['text'] for l in json.load(open('voices/shouts.json', encoding='utf-8'))}
 def dur(n):
     w = wave.open(f'voices/{n}.wav'); return w.getnframes() / w.getframerate()
 ALIAS = {'hey': 'hey_a', 'crowd': 'hey_a', 'heyAll': 'hey_a', 'heyBig': 'hey_a', 'heyVar': 'hey_a'}
@@ -16,7 +12,7 @@ cues = []
 for e in json.load(open('events.json'))['ev']:
     if not e['s'].startswith('v:'): continue
     v = ALIAS.get(e['s'][2:], e['s'][2:])
-    text = TXT[v].replace('A. I.', 'AI').replace('G P T', 'GPT')
+    text = TXT[v].replace('A. I.', 'AI').replace('G. P. T.', 'GPT')   # spelled out for the voice, written normally on screen
     t0 = e['t'] - 0.03; t1 = t0 + max(0.6, dur(v) + 0.1)
     if cues and cues[-1][2] == text and t0 - cues[-1][1] < 0.15: cues[-1][1] = t1; continue
     if cues and cues[-1][1] > t0: cues[-1][1] = t0 - 0.01

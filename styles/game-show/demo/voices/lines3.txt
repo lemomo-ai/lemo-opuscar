@@ -1,8 +1,0 @@
-physical|Samantha|190|1.2|Physical A. I.!
-robots|Zarvox|200|1.0|Robots!
-tokens|Fred|200|1.2|Tokens!
-gemini|Samantha|200|1.2|Gemini!
-sonnet|Samantha|200|1.2|Sonnet five!
-march|Fred|200|1.2|March!
-v4|Zarvox|200|1.0|V four!
-liftoff|Fred|190|1.2|Liftoff!

@@ -1,0 +1,328 @@
+[
+ {
+  "id": "title",
+  "text": "A. I. Beat!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "count1",
+  "text": "One!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "count2",
+  "text": "Two!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "count3",
+  "text": "Three!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "count4",
+  "text": "Four!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "gameover",
+  "text": "Game over.",
+  "voice": "am_adam",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot"
+ },
+ {
+  "id": "move37",
+  "text": "Move thirty seven.",
+  "voice": "am_echo",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot"
+ },
+ {
+  "id": "whoa",
+  "text": "Whoa!",
+  "voice": "am_michael",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "attention",
+  "text": "Attention!",
+  "voice": "am_echo",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot"
+ },
+ {
+  "id": "gpt1",
+  "text": "G. P. T. one!",
+  "voice": "am_echo",
+  "speed": 1.15,
+  "pitch": 0.96,
+  "fx": "robot",
+  "asr": "GPT-1"
+ },
+ {
+  "id": "gpt2",
+  "text": "G. P. T. two!",
+  "voice": "am_echo",
+  "speed": 1.15,
+  "pitch": 0.96,
+  "fx": "robot",
+  "asr": "GPT-2"
+ },
+ {
+  "id": "gpt3",
+  "text": "G. P. T. three!",
+  "voice": "am_echo",
+  "speed": 1.15,
+  "pitch": 0.96,
+  "fx": "robot",
+  "asr": "GPT-3"
+ },
+ {
+  "id": "hey_a",
+  "text": "Hey!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "hey_b",
+  "text": "Hey!",
+  "voice": "af_sky",
+  "speed": 1.05,
+  "pitch": 1.28,
+  "fx": ""
+ },
+ {
+  "id": "hey_c",
+  "text": "Hey!",
+  "voice": "af_kore",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "hey_d",
+  "text": "Hey!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "hey_e",
+  "text": "Hey!",
+  "voice": "am_michael",
+  "speed": 1.0,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "hey_f",
+  "text": "Hey!",
+  "voice": "bm_fable",
+  "speed": 0.95,
+  "pitch": 1.05,
+  "fx": ""
+ },
+ {
+  "id": "wrong",
+  "text": "Nine point eleven!",
+  "voice": "am_echo",
+  "speed": 1.0,
+  "pitch": 1.0,
+  "fx": "robot",
+  "asr": "9.11"
+ },
+ {
+  "id": "aha",
+  "text": "Aha!",
+  "voice": "af_nova",
+  "speed": 1.0,
+  "pitch": 1.0,
+  "fx": ""
+ },
+ {
+  "id": "cheaper",
+  "text": "Cheaper!",
+  "voice": "am_michael",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "remix",
+  "text": "Remix!",
+  "voice": "bm_fable",
+  "speed": 0.95,
+  "pitch": 1.05,
+  "fx": ""
+ },
+ {
+  "id": "next",
+  "text": "Next!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "encore",
+  "text": "Encore!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "question",
+  "text": "Question!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "final",
+  "text": "Final question!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "mask",
+  "text": "Mask!",
+  "voice": "am_echo",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot"
+ },
+ {
+  "id": "paint",
+  "text": "Paint!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "action",
+  "text": "Action!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "cut",
+  "text": "Cut!",
+  "voice": "am_michael",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "done",
+  "text": "Done!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "hi",
+  "text": "Hi!",
+  "voice": "af_sky",
+  "speed": 1.05,
+  "pitch": 1.28,
+  "fx": ""
+ },
+ {
+  "id": "physical",
+  "text": "Physical A. I.!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "robots",
+  "text": "Robots!",
+  "voice": "am_echo",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot"
+ },
+ {
+  "id": "double",
+  "text": "Double!",
+  "voice": "am_michael",
+  "speed": 1.0,
+  "pitch": 1.05,
+  "fx": ""
+ },
+ {
+  "id": "gemini",
+  "text": "Gemini!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "sonnet",
+  "text": "Sonnet five!",
+  "voice": "af_bella",
+  "speed": 1.05,
+  "pitch": 1.1,
+  "fx": ""
+ },
+ {
+  "id": "march",
+  "text": "March!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": ""
+ },
+ {
+  "id": "v4",
+  "text": "V four!",
+  "voice": "am_echo",
+  "speed": 0.95,
+  "pitch": 0.96,
+  "fx": "robot",
+  "asr": "V4"
+ },
+ {
+  "id": "liftoff",
+  "text": "Liftoff!",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "pitch": 1.08,
+  "fx": "",
+  "asr": "Lift off"
+ }
+]

@@ -5,21 +5,20 @@ End card: "LemoLab × Claude Opus 5.5" / "本片由 Claude Opus 5.5 全程代码
 Imagery
 - All pictures are SVG drawn by code in main.js / main_b.js / main_v1.js (+ frame_head.html filters and helpers). No photos, no AI-generated images, no sprites.
 - All characters are original "bean" mascots. The AI products they stand for (GPT, Claude, Gemini, Llama, DeepSeek, 文心一言, 通义千问, Mistral, Kimi, Grok, BERT, DALL·E, Midjourney, Stable Diffusion, Sora, o1, Codex, Gemini CLI, Claude Code …) appear by NAME only, on name tags. No official logos, marks or product UI are used; colours are loose nods, not brand assets.
-- Real people referenced by first name only in the Watson quiz scene (KEN / BRAD podiums) and by name in history banners (Kasparov, Lee Sedol). Historical facts only, cartoon stand-ins, no likenesses.
-- Genre reference (grammar only): rhythm-action party games (call-and-response cues, "Perfect!" judgements, stage cards). No names, characters, UI, levels or music from any real game were copied. Note: one on-screen prop line in G7 names a real game series ("任务：做一个节奏天国风格的视频") — see DEMO.md "Rights & facts".
+- Real people referenced by first name only in the 2011 quiz scene (KEN / BRAD podiums) and by name in history banners (Kasparov, Lee Sedol). Historical facts only, cartoon stand-ins, no likenesses. The quiz machine is a generic screen-faced bot, not IBM's Watson avatar.
+- Genre reference (grammar only): rhythm-action party games (call-and-response cues, "Perfect!" judgements, stage cards). No names, characters, UI, levels or music from any real game were copied, and no game is named on screen.
 
 Fonts (Google Fonts, SIL Open Font License 1.1; woff2 subsets in fonts/, declared in fonts.css — licence text not bundled, see OFL at https://openfontlicense.org)
 - Noto Sans SC (Google / Adobe) — all Chinese UI text, weight 900
 - Fredoka (Milena Brandão, Hafontia) — rounded Latin display: GAME N tags, years, "Perfect!", name tags (fonts/fr*.woff2, subsets of the Google Fonts release)
-- ZCOOL KuaiLe (Liu Zhengjiang / ZCOOL) — two hand-lettered props (Watson sign, "9.11 和 9.9" chalkboard)
+- ZCOOL KuaiLe (Liu Zhengjiang / ZCOOL) — two hand-lettered props (Ken's sign, "9.11 和 9.9" chalkboard)
 - Noto Serif SC, Bagel Fat One, JetBrains Mono — declared in fonts.css (inherited from the frame template) but not used on screen
 
 Voices
-- macOS built-in system voices via the `say` command (Samantha, Fred, Zarvox, Junior, Kathy, Ralph, Superstar), pitch-shifted with ffmpeg (asetrate/atempo). 40 short English shouts listed in voices/lines*.txt.
-- LICENCE EXCEPTION: these voice recordings (voices/*.wav and the shouts in game-show.mp4) are NOT covered by the
-  library's CC BY 4.0 licence for demo films. Apple licenses its system voices for personal, non-commercial use on
-  macOS. We plan to re-voice the shouts with Kokoro (core/tts/). In your own film, use Kokoro or a voice you have
-  the right to use, never these files. See DEMO.md "Rights & facts".
+- Kokoro TTS v1.0 (hexgrad/Kokoro-82M, Apache-2.0), via kokoro-onnx (core/tts/), offline. 40 short English shouts listed in
+  voices/shouts.json (voices af_bella, af_kore, af_nova, af_sky, am_adam, am_echo, am_michael, am_puck, bm_fable),
+  made by make_voices.py: pitch-shifted ×0.96–1.28 with ffmpeg (asetrate/atempo), machine lines with a light echo.
+  Covered by the library's CC BY 4.0 licence for demo films like the rest of the film.
 
 Music & sound
 - Original score and every sound effect synthesized in numpy/scipy: music.py (arrangement, event → SFX mapping, ducking, mix) + synth_lib.py (instruments & SFX, adapted from the same author's Halftone Dossier demo, styles/halftone-dossier/demo/music.py). No samples, no third-party music.
