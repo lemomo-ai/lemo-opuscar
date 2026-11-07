@@ -98,7 +98,7 @@ EDITS = [
 ]
 
 # fetch.sh runs its Python from a here-document, which the portal reads as "download and run": ship that Python as a file
-FETCH_HEREDOC = re.compile(r'^"\$PY" - \$PACKS <<\'PY\'\n(.*?)^PY\n', re.S | re.M)
+FETCH_HEREDOC = re.compile(r'^"\$PY" ((?:-X \S+ )*)- \$PACKS <<\'PY\'\n(.*?)^PY\n', re.S | re.M)   # keeps options such as -X utf8
 
 
 def die(msg):
@@ -186,8 +186,8 @@ def split_fetch():
     m = FETCH_HEREDOC.search(s)
     if not m or len(FETCH_HEREDOC.findall(s)) != 1: die('tools/fetch.sh: the here-document that runs its Python is gone (update split_fetch in tools/directory.py)')
     head = '# Downloads the asset packs named on the command line from the "assets" release; run by tools/fetch.sh.\n'
-    with open(os.path.join(OUT, LIB, 'tools', 'fetch.py'), 'w', encoding='utf-8') as f: f.write(head + m.group(1))
-    with open(sh, 'w', encoding='utf-8') as f: f.write(s[:m.start()] + '"$PY" tools/fetch.py $PACKS\n' + s[m.end():])
+    with open(os.path.join(OUT, LIB, 'tools', 'fetch.py'), 'w', encoding='utf-8') as f: f.write(head + m.group(2))
+    with open(sh, 'w', encoding='utf-8') as f: f.write(s[:m.start()] + '"$PY" ' + m.group(1) + 'tools/fetch.py $PACKS\n' + s[m.end():])
 
 
 def add_textures_pack():
