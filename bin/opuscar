@@ -3,13 +3,23 @@
 #
 # It pins the two things `node core/render/*.mjs` needs there and cannot infer:
 #
-#   1) LEMO_ANGLE — with no ANGLE backend pinned, the WebGL canvas initialises and then
-#      draws nothing: shader/3D styles (ascii-crt and friends) write a blank film and
-#      still exit 0.  `swiftshader` rasterises on the CPU.  See PR #35.
-#   2) PLAYWRIGHT_CHROME — playwright-core asks for the exact browser build it was
-#      pinned to; a box whose ~/.cache/ms-playwright holds an older build aborts at
-#      launch() with "Executable doesn't exist".  The wrapper picks the newest local
-#      build, preferring chrome-headless-shell.
+#   1) PLAYWRIGHT_CHROME — the hard blocker, and it is not WebGL-specific: playwright-core
+#      asks for the exact browser build it was pinned to, so a box whose
+#      ~/.cache/ms-playwright holds any other build aborts at launch() with "Executable
+#      doesn't exist" for *every* style.  Measured here: cache had chromium-1217/1223,
+#      playwright-core wanted chromium_headless_shell-1243 — ascii-crt (WebGL) and
+#      swiss-motion (2D canvas) both exited 1 with no file written.  The wrapper picks the
+#      newest local build, preferring chrome-headless-shell.
+#   2) LEMO_ANGLE — belt-and-braces, and only load-bearing *before* PR #35 lands.  On
+#      current main, `node core/render/still.mjs styles/ascii-crt/demo 39.4` with no
+#      LEMO_ANGLE writes a 13 KB white frame (YAVG 254.996, SSIM Y 0.0515 against the
+#      correct frame) and still exits 0 — 3/3 runs, deterministic.  The cause is not the
+#      missing backend: it is `--enable-gpu --ignore-gpu-blocklist` being sent even when
+#      no backend is pinned, which is exactly what PR #35 fixes.  With that patch applied
+#      and LEMO_ANGLE still unset, the same command renders the real frame (504 KB,
+#      YAVG 23.24, SSIM Y 0.99965) — 3/3.  So once #35 is in, this pin is redundant on
+#      Linux; the wrapper keeps it because it costs nothing and makes the backend explicit
+#      in the banner.
 #
 # Usage:
 #   opuscar core/render/video.mjs styles/ascii-crt/demo --fps 24 --workers 3 --out /tmp/x.mp4
