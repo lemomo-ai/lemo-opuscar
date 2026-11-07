@@ -346,7 +346,7 @@ window.render = t => {
 const EV = [];
 EV.push({ t: 1.8, type: 'hatColor' }, { t: 4.4, type: 'windIn' }, { t: 4.6, type: 'gust' }, { t: 6.0, type: 'hatLift' }, { t: 8.4, type: 'bounce' }, { t: 8.45, type: 'miss' }, { t: 9.55, type: 'bell' }, { t: 9.95, type: 'bell' },
   { t: 11.55, type: 'jump' }, { t: 10.8, type: 'lampSpin' }, { t: 12.0, type: 'tree' }, { t: 13.2, type: 'tree' }, { t: 14.4, type: 'tree' }, { t: 19.2, type: 'apex' }, { t: 20.4, type: 'silence' },
-  { t: 21.6, type: 'fall' }, { t: 23.55, type: 'dive' }, { t: 24.0, type: 'catch' }, { t: 24.02, type: 'splash' }, { t: 28.2, type: 'writeTitle', d: 1.3 }, { t: 30.0, type: 'writeCredits', d: 1.9 }, { t: 1.55, type: 'writeNote', d: .8 });
+  { t: 21.6, type: 'fall' }, { t: 23.55, type: 'dive' }, { t: 24.0, type: 'catch' }, { t: 24.02, type: 'splash' }, { t: 28.2, type: 'writeTitle', d: 1.3 }, { t: 29.6, type: 'writeCredits', d: 1.3 }, { t: 1.55, type: 'writeNote', d: .8 });
 for (const st of STEPS) EV.push({ t: st, type: 'step', surf: st > 22 ? 'stone' : 'grass' });
 window.EV = EV;
 // Hat trajectory (for sound: tumbling loudness follows speed, panning follows screen position)
