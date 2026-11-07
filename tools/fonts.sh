@@ -16,8 +16,8 @@
 #
 # how a file is resolved, in this order
 #   author   the style ships its own fetcher (tools/fonts.py, fetch_fonts.mjs, …)
-#            — 21 styles do; it is run the way build.sh runs it, so the subsets
-#            and the file names are the author's, not a guess
+#            — 22 styles do; it is run the way build.sh runs it, mkdir included,
+#            so the subsets and the file names are the author's, not a guess
 #   bundled  the name matches one of the faces already in core/fonts/
 #   github   .ttf from github.com/google/fonts (ofl/ apache/ ufl/): the exact file
 #            name, or the best match in the family folder, written under the name
@@ -519,6 +519,15 @@ def author_fetcher(demo):
     return None, None
 
 def run_author(demo, rel, kind, log):
+    # build.sh creates the directory before it calls the fetcher
+    # (`mkdir -p fonts && node fetch_fonts.mjs`), and game-show's and
+    # halftone-dossier's fetchers write into fonts/ without creating it.
+    # On a fresh clone the directory is not there at all -- demo/fonts/ is
+    # gitignored, and git carries no empty directory -- so running the
+    # fetcher on its own dies with ENOENT on fonts/f0.woff2 and the style
+    # silently drops to a guessing tier.  Run it the way build.sh does.
+    try: os.makedirs(os.path.join(demo, 'fonts'), exist_ok=True)
+    except OSError as e: log.append('    author %s: mkdir fonts/: %s' % (rel, e))
     cmd = {'py':  [sys.executable, '-I', rel, '.'],
            'sh':  ['sh', rel],
            'node':['node', rel]}[kind]
