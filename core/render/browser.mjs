@@ -1,8 +1,57 @@
-// Launch arguments for headless Chrome. Finding the browser itself is left to playwright, matched to its version (the chromium-headless-shell installed by npm run);
-// to use a different executable: PLAYWRIGHT_CHROME=/path/to/chrome-headless-shell
+// Launch arguments for headless Chrome, and the executable to launch.
+// PLAYWRIGHT_CHROME=/path/to/chrome-headless-shell always wins.
+// Otherwise playwright-core looks for the one build its version was pinned to. On a
+// machine whose ~/.cache/ms-playwright holds a different revision -- a CI image, a VM
+// provisioned before an npm bump -- every renderer dies at launch() with
+// "Executable doesnt exist at ..." before a single frame is drawn: exit 1, no file,
+// for 2D-canvas styles as much as for WebGL ones. So when the pinned build is missing
+// we fall back to the newest local one (chrome-headless-shell preferred) and say so on
+// stderr; if there is none, playwright raises its own error as before.
 // GPU: on macOS, Metal explicitly (on newer headless-shell, --use-angle=gl falls back to SwiftShader software rendering, ~6x slower);
-//      other systems get no forced backend. LEMO_ANGLE=metal|gl|vulkan|swiftshader… overrides it; LEMO_ANGLE=default means don't pass --use-angle.
-export const EXE = process.env.PLAYWRIGHT_CHROME || undefined;   // undefined = let playwright find it
+//      other systems get no forced backend. LEMO_ANGLE=metal|gl|vulkan|swiftshader... overrides it; LEMO_ANGLE=default means dont pass --use-angle.
+import { existsSync, readdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "playwright-core";
+
+const CACHE = process.env.PLAYWRIGHT_BROWSERS_PATH || join(homedir(), ".cache", "ms-playwright");
+const LAYOUTS = [
+  ["chromium_headless_shell-", ["chrome-headless-shell-linux64", "chrome-headless-shell"]],
+  ["chromium_headless_shell-", ["chrome-headless-shell-mac-arm64", "chrome-headless-shell"]],
+  ["chromium_headless_shell-", ["chrome-headless-shell-mac-x64", "chrome-headless-shell"]],
+  ["chromium-", ["chrome-linux64", "chrome"]],
+  ["chromium-", ["chrome-linux", "chrome"]],
+  ["chromium-", ["chrome-mac", "Chromium.app", "Contents", "MacOS", "Chromium"]],
+];
+
+// newest revision wins; a headless shell outranks a full chromium of any revision
+function newestLocalChrome() {
+  let best, names;
+  try { names = readdirSync(CACHE); } catch { return undefined; }
+  for (const name of names) for (const [prefix, tail] of LAYOUTS) {
+    if (!name.startsWith(prefix)) continue;
+    const rev = Number(name.slice(prefix.length));
+    if (!Number.isFinite(rev)) continue;
+    const exe = join(CACHE, name, ...tail);
+    if (!existsSync(exe)) continue;
+    const rank = rev + (prefix.indexOf("headless_shell") >= 0 ? 1e6 : 0);
+    if (!best || rank > best.rank) best = { rank, exe };
+  }
+  return best && best.exe;
+}
+
+function resolveExe() {
+  if (process.env.PLAYWRIGHT_CHROME) return process.env.PLAYWRIGHT_CHROME;
+  let pinned;
+  try { pinned = chromium.executablePath(); } catch {}
+  if (pinned && existsSync(pinned)) return undefined;   // healthy install: let playwright find it
+  const local = newestLocalChrome();
+  if (!local) return undefined;                         // nothing local either: let playwright report it
+  console.error(`[note] playwright wants ${pinned || "its pinned build"}, which is not installed; using ${local}. Run: npx playwright install chromium-headless-shell`);
+  return local;
+}
+
+export const EXE = resolveExe();
 const angle = process.env.LEMO_ANGLE || (process.platform === 'darwin' ? 'metal' : 'default');
 export const ARGS = [...(angle === 'default' ? [] : [`--use-angle=${angle}`]), '--enable-gpu', '--ignore-gpu-blocklist', '--font-render-hinting=none', '--force-color-profile=srgb'];
 
