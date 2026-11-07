@@ -7,7 +7,7 @@ Demo: *Patent Pending: The Cloud Catcher* (46.7 s) · `blueprint.mp4` · source 
 
 ## Story & structure
 
-An inventor's patent drawing of a cloud-catching machine: it is drawn, exploded, runs perfectly, but there are no clouds; the hand revises the drawing, the revision cloud becomes a real rain cloud, it rains on the drawn garden and a flower grows. The original notes on the style's story powers, as written for this demo:
+An inventor's patent drawing of a cloud-catching machine: it is drawn, exploded, runs perfectly, but there are no clouds; the hand revises the drawing, the revision cloud becomes a real rain cloud, it rains on the drawn garden and a flower grows. The style's story powers, as noted for this demo:
 
 The whole film happens **on one sheet of blueprint paper** lying on a dark drafting table. Everything is white line work on uneven Prussian blue: centre lines, outlines, hatching, dimension lines, leader lines with numbered balloons, a title block and a notes column. The camera moves over the sheet like an eye reading a drawing. It is a **2D line-drawing language**. You may use orthographic and oblique/isometric projection, but **never 3D rendering**.
 
@@ -27,7 +27,7 @@ The machine (or object, or plan) **is the character**. Parts act: a boom lifts h
 | **Cyanotype and water** | Rain on the sheet: each drop blooms deeper blue with a pale tide line, and white lines inside the stain go soft. A drop on the signature makes it bleed. |
 | **The title block** | Title card = sheet header. Status field = the story's verdict (a red rubber stamp is the film's only non-blue colour). End card = the title block's last row being lettered in (STYLE / DRAWN BY). |
 
-**How we adapted the topic** (and the same recipe for others): turn the topic into **something designed** and let the drawing find a flaw that only the drawing can fix. A product launch becomes Fig. 1, exploded view, operation, then a revision that adds the missing feature. A love story: two machines on one sheet, and a revision cloud draws the bridge. A history lesson: a city plan revised again and again (REV. 1, 2, 3).
+**How the topic is adapted** (and the same recipe for others): turn the topic into **something designed** and let the drawing find a flaw that only the drawing can fix. A product launch becomes Fig. 1, exploded view, operation, then a revision that adds the missing feature. A love story: two machines on one sheet, and a revision cloud draws the bridge. A history lesson: a city plan revised again and again (REV. 1, 2, 3).
 
 **Demo emotional arc (46.7 s):** curiosity (blank sheet, the object is drawn) → pride (exploded view) → excitement (it runs, on the beat) → the flaw (it works perfectly but the world lacks something; music stops) → the hand revises the drawing → **the symbol becomes real** (suspended chord, no voice) → payoff → echo (stamp, signature, title block).
 
@@ -48,7 +48,7 @@ The machine (or object, or plan) **is the character**. Parts act: a boom lifts h
 
 Keep storytelling shots close. Only the opening and closing establishing shots are full-sheet.
 
-Demo motion numbers: exploded parts leave one every ~0.055 of the progress on eighth notes and come back one eighth note per group with a brass click; gears advance 7.5° (one tooth) per eighth note with a 0.35-beat ease-out; bellows breathe per beat; failure over ~1.5 s (gears slow, bellows deflate, boom sags, vane droops); joy = vane snaps upright, needle overshoots to 1. The original motion section:
+Demo motion numbers: exploded parts leave one every ~0.055 of the progress on eighth notes and come back one eighth note per group with a brass click; gears advance 7.5° (one tooth) per eighth note with a 0.35-beat ease-out; bellows breathe per beat; failure over ~1.5 s (gears slow, bellows deflate, boom sags, vane droops); joy = vane snaps upright, needle overshoots to 1. The motion rules:
 
 - Line **draw-on** is truncated by arc length, with a small glowing nib at the head. Stagger items within a layer. Each layer starts on a beat.
 - **Exploded view**: parts leave in sequence, one every ~0.055 of the progress, on eighth notes, with eased motion. The camera pulls back to make room. Parts come back **one eighth note per group with a brass click**.
@@ -74,7 +74,7 @@ Demo motion numbers: exploded parts leave one every ~0.055 of the progress on ei
   - Water: soft damped pats per drop plus a light rain bed.
   - Rubber stamp thump, pen cap click at the very end.
 - **Voice**: dry-humoured British engineer reading his own design notes, Kokoro `bm_daniel`, `lang en-gb`, speed 0.9. Five or six short lines. Keep the climax voiceless.
-- **Mix**: music ducks to ~0.36 under voice and foley ducks by half. Whooshes low-passed at 2.5 kHz (they masked "bellows" in whisper). −14 LUFS. `mux.sh` grain 4 (the paper grain is in the image already).
+- **Mix**: music ducks to ~0.36 under voice and foley ducks by half. Whooshes low-passed at 2.5 kHz (unfiltered, they mask "bellows" in whisper). −14 LUFS. `mux.sh` grain 4 (the paper grain is in the image already).
 
 ## Palette & props
 
@@ -129,17 +129,17 @@ styles/blueprint/demo/
 4. `node core/render/video.mjs styles/blueprint/demo --fps 24 --workers 3` (1120 frames, Canvas2D + WebGL, ~30 s).
 5. `sh core/render/mux.sh out/video24.mp4 mix.wav blueprint.mp4 24 4`. Or run everything with `sh styles/blueprint/demo/build.sh`.
 
-### Pitfalls we hit
+### Pitfalls
 
-- **The machine near the sheet edge**: wide shots showed the desk. Put the main figure at least `960/zoom` from any sheet edge you will frame in a wide, or make the sheet bigger (we went 3200×2000 → 3200×2200 and moved the machine right).
+- **The machine near the sheet edge**: wide shots show the desk. Put the main figure at least `960/zoom` from any sheet edge you will frame in a wide, or make the sheet bigger (for this demo 3200×2000 is too small: use 3200×2200 and keep the machine toward the right).
 - **Explosions that go up hit the header.** Explode mostly upward and sideways, and flatten the boom during the explode so the net extends sideways.
 - **Subtitles on the ink canvas** vanish off-sheet and cannot occlude lines. Use a separate overlay texture composited last (premultiplied alpha).
 - **The magic object darkened by its own shadow.** Multiply its area on the fx canvas with `rgb(0,255,255)` to zero the shadow channel only.
 - **Per-lobe shading makes "grapes" or bubble wrap.** Use one gradient across the union, crescents from a union-minus-shifted-union mask, and arcs only on the upper inner lobes.
 - **Overlapping additive circle fills make bubbles.** Fill a union as one path with `fill('nonzero')`.
 - **Scallop arcs drawn the wrong way round look like a starburst.** Choose the arc direction that contains the lobe's outward angle.
-- **The half-puffed cloud looked like a donut.** Grow the inner lobes early (`r × min(1, pf × 2.2)`).
-- **The payoff must be big.** The first cut had the flower as a small clump in the lower third, which undersold the emotional return. Give the payoff object ~1/3 of frame height, centred, drawn stroke by stroke (stem → leaves → one petal per beat), with visible stains around it. Keep subtitles off it.
+- **A half-puffed cloud looks like a donut.** Grow the inner lobes early (`r × min(1, pf × 2.2)`).
+- **The payoff must be big.** A small clump in the lower third undersells the emotional return. Give the payoff object ~1/3 of frame height, centred, drawn stroke by stroke (stem → leaves → one petal per beat), with visible stains around it. Keep subtitles off it.
 - **A caught object shows through the net.** Don't paint the net over it wholesale: fill the bag below the front rim with the object's body, then draw mesh and front rim on top, and skip the back rim.
 - `sfx.thump()` is 0.35 s long: pad before adding to longer buffers.
 - Whisper reads "Figure one" as "Figure 1": use an `asr` field in `lines.json`.

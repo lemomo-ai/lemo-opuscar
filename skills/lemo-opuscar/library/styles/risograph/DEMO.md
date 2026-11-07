@@ -67,15 +67,15 @@ styles/risograph/demo/
   tools/      video_png.mjs (PNG frames, lossless intermediate), mux.sh (crf16 -tune grain), subs.py
 ```
 
-1. Design the plates first: what the one-ink frame looks like and what each plate adds. The model sheet (`?sheet=1&v=2`, [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg)) has a "plates = story" row: the same character with 1, 2, 3 plates via `S.mask`.
+1. Design the plates first: what the one-ink frame looks like and what each plate adds. The model sheet (`?sheet=1`) has a "plates = story" row: the same character with 1, 2, 3 plates via `S.mask`.
 2. `sh styles/risograph/demo/build.sh` rebuilds everything: TTS → whisper → score → events → mix → SRT → render (960 frames, ~2–4 min with 3 workers) → mux → style frame, poster, model sheet.
 3. Review: `node core/render/still.mjs styles/risograph/demo --range 0:40:1.5` + `core/render/sheet.py`; key actions at 0.2 s steps; the encoded film at 100 % and 50 % for moiré.
 
-Encoding: PNG frames → lossless intermediate (qp 0, yuv444) → one encode at crf 16 `-tune grain` (~280 MB for 40 s); crf 20 without `-tune grain` is ~120 MB and still clean at 1080p and 50 %. Per-frame jitter + per-frame streaks had pushed x264 to 900 MB.
+Encoding: PNG frames → lossless intermediate (qp 0, yuv444) → one encode at crf 16 `-tune grain` (~280 MB for 40 s); crf 20 without `-tune grain` is ~120 MB and still clean at 1080p and 50 %. Per-frame jitter + per-frame streaks push x264 to 900 MB.
 
 Pitfalls tied to this demo's props:
-- The hand-off: the baker's arm is in the background plane and disappeared behind the rider → the exchange staged ahead of and above him.
-- Bridge arches filled solid with `evenodd` → underside traced with `arc(..., true)`.
-- The first design (lanky, round glasses, horizontal stripes) read as a famous picture-book character → solid knitwear and a different signature (the chunky scarf).
-- Sweater and trousers without Blue showed a floating head in the one-ink opening.
-- Pink dots on skin looked like measles → skin is Yellow only.
+- The hand-off: the baker's arm is in the background plane and disappears behind the rider; stage the exchange ahead of and above him.
+- Bridge arches fill solid with `evenodd`; trace the underside with `arc(..., true)`.
+- Lanky, round glasses and horizontal stripes together read as a famous picture-book character: use solid knitwear and a different signature (the chunky scarf).
+- Give sweater and trousers some Blue: without it the one-ink opening shows a floating head.
+- Pink dots on skin look like measles: keep skin Yellow only.

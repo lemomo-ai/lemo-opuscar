@@ -27,7 +27,7 @@ How the demo used the medium:
 | **Frame within the frame** | A detail callout: a leader line grows from the map and ends in a circular inset showing a close-up. The system and the individual are on screen together. |
 | **Scale reveal** | End by pulling back to the whole board. The route lights station by station and every label is on screen at once, so the last frame is a finished infographic. |
 
-**Story shape (proven in the demo):**
+**Story shape (as in the demo):**
 1. Open on an extreme close-up of the subject arriving in a hand, with a tag: **0 km**.
 2. Pull back to the first station and the title.
 3. Numbers grow station by station (2 seeds → 400,000 beans per sack → 14,000 containers). The subject gets lost.
@@ -95,7 +95,7 @@ Frame so the subject is at least 1/3 of the frame height at key moments (the han
 - **Stations** that must be found in the wide shot get a **pale cream plate with a dashed ink outline** and an accent colour (brick-red roastery, red-and-cream awning café). Keep buildings around them low.
 - **People:** Monument-Valley-minimal billboards with a round head, a tapered body in two tones, a thick arm stroke and a hat or hair shape for identity. No faces. They step at 12 fps.
 - **Hero close-ups (hands):** flat faceted shapes in three skin tones (light palm facing up, mid sides, dark underside), a sleeve in the character's colour, and fingers as rounded two-segment capsules curling toward the viewer. The opening and closing hands share **the same pose, camera, zoom and tag position.** Only the skin tone, the sleeve and the object change.
-  The pair side by side: [`demo/stills/frame_v2_hands.jpg`](demo/stills/frame_v2_hands.jpg) (3.4 s and 50.9 s).
+  The pair side by side: [`demo/stills/frame_hands.jpg`](demo/stills/frame_hands.jpg) (3.4 s and 50.9 s).
 - **Labels (pins):** a dot (ink ring, cream fill) → a vertical leader → a horizontal rule → text. Titles are Jost 600, all caps, tracking 0.12 em. Numbers are Jost 400 at 44 px, and units Jost 500 at half size. Text has a 7 px cream halo so it reads over any colour. Pins can point up or down and left or right; choose per station so labels never cover the subject.
 - **Title:** Jost 700 words extruded as isometric blocks on a cream plate lying on the ground plane (cream face, coffee-red sides), one word per eighth note.
 - **Clouds:** flat isometric clouds with fake parallax (1.25× the ground's motion). They fade out above k ≈ 40.
@@ -106,10 +106,10 @@ Frame so the subject is at least 1/3 of the frame height at key moments (the han
 - Hold each line ≥ max(1.8 s, speech + 0.6 s). Lines never overlap each other, the title or the end card.
 - **End card = the map's legend**, shown in the empty cream corner: title, style name, total with the Isotype bar, "Lemo-Opuscar · LemoLab × Claude Opus 5.5", credits. "NOT TO SCALE" is honest and a small joke. The "Lemo-Opuscar · LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
-- **Newell normals versus vertex order:** the +y face of a box was culled as a back face. Give every face an outward hint (`out`) and flip the normal to match it before culling.
-- **Painter sorting of composites:** shrubs on a terraced hill appeared in front of the next terrace. Draw the hill as one item: each terrace, then its back row of shrubs, and after all terraces the front rows from top to bottom. Cranes' booms need a large depth bias so they sit above the ship.
+- **Newell normals versus vertex order:** a box's +y face can be culled as a back face. Give every face an outward hint (`out`) and flip the normal to match it before culling.
+- **Painter sorting of composites:** shrubs on a terraced hill appear in front of the next terrace. Draw the hill as one item: each terrace, then its back row of shrubs, and after all terraces the front rows from top to bottom. Cranes' booms need a large depth bias so they sit above the ship.
 - **Semi-transparent falling boxes look like ghosts.** Use motion only, no alpha.
 - **The ship's bow over the beach** reads as "run aground" even when it is geometrically in water. Leave visible water around every hull. Undock by translating clear of the quay before turning.
 - **The time jump inside the dive:** the ship teleports from mid-ocean to the destination dock while only beans fill the frame. Draw the bean field **in screen space, anchored on the tracked bean** and scaled by k; its layout then does not depend on the ship's heading, and the jump is invisible.

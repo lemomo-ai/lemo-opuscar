@@ -9,13 +9,13 @@ Demo: *The Island That Grew* (53 s) · `lowpoly-island.mp4` · source in [`demo/
 
 An empty sea with only a buoy that knows one note; tiles, trees and houses rise from the sea one by one, each landing with a note, so the island and its song are written together — until at night the boat that went out cannot find its way home, and the last "note" is a lighthouse.
 
-We read the brief as: **a small world that grows, lives through a day, and meets one problem that the final piece solves** — one subject (an island), one goal (to become a home), one turn (night falls, the boat is lost). In the old guide this was offered as the way to adapt any topic; it is only this film's shape.
+The film's shape: **a small world that grows, lives through a day, and meets one problem that the final piece solves** — one subject (an island), one goal (to become a home), one turn (night falls, the boat is lost). It is only this film's shape, not the way to adapt any topic.
 
 Emotional arc (53 s): emptiness → first note → accelerating joy of building → a lived-in day → dusk warmth → silent night with one thing missing → the final piece ignites (climax) → pull back to scale, with an echo of the opening.
 
 Native powers spent: procedural growth (the whole first act), the orthographic gaze (the final ×25 zoom), turntable (the growth shot), flat shading × light (the day time-lapse), emissive blocks (windows at dusk, the beam at night).
 
-**"Building is composing", as the demo paid it off:** every growth event is exported from the page with a MIDI note, and the score's melody voice is synthesized from those events. The lighthouse beam turns once every 12 beats and passes one ring cell per beat; the eight houses standing on those cells light up and chime as it passes, so the notes laid down in a shuffled build order are replayed in **spatial order** as the complete theme. The second ring around the centre cell has 12 cells at exactly 30° steps, which made this beat-synced sweep possible.
+**"Building is composing", as the demo paid it off:** every growth event is exported from the page with a MIDI note, and the score's melody voice is synthesized from those events. The lighthouse beam turns once every 12 beats and passes one ring cell per beat; the eight houses standing on those cells light up and chime as it passes, so the notes laid down in a shuffled build order are replayed in **spatial order** as the complete theme. The second ring around the centre cell has 12 cells at exactly 30° steps, which makes this beat-synced sweep possible.
 
 ## Shots
 
@@ -40,7 +40,7 @@ Camera settings used: azimuth 45° by default, elevation **30°** (build), **33�
 - Growth scheduled on the 16th grid: tiles on halves → quarters → eighths.
 - The boat's answering bell sits in a rest of the melody, filling the gap when the beam finds it.
 - **Foley** (`mix.py`): as in STYLE.md §7, plus gulls by day (downward-gliding FM chirps), windmill creak, crickets from dusk; the dock plank knock and lighthouse-ring stone thunk, glass tink for the lamp room, whump + hum on ignition. Floors: second knock 0.21 s after the first.
-- **Voice**: Kokoro `af_sky` (clear, gentle female), speed 0.86–0.92, 5 short lines. "Sea" was heard as "C" in a film about notes, so the narration says "ocean".
+- **Voice**: Kokoro `af_sky` (clear, gentle female), speed 0.86–0.92, 5 short lines. "Sea" is heard as "C" in a film about notes, so the narration says "ocean".
 - **Mix**: voice compressed, ~10 dB over the music; music ducked −8 dB under the voice; −14 LUFS; grain 0.
 
 ## Palette & props
@@ -82,6 +82,6 @@ styles/lowpoly-island/demo/
 
 Pitfalls tied to this demo's props:
 
-- An invisible glow sprite became a black parallelogram floating on the sea in the GTAO pass.
-- The boat was 21 units out — off-screen when the beam found it. We derived the boat's position from the beam's angular speed so the beam finds it on a chosen beat (a rest in the melody, so the boat's answering bell fills the gap).
-- Shadows on the sea at low sun made a long dark stain; the sea receives no shadows.
+- An invisible glow sprite becomes a black parallelogram floating on the sea in the GTAO pass.
+- Derive the boat's position from the beam's angular speed so the beam finds it on a chosen beat, in frame (a rest in the melody, so the boat's answering bell fills the gap): at 21 units out it is off-screen when the beam finds it.
+- Don't let the sea receive shadows: at low sun they make a long dark stain.

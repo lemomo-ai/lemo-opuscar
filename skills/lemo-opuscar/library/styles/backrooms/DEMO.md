@@ -7,7 +7,7 @@ Demo: *Night Shift Orientation* (59.7 s) · `backrooms.mp4` · source in [`demo/
 
 ## Story & structure
 
-A new night-shift worker films his orientation walk through an endless office floor, following the printed rules and the PA. The original style notes, as written for this demo:
+A new night-shift worker films his orientation walk through an endless office floor, following the printed rules and the PA. The style notes for this demo:
 
 A single first-person **camcorder recording** (1990s VHS, 4:3) walking through an **empty, familiar-but-wrong interior**: mustard wallpaper, damp carpet, drop ceilings full of humming fluorescent panels, repeating forever. Nothing chases anyone. The dread comes from **emptiness, repetition, bureaucratic rules, and the camera's own machinery failing at the wrong moment**. The viewer should feel a chill on the back of the neck, not jump out of their seat.
 
@@ -23,7 +23,7 @@ The recording medium is the storyteller. The demo used all five native powers an
 | **Rules as text in frame** | Printed notices, PA announcements in a calm corporate voice. Rules start ordinary and drift wrong; two of them contradict each other; the last one addresses the viewer. |
 | **Emptiness and repetition** | The same notice appears again in a different place; the same room with one detail changed; a corridor that runs into fog. Emptiness itself is the threat. |
 
-How we framed the topic (the same trick works for others): turn the topic into **an orientation, a procedure, or a checklist** that someone records on tape — a new job's first shift, a building inspection, a moving-day walkthrough, a school's safety drill, a hotel's night audit. Write 5–6 rules. Let the medium betray the rules.
+How the topic is framed (the same trick works for others): turn the topic into **an orientation, a procedure, or a checklist** that someone records on tape — a new job's first shift, a building inspection, a moving-day walkthrough, a school's safety drill, a hotel's night audit. Write 5–6 rules. Let the medium betray the rules.
 
 **Demo emotional arc (59.7 s):** boring normal (≈20 s of almost nothing) → a small wrongness (a contradiction, a repeated notice) → a rule is tested (lights flicker) → seeing / not seeing (focus hunt) → time removed (tracking tear) → a rule is broken (the exit) → the last rule turns to the audience → REC off. One subject (the camera operator — heard, never seen above the shoes), one goal (follow the procedure), one turn (the time code proves he is no longer in "normal").
 
@@ -43,7 +43,7 @@ How we framed the topic (the same trick works for others): turn the topic into *
 
 **The "thing"** is never a close-up: a 2.4 m silhouette (a colleague who is wrong by 15–40 %: small head, long tilted neck, narrow high shoulders, arms to the knee), drawn as an organic Canvas2D silhouette on a camera-facing billboard, ~33 m away in a stretch of dead lights with only dim light far behind it. Slow small wave (3.6 s cycle). Target: *you can tell it is waving, you cannot count fingers.* Exclude the billboard from the GTAO pre-pass (`mesh.isPoints = true`) or it stamps a dark rectangle.
 
-Demo motion numbers: 0.72 m stride, head bob 3 cm, sway 1.8 cm, roll ±0.8°, breathing 0.27 Hz, tremor at 1, 3.5 and 9 Hz; looking down at pitch ≈ −1.2 rad with the camera pushed 0.2 m forward; zoom FOV 52° → 27° with aperture ×5; three 0.1 s blackouts per flicker, AE lag ~0.45 s; doors open in 1.3 s. The original motion section:
+Demo motion numbers: 0.72 m stride, head bob 3 cm, sway 1.8 cm, roll ±0.8°, breathing 0.27 Hz, tremor at 1, 3.5 and 9 Hz; looking down at pitch ≈ −1.2 rad with the camera pushed 0.2 m forward; zoom FOV 52° → 27° with aperture ×5; three 0.1 s blackouts per flicker, AE lag ~0.45 s; doors open in 1.3 s. The motion rules:
 
 - **One continuous handheld take.** Cuts happen only where the tape breaks: power-on roll-in, tracking tear, REC off.
 - Handheld = walking gait (0.72 m stride, head bob 3 cm, sway 1.8 cm, roll ±0.8°) + breathing (0.27 Hz) + tremor noise at 1, 3.5 and 9 Hz whose amplitude rises with a **fear** curve. At the "held breath" moment **freeze all of it**.
@@ -58,7 +58,7 @@ There is no score. The sound design as built for the demo:
 
 - **No score.** Only what the tape would have recorded.
 - **Fluorescent bed**: 120 Hz + harmonics (1, .55, .42, .22, .16, .06 at ×1…×7), a buzzy band-passed square component, a faint ~9 kHz ballast whine, random bad-tube "zzz" bursts; gated by the same light curve as the picture; +3 dB closer in small rooms.
-- **PA**: calm corporate voice (Kokoro `af_bella`, speed 0.82–0.84) through a "ceiling speaker": band-pass ~310–3500 Hz, cone resonance around 1.3 kHz, tanh saturation, room reverb — keep it dry enough for whisper to transcribe (too much reverb made "night shift" into "my church"). Original two-note chime (vibraphone E5→C5) before every rule; after the time jump both chime and voice drift flat with tape wow.
+- **PA**: calm corporate voice (Kokoro `af_bella`, speed 0.82–0.84) through a "ceiling speaker": band-pass ~310–3500 Hz, cone resonance around 1.3 kHz, tanh saturation, room reverb — keep it dry enough for whisper to transcribe (too much reverb turns "night shift" into "my church"). Original two-note chime (vibraphone E5→C5) before every rule; after the time jump both chime and voice drift flat with tape wow.
 - **Operator**: 3–4 short lines (`am_michael`), low level, proximity bass, a breath/air layer following the voice envelope, compressed. Kokoro cannot truly whisper — "speaking quietly" is the goal. Close-mic breathing whose rate follows the fear curve; held breath then one long exhale.
 - **Diegetic hold music**: an original easy-listening loop (here 88 BPM F major, vibraphone melody, clean-guitar comps on 2 & 4, finger bass), band-passed and drowned in reverb as if through walls, read with a slowing tape-speed curve (1.00 → 0.97 → 0.89) and growing wow. It cuts out during blackouts and dies at the silence, never to return.
 - **Foley**: damp-carpet steps (60–85 Hz thud + small wet 0.9–2.6 kHz squelch), cloth rustles on turns, camcorder clack + motor on REC on/off, zoom servo whine, AF motor ticks, ballast "tink" + arc buzz on each flicker, a barely audible drag overhead, door latch + stick-slip hinge creak + air push.
@@ -106,17 +106,17 @@ styles/backrooms/demo/
 1. `node core/render/still.mjs styles/backrooms/demo <t…> [--q nosub=1|raw=1|sheet=1]` — review stills.
 2. `sh styles/backrooms/demo/build.sh` — TTS → whisper → music → events → mix → whisper on processed voices → render (1433 frames ≈ 80 s with 3 workers) → mux (−14 LUFS) → SRT → poster/styleframe.
 
-### Pitfalls we hit
+### Pitfalls
 
 - A fully bright scene reads as a hospital corridor. Break walls into partitions with gaps; let far areas fall dark.
 - Lights leak through walls (no occlusion) — a "dead zone" needs all lights within ±5 m across dead, and the corridor behind it dim too, or the figure is framed against a bright window.
-- The scene background showed as a bright rectangle at the corridor's end — set background = fog × 0.15.
+- The scene background shows as a bright rectangle at the corridor's end — set background = fog × 0.15.
 - A uniform fog colour lifts silhouettes to grey; make fog follow local light.
-- Low-frequency line wobble in the VHS pass skews text; keep it ≤0.25 px. Camera pitched down at a notice made words look italic — lower the camera instead.
+- Low-frequency line wobble in the VHS pass skews text; keep it ≤0.25 px. A camera pitched down at a notice makes words look italic — lower the camera instead.
 - Capsule-built figures read as toys / stick men. Draw the silhouette as organic curves on a billboard.
 - Legs from primitives look like tubes; show only shoe toes (extruded footprint outline with bevel, lighter sole, laces).
-- Emissive red at ×3 never reached the bloom threshold (luminance of pure red is low); use ×9.
-- Normalising a filtered chime by the *pre-filter* peak blew the PA bus up by 16 dB — normalise by the processed signal.
+- Emissive red at ×3 never reaches the bloom threshold (luminance of pure red is low); use ×9.
+- Normalising a filtered chime by the *pre-filter* peak blows the PA bus up by 16 dB — normalise by the processed signal.
 - Heavy PA reverb destroys intelligibility; check every processed line with whisper and the full mix too.
 - Time-compressing a finished timeline: write keyframes in "original" time and map them through one piecewise-linear warp `W()`; remember to warp any hard-coded times elsewhere.
 - VHS noise makes files big: CRF 24 → ~47 MB for 60 s.

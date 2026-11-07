@@ -9,7 +9,7 @@ A hundred and one summers of real global temperature (NASA GISTEMP v4, June–Au
 
 ## Story & structure
 
-Our data is a time series, so it is drawn as dots and a line that morph into stripes. That was one choice for one dataset.
+The data is a time series, so it is drawn as dots and a line that morph into stripes. That is one choice for one dataset.
 
 Shape: a cold open on one point. Tender, sparse early points. A steady middle. Acceleration: the notes get denser, and the pencil hurries. The frame breaks, and the pencil flinches and flips to its red end. A rush. **Everything stops half a beat early; this is the only cut in the film, into silence.** Then the last data point, alone, followed by the whole series in one view. The morph into stripes comes next, then the longer record, then an empty cell for the next value ("Next summer?"). The end card lives inside that empty cell.
 
@@ -46,7 +46,7 @@ Motion numbers: 90 BPM (chosen because a 1/32 note is exactly 2 frames at 24 fps
 - Silences: 1.0 s true digital silence before the last point (all layers); 0.67 s near-silence before the empty cell. The first sounds after them: the last tap plus its note, then the first stroke of the empty cell.
 - Mix: music −11 dB and cicadas −6 dB under the voice; narration SNR in the 300–4000 Hz band 8.6–16 dB; −14 LUFS, grain 0.
 - Voice: Kokoro `af_alloy`, speed 0.92, 5 lines, never over the rush, the silence or the morph. Whisper writes numbers as digits: `asr` set to "For 50 years…" and "…turned 100…".
-- The baby's laugh was replaced by one music-box note.
+- Use one music-box note, not a baby's laugh.
 
 ## Palette & props
 
@@ -80,7 +80,7 @@ styles/dataviz/demo/
 4. `sh demo/build.sh` rebuilds everything from scratch in about 2 minutes: extract → TTS → whisper → words → events → score → cuecheck (107 cues, max 0.03 ms) → mix → subtitles → render (1200 frames, ~30 s with 2 workers) → mux (−14 LUFS, grain 0) → styleframe and poster.
 5. Review: a 1 s contact sheet from the final mp4 twice (offset by 0.25 s), 0.1 s strips of the break, the cut and the morph, per-line whisper on the final mix, and a sample-accurate silence check.
 
-Pitfalls tied to this demo: GISTEMP has J-D and D-N before the seasonal columns, so the column is selected by header name (`JJA`). A frame break rescaled after 0.17 s was invisible. Right-aligned notes: the pencil hop takes 16 % of the text phase. `pencilStroke`, `dashedCell` and `dataDot` set `globalAlpha` themselves. In tracking shots the world-space title was cut by the frame edge. At 32nd-note density the pencil body lay across fresh dots.
+Pitfalls tied to this demo: GISTEMP has J-D and D-N before the seasonal columns, so the column is selected by header name (`JJA`). Rescale on the frame break itself: a rescale 0.17 s after it goes unseen. Right-aligned notes: the pencil hop takes 16 % of the text phase. `pencilStroke`, `dashedCell` and `dataDot` set `globalAlpha` themselves. In tracking shots the frame edge cuts a world-space title. At 32nd-note density the pencil body lies across fresh dots.
 
 ## Engine reference
 

@@ -7,9 +7,9 @@ Demo: *Clawd Moves In* (59.4 s) · `living-screencast.mp4` · source in [`demo/`
 
 ## Story & structure
 
-Clawd, the Claude Code pixel mascot, climbs out of the terminal logo and moves into the Claude app, then acts out four features in four chapters: **01 Just say it** (plain-language prompt with an @-mention, reading files), **02 Plan first** (Plan mode; nothing changes until you say go), **03 Review** (the diff, a line comment, the revision), **04 Checks its own work** (the preview, the dark-mode toggle, parallel sessions). The slogan closes it: "Say it. Plan it. Review it. Ship it." Every interaction was checked against the official desktop documentation.
+Clawd, the Claude Code pixel mascot, climbs out of the terminal logo and moves into the Claude app, then acts out four features in four chapters: **01 Just say it** (plain-language prompt with an @-mention, reading files), **02 Plan first** (Plan mode; nothing changes until you say go), **03 Review** (the diff, a line comment, the revision), **04 Checks its own work** (the preview, the dark-mode toggle, parallel sessions). The slogan closes it: "Say it. Plan it. Review it. Ship it." Every interaction matches the official desktop documentation.
 
-The brief the demo was made from (the old "six rules", now spread over STYLE.md §1–§6):
+The demo's six rules (spread over STYLE.md §1–§6):
 
 | Rule | Why |
 |---|---|
@@ -63,9 +63,9 @@ The demo's sprite is an **18×10** grid unfolded 1:1 from the terminal logo's qu
     - The split screen becomes a left/right duet (piano left, chiptune right).
     - The end-card words are chiptune notes; the final stomp opens the filter on a big major-9 chord.
 - **Foley:** keyboard (a thock plus a click, with human timing jitter), trackpad clicks, pane swishes, popup pops, CI ticks, a shutter for screenshots. Mascot steps, jumps and landings are 8-bit.
-- **VO:** calm, one feature per line, product names verified with whisper. Keep effects off word onsets: a keypress landing on "Start" masked the word.
+- **VO:** calm, one feature per line, product names verified with whisper. Keep effects off word onsets: a keypress landing on "Start" masks the word.
 
-Tempo ~104 BPM (the treatment's plan). The end-card words are chiptune notes C5 E5 G5 C6 in `sound.py`.
+Tempo ~104 BPM. The end-card words are chiptune notes C5 E5 G5 C6 in `sound.py`.
 
 Mascot timings in the demo: anticipation crouch 0.14 s with squash 0.28; walk at 9 steps/s. The full acting notes:
 
@@ -75,7 +75,7 @@ Mascot timings in the demo: anticipation crouch 0.14 s with squash 0.28; walk at
 - **Eyes carry the acting:** n / l / r / u / d / wide / happy / shut / blink. They look at what matters: the popup, the cursor, the line being revised.
 - **Arms:** down / up (cheer) / wave. Props sit on the same grid.
 
-Voice: Kokoro `am_michael`, speed 1.0 (other voices read "Claude" as "Clod"). A keypress landing on "Start" masked the word, hence the rule to keep effects off word onsets.
+Voice: Kokoro `am_michael`, speed 1.0 (other voices read "Claude" as "Clod"). Keep effects off word onsets: a keypress landing on "Start" masks the word.
 
 ## Palette & props
 
@@ -98,7 +98,7 @@ Clawd hops across "Say it. Plan it. Review it. Ship it." word by word as it is s
 
 Other files: `demo/lines.json` (VO lines), `demo/tools/asr_check.py` (whisper check + word timestamps, `sh demo/build.sh --vo`), `demo/tools/mixcheck.py`, `demo/tools/subs.mjs` (captions → `.srt`). `build.sh` also renders the style frame (40.9 s) and the poster (8.9 s).
 
-Don'ts we wrote for this demo (now STYLE.md §9):
+Don'ts (also in STYLE.md §9):
 
 - Don't invent features or rename modes. If a button isn't in the docs, it isn't in the film.
 - Don't let the mascot float in empty space, cover text the viewer should read, or sit under a caption.

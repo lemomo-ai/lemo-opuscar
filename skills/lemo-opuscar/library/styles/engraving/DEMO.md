@@ -19,7 +19,7 @@ How the native moves served information in this demo:
 - *Hand colouring* was the climax, after a real silence and after all information is on the plate, so it read as reward, not as new information.
 - *The final plate* was the poster: every label, the call to action and the engravers' credits at once, locked off.
 
-The use-case table as first written for this demo, with the shot structure we had in mind for each (examples, not recipes):
+Use cases, with a shot structure for each (examples, not recipes):
 
 | Use | Shot structure |
 |---|---|
@@ -123,8 +123,8 @@ Pitfalls tied to this demo's props:
 - **Wing veins must close their cells.** Random vein strokes look fake; define long veins as curves and snap cross-veins onto them (`bee.js`, `FX`).
 - **Leg joints drawn as full capsules look like beads.** Exclude the previous segment so only the distal cap shows.
 - **Two renders of the same demo folder collide**: `video.mjs` writes its segments to `<demo>/out/`, so render the main and alt films one after the other.
-- **Burin skew**: 30° read as poking beside the line; 0.22 rad fixed it.
-- **Leaders** hugging a wing read as crossing it until routed with ≥ 34 px clearance.
+- **Burin skew**: keep it at 0.22 rad; 30° reads as poking beside the line.
+- **Leaders** hugging a wing read as crossing it: route them with ≥ 34 px clearance.
 - "Apis mellifera": Kokoro says it acceptably but whisper can't transcribe it; the line uses the `asr` field.
 
 ## content.json fields

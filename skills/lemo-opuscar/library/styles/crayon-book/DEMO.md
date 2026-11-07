@@ -9,11 +9,11 @@ Demo: *The Moon Can't Sleep* (52 s) · `crayon-book.mp4` · source in [`demo/`](
 
 A bedtime story on one page: the moon can't sleep; she tries counting sheep and fails; a girl at a lit window sees her, climbs a ladder that draws itself rung by rung, and a sweep of watercolour reveals the stars that were drawn in white crayon all along. The moon is tucked in under a quilt; the camera pulls back to the book on a table and turns the page to "The End".
 
-The demo was written for the rule "the act of drawing and colouring is the plot" and spent all six native moves, with the strongest (wax resist) at the emotional peak: the 250 white-wax stars were on the page from the first frame and were uncovered by the wash on the song.
+The demo follows the rule "the act of drawing and colouring is the plot" and spends all six native moves, with the strongest (wax resist) at the emotional peak: the 250 white-wax stars are on the page from the first frame and are uncovered by the wash on the song.
 
 Arc (45–55 s): blank page → a character is drawn and wakes up (hook in 3 s) → a small comic problem (failed sheep count) → a second character (the girl) → a small brave act (the ladder) → the wash reveal on the song (peak, no narration) → everyone sleeps → pull back to the book, page turn.
 
-How the old guide mapped the native moves onto this story:
+How the native moves map onto this story:
 
 | Native move | How the demo used it |
 |---|---|
@@ -24,7 +24,7 @@ How the old guide mapped the native moves onto this story:
 | **Child logic** | A face on the moon; numbers written in the sky while counting sheep. |
 | **It is a book** | Ended by pulling back to the physical book on a table, the crayons beside it, and turning to "The End". A one-take film over one page is explained by that reveal. |
 
-The old guide's adaptation examples (a product drawn in outline and a wash revealing the hidden feature; a history page coloured in event by event; a thank-you film with names in white crayon) are now the "Fits content like" lines in STYLE.md §8.
+Adaptation examples (a product drawn in outline and a wash revealing the hidden feature; a history page coloured in event by event; a thank-you film with names in white crayon) are the "Fits content like" lines in STYLE.md §8.
 
 ## Shots
 
@@ -56,7 +56,7 @@ Foley specific to this film: sheep landing = felt puff; tossing = blanket swish;
 
 Mix: music −7 dB under narration, +4 dB for the wordless song; music-box and glockenspiel stems +3 dB with a gentle 3–7 kHz lift.
 
-Voice: Kokoro `af_heart`, speed 0.86–0.90 (v3 re-voice: `bf_emma` read too bright and hard), 6–8 short lines. Chain: high-pass 75 Hz → **compress first** (thr 0.2, 2.5:1, 8 ms / 140 ms) → low shelf +1.5 dB @220 Hz, −2 dB dip @3.2 kHz, **high shelf −4 dB @6 kHz** → split-band de-esser (4.8–10 kHz, 4:1) → per-line RMS match → warm near-field reverb (12 ms pre-delay, early reflections, 0.7 s low-passed tail, wet ~−17 dB). Music ducks ~7 dB and foley ~4 dB under it; voice ~7–10 dB over the bed. "Goodnight, Moon" was avoided as a famous-book phrase ("Night, night." instead).
+Voice: Kokoro `af_heart`, speed 0.86–0.90 (not `bf_emma`, which reads too bright and hard), 6–8 short lines. Chain: high-pass 75 Hz → **compress first** (thr 0.2, 2.5:1, 8 ms / 140 ms) → low shelf +1.5 dB @220 Hz, −2 dB dip @3.2 kHz, **high shelf −4 dB @6 kHz** → split-band de-esser (4.8–10 kHz, 4:1) → per-line RMS match → warm near-field reverb (12 ms pre-delay, early reflections, 0.7 s low-passed tail, wet ~−17 dB). Music ducks ~7 dB and foley ~4 dB under it; voice ~7–10 dB over the bed. Avoid "Goodnight, Moon", a famous-book phrase ("Night, night." instead).
 
 ## Palette & props
 
@@ -93,14 +93,14 @@ styles/crayon-book/demo/
 5. `node core/render/video.mjs styles/crayon-book/demo --fps 24 --workers 3` (1248 frames ≈ 80 s on an M-series Mac).
 6. `CRF=26 sh demo/tools/mux.sh out/video24.mp4 mix.wav crayon-book.mp4 24 0` — no added grain (the paper is the grain); the local mux copy exposes CRF. `demo/build.sh` runs the whole chain from TTS to the finished film.
 
-File size: screen-fixed tooth made the film 190 MB; anchoring the tooth, not boiling background fills, no extra grain and CRF 26 → 74 MB with no visible loss.
+File size: anchor the tooth, don't boil background fills, add no extra grain and use CRF 26: the film is 74 MB with no visible loss (screen-fixed tooth makes it 190 MB).
 
 Pitfalls tied to this demo's props:
 
-- **White gaps between wash bands** and a sky that stopped above the ground: the last band must reach down to the grass line; sky exists wherever there is paper.
-- **Walls coloured at light pressure turned muddy blue under the wash.**
-- **Titles and numbers written in the sky survived the wash** (the counted sheep numbers): the title went in a corner the wide shot won't show.
-- **Outlines drawn over the girl's hair read as a headband.**
-- **A blanket drawn as a flat violet half read as the moon's dark side.** It needed quilt features: patchwork squares, stitch lines, star appliqués, a light turned-down edge, a draped hem that spills past the disc, and a hand that pulls it up.
+- **White gaps between wash bands** and a sky that stops above the ground: the last band must reach down to the grass line; sky exists wherever there is paper.
+- **Walls coloured at light pressure turn muddy blue under the wash.**
+- **Titles and numbers written in the sky survive the wash** (the counted sheep numbers): put the title in a corner the wide shot won't show.
+- **Outlines drawn over the girl's hair read as a headband.** Leave them off.
+- **A blanket drawn as a flat violet half reads as the moon's dark side.** It needs quilt features: patchwork squares, stitch lines, star appliqués, a light turned-down edge, a draped hem that spills past the disc, and a hand that pulls it up.
 - **Double vignette/emboss at the book transition**: the desk's vignette, emboss and lamp light ramp in from 0.
-- **The heroine disappeared into the night** because the wash sank into her colouring gaps; she is composited after the wash.
+- **The heroine disappears into the night** when the wash sinks into her colouring gaps: composite her after the wash.

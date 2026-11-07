@@ -39,7 +39,7 @@ window.DUR = 54.2;                 // seconds
 window.render = (t) => { ... };    // draw the frame at time t, deterministic
 window.READY = true;               // set once fonts and images are loaded
 window.EV = [{t, type, ...}];      // optional: sound / cue events for the mixer
-window.TEXTS = (t) => [{id, text, x0, y0, x1, y1}];   // optional: every text visible at t, for readcheck
+window.TEXTS = (t) => [{id, text, x0, y0, x1, y1}];   // optional: every text visible at t, for readcheck (pass: true = not meant to be read in full: a sign passed by, fine-print credits)
 ```
 
 **Paths:** pages reach library files with absolute URLs (`/core/lib.js`, `/node_modules/three/build/three.module.js`); scripts and `build.sh` use `$LIB`. Never `../..`.

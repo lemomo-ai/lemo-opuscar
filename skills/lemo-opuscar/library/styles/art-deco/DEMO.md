@@ -5,7 +5,7 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 Demo: *Midnight at the Starlight Hotel* (58.4 s) · `art-deco.mp4` · source in [`demo/`](demo/)
 
 
-The original brief for the demo: a 40–60 second film in the Art Deco style; the director decides story, shots, score, sound and titles.
+The demo's brief: a 40–60 second film in the Art Deco style; the director decides story, shots, score, sound and titles.
 
 ## Story & structure
 
@@ -23,7 +23,7 @@ How the style's native powers were spent in this story:
 | Dials & numbers | Floor indicator, clock face, floor medallions, year badge: floor 30, 11:55, 1930 carry the plot without narration. |
 | Period radio | An announcer as narrator, moved through acoustic spaces (street horn → desk radio → stairwell PA → live mic) so the audience hears the hero getting closer to the source. |
 
-The recipe we used to adapt it (for this demo): find the threshold (doors), the deadline (a clock), the counted reveal (a sign, floor numbers), and the thing the finale unlocks (a song).
+The recipe for adapting a topic (as in this demo): find the threshold (doors), the deadline (a clock), the counted reveal (a sign, floor numbers), and the thing the finale unlocks (a song).
 
 ## Shots
 
@@ -48,7 +48,7 @@ Performance beats: the elevator button pressed three times (once, twice, mash); 
 - **Orchestration as used**: piano lead (Salamander), clarinet (low trill + two-octave glissando curtain-raiser), strings (tremolo bed, upward rushes), muted trumpet commentary ("wah-wah" on the plaque), brushes → sticks in the Charleston, walking pizz bass, tubular bells (B♭) for midnight, harp/piano glissandi for each fan, trombone + sax for the final chorus.
 - **Planting the theme**: title = piano bar 1; street = muted trumpet tries two bars and is cut off; kitchen = the hero whistles the first four notes; finale = the full song.
 - **Distance automation**: the band plays on the 30th floor, so it is low-passed at 2.5 kHz on the street, 1.2 kHz in the lobby (through the floor), opens up as he climbs, full-range and dry on the roof.
-- **Announcer in five spaces** (Kokoro `bm_fable`): street horn (band-pass 320–3.8 kHz, soft drive, slap echo) → desk radio → stairwell PA (long reverb) → kitchen radio → live mic (full range). Heavy horn distortion made "five minutes to midnight" unintelligible in the full mix, so the drive was reduced.
+- **Announcer in five spaces** (Kokoro `bm_fable`): street horn (band-pass 320–3.8 kHz, soft drive, slap echo) → desk radio → stairwell PA (long reverb) → kitchen radio → live mic (full range). Keep the horn's drive light: heavy distortion makes "five minutes to midnight" unintelligible in the full mix.
 - **Foley as used**: brass button click, bronze plaque clang + chain rattle, iron stair treads on eighth notes, marble heels, silver trays, wooden swing doors + spring twang, paper flutter, glove slap, knife-switch "chunk" + filament hum per letter, relay ticks for the chase, firework whistles.
 - **Silences**: after "Out of order?!" only the lobby clock ticks twice (next sound: the Charleston snare); after the tower clock clicks to XII only wind and the fluttering letter (next sound: the first bell, the most important sound in the film); one beat of held breath after bell 12 (next: tutti).
 - **J/L-cuts**: radio tuning noise before the arch opens; the echo of "Out of order?!" rolls up the stairwell; the kitchen radio starts during the stairwell; rooftop wind enters a bar before the kitchen doors; bell 12's tail rings into the tutti.
@@ -62,7 +62,7 @@ Performance beats: the elevator button pressed three times (once, twice, mash); 
 - Scenes: the lobby in one-point perspective with a mode-7 floor; the rooftop sign in two-point perspective from below with a tiny pinhole camera.
 - Pip: 7 heads tall, tapered streamline body, faceted lacquer planes; silhouette marks: tilted pillbox cap + chin strap, a V of brass buttons, the sealed letter always in hand.
 - Other props: the OUT OF ORDER plaque, the tower clock, the bulb sign THE STARLIGHT, the conductor and the score, waiters with silver trays, 8 dancers with emerald fans, fireworks.
-- Reference stills (rebuilt by `build.sh`, same renderer as the film): [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg), Pip's model sheet (turnaround on a 7-head scale, silhouette check, six expressions, key poses, palette swatches, the letter); [`demo/stills/kit_v2.jpg`](demo/stills/kit_v2.jpg), the component kit (title bar, numerals and clocks, sunburst, arch frames, patterns, bulb marquee, subtitle cards), each labelled with its engine call; style frames [`demo/stills/frame_v2_lobby.jpg`](demo/stills/frame_v2_lobby.jpg) (the one-point lobby with the mode-7 floor) and [`demo/stills/frame_v2_roof.jpg`](demo/stills/frame_v2_roof.jpg) (the bulb sign from below in two-point perspective).
+- Reference stills (rebuilt by `build.sh`, same renderer as the film): [`demo/stills/kit.jpg`](demo/stills/kit.jpg), the component kit (title bar, numerals and clocks, sunburst, arch frames, patterns, bulb marquee, subtitle cards), each labelled with its engine call; style frames [`demo/stills/frame_lobby.jpg`](demo/stills/frame_lobby.jpg) (the one-point lobby with the mode-7 floor) and [`demo/stills/frame_roof.jpg`](demo/stills/frame_roof.jpg) (the bulb sign from below in two-point perspective). Pip's model sheet (turnaround on a 7-head scale, silhouette check, six expressions, key poses, palette swatches, the letter) is `?scene=frames.modelSheet`; `build.sh` leaves it in `demo/out/still/`.
 
 ## Titles & end card
 
@@ -90,10 +90,10 @@ styles/art-deco/demo/
 4. Review at 1 s intervals with `still.mjs --range 0:58:1` + `sheet.py`, then frame strips at 0.15–0.2 s for every key action.
 
 Pitfalls tied to this demo's props:
-- The first transition to the end card slid the elevator doors in over a flat brown "interior", which read as a blank frame; only the leaves are drawn now, closing over the live shot.
-- The opening (one gold point on black) tripped `blackdetect`; the background sunburst wedges and glow were lifted.
-- Pip at ¼ frame height in the bell shots was too small for the emotional peak; the last bell got a close-up.
-- Three-digit hex turned the emerald fans blue-violet.
+- Into the end card, draw only the elevator door leaves, closing over the live shot: doors sliding in over a flat brown "interior" read as a blank frame.
+- Lift the background sunburst wedges and glow in the opening: one gold point on black trips `blackdetect`.
+- Give the last bell a close-up: Pip at ¼ frame height in the bell shots is too small for the emotional peak.
+- Write colours as six-digit hex: three-digit hex turns the emerald fans blue-violet.
 
 ## Engine reference
 

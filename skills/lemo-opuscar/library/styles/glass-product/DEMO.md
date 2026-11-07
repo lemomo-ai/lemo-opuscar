@@ -15,7 +15,7 @@ Arc (30–40 s): lit from outside in the dark (mystery) → opened (curiosity) �
 
 Bookend: it opens with a light sweep revealing the dark object and ends with the *same* sweep over the object that now glows by itself; the two earbuds drop back into their cradles (magnetic click) and the frosted base of the case glows as if charging.
 
-In the old guide the demo's rule was "use at least four of the six native powers"; the demo spent all six (transparency, lensing, dispersion, light inside, caustics, exploded view).
+The rule: use at least four of the six native powers; the demo spends all six (transparency, lensing, dispersion, light inside, caustics, exploded view).
 
 ## Shots
 
@@ -32,7 +32,7 @@ In the old guide the demo's rule was "use at least four of the six native powers
 | Caustics | High top-down on the floor | The most memorable shot: sound spreading over the ground |
 | Hero end | Low 3/4, centred under the title, slow pull-back that makes room for credits | Name + slogan + product |
 
-The exploded shot was extended to 17.0 s so the parts rush back, snap at 16.0 and the light pattern first lights up in the same frame, cause and effect in one camera position, before the cut to the front. Magnetic click back into the cradle at 28.0.
+The exploded shot runs to 17.0 s so the parts rush back, snap at 16.0 and the light pattern first lights up in the same frame, cause and effect in one camera position, before the cut to the front. Magnetic click back into the cradle at 28.0.
 
 Motion numbers used: camera orbits 0.2–0.4 rad per shot; exploded-part tilts `sin(i·1.7)·0.32`, `cos(i·2.3)·0.28`; timing 3 s ease-out apart → 0.75 s hover (drifting +3 %) → **0.25 s ease-in snap** exactly on the downbeat of the drop; camera pushes in ~40 % during the 0.9 s after the snap; two frames of micro-shake on the snap. Magnetic lift 1.2–1.4 s (`eio`). Earbuds hover turned 3/4 toward camera so the lens face and light ring are visible; the lid stands at ~100° behind the case as a backlit halo.
 
@@ -42,14 +42,14 @@ Original numpy score (`demo/music/score.py`), **120 BPM, minor key**. Sub drone 
 
 Foley as used: shimmer per sweep, lid friction, magnetic clicks, an air puff per exploded part, and on the snap a cluster of six clicks 15 ms apart + the inharmonic glass chord.
 
-Voice: Kokoro `am_michael`, speed 0.86–0.88, 3–4 very short lines. "Aura." alone was misheard as Laura / Dora, so the line became "Meet Aura." Music ducked −12 dB and foley −6 dB under the voice. The 808 peaks left no headroom and loudnorm fell back to dynamic mode (−13.7 LUFS); limiting the drop peaks ~3 dB in the mix fixed it. Grain 0 in mux.
+Voice: Kokoro `am_michael`, speed 0.86–0.88, 3–4 very short lines. "Aura." alone is misheard as Laura / Dora, so the line is "Meet Aura." Music ducked −12 dB and foley −6 dB under the voice. Limit the drop's 808 peaks by ~3 dB in the mix: without headroom, loudnorm falls back to dynamic mode (−13.7 LUFS). Grain 0 in mux.
 
 ## Palette & props
 
 - Accent: ice blue `#62DCFF` → soft violet `#A98BFF`; everything else neutral.
 - Strip kit (sizes in mm, intensity): left & right tall strips 22×170, ×3.2; horizon strip 260×14, ×1.4; top box 160×70, ×1.1; low front card ×0.18 (0 when the concave case faces camera); top-front key 150×60, ×2.5 for exploded views only; sweep strip 26×240 on an arc ±1.35 rad behind the camera; accent card tinted by the guide colour, driven by the pulses.
 - Clear glass: roughness 0.015, IOR 1.52, thickness 3–4.5, dispersion 5, attenuation `#f3f8fb` at 160 mm. Frosted glass: transmission 0.82–0.9, roughness 0.4, tint `#eef2f5`, thickness 7–14, an opaque emissive disc inside.
-- Metals: satin titanium band (rough 0.16), mirror-chrome magnet (0.14; 0.05 blew out to a white disc), brushed steel and a champagne diaphragm with a concentric-brush roughness map, graphite PCB with gold traces.
+- Metals: satin titanium band (rough 0.16), mirror-chrome magnet (0.14; 0.05 blows out to a white disc), brushed steel and a champagne diaphragm with a concentric-brush roughness map, graphite PCB with gold traces.
 - Light guide: polished acrylic `#15181b`, clearcoat 1; comet pulse head σ = w/2, tail length 4w at 55 %, white-hot core head³ × 0.35, hue blue → violet with age.
 - Background sweep `#34383d → #16181b → #000` at 0–1.1; floor Reflector with a 12-tap blur, ×0.32, radial fade.
 - Post: DoF aperture 700–900 for macro, 70 for the exploded view, 160–300 for wides; bloom strength 0.16–0.3 above 1.1; Neutral tone mapping, exposure 1.1. Macro distances 25–45 mm.
@@ -86,8 +86,8 @@ styles/glass-product/demo/
 7. Or simply `sh styles/glass-product/demo/build.sh`.
 
 Pitfalls tied to this demo's props:
-- The cyan light strip first placed inside the frosted case base smeared a teal cast over the whole case; it became a cool-white dim disc.
-- The idle glow of the light ring was magnified by the lens dome into a pale-blue blob.
-- Hovering earbuds seen straight-on read as mushrooms; the lid lying flat behind the case read as a pot lid.
-- The second earbud first rose "from below" through the visible floor; it now flies in from the side.
-- "Aura." alone was misheard by ASR.
+- Light the frosted case base with a dim cool-white disc: a cyan light strip inside it smears a teal cast over the whole case.
+- The lens dome magnifies the light ring's idle glow into a pale-blue blob.
+- Hovering earbuds seen straight-on read as mushrooms (turn them 3/4 toward camera); the lid lying flat behind the case reads as a pot lid (stand it at ~100°).
+- Fly the second earbud in from the side: rising "from below", it passes through the visible floor.
+- ASR mishears "Aura." alone (hence "Meet Aura.").

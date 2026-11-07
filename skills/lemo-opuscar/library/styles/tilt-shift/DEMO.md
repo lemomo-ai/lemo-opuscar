@@ -9,7 +9,7 @@ Demo: *Toy Town Rush Hour* (38 s) · `tilt-shift.mp4` · source in [`demo/`](dem
 
 An original procedural town wakes up at dawn and builds to rush-hour gridlock; at the peak, time crashes to real speed on a family of ducks crossing the main avenue in front of a hero car, then releases and rises until the town is a circuit board.
 
-The old guide's adaptation recipe, kept as one example: make the topic a *system with many small actors*, then find the *one tiny actor* the system bends around (a product launch → the city's traffic flowing toward one shop; a love story → two commuters crossing on the same crosswalk every morning; a history lesson → one street time-lapsed across a century).
+One adaptation recipe, as an example: make the topic a *system with many small actors*, then find the *one tiny actor* the system bends around (a product launch → the city's traffic flowing toward one shop; a love story → two commuters crossing on the same crosswalk every morning; a history lesson → one street time-lapsed across a century).
 
 Arc (38 s): quiet (one light trail at dawn) → the system wakes up (actors multiply, rhythm builds) → maximum density → **hard drop to real time on one detail** (the ducks, with a failed hop before success as the comedy beat) → release back to fast-forward → rise to a scale reveal. One subject, one goal, one twist.
 
@@ -23,7 +23,7 @@ Native powers spent: long-exposure light (the dawn car trail is the whole openin
 | Title | Oblique across rooftops onto an **in-world neon sign** on a building facing a wide avenue, letters lighting one per 8th note; road-sign tag "A TILT-SHIFT MINIATURE" |
 | System waking up | Medium-high oblique on an intersection and a station, slow push; the band on the stop lines / platform edge; commuter train |
 | Peak density | **Straight top-down, slowly rotating**, gridlock |
-| Real-time detail | One continuous **dive** from the top-down into a low medium close-up over the hero car's hood, the car's front and lights as blurred foreground. The eye-line lands on the ducks before the body does (look target eases out faster than position). Speed ramps ×40 → ×1 during the dive; land on the narrowest band. The top-down was rotated so it ends facing the close shot's direction |
+| Real-time detail | One continuous **dive** from the top-down into a low medium close-up over the hero car's hood, the car's front and lights as blurred foreground. The eye-line lands on the ducks before the body does (look target eases out faster than position). Speed ramps ×40 → ×1 during the dive; land on the narrowest band. The top-down rotates so it ends facing the close shot's direction |
 | Ending | **Vertical rise** with logarithmic height (40 m → 820 m) through a thin cloud layer until the town becomes a circuit-board pattern; end card |
 
 Close-up numbers used: camera ~1.7 m up, 6–8 m away, ~12° pitch, 17° FOV, near plane 0.08 m; the ducks fill ~1/4–1/3 of frame height. Oblique shots: 45–55° pitch, 110–200 m from the subject, 27–30° vertical FOV.
@@ -72,13 +72,13 @@ styles/tilt-shift/demo/
 2. Iterate with `node core/render/still.mjs styles/tilt-shift/demo <t…> --q noev` (`noev` skips the event scan). Debug flags: `nohud`, `nodof`, `nostep`, `az=<deg>`, `cam=x,y,z,lx,ly,lz,fov`, `aper=`, `bamp=`, `bmix=`.
 
 Pitfalls tied to this demo's props:
-- The first pass was a skyscraper forest with no streets visible.
-- The dawn car was hidden in a street canyon until routed on the camera-side lane.
-- The neon sign was occluded until moved to face a wide avenue.
-- The instance cap (1,400 vs 2,800 cars alive) silently dropped the hero car.
-- Cars stopped 2 m short of the ducks' crossing (IDM jam gap): the stop line was moved closer and the jam gap subtracted.
-- Gridlock left the story lane empty: box-blocking starved the segment in front of the crossing, so the main avenue was exempted and the queue formed behind the hero.
-- The top-down → oblique dive first twisted 180°.
-- The peak first used a high long-lens view with the ducks at 1/15 of the frame. Headlights were moved to the car's top front edge so they read from above, and the hero car was held until the rising camera lifted clear of it.
-- Clouds washed out the ending; streetlight pools read as bubbles; street furniture cluttered the close-up area and was removed.
-- One fixed sun left half the film backlit and grey; the first dawn read as midnight (fixed by the pink east fill and ~3× fewer lit windows).
+- Don't build a skyscraper forest: the streets must be visible.
+- Route the dawn car on the camera-side lane, or it hides in a street canyon.
+- Put the neon sign on a building facing a wide avenue, or it is occluded.
+- An instance cap below the number of cars alive (1,400 vs 2,800) silently drops the hero car.
+- Cars stop 2 m short of the ducks' crossing (the IDM jam gap): move the stop line closer and subtract the jam gap.
+- Gridlock can leave the story lane empty, because box-blocking starves the segment in front of the crossing: exempt the main avenue so the queue forms behind the hero.
+- Check the top-down → oblique dive for a 180° twist.
+- Don't shoot the peak from a high long-lens view: the ducks are only 1/15 of the frame. Put the headlights on the car's top front edge so they read from above, and hold the hero car until the rising camera lifts clear of it.
+- Clouds can wash out the ending and streetlight pools can read as bubbles; keep street furniture out of the close-up area.
+- One fixed sun leaves half the film backlit and grey. Dawn needs the pink east fill and few lit windows (~9 %); about three times as many reads as midnight.

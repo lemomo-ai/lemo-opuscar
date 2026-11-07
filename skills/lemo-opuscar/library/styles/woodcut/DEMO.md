@@ -5,11 +5,11 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 Demo: *The Bell Founder* (58.5 s) · `woodcut.mp4` · source in [`demo/`](demo/)
 
 
-Brief the demo was made to: a 40–60 second film in the Woodcut Print style.
+A 40–60 second film in the Woodcut Print style.
 
 ## Story & structure
 
-A village with an empty belfry; a founder casts its first bell, fails, sacrifices something of his own, and succeeds. How the native powers were used in this story:
+A village with an empty belfry; a founder casts its first bell, fails, sacrifices something of his own, and succeeds. How the native powers serve this story:
 
 | Native power | Story use |
 |---|---|
@@ -22,11 +22,11 @@ A village with an empty belfry; a founder casts its first bell, fails, sacrifice
 
 **Story shape of this film:** first knife stroke in the dark (the horizon) → the world carved → the first print pulled (mirror → true) → a long close-up of hands → a quick montage of small offerings → a first attempt that **fails in close-up** → a silent plate → a personal sacrifice → a second attempt where the colour plate floods the frame → the longest silence → the payoff sound → the colour withdraws to one highlight → the white marks are inked back in → the last cut is the horizon again.
 
-How we adapted the topic: find the one thing that should *glow* (the colour plate: molten copper), the one thing that is *made by hand* (the long close-up: the founder's hands), and the one thing that should *disappear* at the end (the stab-cut texture: snow). That was one reading of this story; other topics find other answers or none.
+Adapting the topic: find the one thing that should *glow* (the colour plate: molten copper), the one thing that is *made by hand* (the long close-up: the founder's hands), and the one thing that should *disappear* at the end (the stab-cut texture: snow). That is one reading of this story; other topics find other answers or none.
 
 ## Shots
 
-"The knife is the camera": the knife tip, or later the brightest cut, was always the focus.
+"The knife is the camera": the knife tip, or later the brightest cut, is always the focus.
 
 | Beat | Camera |
 |---|---|
@@ -86,12 +86,12 @@ styles/woodcut/demo/
 Pitfalls tied to this demo's props:
 
 - **Snow on white snow is invisible.** Add black snowbanks and wind-carved ground; flakes read on the sky and on dark masses.
-- **The first bell** turned into zig-zag chevrons from short hatch segments with a tonal sine wobble; fixed with long cuts and one broad highlight band.
-- **Steam from the mould** drawn on top read as flames; moved behind the subject.
-- **Lazily cached strokes** (`X.coatFolds || []`) broke determinism across render workers.
-- **Metal gift hits masked the narrator** (whisper heard "is had" for "it had"). Foley has to duck under voice too. Pan the offending hit away from centre.
-- **File size**: fine hatching + per-impression ink noise + grain 6 made a 58 s film 326 MB at CRF 19. Re-encode at CRF 28 with `-tune grain`: 93 MB, and no visible difference at a 1:1 crop.
-- The structure tensor NaN came from the box blur leaving tiny negative sums in flat areas.
+- **The bell** turns into zig-zag chevrons with short hatch segments and a tonal sine wobble: carve it with long cuts and one broad highlight band.
+- **Steam from the mould** drawn on top reads as flames: draw it behind the subject.
+- **Lazily cached strokes** (`X.coatFolds || []`) break determinism across render workers.
+- **Metal gift hits masked the narrator** (whisper hears "is had" for "it had"). Foley has to duck under voice too. Pan the offending hit away from centre.
+- **File size**: fine hatching + per-impression ink noise + grain 6 make a 58 s film 326 MB at CRF 19. Re-encode at CRF 28 with `-tune grain`: 93 MB, and no visible difference at a 1:1 crop.
+- A NaN in the structure tensor comes from the box blur leaving tiny negative sums in flat areas.
 - `still.mjs` can fail when many renders run at once. Retry up to 3 times.
 
 ## Engine reference

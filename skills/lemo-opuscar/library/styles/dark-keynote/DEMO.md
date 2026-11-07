@@ -7,7 +7,7 @@ Demo: *Room to Think* (42 s) · `dark-keynote.mp4` · source in [`demo/`](demo/)
 
 ## Story & structure
 
-The brief we set ourselves: a 30–45 second launch film for a software product (topic → story, shots, sound, music, captions → finished film).
+The demo's brief: a 30–45 second launch film for a software product (topic → story, shots, sound, music, captions → finished film).
 
 How the native moves were spent on this story:
 
@@ -22,9 +22,9 @@ How the native moves were spent on this story:
 
 **Arc:** calm hook (a cursor types the title in silence) → interruption (first notification at 3 s) → accumulation in one continuous pull-back (each bar adds a layer) → overload inserts → **freeze + silence** → **the one action** (all layers realign into one chord) → light reveal of the product → the big number → a breath where the UI puts itself away and the music subtracts itself → echo (the cursor finishes the sentence it started).
 
-**The core directing idea — sound and picture share one timeline.** Every UI element spawns *on a note* of the score. Two marimbas play the same 12-note pattern; the second slowly speeds up and drifts out of phase. Files and photos appear on the on-grid line, notifications on the drifting line, so the visual chaos *is* the audible phasing. At the press both lines realign into one chord. We wrote the note table first (`timeline.js`), then let the picture read it.
+**The core directing idea — sound and picture share one timeline.** Every UI element spawns *on a note* of the score. Two marimbas play the same 12-note pattern; the second slowly speeds up and drifts out of phase. Files and photos appear on the on-grid line, notifications on the drifting line, so the visual chaos *is* the audible phasing. At the press both lines realign into one chord. Write the note table first (`timeline.js`), then let the picture read it.
 
-The recipe we followed for this topic: pick the one verb the product does (here: sort). Show its absence as generated UI noise tied to a phasing score. Give the cursor the action. Reveal with light. One number. Put everything away. End on the smallest thing on an empty screen. This is one route, not the style's shape.
+The recipe for this topic: pick the one verb the product does (here: sort). Show its absence as generated UI noise tied to a phasing score. Give the cursor the action. Reveal with light. One number. Put everything away. End on the smallest thing on an empty screen. This is one route, not the style's shape.
 
 ## Shots
 
@@ -105,11 +105,11 @@ styles/dark-keynote/demo/
 4. Review with `node core/render/still.mjs demo --range 0.5:42:1` + `sheet.py` at least twice, plus frame strips of the collapse and the press.
 
 Pitfalls tied to this demo's props:
-- Nearest-slot snapping of the 264 elements looked like a flicker; sending each type to its own rows (Desktop / Photos / Inbox) along curved paths with trails fixed it.
-- The first generator left holes in the grid; we trimmed or padded each group to exactly its slot count.
-- The "window closes" first used a flat tinted rectangle; the real window is now squashed and tinted only in the last 45 %.
-- Fan and coil whine (300 Hz–7 kHz) masked the voice; they are held down until the last line of the section ends.
-- Caption toasts clipped the bottom of the product window; the product is lifted 25 px while captions are up.
+- Send each type to its own rows (Desktop / Photos / Inbox) along curved paths with trails: nearest-slot snapping of the 264 elements looks like a flicker.
+- Trim or pad each group to exactly its slot count, or the grid has holes.
+- For the "window closes", squash and tint the real window, only in the last 45 %: a flat tinted rectangle doesn't read as the window.
+- Hold the fan and coil whine (300 Hz–7 kHz) down until the last line of the section ends: it masks the voice.
+- Lift the product window 25 px while captions are up, or the caption toasts clip its bottom.
 
 ## Engine reference
 

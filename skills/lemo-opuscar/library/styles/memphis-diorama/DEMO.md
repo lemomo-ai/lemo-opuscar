@@ -136,4 +136,4 @@ mesh(box(12, 0.02, 0.4), cut, 0, 0, 4.21, near);                                
 //   wall: straight down below the ground (near.position.y = -6.5 * a); near.visible = a < 0.99;
 ```
 
-Pitfalls tied to this demo's props: reeds first read as ink scribbles (fixed with thicker stems and no outline); a constant-speed orbit lost the pond after 25 s (fixed by easing the camera down after 18 s); door-lamp light pools on the ground also lit the roofs above them (fixed by moving each pool 2.3 m out onto the lane).
+Pitfalls tied to this demo's props: give reeds thicker stems and no outline, or they read as ink scribbles; ease the orbit down after 18 s, since at constant speed it loses the pond after 25 s; move each door-lamp light pool 2.3 m out onto the lane, or it also lights the roofs above it.

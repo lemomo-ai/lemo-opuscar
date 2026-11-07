@@ -55,7 +55,7 @@ Motion as used in the demo:
 - **Score**: original funk/pop fusion. Drum kit with 16th hats and ghost notes, **synthesized slap bass** (additive pluck + band-passed thumb noise + 1.8–6.5 kHz pop + octave jumps and slides), stacked brass stabs (trumpet_stac + alto sax + trombone_stac), and a vibraphone+piano "e-piano". Drums and bass run through the whole film. On top, one **colour instrument per style**: xylophone (crayon), guqin harmonics and bends (ink), square beeps (ASCII), vibes and sax (riso), pulse arpeggio (pixel), muted trumpet (blueprint), claves and dry piano (Swiss). Each speed-up gets a rising brass run, and the key rises a whole step each round.
 - **Real silences**: 1 beat before the first sneeze, the last-life stage (heartbeat only), and the boss close-up (heartbeat + the same guqin note as the first dust mote). The biggest hit comes right after the longest silence.
 - **Foley follows the medium**: rubber squeak + air for the crayon pump, a wet splat and drips for ink, teletype clicks and a relay for ASCII, a paper thump and crunch for riso, bit-crushed noise for pixel, ratchet teeth and a stamp thunk for blueprint, a hollow bonk and small rubber boings for Swiss. Home-stage sounds: spring-loaded crown click, glass crack plus bouncing clinks for a lost life, card flips, slot-reel whirr, sparse sampled claps.
-- **Voices**: host = Kokoro `am_fenrir` (it had the widest pitch range of the voices tested), speed 1.05–1.15. The host shouts every command 0.1 s *after* the stab so the brass doesn't mask the word. Hero = `af_bella` pitched +2.5 semitones, only "Oh no." plus the "ah… ah…" and sneeze, which are treated as SFX and exempt from whisper checks. Duck the music about 11 dB and the foley about 6 dB under voice.
+- **Voices**: host = Kokoro `am_fenrir` (the widest pitch range of the Kokoro voices compared), speed 1.05–1.15. The host shouts every command 0.1 s *after* the stab so the brass doesn't mask the word. Hero = `af_bella` pitched +2.5 semitones, only "Oh no." plus the "ah… ah…" and sneeze, which are treated as SFX and exempt from whisper checks. Duck the music about 11 dB and the foley about 6 dB under voice.
 - **Single-word commands in Kokoro**: "Pump!" comes out as "Pompey" and "Zip!" as "Zipper", because a vowel tail is added. Generate "Pump, now!" and cut at the end of the first word from whisper timestamps (`tools/trim_cmd.py`).
 
 ## Palette & props
@@ -65,8 +65,8 @@ Motion as used in the demo:
 **Characters** (all original):
 - *Host* = a gold **stopwatch head**. The dial is the face, the red second hand is his pointer and nose, and he **slaps his own crown button** to start every game. His hand ticks every beat, spins when he is excited, and stops dead on the last life.
 - *Hero* = a 2.3-head-tall cadet: bubble helmet, spring antenna with an orange ball (the **mood meter**, which boings on every action), and the number "05".
-- **Translation rule:** in every microgame style the hero is redrawn from scratch, but **three silhouette marks always survive**: round helmet, antenna ball, "05". See `demo/stills/modelsheet_v2_styles.jpg` for 8 renderings of one character.
-- **Model sheet:** [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg) has both characters in the home style: turnarounds (front, 3/4, side, back), expressions, key poses and palette swatches (`?scene=frames.modelSheet`).
+- **Translation rule:** in every microgame style the hero is redrawn from scratch, but **three silhouette marks always survive**: round helmet, antenna ball, "05". `?scene=frames.styleSheet` draws one character in 8 of them.
+- **Model sheet:** `?scene=frames.modelSheet` draws both characters in the home style: turnarounds (front, 3/4, side, back), expressions, key poses and palette swatches. `build.sh` leaves both sheets in `demo/out/still/`.
 
 **Microgame media (simplified re-drawings, each about 100–200 lines of code):**
 | Style | How it is made |
@@ -79,7 +79,7 @@ Motion as used in the demo:
 | Blueprint | Procedural blue paper plus white lines in 4 weights, centre / hidden dashes, dimension lines, hand lettering, and one red stamp. |
 | Swiss | 12-column grid, one sans family (Inter), black and white plus signal red `#e30613`. The hero is a black circle, a black rectangle and a **red circle** (the antenna ball). The gag is that one element leaves the grid. |
 
-**Boss frame composition:** mix up to five media, but with **one focal chain only**: the parachute leads to the capsule, which leads to the target (review lesson). Remove anything off-story, such as decorative pixel gulls. Shrink info panels (the ASCII altimeter) into a corner. Layering: crayon renders in alpha mode (wax coverage = alpha, with a full-pressure white base where it must be opaque). Ink and riso render on white and are drawn with `multiply`. The CRT panel is rendered flat and clipped to its box.
+**Boss frame composition:** mix up to five media, but with **one focal chain only**: the parachute leads to the capsule, which leads to the target. Remove anything off-story, such as decorative pixel gulls. Shrink info panels (the ASCII altimeter) into a corner. Layering: crayon renders in alpha mode (wax coverage = alpha, with a full-pressure white base where it must be opaque). Ink and riso render on white and are drawn with `multiply`. The CRT panel is rendered flat and clipped to its box.
 
 **The ink parachute (climax):** it must *read as a parachute*, not smoke. It grows in three stages: a jet of ink from the capsule hatch (0.15 s), a **round** drop spreading (short, 0.3 s), then **9 gores fanning out**. Gore fill is a vertical gradient (dense at the crown, light at the hem) with alternating ±7 % tone, thin paper-white seams, and a scalloped hem (each gore bulges down). There is one loaded brush arc along the crown, dry-brush flying white along the hem, and dry thin cords to the hatch.
 
@@ -89,7 +89,7 @@ Motion as used in the demo:
 - Other lines use a **gold rounded card** with a 7 px ink outline and a hard shadow, Lilita One 50 px, a small stopwatch icon (host) or helmet icon (hero), placed above the fuse in games. It pops in over 2 steps at 12 fps. Hold ≥ max(1.8 s, speech + 0.6 s), and never during a big banner.
 - The title card is the home-stage marquee lighting up letter by letter (FIVE-SECOND ASTRONAUT / A MICROGAME FRENZY).
 
-The end card sits inside the TV: title, style name and "LemoLab × Claude Opus 5.5", with hero and host. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+The end card sits inside the TV: title, style name and "LemoLab × Claude Opus 5.5", with hero and host. Two lines of fine print under it credit the Salamander piano (CC BY 3.0) and the MuldjordKit drums (CC BY 4.0); the card lasts 2.6 s, so they are there from its first frame. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 
@@ -107,11 +107,11 @@ styles/microgame/demo/
 3. `sh demo/build.sh` rebuilds everything: TTS → trim → whisper → score → events → cue check → mix → srt → render (~25 s for 1436 frames) → mux (−14 LUFS, grain 0), about 1.5 minutes in total.
 4. Review with `bash demo/tools/review.sh out/revN 6 $(seq 0.5 1 59.5)` at least twice, plus frame strips of every key action.
 
-### Pitfalls we hit
+### Pitfalls
 
 - A luminance-ramp ASCII hero is unreadable mush. Use a hand-authored template plus structural glyphs, and an inverse `@` for the antenna ball.
-- The ink canopy first read as black smoke or a storm cloud. Keep the blot phase short and round, fan out gores with a gradient and seams, add a scalloped hem, and leave the edges light.
-- The Swiss "salute fail" read as a raised hand. The arm has to *overshoot and hit* the red ball, and the failure needs an instant replay to be understood at 140 BPM.
+- An ink canopy reads as black smoke or a storm cloud unless it is shaped: keep the blot phase short and round, fan out gores with a gradient and seams, add a scalloped hem, and leave the edges light.
+- A Swiss "salute fail" where the arm only rises reads as a raised hand. The arm has to *overshoot and hit* the red ball, and the failure needs an instant replay to be understood at 140 BPM.
 - A crayon layer in alpha mode shows the background through the wax gaps. Give it a full-pressure paper-white base (or render it opaque and clip) wherever it must be solid.
 - Toon drawing helpers that keep a global context (`K.g`) will draw on the wrong canvas when a scene renders into an offscreen buffer (TV screen, slot reels, tiles). Always call `setCtx` before and after.
 - `flat` is a reserved word in GLSL ES 3.

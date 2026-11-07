@@ -88,15 +88,15 @@ Adapting any topic: find the **game system** hidden in it. A product launch is a
 - Battle messages go in a thin top window. Every box stays ≥ 1.8 s and ≥ voice + 0.6 s. The next box cuts the previous one. The `.srt` is exported from the same `window.SUBS` array.
 - **Title**: two lines, 2× font, 8-neighbour ink outline, white→silver→steel gradient by row, Bayer-dissolved in and out. **End card**: gold title, blinking `▶ CONTINUE`, style name, `LemoLab × Claude Opus 5.5`, and the red scarf drifting across once. The LemoLab sign-off belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
 - **Rank-based palette mapping crushes everything to black**: with many dark colors in the master palette, a quantile map puts half the scene in the darkest step. Map by luminance with a gamma (`lum^0.8`).
 - **Collapse subsets without warm hues** turn a sunset solid red on the first step. Keep orange, pink and plum in the 16- and 8-color sets.
-- **8-bit palette without a dark green**: night grass became blue. **Generic brightening around a fire** made grass neon green. Use a warm remap.
+- **8-bit palette without a dark green**: night grass turns blue. **Generic brightening around a fire** makes grass neon green. Use a warm remap.
 - **Post-quantizing a full-color scene to 4 shades is mud**. Draw 4-color scenes natively with 4 known indices at half resolution.
-- Hair drawn as a smooth dome reads as a helmet. Back hair with alternating single pixels reads as sawtooth noise; use 2–3 big spikes. A cream tunic reads as bare skin. A staff held in the front hand crosses the face in side view; hold it in the back hand behind the body. A back-mounted sword crossed the front of the torso; use a hip scabbard.
-- A dark plank door reads as a jail. Use recessed panels with bevels lit from the upper left, studs, ring handles and a tympanum. A bug drew the closed door's centre seam as light.
-- **Negative modulo**: `Math.floor(t*12) % 4` is negative when a phase offset makes `t` negative, and it indexed `undefined`. Use `((n % m) + m) % m`.
+- Hair drawn as a smooth dome reads as a helmet. Back hair with alternating single pixels reads as sawtooth noise; use 2–3 big spikes. A cream tunic reads as bare skin. A staff held in the front hand crosses the face in side view; hold it in the back hand behind the body. A back-mounted sword crosses the front of the torso; use a hip scabbard.
+- A dark plank door reads as a jail. Use recessed panels with bevels lit from the upper left, studs, ring handles and a tympanum. Draw the closed door's centre seam dark, not light.
+- **Negative modulo**: `Math.floor(t*12) % 4` is negative when a phase offset makes `t` negative, and it indexes `undefined`. Use `((n % m) + m) % m`.
 - **Homophones**: whisper hears "inn" as "in". Accept it through the `asr` field; the subtitle disambiguates.
 - The dialog box covers the bottom 25%. Put the floor line at y 128 so standing characters stay above it.
 - For a match cut on a protected color, compute both screen positions. The demo's scarf is at (197, 104) in both eras.

@@ -55,12 +55,12 @@ Film time; dissolves are 0.6 s.
 ## Titles, subtitles & end card
 
 - Subtitles: one Chinese line (Noto Serif SC 500, 40 px) over one English line (Cormorant Garamond 600, 42 px), warm off-white, 64 px from the bottom, on the dark front band, with a faint dark band (`#sub .band`). `demo/tools/subcheck.py` measures the ground under every cue: 98 % or more of the non-text pixels are dark in this film. The last line stays to the end.
-- End card: a paper ticket on a thread drops from above at 47.5 s, overshoots and swings to rest. Main panel: a route line `FROM PINE HALT → TO SEA END`, the title (English largest, then 末班夜车), a rule, the style name 纸雕灯影 / Paper-cut Lightbox, and `LemoLab × Claude Opus 5.5` on its own line; notched corners, a punched hole top left, a perforated stub with a red 车 stamp. The sign-off belongs to the library's own demos: a user's film carries no LemoLab credit and no copy of this card.
+- End card: a paper ticket on a thread drops from above at 47.5 s, overshoots and swings to rest. Main panel: a route line `FROM PINE HALT → TO SEA END`, the title (English largest, then 末班夜车), a rule, the style name 纸雕灯影 / Paper-cut Lightbox, and `LemoLab × Claude Opus 5.5` on its own line, with the licence credit for the Salamander piano samples (CC BY 3.0) in fine print under it; notched corners, a punched hole top left, a perforated stub with a red 车 stamp. The sign-off belongs to the library's own demos: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit
+## Pitfalls
 
 - A sky panel of fixed width shows its edge in a travelling shot: move it with the camera.
-- Light over text: a lamp flare covered the PINE HALT board at first; every board now sits clear of lamps and the headlight.
+- Light over text: a lamp flare drowns a name board. Keep every board clear of lamps and the headlight.
 - Subtitles over a lit window wash out: keep the bottom band dark, or use the faint band.
 - A long black reads as a broken film: the tunnel blink is 0.27 s, sound included.
 - Wide frames with the train as a thin dotted line in the middle and empty dark below look thin: fill the frame with layers (a foreground silhouette, a slope or a town behind, a curve in the line) and get close at the moments that matter.

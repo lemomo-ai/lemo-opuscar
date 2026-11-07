@@ -42,7 +42,7 @@ Fiddle: **ku-yin** for the disaster, **huan-yin** for heroism and healing. The s
 
 Foley specific to this film: wooden clapper to open and close the show, match strike, lamp ignition, rod taps, leather flaps when a crow lifts off, leather footsteps, bow creak (rising pitch with draw), string twang, arrow whoosh, leather thwack on hit, lamp snuff ("pfft" + sizzle), wing flaps, crackle, heat drone (hard-cut at the silence), water, a quiet backstage room tone and one breath.
 
-Voice: a storyteller, Kokoro `am_michael`, speed 0.86–0.88, 5–6 short lines, compressed, plus small-theatre reverb. Music ducked ~12 dB, foley ~4 dB. A line that passed whisper alone blurred under music ("shadow play still" became "shadow place"): rewrite the line rather than fight the mix.
+Voice: a storyteller, Kokoro `am_michael`, speed 0.86–0.88, 5–6 short lines, compressed, plus small-theatre reverb. Music ducked ~12 dB, foley ~4 dB. A line that passes whisper alone can blur under music ("shadow play still" is heard as "shadow place"): rewrite the line rather than fight the mix.
 
 ## Palette & props
 
@@ -88,10 +88,10 @@ styles/shadow-puppet/demo/
 6. `sh demo/tools/mux.sh out/video24.mp4 mix.wav shadow-puppet.mp4 24 2`. Or just `sh demo/build.sh`.
 
 Pitfalls tied to this demo's props:
-- Hou Yi first read with stilt legs, an egg torso and arms lost in the torso → enlarged head, longer skirt, wider trousers, cloud collar, sleeves in a different colour from the chest.
-- Sun rays looked like a saw blade, then like flower petals → fat-based, hooked flame tongues at the sizes above.
-- The raw-hide arrow disappeared on the ten-lamp screen → dark shaft; the arrow pointed sideways until the nock sat on the aim line.
-- The backstage mirror helper built the rotation from `C[0]` for both axes and flipped pieces upside down → `C[0]` for x terms, `C[3]` for y terms.
-- The push-in on the backstage lamp at the top edge shoved the hands out of frame → push on frame centre, fixed point moved to the flame only for the final dive.
-- Heat drone and crackle leaked into the silent choice → hard-cut at the stop.
-- Headless Chrome screenshots occasionally timed out while 14 other renders shared the GPU → retry.
+- So that Hou Yi doesn't read as stilt legs, an egg torso and arms lost in the torso: enlarge the head, lengthen the skirt, widen the trousers, add the cloud collar, and colour the sleeves differently from the chest.
+- Sun rays read as a saw blade or as flower petals unless they are fat-based, hooked flame tongues at the sizes above.
+- A raw-hide arrow disappears on the ten-lamp screen: use a dark shaft. Put the nock on the aim line, or the arrow points sideways.
+- Backstage mirror helper: build the rotation from `C[0]` for x terms and `C[3]` for y terms; `C[0]` for both axes flips pieces upside down.
+- A push-in on the backstage lamp at the top edge shoves the hands out of frame: push on frame centre, and move the fixed point to the flame only for the final dive.
+- Hard-cut the heat drone and crackle at the stop, or they leak into the silent choice.
+- Headless Chrome screenshots can time out when many renders share the GPU (14 others): retry.

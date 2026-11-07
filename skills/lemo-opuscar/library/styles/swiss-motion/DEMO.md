@@ -71,13 +71,13 @@ The "camera" is a 2D matrix (centre, scale, rotation). It moves only with the pr
   - circle landing (58 Hz felt thump).
 
   The rule-breaker is the only element that *sings*: a sine glide that follows its position.
-- **Voice**: cool, crisp female narrator, Kokoro `af_sarah` at speed 1.0. It had ~7× the 3–8 kHz consonant energy of `af_kore`. Keep lines rule-like: "Rule one. Build a grid." Check every line with whisper (write numbers as `"asr": "Rule 1, …"`).
+- **Voice**: cool, crisp female narrator, Kokoro `af_sarah` at speed 1.0. It has ~7× the 3–8 kHz consonant energy of `af_kore`. Keep lines rule-like: "Rule one. Build a grid." Check every line with whisper (write numbers as `"asr": "Rule 1, …"`).
 - **Mix**: voice compressed, music ducked ~−10 dB under voice (voice ≥ 6 dB above music), −14 LUFS.
 
 ## Palette & props
 
 - **Frame grid**: 1920×1080, 12 columns, 96 px side margins, 24 px gutters (122 px columns), 24 px baseline. Treat the frame as a **spread**: left page (cols 1–6) = the "programme" (numeral, rule text, notes); right page (cols 8–12) = the artifact (poster 706×1008, ratio 0.70 ≈ Swiss world format).
-- **Artifact grid**: derive it from the content (Gerstner). In the demo the poster has 7 columns × 91 px and 16 rows × 40 px, with a 26 px baseline grid in the text zone. I first tried 12 semitone columns: bars were only 43 px wide and the poster looked like a data chart. **Choose module sizes that give the bars mass.**
+- **Artifact grid**: derive it from the content (Gerstner). In the demo the poster has 7 columns × 91 px and 16 rows × 40 px, with a 26 px baseline grid in the text zone. Not 12 semitone columns: bars would be only 43 px wide and the poster looks like a data chart. **Choose module sizes that give the bars mass.**
 - **Palette**: page `#EAE9E5`, paper `#FFFFFF`, ink `#111111`, signal red `#E30613`, grid lines `#CFCEC9` on the page / `#C9C8C2` while building / `#E2E1DC` on paper, secondary bars `#CFCEC9`. No gradients, no shadows, no particles, no grain (mux grain 0).
 - **Type**: one family for the whole film (demo: **Archivo** variable, weights 400–800). Letter-spacing −2.2% at ≥ 90 px. Lowercase headlines (`neue musik`). Rule numerals at ~980 px (700 px figure height), bottom-aligned with the poster's bottom edge, **optically** flush left (subtract the glyph's left bearing). Notes 19 px Medium. Always `document.fonts.load` every weight before drawing.
 - **Composition**: flush left, ragged right. Everything on a grid line. Big white spaces are part of the layout. The final composition must be **visibly bolder** than the "correct" one:
@@ -94,17 +94,17 @@ The "camera" is a 2D matrix (centre, scale, rotation). It moves only with the pr
 - **Subtitles are part of the layout**, not a bar at the bottom. Each line sits at column 1 on the spread's left page: the first sentence as a 30 px Medium grey lead-in, the rest as a 76 px Bold statement. Each word clip-reveals on its whisper timestamp. Non-rule lines use Regular weight ("Perfect. And a little dull."). In other shots the line sits at column 1 of that shot, at the artifact's headline baseline or under the wall like a museum label.
 - **Title card**: `Five Rules / for a Poster`, 120 px Bold, two lines flush left, sitting on the opening red line. A 19 px caption row with a 1 px rule above it (`A programme in five steps · 1961 · ♩ = 120`).
 - **Caption row + notes**: top of the left page (title / `Rule 0n / 05` / keyword); bottom of column 5: 2–3 technical notes per rule (`Columns 7 · Rows 16 · Module 91 × 40`). Bottom of column 7: a bar counter `bar 04.3`.
-- **End card**: the opening spread again. `Swiss Motion / Graphics` 120 px, red line under it, `LemoLab × Claude Opus 5.5` 36 px, notes at the bottom, hero poster on the right. The LemoLab sign-off belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
+- **End card**: the opening spread again. `Swiss Motion / Graphics` 120 px, red line under it, `LemoLab × Claude Opus 5.5` 36 px, notes at the bottom (typeface, score, voice, and the licence credit for the MuldjordKit drums, CC BY 4.0, revealed early enough to hold 2.7 s), hero poster on the right. The LemoLab sign-off belongs to this library's demo only: a user's film carries no LemoLab credit and no copy of this card.
 
-## Pitfalls we hit (demo record)
+## Pitfalls
 
-- **12 columns looked like a chart.** Grid modules must give the graphic elements mass. We used fewer, wider columns for the artifact and kept the standard 12 columns for the frame.
-- **The "better" composition wasn't obviously better.** Four small staircases → one scattered layout wasn't convincing. Fix: one main diagonal with long/short rhythm, 2× red element, bleeds, type over red.
-- **Rotation reveal needs a stop.** Rotating and labelling at the same time read as noise. Order it: rotate (1.5 beats) → hold → grid lines → labels → playhead → sweep.
-- **Merged bars showed seams** after rotation and scaling (antialiasing between adjacent rects). Overdraw 1 px where cells join.
+- **12 columns look like a chart.** Grid modules must give the graphic elements mass. Use fewer, wider columns for the artifact and keep the standard 12 columns for the frame.
+- **The "better" composition must be obviously better.** Turning four small staircases into one scattered layout isn't convincing. Use one main diagonal with long/short rhythm, 2× red element, bleeds, type over red.
+- **Rotation reveal needs a stop.** Rotating and labelling at the same time reads as noise. Order it: rotate (1.5 beats) → hold → grid lines → labels → playhead → sweep.
+- **Merged bars show seams** after rotation and scaling (antialiasing between adjacent rects). Overdraw 1 px where cells join.
 - **Labels overlapping the header**: hide the caption row before the rotated shot.
 - **Word timings**: whisper splits or merges words ("type face"), and `asr_check` reports the first word at −0.6 s (padding). Align by letters and clamp to 0 (`tools/words.py`).
-- **Subtitle rule** (≥ voice + 0.6 s and ≥ 1.8 s): two lines missed by 2 ms. `tools/subs.py` asserts it, so fix by nudging start times.
+- **Subtitle rule** (≥ voice + 0.6 s and ≥ 1.8 s): a line can miss it by a couple of ms. `tools/subs.py` asserts it; fix by nudging start times.
 - **The wall cut must follow the line**: shrink the wall board from the side the red line enters, in screen space.
 - The other posters on the wall share the camera matrix, so draw them **only** during the wall shot. Otherwise they leak into other shots at ±786 px.
 - Canvas `letterSpacing` also affects `measureText`, so compute widths after setting the font.

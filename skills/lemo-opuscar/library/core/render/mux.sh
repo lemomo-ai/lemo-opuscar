@@ -1,7 +1,9 @@
 #!/bin/sh
 # Mux the finished film: mux.sh video.mp4 mix.wav out.mp4 [fps] [grain]
 # Video is output at the target frame rate (held segments get duplicated frames automatically); grain = grain strength (default 2, 0 = none; use 0 for pixel/vector styles)
-# Audio: two-pass loudnorm → −14 LUFS / TP −1.2 (a single pass is off by about 0.5 LU); finally prints the measured I / LRA / true peak and warns if off target (loudness outside ±1 LU or peak above −1 dB)
+# Audio: two-pass loudnorm → −14 LUFS / TP −1.2 (a single pass is off by about 0.5 LU), then a 4× oversampled limiter at −1.6 dBFS (its look-ahead compensated), because AAC encoding adds
+#   inter-sample peaks loudnorm can't see. If the encoded film still peaks above −1 dBTP, the audio alone is encoded again with the limiter lower (the picture is copied, up to 3 times).
+#   Finally prints the measured I / LRA / true peak and warns if off target (loudness outside ±1 LU or peak above −1 dB)
 # (when the mix itself clips or has extremely high peaks, loudnorm's dynamic mode misses both targets; measured −20 LUFS / +5 dBTP)
 # Any failed ffmpeg step exits non-zero and leaves no half-written file; the output path is printed only if the finished file exists and is non-empty.
 #   (the film is written to a temporary file beside the output and renamed when complete, so Ctrl-C or a failed re-mux never touches an earlier good film)
@@ -14,6 +16,8 @@
 #   One case it can't detect: a streamed WAV truncated exactly on a sample boundary (no header length to compare, and decoding shows no error).
 # Audio shorter than the picture: padded with silence to the picture's length (the video is never cut short); audio longer: cut to the picture's length as before (-shortest).
 # Colour: by default exactly as before (keeps the yuvj420p full range / bt470bg tags that video.mjs outputs); LEMO_COLOR=bt709 switches to standard yuv420p limited range / bt709 (picture values differ by ±3 at most, but there's a slight colour difference from older films).
+# awk prints and reads decimals the way the locale says: under de_DE or fr_FR macOS awk writes 0,8318, and a comma splits an ffmpeg filter graph
+LC_ALL=C; export LC_ALL
 die() { echo "mux.sh: $*" >&2; exit 1; }
 V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 [ -n "$V" ] && [ -n "$A" ] && [ -n "$O" ] || die "usage: sh core/render/mux.sh video.mp4 mix.wav out.mp4 [fps=24] [grain=2]"
@@ -69,6 +73,11 @@ else
   echo "mux.sh: warning: the audio is silent or quieter than -70 LUFS, so loudness normalisation was skipped" >&2
 fi
 
+# true-peak guard: the limiter ceiling in dBFS → its filter, run at 192 kHz so it sees the peaks between samples;
+# latency=1 takes back the limiter's 10 ms look-ahead, so the sound stays on the frames it was cut to
+CEIL=-1.6
+lim() { [ "$NORM" = 1 ] || return 0; echo ",aresample=192000,alimiter=limit=$(awk -v d="$1" 'BEGIN { printf "%.4f", 10 ^ (d / 20) }'):attack=10:release=200:level=disabled:latency=1"; }
+
 # pad with silence if the audio is shorter than the picture
 dur() { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1" 2>/dev/null | head -1; }
 VD=$(dur "$V"); AD=$(dur "$A"); PAD=""
@@ -91,17 +100,30 @@ trap 'rm -f "$TMP"' EXIT
 trap 'exit 130' INT; trap 'exit 143' TERM
 # shellcheck disable=SC2086  (CARGS must split on spaces into several arguments; empty by default)
 ffmpeg -y -loglevel error -i "$V" -i "$A" \
-  -filter_complex "[0:v]$VF[v];[1:a]$LN,aresample=48000$PAD[a]" \
+  -filter_complex "[0:v]$VF[v];[1:a]$LN$(lim $CEIL),aresample=48000$PAD[a]" \
   -map "[v]" -map "[a]" -c:v libx264 -preset slow -crf 19 -r "$FPS" $CARGS -c:a aac -b:a 256k -movflags +faststart -shortest "$TMP" \
   || die "ffmpeg failed while writing '$O' (its message is above)"
 [ -s "$TMP" ] || die "no output was written to '$O'"
 mv -f "$TMP" "$O" || die "could not move the finished film to '$O'"
 echo "$O"
-R=$(ffmpeg -hide_banner -nostats -i "$O" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3)
+measure() { ffmpeg -hide_banner -nostats -i "$O" -vn -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3; }
+R=$(measure); N=0
+while [ "$NORM" = 1 ] && [ $N -lt 3 ]; do
+  OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
+  [ -n "$OP" ] || break                       # no measurement: don't re-encode blind
+  awk -v p="$OP" 'BEGIN { exit !(p + 0 > -1) }' || break
+  CEIL=$(awk -v c="$CEIL" -v p="$OP" 'BEGIN { printf "%.2f", c - (p + 1.3) }'); N=$((N + 1))
+  echo "mux.sh: note: true peak $OP dB after encoding; encoding the audio again with the limiter at $CEIL dBFS (picture copied)" >&2
+  ffmpeg -y -loglevel error -i "$O" -i "$A" -filter_complex "[1:a]$LN$(lim $CEIL),aresample=48000$PAD[a]" \
+    -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest "$TMP" \
+    || die "ffmpeg failed while encoding the audio of '$O' again (its message is above)"
+  [ -s "$TMP" ] && mv -f "$TMP" "$O" || die "could not replace '$O' with the re-encoded film"
+  R=$(measure)
+done
 echo "$R"
 if [ "$NORM" = 1 ]; then
   OI=$(echo "$R" | awk '$1 == "I:" { print $2 }'); OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
   awk -v i="$OI" -v p="$OP" 'BEGIN { exit !(i + 0 < -15 || i + 0 > -13 || p + 0 > -1) }' \
-    && echo "mux.sh: warning: the film missed the target (-14 LUFS, true peak <= -1.2 dB): measured $OI LUFS, peak $OP dB. The mix is probably clipping or has very hot peaks: lower it and tame the peaks, then mux again" >&2
+    && echo "mux.sh: warning: the film missed the target (-14 LUFS, true peak <= -1 dB): measured $OI LUFS, peak $OP dB. The mix is probably clipping or has very hot peaks: lower it and tame the peaks, then mux again" >&2
 fi
 exit 0

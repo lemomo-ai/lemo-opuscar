@@ -2,16 +2,16 @@
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 
-Demo: *Where the Wind Went* (32.4 s, 1920×1080, 24 fps, no voice-over) · `urban-sketch.mp4` · source in [`demo/`](demo/)
+Demo: *Where the Wind Went* (33.4 s, 1920×1080, 24 fps, no voice-over) · `urban-sketch.mp4` · source in [`demo/`](demo/)
 
 
-The original header: a sketchbook page from the park bench: fine sepia fineliner lines that wobble, overshoot and never quite close, with loose transparent watercolour dropped on top. The colour sits slightly off the lines, spills over them, and dissolves into cream cold-press paper at the page edge.
+A sketchbook page from the park bench: fine sepia fineliner lines that wobble, overshoot and never quite close, with loose transparent watercolour dropped on top. The colour sits slightly off the lines, spills over them, and dissolves into cream cold-press paper at the page edge.
 
 ## Story & structure
 
 A park exists only as an ink sketch, and the only colour on the page is a straw hat. A gust steals the hat, and **the page gets painted wherever the wind carries it**.
 
-The original "what the style is" notes with the demo's exact colours: paper `#f5eede`, ink `#2b2520`.
+What the style is, with the demo's exact colours: paper `#f5eede`, ink `#2b2520`.
 
 Reportage drawing, made on location in a few minutes. Two layers that stay visibly separate:
 1. **Ink.** One thin, near-constant line (a 0.3–0.5 mm fineliner), dark sepia `#2b2520`. It wobbles slightly, overshoots corners by a few pixels, breaks mid-stroke, and suggests rather than describes: a few window marks instead of a grid, scalloped fragments instead of a whole tree outline.
@@ -19,7 +19,7 @@ Reportage drawing, made on location in a few minutes. Two layers that stay visib
 
 The page itself is part of the image. The warm cream `#f5eede` cold-press paper has large-scale mottling and a fine tooth. Nothing is painted edge to edge: the painting frays into leaf-sized dabs and white holes, leaving a blank margin for handwriting.
 
-Stories the style was pitched for, and the native moves the demo used (line before colour for the sketch spread and skyline; colour as arrival driven by the gust; the one coloured thing = the straw hat; the page as frame for the ending):
+Stories the style suits, and the native moves the demo uses (line before colour for the sketch spread and skyline; colour as arrival driven by the gust; the one coloured thing = the straw hat; the page as frame for the ending):
 
 Good for: travel diaries, city portraits, a day in a place, "the moment I noticed…", slice-of-life, gentle comedy with small figures, anything that benefits from feeling observed and handmade.
 
@@ -75,7 +75,7 @@ No subtitles are needed. All text is **handwriting on the page**, written on wit
 
 The text stays in the world and moves with the camera, never as an overlay.
 
-End card (`demo/film.js`, `notes()`): the title "Where the wind went." written in Caveat 500 at 190 px in the lower-left margin (28.2–29.5 s), then the colophon in the same column: "Urban Sketch · Pen & Wash — a Lemo-Opuscar style" (30.1–30.8 s), "LemoLab × Claude Opus 5.5" in Caveat 600 (30.6–31.2 s), and the music, sample and font credits (31.0–31.8 s). The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card (take those `handwrite()` lines out when reusing the code).
+End card (`demo/film.js`, `notes()`): the title "Where the wind went." written in Caveat 500 at 190 px in the lower-left margin, about 120 px in from the edge (28.2–29.5 s), then the colophon in the same column: "Urban Sketch · Pen & Wash — a Lemo-Opuscar style" (29.6–30.2 s), "LemoLab × Claude Opus 5.5" in Caveat 600 (29.9–30.4 s), and the music, sample and font credits (30.2–30.9 s). The picture runs 1 s past the score (33.4 s) so the last line holds 2.5 s. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card (take those `handwrite()` lines out when reusing the code).
 
 ## Build notes
 
@@ -90,14 +90,14 @@ styles/urban-sketch/demo/
 ```
 Render: `node core/render/video.mjs styles/urban-sketch/demo --fps 24 --workers 4` renders 778 frames in about 40 s on an M-series Mac; world build takes about 4 s per worker.
 
-### Pitfalls we hit
+### Pitfalls
 
-- **Straight edges in the colour field.** The source bounding box ignored its vertical stretch (`sy`), and the slow "creep" beyond the reach radius was cut by a square box. Clip by the actual (noisy) distance, not the bbox.
-- **Rectangle masks around set-back towers** left white notches in the sky. Mask with the real stepped silhouette (tiers, spire, pyramid, water tank).
+- **Straight edges in the colour field.** A source bounding box that ignores its vertical stretch (`sy`), or a square box that cuts the slow "creep" beyond the reach radius, leaves straight edges. Clip by the actual (noisy) distance, not the bbox.
+- **Rectangle masks around set-back towers** leave white notches in the sky. Mask with the real stepped silhouette (tiers, spire, pyramid, water tank).
 - **Characters losing colour** when they run into unpainted areas. Sample arrival once at the character's start point (or tie it to the event that coloured them), never at the current position.
 - **Static ink cannot be occluded by later washes.** Far crowds therefore use carrot-people (one wash blob, two leg lines, a head dot) instead of full rigs; building ink is erased inside nearer buildings and tree crowns before drawing.
 - **IK feet left pinned** while blending sit → stand splays the legs. Blend the foot targets toward under-hip positions.
-- **Front-facing heads went bald.** Always draw the hair mass, then knock the face out of its lower part.
+- **Front-facing heads go bald.** Always draw the hair mass, then knock the face out of its lower part.
 - Headless Chrome and big canvases: 5120² canvases for ink, time, colour and the page are fine, but pack ink and time into RGBA byte textures yourself (`getImageData`), and upload the arrival field as `R16F` (filterable).
 
 ## Engine reference

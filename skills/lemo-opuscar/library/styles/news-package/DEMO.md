@@ -81,7 +81,7 @@ Times in seconds; cuts and wipes on the 120 BPM grid (beat 0 = 1.5 s).
 - **Story ④:** lifts to G major with a brass stab and a glockenspiel figure.
 - **Recap and end card:** a glockenspiel note per tick, then a timpani roll into an E-major tutti on the end card.
 - **Voice:** Doubao TTS 2.0, voice 解说小明 2.0 (`zh_male_jieshuoxiaoming_uranus_bigtts`), eight lines, `speech_rate` 0–15.
-  - It is the closest of the three male 2.0 voices tried (云舟 `m191`, 大壹 `dayi`, 解说小明) to a brisk broadcast read. It reads briskly, in a steady mid-low register.
+  - Use it rather than 云舟 `m191` or 大壹 `dayi`: of the three male 2.0 voices it is the closest to a brisk broadcast read. It reads briskly, in a steady mid-low register.
   - Spoken text in `vo/lines.json` writes numbers as Chinese words (`say`); the strap and subtitles keep the digits.
   - Speech-to-text hears 海力士 as 海利市 and 都柏林 as 督伯林 (same sounds); those lines carry the expected transcript in their `asr` field.
   - Music is ducked ≈ 7 dB and thinned in 1.2–5 kHz under speech.
@@ -158,10 +158,10 @@ The voice is optional equipment: with no Doubao key, write the same lines for Ko
 
 ### Demo-specific choices and pitfalls
 
-- **Rebuilt from the first short cut.** This version was rebuilt from the user's first short Chinese cut. An intermediate cut added a virtual studio, numbered slat bumpers and a locator map; the user preferred the plain bulletin, and they were removed.
-- **Plates are committed.** The plates were generated once and are committed as JPEGs, so a clone builds the same film.
-- **Story ③ was cut back twice:**
-  - The Commission's own speeches contradicted "for the first time" and "no fines".
-  - The incident details behind the requests come from a single report about real companies, so they stay out of picture and voice.
+- **Keep it a plain bulletin.** No virtual studio, no numbered slat bumpers, no locator map.
+- **Commit the plates.** Generate them once and commit the JPEGs, so a clone builds the same film.
+- **Keep story ③ to what the sources support:**
+  - Don't say "for the first time" or "no fines": the Commission's own speeches contradict both.
+  - Keep the incident details behind the requests out of picture and voice: they come from a single report about real companies.
 - **"Bear market" depends on the peak.** From June's record close the Kospi had been more than 20 % down since July. The film uses the September high, as the report does, and says so on the axis.
 - **Story ④ says "open weights", not "open source".** The licence has limited commercial terms. "Most capable" is Meta's own claim and is not reported.

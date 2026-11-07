@@ -7,7 +7,7 @@ Demo: *Meet Pip* (40.0 s) · `midcentury-toon.mp4` · source in [`demo/`](demo/)
 
 ## Story & structure
 
-A product set-up guide for a fictional robot vacuum, Pip (the first use case in STYLE.md §11). It fits a product page, a QR code on the box, or a help centre. The old guide framed every film in this style as "a 30–40 second scene film: the user gives you the thing and its steps; you decide the shots, the timing, the sound and the score"; that framing now lives in STYLE.md.
+A product set-up guide for a fictional robot vacuum, Pip (the first use case in STYLE.md §11). It fits a product page, a QR code on the box, or a help centre. STYLE.md frames every film in this style as "a 30–40 second scene film: the user gives you the thing and its steps; you decide the shots, the timing, the sound and the score".
 
 Structure: hook reveal ("Meet Pip.", the box opens on a mustard ground) → one scene per step (wide + round detail call-out): ① set the dock against a wall (50 cm clear each side), ② pair the phone (2.4 GHz), ③ hold the start button (one second) → payoff (the vacuum's route drawn over the floor plan) → tip → poster lockup (the three steps as medallions) → iris-out end card.
 
@@ -53,7 +53,7 @@ Timeline (built from content): hook 4 bars, each step ≥ 3 bars (from its voice
 - **Ambience:** warm room tone (low-passed brown noise, about −42 dB) and a very quiet mantel-clock tick on the half-note grid. In the payoff, Pip's motor hum (a band-passed saw with a slow LFO plus brush hiss) takes over.
 - **Foley in this film:** the box (creak, flap thumps a semitone apart, a swish into a slap), the plug click, floor scrapes for the dock, stamps for every medallion, slide whistles for the 50 cm arrows, rising pips for "connected", pen scratches as each room's route draws, the ink line peeling off paper, an iris "shhk".
 - **Mix:** narration compressed on top, music ducks 8 dB under it, foley unducked, −14 LUFS, true peak −1.2. `tools/cuecheck.py` found 0 hits off the half-beat grid.
-- **Narrator:** calm classroom authority. The demo uses Kokoro `am_michael` at 0.94. `bm_george` was tried: whisper heard "dock" as "dark" in his British vowel. Keep lines to one clause: "Step one. Set the dock against a wall."
+- **Narrator:** calm classroom authority. The demo uses Kokoro `am_michael` at 0.94. Not `bm_george`: whisper hears "dock" as "dark" in his British vowel. Keep lines to one clause: "Step one. Set the dock against a wall."
 
 ## Palette & props
 
@@ -76,7 +76,7 @@ Timeline (built from content): hook 4 bars, each step ≥ 3 bars (from its voice
 - **Ornaments:** 4-point atomic sparkles, 8–18-point starbursts, sunburst rays (30 wedges, 55 % alpha), boomerang and kidney shapes, polka dots.
 - **Type:** Oleo Script Bold for the kicker ("Meet Pip."); Alfa Slab One for titles, numerals and step headers (ink with a cream or colour plate offset 4–7 px); Jost 500/600 for body, details, labels and captions (letter-spaced caps for small labels).
 - **Grain:** light (mux grain 4) plus the paper overlay; the look is print, not film.
-- **Model sheet:** [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg) (`?test=sheet`): June's turnaround, five expressions, key poses and hands, and the product in its off / on / plan-view / dock states.
+- **Model sheet:** `?test=sheet` (`build.sh` leaves it in `demo/out/still/`): June's turnaround, five expressions, key poses and hands, and the product in its off / on / plan-view / dock states.
 
 Demo numbers behind the STYLE.md rules: register offset `(6, 4)` px re-rolled at 12 fps ±1.6 px; walls in plans 6–7 px broken; hands one 6 px outline and 2.4 px finger separations; drop shadow offset (12, 12); sunburst 30 wedges at 55 % alpha; mux grain 4; walls `tint(col, .45)`, floors `shade(col, .16)`; pop-ins 0.24–0.3 s with overshoot 1.9; hand anticipation 20–60 px, recoil 6–10 px; kneel drops the hips 150 units (`kneel: true`, `kneelPose()`); caption card Jost 500 42 px, 60 px above the bottom, fade 0.16 s with a 10 px rise, colour cel offset 5 px, coral 8-point stars; step title Alfa Slab 64 px; detail tags Jost 36 px.
 
@@ -84,7 +84,7 @@ Demo numbers behind the STYLE.md rules: register offset `(6, 4)` px re-rolled at
 
 ## End card
 
-After the lockup, inside the iris circle: film title, style name, `Lemo-Opuscar`, `LemoLab × Claude Opus 5.5`, asset credits. The LemoLab sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+After the lockup, inside the iris circle: film title, style name, `Lemo-Opuscar`, `LemoLab × Claude Opus 5.5`, asset credits. The asset credits name the MuldjordKit drums (CC BY 4.0) and come in a little before the title so they hold 2.5 s. The LemoLab sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 
@@ -98,14 +98,14 @@ After the lockup, inside the iris circle: film title, style name, `Lemo-Opuscar`
 
 Pitfalls tied to this demo's props (the general rules are in STYLE.md):
 
-1. **The route must obey the product.** Our first payoff looped over the sofa. Fix: wall-follow first, then lanes that bend around furniture as **potential-flow streamlines** (`laneY()`): lanes never cross and never enter an obstacle ellipse (furniture + 30 px). Keep obstacles away from walls; a streamline squeezed against a wall piles lanes on top of each other.
+1. **The route must obey the product.** A route that loops over the sofa breaks it. Wall-follow first, then lanes that bend around furniture as **potential-flow streamlines** (`laneY()`): lanes never cross and never enter an obstacle ellipse (furniture + 30 px). Keep obstacles away from walls; a streamline squeezed against a wall piles lanes on top of each other.
 2. **Don't lay the whole pattern at once.** Draw it room by room, one room per beat, with the camera pulling back. Then return home on a dotted line that also avoids furniture.
 3. **Nose inside the outline.** A nose drawn as a separate wedge looks like a paper cone glued on. Build the head as one open spline from the bridge round the skull to under the nose, then close it at the nose tip (`chain + tip`). In 3/4 view, place the far eye left of the bridge so it shows.
 4. **Arms from the shoulders.** Shoulders sit at the torso corners (±40–46, −384). Draw sleeves as a thick ink ribbon with a coral ribbon on top. Thin ink arms read as sticks coming out of the neck.
 5. **Glove hands need gaps.** Drawing the fingers as fat blobs turns the hand into a cloud. Stroke every part first and fill every part second (one union outline), with slender fingers (rx 12–13, ry 5) and separation lines.
 6. **Floor reach.** A standing figure's hands stop about 190 units under the shoulder. Kneel and solve the arms with IK instead of stretching them.
 7. **Line weight in close-ups.** Zooming the world camera 3× triples the ink. Put close-ups in a call-out circle drawn at native scale.
-8. **Detail text needs its reading time.** "Against a wall, 50 cm clear each side" did not fit its 3 s window. The data moved into `detail` ("50 cm clear on each side") and the wall into the title and the line.
+8. **Detail text needs its reading time.** "Against a wall, 50 cm clear each side" does not fit a 3 s window. Put the data in `detail` ("50 cm clear on each side") and the wall in the title and the line.
 9. **The payoff route + a caption arrow can collide with labels.** Put room labels *under* the plan and the caption in the top margin.
 10. **Iris content at negative local time.** When a transition draws the next scene before its start, clamp `t` to just past the start (otherwise poses and pop-ins are undefined).
 
