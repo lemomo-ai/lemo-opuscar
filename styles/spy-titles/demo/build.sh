@@ -13,4 +13,4 @@ node core/render/video.mjs $D --fps 24 --workers 3 --out $D/out/video24.mp4     
 CRF=24 sh $D/tools/mux.sh $D/out/video24.mp4 $D/mix.wav $O/spy-titles.mp4 24 6   # 8. mux: −14 LUFS, grain 6, crf24 (core mux.sh + CRF parameter)
 node core/render/still.mjs $D 20.8 --q 'nosub=1' --out $D/out/still --prefix sf_ && cp $D/out/still/sf_20.8.jpg $D/stills/styleframe.jpg
 node core/render/still.mjs $D 20.8 --q 'nosub=1&poster=1' --out $D/out/still --prefix po_ && cp $D/out/still/po_20.8.jpg $O/poster.jpg
-node core/render/still.mjs $D 0 --q 'sheet=1&v=1' --out $D/out/still --prefix ms_ && cp $D/out/still/ms_0.jpg $D/stills/modelsheet.jpg
+node core/render/still.mjs $D 0 --q 'sheet=1' --out $D/out/still --prefix ms_   # model sheet → out/still/ms_0.jpg

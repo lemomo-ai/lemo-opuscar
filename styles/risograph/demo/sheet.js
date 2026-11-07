@@ -7,10 +7,9 @@ function label(s, x, y, c = BL, size = 22) { text(s, x, y, `600 ${size}px Jost`,
 
 export function modelSheet(t, Q) {
   clear();
-  const v = Q.get('v') || '1';
   // title
   text('THE RIDER', 48, 84, '800 64px Bricolage', BL, 'left', 'alphabetic', 1);
-  text(`MODEL SHEET · v${v}`, 420, 82, '600 26px Jost', PK, 'left', 'alphabetic', 4);
+  text('MODEL SHEET', 420, 82, '600 26px Jost', PK, 'left', 'alphabetic', 4);
   text('“Sunday Ride” · Risograph Print · three spot inks: Blue / Yellow / Fluorescent Pink', 48, 122, '400 24px Jost', BL);
   // plate marks (print crop/registration crosses)
   const cross = (x, y) => { line([[x - 16, y], [x + 16, y]], 2, BL); line([[x, y - 16], [x, y + 16]], 2, BL); g.beginPath(); g.arc(x, y, 7, 0, 7); g.lineWidth = 2; g.strokeStyle = inkA(BL); g.stroke(); };

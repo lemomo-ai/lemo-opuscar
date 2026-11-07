@@ -67,7 +67,7 @@ styles/risograph/demo/
   tools/      video_png.mjs (PNG frames, lossless intermediate), mux.sh (crf16 -tune grain), subs.py
 ```
 
-1. Design the plates first: what the one-ink frame looks like and what each plate adds. The model sheet (`?sheet=1&v=2`, [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg)) has a "plates = story" row: the same character with 1, 2, 3 plates via `S.mask`.
+1. Design the plates first: what the one-ink frame looks like and what each plate adds. The model sheet (`?sheet=1`) has a "plates = story" row: the same character with 1, 2, 3 plates via `S.mask`.
 2. `sh styles/risograph/demo/build.sh` rebuilds everything: TTS → whisper → score → events → mix → SRT → render (960 frames, ~2–4 min with 3 workers) → mux → style frame, poster, model sheet.
 3. Review: `node core/render/still.mjs styles/risograph/demo --range 0:40:1.5` + `core/render/sheet.py`; key actions at 0.2 s steps; the encoded film at 100 % and 50 % for moiré.
 

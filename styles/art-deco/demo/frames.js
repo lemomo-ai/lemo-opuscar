@@ -136,7 +136,7 @@ function silhouette(g, draw) {
 export function modelSheet(g) {
   sheetFrame(g);
   T.titleBar(g, 'PIP', 215, 96, { p: 1, size: 62, sub: 'BELLBOY · AGE 14', subSize: 15, sheen: .45, wings: false, pad: 40 });
-  label(g, 'MODEL SHEET v2 · MIDNIGHT AT THE STARLIGHT HOTEL · art-deco', 450, 88, 16);
+  label(g, 'MODEL SHEET · MIDNIGHT AT THE STARLIGHT HOTEL · art-deco', 450, 88, 16);
   label(g, 'Erté / Cassandre / Lempicka: 7 heads · faceted lacquer planes · gold rim on the lit edge · almond or arc eyes · one-stroke nose', 450, 116, 13);
   const by = 530, s = 2.9, sole = by + 67 * s;
   D.gline(g, [[60, sole + 6], [1110, sole + 6]], { w: 1.4 });

@@ -76,7 +76,7 @@ Timeline (built from content): hook 4 bars, each step ≥ 3 bars (from its voice
 - **Ornaments:** 4-point atomic sparkles, 8–18-point starbursts, sunburst rays (30 wedges, 55 % alpha), boomerang and kidney shapes, polka dots.
 - **Type:** Oleo Script Bold for the kicker ("Meet Pip."); Alfa Slab One for titles, numerals and step headers (ink with a cream or colour plate offset 4–7 px); Jost 500/600 for body, details, labels and captions (letter-spaced caps for small labels).
 - **Grain:** light (mux grain 4) plus the paper overlay; the look is print, not film.
-- **Model sheet:** [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg) (`?test=sheet`): June's turnaround, five expressions, key poses and hands, and the product in its off / on / plan-view / dock states.
+- **Model sheet:** `?test=sheet` (`build.sh` leaves it in `demo/out/still/`): June's turnaround, five expressions, key poses and hands, and the product in its off / on / plan-view / dock states.
 
 Demo numbers behind the STYLE.md rules: register offset `(6, 4)` px re-rolled at 12 fps ±1.6 px; walls in plans 6–7 px broken; hands one 6 px outline and 2.4 px finger separations; drop shadow offset (12, 12); sunburst 30 wedges at 55 % alpha; mux grain 4; walls `tint(col, .45)`, floors `shade(col, .16)`; pop-ins 0.24–0.3 s with overshoot 1.9; hand anticipation 20–60 px, recoil 6–10 px; kneel drops the hips 150 units (`kneel: true`, `kneelPose()`); caption card Jost 500 42 px, 60 px above the bottom, fade 0.16 s with a 10 px rise, colour cel offset 5 px, coral 8-point stars; step title Alfa Slab 64 px; detail tags Jost 36 px.
 

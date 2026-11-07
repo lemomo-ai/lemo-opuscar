@@ -65,8 +65,8 @@ Motion as used in the demo:
 **Characters** (all original):
 - *Host* = a gold **stopwatch head**. The dial is the face, the red second hand is his pointer and nose, and he **slaps his own crown button** to start every game. His hand ticks every beat, spins when he is excited, and stops dead on the last life.
 - *Hero* = a 2.3-head-tall cadet: bubble helmet, spring antenna with an orange ball (the **mood meter**, which boings on every action), and the number "05".
-- **Translation rule:** in every microgame style the hero is redrawn from scratch, but **three silhouette marks always survive**: round helmet, antenna ball, "05". See `demo/stills/modelsheet_v2_styles.jpg` for 8 renderings of one character.
-- **Model sheet:** [`demo/stills/modelsheet_v2.jpg`](demo/stills/modelsheet_v2.jpg) has both characters in the home style: turnarounds (front, 3/4, side, back), expressions, key poses and palette swatches (`?scene=frames.modelSheet`).
+- **Translation rule:** in every microgame style the hero is redrawn from scratch, but **three silhouette marks always survive**: round helmet, antenna ball, "05". `?scene=frames.styleSheet` draws one character in 8 of them.
+- **Model sheet:** `?scene=frames.modelSheet` draws both characters in the home style: turnarounds (front, 3/4, side, back), expressions, key poses and palette swatches. `build.sh` leaves both sheets in `demo/out/still/`.
 
 **Microgame media (simplified re-drawings, each about 100–200 lines of code):**
 | Style | How it is made |

@@ -72,10 +72,9 @@ styles/*/demo/**/*.png
 styles/*/demo/**/*.webp
 styles/*/demo/**/*.svg
 # Stills: only the review frames docs point to are committed; everything else in stills/ is a debug frame.
-# Name review frames styleframe.jpg, modelsheet*.jpg, frame_*.jpg, alt_*.jpg or engine*.jpg and they are tracked with no extra line here.
+# Name review frames styleframe.jpg, frame_*.jpg, alt_*.jpg or engine*.jpg and they are tracked with no extra line here.
 styles/*/demo/stills/*
 !styles/*/demo/stills/styleframe.jpg
-!styles/*/demo/stills/modelsheet*.jpg
 !styles/*/demo/stills/frame_*.jpg
 !styles/*/demo/stills/alt_*.jpg
 !styles/*/demo/stills/engine*.jpg
@@ -134,4 +133,4 @@ styles/*/demo/**/*_partial.json
 styles/*/demo/**/*_try.py
 # Superseded first-round review frames; only those a doc or CREDITS names are re-included
 styles/*/demo/stills/*_v1*
-!styles/art-deco/demo/stills/kit_v2.jpg
+!styles/art-deco/demo/stills/kit.jpg

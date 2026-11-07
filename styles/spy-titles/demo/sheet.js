@@ -1,4 +1,4 @@
-// Character model sheet: index.html?sheet=1&v=1 (the whole sheet is also made of paper cut-outs + four paper colours)
+// Character model sheet: index.html?sheet=1 (the whole sheet is also made of paper cut-outs + four paper colours)
 import { g, C, S, clear, piece, rough, roughC, rectP, circP, label, smooth } from './paper.js';
 import { layout, drawLine } from './glyph.js';
 import { agentSide, agentFront, courierSide, courierFront, key, keyholeP, runPose, walkPose, coRunPose, AGENT_POSE, COURIER_POSE } from './chars.js';
@@ -9,11 +9,10 @@ function groundTick(x, y, w = 150) { piece(rough([[x - w / 2, y + 2], [x + w / 2
 
 export function modelSheet(t, Q) {
   clear(C.paper);
-  const v = Q.get('v') || '1';
   // ── title ──
   const tl = layout('THE AGENT  &  THE COURIER', 96, { track: .03 });
   drawLine(tl, 56, 118, { col: C.ink, seed: 3, jit: 1.2, amp: 1.2 });
-  LBL(`MODEL SHEET · v${v}`, 56 + tl.width + 40, 112, 26, C.red, 'left');
+  LBL('MODEL SHEET', 56 + tl.width + 40, 112, 26, C.red, 'left');
   label('“The Velvet Cipher” · 60s Spy Title Sequence · cut-paper silhouettes · four inks · always in profile on screen, moves on twos', 58, 156, '400 21px LSpartan', C.ink);
   // red diagonal (the grid motif)
   for (let i = 0; i < 3; i++) piece(rough([[1560 + i * 26, 40], [1574 + i * 26, 40], [1474 + i * 26, 180], [1460 + i * 26, 180]], 900 + i, .8, 10), C.red, { gap: 0, shadow: false });

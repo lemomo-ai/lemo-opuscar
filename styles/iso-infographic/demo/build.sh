@@ -15,5 +15,5 @@ sh core/render/mux.sh $D/out/video24.mp4 $D/mix.wav $O/iso-infographic.mp4 24 0 
 $PY $D/tools/final_asr.py $O/iso-infographic.mp4 || true                                # 10. whisper spot-check of the finished film
 node core/render/still.mjs $D 56.0 --q 'nosub=1&nocard=1' --out $D/out/still --prefix sf_ >/dev/null && cp $D/out/still/sf_56.0.jpg $D/stills/styleframe.jpg
 node core/render/still.mjs $D 57.0 --q nosub=1 --out $D/out/still --prefix po_ >/dev/null && cp $D/out/still/po_57.0.jpg $O/poster.jpg
-node core/render/still.mjs $D 3.4 50.9 --q nosub=1 --out $D/out/still --prefix hand_ >/dev/null && $PY core/render/sheet.py $D/stills/frame_v2_hands.jpg $D/out/still/hand_3.4.jpg $D/out/still/hand_50.9.jpg --cols 2 --w 960
+node core/render/still.mjs $D 3.4 50.9 --q nosub=1 --out $D/out/still --prefix hand_ >/dev/null && $PY core/render/sheet.py $D/stills/frame_hands.jpg $D/out/still/hand_3.4.jpg $D/out/still/hand_50.9.jpg --cols 2 --w 960
 node core/render/still.mjs $D 0 --q test=spark --out $D/out/still --prefix eng_ >/dev/null && cp $D/out/still/eng_0.jpg $D/stills/engine_shape.jpg

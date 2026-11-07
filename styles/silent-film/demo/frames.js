@@ -46,7 +46,7 @@ export function modelSheet(g, t) {
   g.drawImage(dev, 0, 0);
   // --- labels (crisp, on top)
   label(g, 'OTTO', 60, 70, { font: FONT_TITLE, w: 900, size: 54, align: 'left', color: '#1d1915' });
-  label(g, 'apprentice baker · 17 · 7.5 heads · The Runaway Loaf — model sheet v2', 62, 104, { italic: true, size: 22, align: 'left' });
+  label(g, 'apprentice baker · 17 · 7.5 heads · The Runaway Loaf — model sheet', 62, 104, { italic: true, size: 22, align: 'left' });
   ['front', 'three-quarter', 'profile', 'back'].forEach((n, i) => label(g, n, [150, 400, 650, 890][i], 1050, { italic: true, size: 20 }));
   ex.forEach(([n], i) => { g.fillStyle = 'rgba(236,231,221,.85)'; g.fillRect(1060 + (i % 2) * 420 + 150, 40 + Math.floor(i / 2) * 250 + 204, 100, 28); label(g, n, 1060 + (i % 2) * 420 + 200, 40 + Math.floor(i / 2) * 250 + 225, { italic: true, size: 19 }); });
   ['the lift (pride)', 'the sprint', 'hanging on', 'breaking bread'].forEach((n, i) => label(g, n, [1160, 1420, 1640, 1810][i], 1050, { italic: true, size: 18 }));

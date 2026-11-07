@@ -18,4 +18,4 @@ node core/render/slot.mjs -- node core/render/video.mjs $D --fps 24 --workers 2 
 sh core/render/mux.sh $D/out/video24.mp4 $D/mix.wav $O/midcentury-toon.mp4 24 4                                     # 10. -14 LUFS, light grain
 node core/render/still.mjs $D 6.0 35.8 --q nosubs=1 --prefix ns_ --out $D/out/still
 cp $D/out/still/ns_6.0.jpg $D/stills/styleframe.jpg; cp $D/out/still/ns_35.8.jpg $O/poster.jpg
-node core/render/still.mjs $D 0 --q test=sheet --prefix sheet_ --out $D/out/still && cp $D/out/still/sheet_0.jpg $D/stills/modelsheet_v2.jpg
+node core/render/still.mjs $D 0 --q test=sheet --prefix sheet_ --out $D/out/still   # model sheet → out/still/sheet_0.jpg

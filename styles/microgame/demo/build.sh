@@ -17,5 +17,5 @@ CRF=20 sh $D/tools/mux.sh $D/out/video24.mp4 $D/mix.wav $O/microgame.mp4 24 0   
 $PY $D/tools/final_asr.py $O/microgame.mp4 || true                                # 12. whisper spot-check on the finished film
 node core/render/still.mjs $D 50.2 --q nosub=1 --out $D/out/still --prefix sf_ && cp $D/out/still/sf_50.2.jpg $D/stills/styleframe.jpg
 node core/render/still.mjs $D 6.4 --q nosub=1 --out $D/out/still --prefix po_ && cp $D/out/still/po_6.4.jpg $O/poster.jpg
-node core/render/still.mjs $D 0 --q scene=frames.modelSheet --out $D/out/still --prefix ms_ && cp $D/out/still/ms_0.jpg $D/stills/modelsheet_v2.jpg
-node core/render/still.mjs $D 0 --q scene=frames.styleSheet --out $D/out/still --prefix ss_ && cp $D/out/still/ss_0.jpg $D/stills/modelsheet_v2_styles.jpg
+node core/render/still.mjs $D 0 --q scene=frames.modelSheet --out $D/out/still --prefix ms_   # model sheet → out/still/ms_0.jpg
+node core/render/still.mjs $D 0 --q scene=frames.styleSheet --out $D/out/still --prefix ss_   # style translation sheet → out/still/ss_0.jpg

@@ -30,7 +30,7 @@ function swatch(g, x, y, col, name) { K.s = 1; part(rrect(x, y, 40, 40, 10), col
 // ───────── Model sheet: CADET DOT (top) + COACH TICK (bottom)─────────
 export function modelSheet(g, t) {
   setCtx(g); K.s = 1;
-  sheetBg(g, 'FIVE-SECOND ASTRONAUT · MODEL SHEET v2', 'home style: 7px ink outline · flat fill · one hard shadow (lower-right)');
+  sheetBg(g, 'FIVE-SECOND ASTRONAUT · MODEL SHEET', 'home style: 7px ink outline · flat fill · one hard shadow (lower-right)');
   // panels
   g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(20, 80, 1880, 480); g.fillRect(20, 575, 1880, 490);
   outlined(g, 'CADET DOT', 40, 122, { font: '44px Titan', align: 'left', lw: 8, fill: P.orange });
@@ -78,7 +78,7 @@ export function modelSheet(g, t) {
 // ───────── Look translation sheet: the same Dot drawn in 8 looks ─────────
 export function styleSheet(g, t) {
   setCtx(g); K.s = 1;
-  sheetBg(g, 'CADET DOT · STYLE TRANSLATION v2', 'keep 3 marks: round helmet · antenna ball · "05" — the rest follows each style');
+  sheetBg(g, 'CADET DOT · STYLE TRANSLATION', 'keep 3 marks: round helmet · antenna ball · "05" — the rest follows each style');
   const tiles = []; const TW = 460, TH = 486;
   for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) tiles.push([20 + c * (TW + 13), 78 + r * (TH + 10)]);
   const clip = (i, fn) => { const [x, y] = tiles[i]; g.save(); g.beginPath(); g.roundRect(x, y, TW, TH, 18); g.clip(); fn(x, y); g.restore(); };

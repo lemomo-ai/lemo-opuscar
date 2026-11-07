@@ -17,5 +17,5 @@ sh core/render/mux.sh $D/out/video24.mp4 $D/mix.wav $O/art-deco.mp4 24 3        
 node core/render/still.mjs $D 41.9 3.6 --q nosub=1 --out $D/out/still --prefix p_
 cp $D/out/still/p_41.9.jpg $D/stills/styleframe.jpg && cp $D/out/still/p_3.6.jpg $O/poster.jpg
 for s in frameLobby frameRoof modelSheet kit; do node core/render/still.mjs $D 0 --q scene=frames.$s --out $D/out/still --prefix ${s}_; done
-cp $D/out/still/frameLobby_0.jpg $D/stills/frame_v2_lobby.jpg; cp $D/out/still/frameRoof_0.jpg $D/stills/frame_v2_roof.jpg
-cp $D/out/still/modelSheet_0.jpg $D/stills/modelsheet_v2.jpg; cp $D/out/still/kit_0.jpg $D/stills/kit_v2.jpg
+cp $D/out/still/frameLobby_0.jpg $D/stills/frame_lobby.jpg; cp $D/out/still/frameRoof_0.jpg $D/stills/frame_roof.jpg
+cp $D/out/still/kit_0.jpg $D/stills/kit.jpg   # the model sheet stays in out/still/modelSheet_0.jpg
