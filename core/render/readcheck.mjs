@@ -6,8 +6,8 @@
 // Rule (same as DIRECTOR.md §7): from the moment a piece of text first fully enters the frame, the time it stays fully in frame continuously, and still in TEXTS, must be ≥
 //   (number of hanzi/kana/hangul ÷ cjk-cps + number of other non-whitespace characters ÷ latin-cps) + pad seconds, and no less than min. Defaults 4.5 chars/s (CJK), 15 chars/s (alphanumeric), pad 1.5, min 1.5.
 //   Text that never fully enters the frame (cropped at the edge, a ticker running out of frame) is reported as "never fully visible".
-//   Text the viewer only passes and isn't meant to read (a shop sign in a fly-through, a label the camera sweeps past) can carry pass: true:
-//   it is listed as passing and not timed. Anything the film needs the viewer to read must not be marked.
+//   Text the viewer isn't meant to read in full (a shop sign in a fly-through, a label the camera sweeps past, the fine-print licence credits
+//   on an end card) can carry pass: true: it is listed as passing and not timed. Anything the film needs the viewer to read must not be marked.
 // Exit code: 0 all pass; 1 some fail; 2 the check couldn't run (the page has no window.TEXTS, or the whole film never returned any text) — this does not count as a pass.
 import { openDemo, closeServer, requireDemo, takeSize } from './page.mjs';
 const args = process.argv.slice(2), { w: VW, h: VH } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
