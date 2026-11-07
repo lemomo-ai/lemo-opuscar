@@ -36,7 +36,7 @@ REPO="${OPUSCAR_REPO:-$(cd -- "$(dirname -- "$0")/.." && pwd)}"
 PY=$(command -v python3 2>/dev/null || command -v python 2>/dev/null) || {
   echo "fonts.sh: needs python3 (stdlib only)" >&2; exit 127; }
 OPUSCAR_REPO="$REPO" exec "$PY" -I - "$@" <<'PYEOF'
-import io, os, re, sys, time, json, shutil, subprocess, urllib.request, urllib.parse, urllib.error
+import io, os, re, sys, time, json, shutil, hashlib, subprocess, urllib.request, urllib.parse, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 
 REPO = os.environ.get('OPUSCAR_REPO') or os.getcwd()
@@ -153,6 +153,33 @@ def credits_text(demo):
             return open(p, encoding='utf-8', errors='ignore').read()
     return ''
 
+CREDIT_STOP = ('fonts', 'font', 'typeface', 'typefaces', 'type', 'google',
+               'googlefonts', 'sil', 'ofl', 'silopenfontlicense', 'openfontlicense',
+               'the', 'licence', 'license', 'and', 'by', 'in', 'from', 'see',
+               'regular', 'italic', 'oblique', 'version')
+
+def credit_names(ln):
+    """Family names out of one CREDITS line, longest first.
+
+    `\\s+` between the words let the run of spaces after a FONTS heading glue the
+    heading onto the first family: ukiyoe's "Fonts       Shippori Mincho B1
+    (FONTDASU)" came out as `fontsshipporiminchob1`, which exists nowhere, while
+    the real `shipporiminchob1` was never tried -- and because `yujisyuku` was
+    reachable from the same line, shippori-500.woff2 was fetched from Yuji Syuku
+    and reported ok.  Split the line into segments first, join words with one
+    space only, drop label words off both ends, and offer the shorter prefixes
+    too (Shippori Mincho B1 -> shipporiminchob1, shipporimincho, shippori)."""
+    out = []
+    for seg in re.split(r'\s{2,}|\t|[,;:()\[\]|\u2014\u2013\u00b7/]| - ', ln):
+        for m in re.finditer(r'[A-Z][A-Za-z0-9]*(?: [A-Z][A-Za-z0-9]*){0,3}', seg):
+            words = m.group(0).split(' ')
+            while words and norm(words[0]) in CREDIT_STOP: words.pop(0)
+            while len(words) > 1 and norm(words[-1]) in CREDIT_STOP: words.pop()
+            for n in range(len(words), 0, -1):
+                cand = ' '.join(words[:n])
+                if norm(cand) and norm(cand) not in CREDIT_STOP: out.append(cand)
+    return out
+
 def candidates(face, demo):
     """Google-Fonts folder slugs worth trying, best guess first."""
     base, d = os.path.basename(face['path']), os.path.dirname(face['path'])
@@ -169,10 +196,15 @@ def candidates(face, demo):
     rest.sort(key=lambda s: (not (s.startswith(stem) or stem.startswith(s)),
                              -len(os.path.commonprefix([s, stem])), s))
     for s in rest: add(s)                       # then the rest, closest first
+    cred = []
     for ln in credits_text(demo).splitlines():  # finally the CREDITS prose
         if re.search(r'(?i)font', ln):
-            for m in re.findall(r'[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z0-9]+){0,3}', ln):
-                if norm(m) not in ('fonts', 'font', 'siliopenfontlicense'): add(m)
+            cred += credit_names(ln)
+    # closest to the file name first: yuji-kanji.woff2 must reach Yuji Syuku
+    # before Shippori Mincho B1, which the same line names.
+    cred.sort(key=lambda s: (not (norm(s).startswith(stem) or stem.startswith(norm(s))),
+                             -len(os.path.commonprefix([norm(s), stem]))))
+    for m in cred: add(m)
     return out
 
 def wants(base, face):
@@ -308,7 +340,14 @@ def bespoke(ur):
     if len(e) < 8: return False
     singles = sum(1 for x in e if '-' not in x)
     cps = urange_cps(ur)
-    return (singles * 2 >= len(e) or any(c > 0x2E80 for c in cps)) and 0 < len(cps) <= 8192
+    # `c > 0x2E80` also caught Latin Extended-C/D (U+2C60-2C7F, U+A720-A7FF), so
+    # Google's own latin-ext slice read as bespoke: game-show's five latin-ext
+    # faces were sent to the &text= branch, which answered with 101 slices, and
+    # were reported unresolved while one substring match away.  Test the CJK and
+    # Hangul blocks, not "anything above 0x2E80".
+    cjk = any(0x2E80 <= c <= 0x9FFF or 0xAC00 <= c <= 0xD7FF
+              or 0xF900 <= c <= 0xFAFF or c >= 0x20000 for c in cps)
+    return (singles * 2 >= len(e) or cjk) and 0 < len(cps) <= 8192
 
 
 def sibling_weights(face):
@@ -395,6 +434,23 @@ def tier_cssapi(face, demo, log):
             if not url and not bespoke(face['urange']):
                 head = face['urange'].split(',')[0]
                 url  = next((u for r, u in faces if head and head in r), None)
+            if not url and not bespoke(face['urange']):
+                # Google widens its slices over time -- latin-ext grew
+                # U+20AD-20C0 into U+20AD-20C4 -- so a declared range stops
+                # matching byte for byte, and if the first block moves too it
+                # stops matching by substring.  Take the slice that covers very
+                # nearly the same codepoints, and only if one clearly does.
+                wc = urange_cps(face['urange'])
+                best, score, second = None, 0.0, 0.0
+                for r, u in faces:
+                    rc = urange_cps(r)
+                    if not rc or not wc: continue
+                    j = len(wc & rc) / float(len(wc | rc))
+                    if j > score: best, score, second = u, j, score
+                    elif j > second: second = j
+                if score >= 0.9 and score - second >= 0.25:
+                    url = best
+                    log.append('    cssapi %s: range drifted, %.3f overlap' % (fam, score))
         elif len(faces) == 1:
             url = faces[0][1]
         else:                                               # one file, many slices: &text=
@@ -476,6 +532,61 @@ def run_author(demo, rel, kind, log):
         return False
     return True
 
+URLRE = re.compile(r'https?://[^\s\'"`)<>]+')
+
+def build_fetch(demo, todo, log):
+    """The demo's own build.sh already says where a font comes from, for the
+    faces no catalogue can answer.
+
+    chalkboard's two files are not on Google Fonts at all: build.sh curls LXGW
+    WenKai v1.530 from its GitHub release and then runs tools/subset.py to cut
+    fonts/wenkai-sub.woff2 down to the subtitle characters.  Guessing either
+    from a file name is hopeless, and the author wrote both down.  So: take the
+    URL the author put on the same line as the file name, then run the one local
+    tool whose source names the file.  build.sh itself is never run -- it would
+    render the whole film."""
+    paths = [os.path.join(demo, n) for n in
+             ('build.sh', 'tools/build.sh', 'make.sh', 'fetch.sh', 'tools/fetch.sh')]
+    text = ''
+    for p in paths:
+        if os.path.exists(p):
+            text += io.open(p, encoding='utf-8', errors='ignore').read() + '\n'
+    if not text: return False
+    text = re.sub(r'\\\n\s*', ' ', text)        # the URL often sits on the next line
+    got = False
+
+    for f in list(todo):                        # pass 1: a URL next to the name
+        base = os.path.basename(f['path'])
+        if os.path.exists(f['path']) and not FORCE: continue
+        for ln in text.splitlines():
+            if base not in ln: continue
+            urls = [u for u in URLRE.findall(ln) if '$' not in u]
+            if not urls: continue
+            try: b = get(urls[-1])
+            except Exception as e:
+                log.append('    buildsh %s: %s' % (base, e)); continue
+            if isfont(b):
+                write(f['path'], b)
+                log.append('    buildsh %s: %s' % (base, urls[-1]))
+                got = True; break
+
+    for f in list(todo):                        # pass 2: a local tool writes it
+        base = os.path.basename(f['path'])
+        if os.path.exists(f['path']): continue
+        td = os.path.join(demo, 'tools')
+        for n in sorted(os.listdir(td)) if os.path.isdir(td) else []:
+            if not n.endswith('.py'): continue
+            p = os.path.join(td, n)
+            try: s = io.open(p, encoding='utf-8', errors='ignore').read()
+            except OSError: continue
+            if base not in s: continue
+            if run_author(demo, os.path.join('tools', n), 'py', log) \
+               and os.path.exists(f['path']):
+                log.append('    buildsh %s: tools/%s' % (base, n))
+                got = True
+            break
+    return got
+
 # ---------------------------------------------------------------- report ----
 def kb(n): return '%.1f kB' % (n / 1000.0) if n < 1e6 else '%.2f MB' % (n / 1e6)
 
@@ -485,20 +596,92 @@ def guess_tier(face, demo):
     if base.lower().endswith(('.ttf', '.otf')):        return 'github'
     return 'cssapi'
 
-def fc_family(p):
-    """The first `family` record inside the file.
+_WSET = set(w.lower() for w in WEIGHTS) | {'italic', 'oblique'}
+
+def _forms(tok):
+    """How a demo may shorten one word of a family name: JetBrains -> jetbrains
+    or jb, Mono -> mono."""
+    out = {norm(tok)}
+    parts = re.findall(r'[A-Z][a-z0-9]*|[a-z0-9]+', tok)
+    if len(parts) >= 2:
+        out.add(norm(''.join(p[0] for p in parts)))
+    return {f for f in out if f}
+
+def fam_ok(fam, face, cand):
+    """Does the family inside the file agree with what the demo asked for?
+
+    The demos abbreviate, and hard: sanssc700.woff2 is Noto Sans SC 700,
+    plexmono500.woff2 is IBM Plex Mono 500, cond800i.woff2 is Barlow Condensed
+    ExtraBold Italic, JBMono-400-0.woff2 is JetBrains Mono.  A prefix test on
+    the whole name calls all four a mismatch.  Drop the weight and slant words,
+    then accept any ordered run of the remaining words -- each word either whole
+    or as its initials.  That reads all four as correct and still refuses Yuji
+    Syuku standing in for Shippori, which is the failure worth catching."""
+    names = [fam] if isinstance(fam, str) else [n for n in (fam or []) if n]
+    names = [n for n in names if n]
+    if not names: return None
+    # A font may carry its name in several languages, and fontconfig lists them
+    # all on one line.  LXGW WenKai leads with zh-tw, so reading one record gave
+    # the check a Chinese name to compare against the alias `WenKaiRef` and a
+    # file fetched from the author's own release URL came out `!!`.  Try every
+    # name; if none of them has a Latin letter, say so instead of guessing.
+    if not any(re.search(r'[A-Za-z]', n) for n in names): return None
+    probe = [c for c in cand if c] + [norm(face['family'] or '')]
+    for nm in names:
+        words = [w for w in re.split(r'[^A-Za-z0-9]+', nm) if w]
+        kept  = [w for w in words if w.lower() not in _WSET] or words
+        kept  = kept[:5]
+        if not kept: continue
+        slugs = set()
+        for mask in range(1, 3 ** len(kept)):
+            s, m = '', mask
+            for w in kept:
+                d, m = m % 3, m // 3
+                if d: s += (sorted(_forms(w))[0] if d == 1 else sorted(_forms(w))[-1])
+            if s: slugs.add(norm(s))
+        for w in kept: slugs |= _forms(w)
+        for p in probe:
+            if not p: continue
+            for s in slugs:
+                if s and (p.startswith(s) or s.startswith(p)): return True
+    return False
+
+def fc_families(p):
+    """Every name inside the file: all `family` records, then `fullname`.
 
     `-f '%{family}'` is not usable here: on a variable font fontconfig expands the
     whole name list with no separator, so Inter.ttf reads back as
     "InterInterInterInterInterInterInterInterInterInter" and --verify prints a
-    family that matches nothing.  The structured output carries one record per
-    line, so the first quoted value is the family."""
+    family that matches nothing.  The structured output keeps one key per line --
+    but a line may hold SEVERAL quoted values, one per language:
+
+        family:     "\u971e\u9dd8\u6587\u6977"(s) "LXGW WenKai"(s) "\u971e\u9e5c\u6587\u6977"(s)
+        familylang: "zh-tw"(s) "en"(s) "zh-cn"(s)
+
+    Reading only the first value handed --verify the zh-tw name of a font that
+    also states "LXGW WenKai" two values over.  Read them all."""
     try:
         r = subprocess.run(['fc-query', p], capture_output=True, text=True, timeout=20)
-        if r.returncode != 0: return ''
-        m = re.search(r'^\s*family:\s*"([^"]+)"', r.stdout, re.M)
-        return m.group(1).strip() if m else ''
-    except Exception: return ''
+        if r.returncode != 0: return []
+    except Exception:
+        return []
+    out = []
+    for key in ('family', 'fullname'):
+        m = re.search(r'^\s*%s:\s*(.+)$' % key, r.stdout, re.M)
+        if m: out += [v.strip() for v in re.findall(r'"([^"]*)"', m.group(1)) if v.strip()]
+    seen, uniq = set(), []
+    for v in out:
+        if v not in seen: seen.add(v); uniq.append(v)
+    return uniq
+
+def fc_family(p):
+    """The one name to PRINT for a file: the first record written in Latin
+    letters, so a CJK-first font still reports something a reader can check
+    against the demo."""
+    fams = fc_families(p)
+    for f in fams:
+        if re.search(r'[A-Za-z]', f): return f
+    return fams[0] if fams else ''
 
 # ------------------------------------------------------------------ main ----
 faces = scan()
@@ -510,6 +693,12 @@ else:
     styles = sorted(faces)
 
 plan = {s: [f for f in faces[s] if FORCE or not os.path.exists(f['path'])] for s in styles}
+# --verify reads back what is ON DISK, so it must keep the full set: pruning the
+# styles with nothing left to fetch is right for the download loop and wrong for
+# the check.  On a complete tree it left --verify with nothing to iterate, and a
+# run that verified zero files printed a clean report and exited 0 -- which is
+# how ukiyoe shipped shippori-500.woff2 cut from Yuji Syuku and called it ok.
+all_styles = list(styles)
 if not want:
     styles = [s for s in styles if plan[s]]
 
@@ -542,7 +731,19 @@ for s in styles:
         print('%-24s nothing to do' % s); continue
     log, how = [], {}
     rel, kind = author_fetcher(demo)
-    if rel and not FORCE:
+    if rel:
+        # --force used to skip this tier, and the skip was the bug.  The author's
+        # fetcher is the only tier that can answer an alias: telestrator declares
+        # sans500 / cond800i, visual-investigation declares serifi, and no catalogue
+        # holds those strings.  So `--force` printed `telestrator 0/6` and
+        # `visual-investigation 0/7` unresolved over thirteen files that were already
+        # correct on disk -- a false failure, and exit 1 on a clean tree.  --force
+        # means re-fetch, not drop a tier: delete the file first and let the author's
+        # own fetcher write it again, under the author's own name and subset.
+        if FORCE:
+            for f in todo:
+                try: os.remove(f['path'])
+                except OSError: pass
         if run_author(demo, rel, kind, log):
             for f in list(todo):
                 if os.path.exists(f['path']):
@@ -569,6 +770,15 @@ for s in styles:
         return f, None
 
     if todo:
+        try:
+            if build_fetch(demo, todo, log):
+                for f in list(todo):
+                    if os.path.exists(f['path']):
+                        how[f['path']] = 'buildsh'; todo.remove(f)
+        except Exception as e:
+            log.append('    buildsh: %s' % e)
+
+    if todo:
         with ThreadPoolExecutor(max_workers=JOBS) as ex:
             for f, r in ex.map(one, todo):
                 if r: how[f['path']] = r
@@ -588,14 +798,49 @@ print('\n%d fetched (%s), %d unresolved' % (len(done), kb(bytes_got), len(failed
 
 if VERIFY:
     print('\nverify — family name inside each file')
-    for s in styles:
+    bad, unknown, seen_n = 0, 0, 0
+    digests = {}
+    for s in all_styles:
         for f in faces[s]:
             if not os.path.exists(f['path']): continue
-            fam = fc_family(f['path'])
+            seen_n += 1
+            fams = fc_families(f['path'])
+            fam  = next((x for x in fams if re.search(r'[A-Za-z]', x)),
+                        fams[0] if fams else '')
             cand = candidates(f, os.path.join('styles', s, 'demo'))[:4]
-            ok = (not fam) or any(norm(fam).startswith(c) or c.startswith(norm(fam)) for c in cand)
-            print('  %s %-22s %-30s %s' % ('ok ' if ok else '!! ', s,
-                                           os.path.basename(f['path']), fam or '(fc-query unavailable)'))
+            note = ''
+            verdict = fam_ok(fams, f, cand)
+            if verdict is None:
+                tag = '?? '; unknown += 1          # no fc-query is NOT a pass
+            elif verdict:
+                tag = 'ok '
+            else:
+                tag = '!! '; bad += 1
+            # Two faces that declare DIFFERENT families must not be the same bytes.
+            # One file answering for two families is the shape of the ukiyoe bug:
+            # Shippori and Yuji both resolved to Yuji Syuku, byte for byte, and
+            # each file read back a family its own candidate list allowed.
+            try:
+                h = hashlib.sha1(open(f['path'], 'rb').read()).hexdigest()
+            except OSError:
+                h = None
+            if h:
+                prev = digests.get((s, h))
+                if prev and norm(prev[1]) != norm(f['family'] or ''):
+                    tag = '!! '; bad += 1
+                    note = ' ← same bytes as %s (declared %s vs %s)' % (
+                        prev[0], prev[1] or '?', f['family'] or '?')
+                elif not prev:
+                    digests[(s, h)] = (os.path.basename(f['path']), f['family'] or '')
+            print('  %s %-22s %-30s %s%s' % (tag, s, os.path.basename(f['path']),
+                                             fam or '(fc-query unavailable)', note))
+    print('\nverified %d file%s: %d mismatch%s, %d unreadable'
+          % (seen_n, '' if seen_n == 1 else 's', bad, '' if bad == 1 else 'es', unknown))
+    if seen_n == 0:
+        print('verify: nothing on disk to check — this is not a pass')
+        sys.exit(1)
+    if bad:
+        sys.exit(1)
 
 if failed:
     print('\nunresolved — map these by hand (family name, then re-run):')
