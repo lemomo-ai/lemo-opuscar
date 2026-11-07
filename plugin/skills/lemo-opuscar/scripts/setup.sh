@@ -66,12 +66,26 @@ win_shim() {
   printf '#!/bin/sh\nPYTHONUTF8=1 PYTHONIOENCODING=utf-8 exec "$(dirname "$0")/../Scripts/python.exe" "$@"\n' > .venv/bin/python
   chmod +x .venv/bin/python
 }
+# One deps run per library at a time (#23): two sessions sharing a library would otherwise half-install, or remove,
+# each other's packages. A lock folder holds the run's pid; a lock whose run is gone is taken over.
+lock_deps() {
+  lock=$LIB/.lemo-deps.lock; n=0
+  until mkdir "$lock" 2>/dev/null; do
+    p=$(cat "$lock/pid" 2>/dev/null || true)
+    if [ -n "$p" ] && ! kill -0 "$p" 2>/dev/null; then rm -rf "$lock"; continue; fi
+    [ $n -gt 0 ] || echo "… another '$1 deps' is installing into $LIB; waiting for it to finish"
+    n=$((n + 1)); [ $n -lt 1800 ] || { echo "✗ $lock is still there after 30 minutes: remove it if no install is running"; exit 1; }
+    sleep 1
+  done
+  echo $$ > "$lock/pid"
+  trap 'rm -rf "$lock"' EXIT; trap 'exit 1' INT TERM HUP
+}
 
 case "$1" in
   deps)
     shift; tiers=core
     for t in "$@"; do case $t in voice|music) tiers="$tiers $t" ;; *) echo "usage: sh setup.sh deps [voice] [music]"; exit 1 ;; esac; done
-    cd "$LIB"
+    cd "$LIB"; lock_deps "sh setup.sh"
     command -v npm >/dev/null || { echo "✗ npm not found: install Node 20+ first"; exit 1; }
     if ! node_ok; then
       npm install --no-audit --no-fund --loglevel=error

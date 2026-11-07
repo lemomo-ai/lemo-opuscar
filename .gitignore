@@ -1,5 +1,6 @@
 node_modules/
 .venv/
+.lemo-deps.lock/
 __pycache__/
 .DS_Store
 # 模型与大素材（运行说明里给下载地址）
