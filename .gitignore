@@ -134,3 +134,6 @@ styles/*/demo/**/*_try.py
 # Superseded first-round review frames; only those a doc or CREDITS names are re-included
 styles/*/demo/stills/*_v1*
 !styles/art-deco/demo/stills/kit.jpg
+
+# isometric-picture-book: the character list its font subset step writes
+styles/isometric-picture-book/demo/tools/chars.txt
