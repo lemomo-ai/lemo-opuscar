@@ -41,9 +41,9 @@ sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$FILM/$NAME.mp4
 "$PY" core/render/srt.py "$HERE/out/cues_srt.json" "$FILM/$NAME.srt"
 
 # checks
-"$PY" -I "$HERE/tools/cuecheck.py" "$HERE" | tail -1
-node "$HERE/tools/subcheck.mjs" "$HERE" | tail -1
-node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok"
+"$PY" -I "$HERE/tools/cuecheck.py" "$HERE" > "$HERE/out/cuecheck.txt" || { cat "$HERE/out/cuecheck.txt"; exit 1; }; tail -1 "$HERE/out/cuecheck.txt"
+node "$HERE/tools/subcheck.mjs" "$HERE" > "$HERE/out/subcheck.txt" || { cat "$HERE/out/subcheck.txt"; exit 1; }; tail -1 "$HERE/out/subcheck.txt"
+node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok" || { tail -20 "$HERE/out/readcheck.txt"; exit 1; }
 "$PY" -I "$HERE/tools/motioncheck.py" "$FILM/$NAME.mp4" | tail -2
 "$PY" -I "$HERE/tools/impactcheck.py" "$HERE" | tail -4
 

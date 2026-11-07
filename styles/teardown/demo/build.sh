@@ -39,7 +39,7 @@ sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$FILM/$NAME.mp4
 
 # checks
 node "$HERE/tools/subcheck.mjs" "$HERE"
-node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok"
+node core/render/readcheck.mjs "$HERE" > "$HERE/out/readcheck.txt" && echo "readcheck ok" || { tail -20 "$HERE/out/readcheck.txt"; exit 1; }
 "$PY" -I "$HERE/tools/motioncheck.py" "$FILM/$NAME.mp4"
 
 # poster and gallery style frame: the signature shot (all six layers labelled), rendered without the subtitle strip
