@@ -71,7 +71,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 |---|---|
 | `LEMO_OPUSCAR_HOME` | where `setup.sh` keeps the library (default `~/lemo-opuscar`) |
 | `PLAYWRIGHT_CHROME` | a Chrome / headless-shell executable instead of Playwright's |
-| `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none) |
+| `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none). A virtualised adapter (most cloud VMs and CI runners) creates the demo's context and then drops it, so WebGL styles draw nothing: `LEMO_ANGLE=swiftshader` asks for software rendering up front and renders them, slowly |
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |
 | `WHISPER_MODEL` | Whisper model name or local folder for `asr_check.py` (same as `--model`; default `base.en` for English, `small` for Chinese, `base` otherwise) |
@@ -81,7 +81,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 
 | Tool | 0 | 1 | 2 |
 |---|---|---|---|
-| render tools | done | page error, missing required file, ffmpeg failure | usage, no `index.html`, `--out` already being written |
+| render tools | done | page error, a WebGL context lost before the first frame, missing required file, ffmpeg failure | usage, no `index.html`, `--out` already being written |
 | `readcheck.mjs` | all texts long enough | some too short or never fully visible | could not check (no `TEXTS`) |
 | `mux.sh` | film written | any failure | – |
 | `tts.py`, `srt.py` | done | bad input, missing model, path too long | usage |
