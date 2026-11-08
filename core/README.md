@@ -81,7 +81,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 
 | Tool | 0 | 1 | 2 |
 |---|---|---|---|
-| render tools | done | page error, a WebGL context lost before the first frame, missing required file, ffmpeg failure | usage, no `index.html`, `--out` already being written |
+| render tools | done | page error, a lost WebGL context (blank frames), missing required file, ffmpeg failure | usage, no `index.html`, `--out` already being written |
 | `readcheck.mjs` | all texts long enough | some too short or never fully visible | could not check (no `TEXTS`) |
 | `mux.sh` | film written | any failure | – |
 | `tts.py`, `srt.py` | done | bad input, missing model, path too long | usage |

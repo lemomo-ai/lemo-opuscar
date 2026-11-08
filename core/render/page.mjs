@@ -4,7 +4,8 @@
 import { chromium } from 'playwright-core';
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 import { serve, pageURL } from './serve.mjs';
-import { EXE, ARGS, warnIfSoftwareGL, WATCH_GL_LOST } from './browser.mjs';
+import { EXE, ARGS, warnIfSoftwareGL, WATCH_GL_LOST, GL_LOST_HELP } from './browser.mjs';
+export { GL_LOST_HELP };
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 let srv = null;
 export async function server() { if (!srv) srv = await serve(ROOT); return srv; }
@@ -59,8 +60,7 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   finally { clearTimeout(hint); }
   const glLost = await page.evaluate(() => window.__glLost || null);   // a blank film is worse than a failed render
   if (glLost) {
-    console.error(`the WebGL context (${glLost}) was lost before the first frame, so every frame would come out blank.\n` +
-      `  Chrome dropped it after starting on the GPU: this is what --use-angle on a virtualised adapter does. Try LEMO_ANGLE=swiftshader (see core/README.md).`);
+    console.error(`the WebGL context (${glLost}) was lost before the first frame: ${GL_LOST_HELP}`);
     process.exit(1);
   }
   await warnIfSoftwareGL(page);
