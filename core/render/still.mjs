@@ -2,7 +2,7 @@
 // <demo> = the folder that holds index.html (e.g. styles/<slug>/demo, films/<name>); the page must expose window.READY and window.render(t).
 // A page error or a 404 on a required file exits immediately (non-zero); giving no time points is a usage error
 import fs from 'fs'; import path from 'path';
-import { openDemo, closeServer, requireDemo, takeSize } from './page.mjs';
+import { openDemo, closeServer, requireDemo, takeSize, GL_LOST_HELP, glLost } from './page.mjs';
 const args = process.argv.slice(2);
 const take = k => { const i = args.indexOf(k); return i >= 0 ? args.splice(i, 2)[1] : null; };
 const { w, h } = takeSize(args), out = take('--out'), q = take('--q') || '', prefix = take('--prefix') || 't_', rg = take('--range');
@@ -21,5 +21,7 @@ for (const ts of times) {
   await page.evaluate(t => window.render(t), parseFloat(ts));
   const f = path.join(outDir, `${prefix}${ts}.jpg`);
   await page.screenshot({ path: f, type: 'jpeg', quality: 92 }); console.log(f, Date.now() - t0 + 'ms');
+  const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
+  if (lost) { fs.rmSync(f, { force: true }); console.error(`the WebGL context (${lost}) was lost by t = ${ts} s (that still is not kept): ${GL_LOST_HELP}`); process.exit(1); }
 }
 await browser.close(); closeServer();

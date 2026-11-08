@@ -5,7 +5,7 @@
 // The same demo can render several versions in parallel, but each version needs its own --out: two renders writing the same --out fail with an error instead of silently overwriting each other.
 // <out>.lock holds the owner's pid; if the owner is gone, or the lock file hasn't been refreshed for over 12 hours (the pid was reused by another process), it counts as stale and a new render takes over.
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
-import { openDemo, closeServer, requireDemo, takeSize, GL_LOST_HELP } from './page.mjs';
+import { openDemo, closeServer, requireDemo, takeSize, GL_LOST_HELP, glLost } from './page.mjs';
 const args = process.argv.slice(2), { w: W, h: H } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0]; requireDemo(dir);
 const FPS = +opt('--fps', 24), WK = +opt('--workers', 3), Q = opt('--q', '');
@@ -61,7 +61,7 @@ try { await Promise.all([...Array(WK)].map(async (_, w) => {
     if (dead) break;
     if (!ff.stdin.write(buf)) await Promise.race([new Promise(r => ff.stdin.once('drain', r)), closed]);
     if ((f - a) % 60 === 0) console.log(`w${w} ${f - a}/${b - a}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
-    if ((f - a) % 60 === 59 || f === b - 1) { const lost = await page.evaluate(() => window.__glLost || null);   // see WATCH_GL_LOST in browser.mjs
+    if ((f - a) % 60 === 59 || f === b - 1) { const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
       if (lost) { ff.kill(); fail(`the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`); } }
   }
   ff.stdin.end(); const code = await closed; await browser.close();
