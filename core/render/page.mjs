@@ -4,7 +4,7 @@
 import { chromium } from 'playwright-core';
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 import { serve, pageURL } from './serve.mjs';
-import { EXE, ARGS, warnIfSoftwareGL } from './browser.mjs';
+import { EXE, ARGS, warnIfSoftwareGL, WATCH_GL_LOST } from './browser.mjs';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 let srv = null;
 export async function server() { if (!srv) srv = await serve(ROOT); return srv; }
@@ -27,6 +27,7 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   const { port } = await server();
   const browser = await chromium.launch({ executablePath: EXE, args: ARGS });
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  await page.addInitScript(WATCH_GL_LOST);
   const log = [];   // recent errors, printed together if READY is slow to arrive
   const note = s => { log.push(s); if (log.length > 8) log.shift(); console.error(s); };
   page.on('console', m => {
@@ -56,6 +57,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   try { await page.waitForFunction(() => window.READY === true, null, { timeout: 180000 }); }
   catch (e) { console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); process.exit(1); }
   finally { clearTimeout(hint); }
+  const glLost = await page.evaluate(() => window.__glLost || null);   // a blank film is worse than a failed render
+  if (glLost) {
+    console.error(`the WebGL context (${glLost}) was lost before the first frame, so every frame would come out blank.\n` +
+      `  Chrome dropped it after starting on the GPU: this is what --use-angle on a virtualised adapter does. Try LEMO_ANGLE=swiftshader (see core/README.md).`);
+    process.exit(1);
+  }
   await warnIfSoftwareGL(page);
   return { browser, page };
 }

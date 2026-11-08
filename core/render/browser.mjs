@@ -6,6 +6,10 @@ export const EXE = process.env.PLAYWRIGHT_CHROME || undefined;   // undefined = 
 const angle = process.env.LEMO_ANGLE || (process.platform === 'darwin' ? 'metal' : 'default');
 export const ARGS = [...(angle === 'default' ? [] : [`--use-angle=${angle}`]), '--enable-gpu', '--ignore-gpu-blocklist', '--font-render-hinting=none', '--force-color-profile=srgb'];
 
+// A context lost mid-run leaves the page alive but no longer drawing: the frames come out blank and the render would
+// still exit 0. Caught on the way down (capture phase: webglcontextlost does not bubble), reported by page.mjs.
+export const WATCH_GL_LOST = `addEventListener('webglcontextlost', e => { window.__glLost = e.target && e.target.id ? 'canvas#' + e.target.id : 'canvas'; }, true);`;
+
 // warn once if WebGL ended up on software rendering (2D-canvas demos are unaffected; never fails the render)
 let warned = false;
 export async function warnIfSoftwareGL(page) {
