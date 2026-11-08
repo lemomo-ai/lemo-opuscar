@@ -7,9 +7,10 @@ D=$(cd "$(dirname "$0")/.." && pwd)/fonts; mkdir -p "$D"
 GF=https://raw.githubusercontent.com/google/fonts/86aced91de05cd4f96a06838124cca45be337b2b
 get() {
   [ -s "$D/$1" ] && [ -z "$FORCE" ] && return 0
-  curl -fsSL -g --retry 2 -o "$D/$1.part" "$2" ||
-    { rm -f "$D/$1.part"; echo "✗ could not fetch fonts/$1 from $2 (offline, or behind a proxy? curl uses https_proxy)" >&2; exit 1; }
-  mv "$D/$1.part" "$D/$1"; echo "fonts/$1"
+  # into a plain name first: Git Bash on Windows hands curl a path with [ ] in it unconverted
+  curl -fsSL -g --retry 2 -o "$D/download.part" "$2" ||
+    { rm -f "$D/download.part"; echo "✗ could not fetch fonts/$1 from $2 (offline, or behind a proxy? curl uses https_proxy)" >&2; exit 1; }
+  mv "$D/download.part" "$D/$1"; echo "fonts/$1"
 }
 get CormorantGaramond-Italic.woff2 "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSqn7B6D.woff2"
 get CormorantSC.woff2 "https://fonts.gstatic.com/s/cormorantsc/v19/0ybmGD4kxqXBmOVLG30OGwsmWBMk-hfz0jCGGQ.woff2"

@@ -34,7 +34,13 @@ for (const n of fs.readdirSync(outDir)) if (n.startsWith(`.${base}_segs-`)) {
   try { const p = Number(fs.readFileSync(path.join(outDir, n, 'pid'), 'utf8')); if (!alive(p)) fs.rmSync(path.join(outDir, n), { recursive: true, force: true }); } catch {}
 }
 let segDir = null, cleaned = false; const procs = new Set();   // running ffmpeg processes: stop them before cleaning the directory, so they don't error on a deleted directory
-const cleanup = () => { if (cleaned) return; cleaned = true; for (const p of procs) p.kill('SIGKILL'); if (segDir) fs.rmSync(segDir, { recursive: true, force: true }); try { fs.unlinkSync(lock); } catch {} };
+const cleanup = () => {
+  if (cleaned) return; cleaned = true; for (const p of procs) p.kill('SIGKILL');
+  // on Windows a killed ffmpeg lets go of its segment a moment later (EBUSY): retry, and remove the lock in any case
+  try { if (segDir) fs.rmSync(segDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
+  catch (e) { console.error(`could not remove ${segDir} (${e.code}); the next render into this folder clears it`); }
+  try { fs.unlinkSync(lock); } catch {}
+};
 process.on('exit', cleanup);
 for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { cleanup(); process.exit(128 + (sig === 'SIGINT' ? 2 : 15)); });
 const fail = msg => { console.error(msg); cleanup(); process.exit(1); };
