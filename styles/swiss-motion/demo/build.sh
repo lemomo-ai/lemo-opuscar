@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild 《Five Rules for a Poster》 from scratch: sh styles/swiss-motion/demo/build.sh (runs from any folder)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/swiss-motion/demo; S=styles/swiss-motion
 $PY core/tts/tts.py $D/lines.json $D/voices                          # 1. Kokoro voice-over (af_sarah, speed 1.0)

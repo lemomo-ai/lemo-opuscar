@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "The Runaway Loaf" from scratch: sh styles/silent-film/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/silent-film/demo; O=styles/silent-film
 node $D/tools/dump_timeline.mjs                                   # 1. tempo grid (cue sheet sections) → timeline.json

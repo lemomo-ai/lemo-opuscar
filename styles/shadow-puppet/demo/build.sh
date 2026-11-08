@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild the finished film from scratch: sh styles/shadow-puppet/demo/build.sh (can be run from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/shadow-puppet/demo; O=styles/shadow-puppet
 $PY core/tts/tts.py $D/lines.json $D/voices                    # 1. Kokoro voice-over (am_michael)

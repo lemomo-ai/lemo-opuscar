@@ -1,6 +1,7 @@
 #!/bin/sh
 # rebuild the film from scratch: voice → whisper check → events → score → mix → frame-by-frame render → mux (−14 LUFS, grain 0) → subtitles / poster / style frames
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 D=styles/one-line/demo
 .venv/bin/python core/tts/tts.py $D/lines.json $D/voices

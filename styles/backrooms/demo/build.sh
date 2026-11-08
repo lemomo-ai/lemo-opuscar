@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Night Shift Orientation" from scratch: sh styles/backrooms/demo/build.sh (run from the repo root)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 D=styles/backrooms/demo; PY=.venv/bin/python
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1. voice-over (Kokoro: af_bella for the PA / am_michael for the camera operator)
 $PY core/tts/asr_check.py $D/lines.json $D/voices            # 2. whisper checks the raw voices + word-level timestamps (used to split subtitles)

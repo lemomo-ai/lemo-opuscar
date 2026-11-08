@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "The Velvet Cipher" from scratch: sh styles/spy-titles/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/spy-titles/demo; O=styles/spy-titles
 $PY core/tts/tts.py $D/lines.json $D/voices                     # 1. Kokoro voice-over (bm_george)

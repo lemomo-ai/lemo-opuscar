@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "A Hundred Summers" from scratch: sh styles/dataviz/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/dataviz/demo; S=styles/dataviz
 $PY $D/tools/extract_data.py                                          # 0. GISTEMP CSV → data/jja.json (JJA column) + facts used in the narration

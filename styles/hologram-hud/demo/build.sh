@@ -4,6 +4,7 @@
 #   → voice, score, mix, subtitles and final film are all redone; output goes to demo/out/kite/ (kite.mp4 / kite.srt / poster.jpg)
 #   Model: the JSON that content.json's "model" points to; for your own product, first write models/gen_<name>.mjs to generate it (format in STYLE.md §11)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/hologram-hud/demo; O=styles/hologram-hud
 CONTENT=${CONTENT:-content.json}; NAME=${NAME:-hologram-hud}

@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Toy Town Rush Hour" from scratch: sh styles/tilt-shift/demo/build.sh (runs from the repo root or any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 D="$(cd "$(dirname "$0")" && pwd)"; R="$(cd "$D/../../.." && pwd)"; PY="$R/.venv/bin/python"
 cd "$R"
 echo "== 1. voice + whisper check"

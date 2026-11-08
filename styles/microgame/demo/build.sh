@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Five-Second Astronaut" from scratch: sh styles/microgame/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/microgame/demo; O=styles/microgame
 node $D/tools/dump_timeline.mjs                                   # 1. tempo grid → timeline.json (shared by score / mix / self-checks)

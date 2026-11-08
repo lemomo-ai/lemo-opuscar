@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild the film from scratch: sh styles/crayon-book/demo/build.sh   (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/crayon-book/demo
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1. Kokoro voice af_heart (soft bedtime voice)

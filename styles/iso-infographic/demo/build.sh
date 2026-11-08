@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "From Bean to Cup" from scratch: sh styles/iso-infographic/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/iso-infographic/demo; O=styles/iso-infographic
 $PY core/tts/tts.py $D/lines.json $D/voices                               # 1. Kokoro voice-over (bf_alice)

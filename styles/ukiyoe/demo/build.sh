@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild the finished film from scratch: sh styles/ukiyoe/demo/build.sh   (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/ukiyoe/demo
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1. Kokoro narration (am_adam)

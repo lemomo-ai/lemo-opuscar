@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild the finished film from scratch: sh styles/rubber-hose/demo/build.sh   (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/rubber-hose/demo; S=styles/rubber-hose
 $PY core/tts/tts.py $D/lines.json $D/voices                     # 1. Kokoro voice-over (bm_lewis, radio-announcer delivery)

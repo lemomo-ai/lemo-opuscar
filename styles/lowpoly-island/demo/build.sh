@@ -1,6 +1,7 @@
 #!/bin/sh
 # rebuild the film from scratch: sh styles/lowpoly-island/demo/build.sh (runs from any folder)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/lowpoly-island/demo; S=styles/lowpoly-island
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1. Kokoro voice (af_sky)

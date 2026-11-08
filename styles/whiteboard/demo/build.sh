@@ -2,6 +2,7 @@
 # Whiteboard Explainer · "Einstein in Your Pocket" — rebuild everything from this repo alone.
 #   sh styles/whiteboard/demo/build.sh [--vo]     (run from anywhere; --vo re-synthesises and re-checks the voice)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 HERE=$(cd "$(dirname "$0")" && pwd); ROOT=$(cd "$HERE/../../.." && pwd); cd "$ROOT"
 PY=.venv/bin/python; D=styles/whiteboard/demo; OUT=styles/whiteboard
 if [ "$1" = "--vo" ]; then

@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Room to Think" from scratch: sh styles/dark-keynote/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/dark-keynote/demo; O=styles/dark-keynote
 node $D/tools/dump_timeline.mjs                                   # 1. tempo grid + note tables of the three voices → timeline.json

@@ -2,6 +2,7 @@
 # Rebuild "Meet Pip" from scratch: sh styles/midcentury-toon/demo/build.sh (run from anywhere)
 # Swap content: edit demo/content.json (or pass another file: CONTENT=content_alt.json sh build.sh stills)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/midcentury-toon/demo; O=styles/midcentury-toon
 if [ "$1" = "stills" ]; then   # content test: three stills from another content file, no audio needed

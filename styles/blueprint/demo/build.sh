@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild Blueprint "Patent Pending: The Cloud Catcher" from scratch: run from the repo root  sh styles/blueprint/demo/build.sh
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 D=styles/blueprint/demo; S=styles/blueprint; PY=.venv/bin/python
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1 voice-over (bm_daniel, en-gb)

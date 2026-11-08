@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "The Colour of Rain" (impasto) from scratch. Run from anywhere.
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 D="$(cd "$(dirname "$0")" && pwd)"; ROOT="$(cd "$D/../../.." && pwd)"; cd "$ROOT"
 node "$D/tools/dump_timeline.mjs"                         # music grid -> out/timeline.json
 .venv/bin/python "$D/music/score.py"                       # score (sampler, CC0 instruments)

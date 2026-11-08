@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "The Swordsman and the River" from scratch in one go: from the repo root run sh styles/ink-wash/demo/build.sh
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 D=styles/ink-wash/demo
 PY=.venv/bin/python

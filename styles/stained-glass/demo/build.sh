@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild the film from scratch: sh styles/stained-glass/demo/build.sh (from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/stained-glass/demo; O=styles/stained-glass
 $PY core/tts/tts.py $D/lines.json $D/voices                    # 1. Kokoro narration (bf_alice)

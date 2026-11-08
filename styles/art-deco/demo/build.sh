@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Midnight at the Starlight Hotel" from scratch: sh styles/art-deco/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/art-deco/demo; O=styles/art-deco
 node $D/tools/dump_timeline.mjs                                   # 1. tempo grid (116 → 138 → 116) → timeline.json (shared by score / mix / self-checks)

@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild 《The Bell Founder》 from scratch: sh styles/woodcut/demo/build.sh (runs from any directory)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/woodcut/demo; O=styles/woodcut
 $PY core/tts/tts.py $D/lines.json $D/voices                       # 1. Kokoro voice-over (am_onyx 0.88, 4 lines)

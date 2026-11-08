@@ -2,6 +2,7 @@
 # Living Screencast · "Clawd Moves In" — rebuild everything from this repo alone.
 #   sh styles/living-screencast/demo/build.sh [--vo]     (--vo re-synthesises and re-checks the voice)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 HERE=$(cd "$(dirname "$0")" && pwd); ROOT=$(cd "$HERE/../../.." && pwd); cd "$ROOT"
 PY=.venv/bin/python; D=styles/living-screencast/demo; OUT=styles/living-screencast
 if [ "$1" = "--vo" ]; then

@@ -1,6 +1,7 @@
 #!/bin/sh
 # Rebuild "Aura — Hear the Light" from scratch in one command: sh styles/glass-product/demo/build.sh (runs from any folder)
 set -e
+sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"; cd "$ROOT"
 D=styles/glass-product/demo; PY=.venv/bin/python
 echo "== 1. voice + whisper check"
