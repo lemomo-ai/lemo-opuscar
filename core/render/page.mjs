@@ -36,7 +36,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     if (m.type() === 'error' && /^Failed to load resource/.test(t)) return;   // printed with its URL by the response event below
     if (m.type() === 'error' || (warnings && m.type() === 'warning')) note('[page] ' + t.slice(0, 300));
   });
-  page.on('pageerror', e => { console.error('[pageerror]', e.message); process.exit(1); });   // stop on an error during rendering, so no broken film is produced
+  const fontsMissing = [];   // a page that loads its faces itself (document.fonts.load, new FontFace) rejects with a bare "network error"
+  page.on('pageerror', e => {   // stop on an error during rendering, so no broken film is produced
+    console.error('[pageerror]', e.message);
+    if (fontsMissing.length && /network error/i.test(e.message)) console.error(`  that is the missing font file${fontsMissing.length > 1 ? 's' : ''} above (${fontsMissing.join(', ')})`);
+    process.exit(1);
+  });
   page.on('response', r => {
     if (r.status() < 400) return;
     const u = r.url(), p = new URL(u).pathname, type = r.request().resourceType();
@@ -45,7 +50,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
       note(`[page] ${r.status()} ${u}`);
       console.error(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); process.exit(1);
     }
-    if (!warned.has(u)) { warned.add(u); note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`); }
+    if (warned.has(u)) return; warned.add(u);
+    if (type === 'font') {   // the text would come out in another face: say which file, and where fonts come from
+      fontsMissing.push(p);
+      note(`[page] font file missing: ${decodeURIComponent(p)} (${r.status()}). Fonts are not kept in git: a library demo's build.sh fetches them ` +
+        `(its CREDITS names each face); in your own page, put the file there or correct the @font-face url`);
+    } else note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`);
   });
   page.on('requestfailed', r => { if (!/favicon/.test(r.url()) && r.failure()?.errorText !== 'net::ERR_ABORTED') note(`[page] request failed ${r.url()} (${r.failure()?.errorText})`); });
   await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : ''));
