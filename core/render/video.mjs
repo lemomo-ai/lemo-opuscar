@@ -50,6 +50,8 @@ segDir = fs.mkdtempSync(path.join(outDir, `.${base}_segs-`)); fs.writeFileSync(p
 const probe = await openDemo(dir, { w: W, h: H, q: Q }); const DUR = await probe.page.evaluate(() => window.DUR); await probe.browser.close();
 if (!(DUR > 0)) fail(`window.DUR must be a positive number of seconds (got ${DUR})`);
 const TOTAL = Math.round(DUR * FPS), per = Math.ceil(TOTAL / WK), t0 = Date.now();
+let abort = null;   // a worker found the WebGL context lost: every worker stops feeding and lets its ffmpeg finish (on Windows a killed
+                    // ffmpeg keeps its segment busy for a while), then the render fails with nothing left behind
 try { await Promise.all([...Array(WK)].map(async (_, w) => {
   const a = w * per, b = Math.min(TOTAL, a + per); if (a >= b) return;
   const { browser, page } = await openDemo(dir, { w: W, h: H, q: Q });
@@ -61,18 +63,20 @@ try { await Promise.all([...Array(WK)].map(async (_, w) => {
   let done; const closed = new Promise(r => { done = r; }); ff.on('close', code => done(code));
   ff.on('error', e => { dead = e.code === 'ENOENT' ? 'ffmpeg is not installed (or not on PATH)' : e.message; done(-1); });
   ff.stdin.on('error', () => { dead ??= 'ffmpeg closed its input early'; });
-  for (let f = a; f < b && !dead; f++) {
+  for (let f = a; f < b && !dead && !abort; f++) {
     await page.evaluate(t => window.render(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 95 });
     if (dead) break;
     if (!ff.stdin.write(buf)) await Promise.race([new Promise(r => ff.stdin.once('drain', r)), closed]);
     if ((f - a) % 60 === 0) console.log(`w${w} ${f - a}/${b - a}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
     if ((f - a) % 60 === 59 || f === b - 1) { const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
-      if (lost) { ff.kill(); fail(`the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`); } }
+      if (lost) { abort ??= `the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`; break; } }
   }
   ff.stdin.end(); const code = await closed; await browser.close();
+  if (abort) return;
   if (dead || code !== 0) fail(`ffmpeg failed for worker ${w}: ${dead || 'exit code ' + code} (ffmpeg's own message, if any, is above)`);
 })); } catch (e) { fail(`render stopped: ${String(e.message || e).split('\n')[0]}`); }   // e.g. the page's render(t) threw
+if (abort) fail(abort);
 const list = path.join(segDir, 'segs.txt');
 fs.writeFileSync(list, [...Array(WK)].map((_, w) => `file 'seg_${w}.mp4'`).filter((_, w) => w * per < TOTAL).join('\n'));
 try { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', 'segs.txt', '-c', 'copy', 'merged.mp4'], { cwd: segDir, stdio: ['ignore', 'inherit', 'inherit'] }); }
