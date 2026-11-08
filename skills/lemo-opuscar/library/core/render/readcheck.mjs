@@ -14,7 +14,7 @@ const args = process.argv.slice(2), { w: VW, h: VH } = takeSize(args), opt = (k,
 const dir = args[0]; requireDemo(dir);
 const Q = opt('--q', ''), STEP = +opt('--step', 0.04), LATIN = +opt('--latin-cps', 15), CJK = +opt('--cjk-cps', 4.5), PAD = +opt('--pad', 1.5), MIN = +opt('--min', 1.5);
 if (![STEP, LATIN, CJK, PAD, MIN].every(Number.isFinite) || STEP <= 0 || LATIN <= 0 || CJK <= 0) { console.error('bad option value (step and the cps values must be > 0)'); process.exit(2); }
-const { browser, page } = await openDemo(dir, { w: VW, h: VH, q: Q });
+const { browser, page } = await openDemo(dir, { w: VW, h: VH, q: Q, gl: false });   // reads text boxes, draws nothing
 const res = await page.evaluate(({ STEP }) => {
   if (typeof window.TEXTS !== 'function') return { noTexts: true };
   if (!(window.DUR > 0)) return { noDur: true };

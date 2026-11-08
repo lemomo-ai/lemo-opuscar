@@ -130,7 +130,7 @@ styles/halftone-dossier/demo/
 ```
 Run from the repo root (`lemo-opuscar/`); all paths inside the scripts are relative to `demo/`.
 
-1. (Only when changing fonts) `cd styles/halftone-dossier/demo && node fetch_fonts.mjs` — needs network; rewrites `fonts/` + `fonts.css`.
+1. (Only when changing fonts) `cd styles/halftone-dossier/demo && node fetch_fonts.mjs` — needs network; rewrites `fonts/`, and `fonts.css` when the families or their slicing change.
 2. Voice/TTS: none in this style (skip). If you add narration, time scenes to it first.
 3. Music: `.venv/bin/python styles/halftone-dossier/demo/music.py` → `demo/music.wav` (≈1 s). Pass a path to write elsewhere.
 4. Review: open `demo/index.html?t=11.2` in Chrome, or `node styles/halftone-dossier/demo/render.mjs stills 3.3 7.2 11.25 23.3 27.8 --dir out/review` (≈0.25 s per frame) → `demo/out/review/t_*.png`.

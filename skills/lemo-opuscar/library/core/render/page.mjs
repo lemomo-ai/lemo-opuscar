@@ -4,7 +4,9 @@
 import { chromium } from 'playwright-core';
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 import { serve, pageURL } from './serve.mjs';
-import { EXE, ARGS, warnIfSoftwareGL } from './browser.mjs';
+import { createRequire } from 'module';
+import { EXE, ARGS, warnIfSoftwareGL, WATCH_GL_LOST, GL_LOST_HELP, glLost } from './browser.mjs';
+export { GL_LOST_HELP, glLost };
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 let srv = null;
 export async function server() { if (!srv) srv = await serve(ROOT); return srv; }
@@ -22,19 +24,37 @@ export function takeSize(args) {
 }
 const warned = new Set();   // each optional file warns only once per process (video.mjs opens several pages)
 const FATAL = new Set(['script', 'document']);   // things the page must have; module imports also have type script
-export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = false } = {}) {
+// gl: check for a lost WebGL context before handing the page over (the tools that only read the page, readcheck and events, pass false)
+export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = false, gl = true } = {}) {
   requireDemo(dir);
   const { port } = await server();
-  const browser = await chromium.launch({ executablePath: EXE, args: ARGS });
+  let browser;
+  try { browser = await chromium.launch({ executablePath: EXE, args: ARGS }); }
+  catch (e) {   // playwright's own advice (npx playwright install) fetches the browser of another playwright version
+    if (!EXE && /Executable doesn't exist|playwright install/i.test(String(e.message))) {
+      const v = createRequire(import.meta.url)('playwright-core/package.json').version;
+      console.error(`the headless browser for playwright-core ${v} is not installed. From the library root run\n` +
+        `  sh tools/setup.sh deps\n  (or: node node_modules/playwright-core/cli.js install chromium-headless-shell; not npx playwright install,\n` +
+        `  which installs the browser of another playwright version). Or point PLAYWRIGHT_CHROME at a chrome-headless-shell.`);
+      process.exit(1);
+    }
+    throw e;
+  }
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  await page.addInitScript(WATCH_GL_LOST);
   const log = [];   // recent errors, printed together if READY is slow to arrive
   const note = s => { log.push(s); if (log.length > 8) log.shift(); console.error(s); };
   page.on('console', m => {
     const t = m.text();
     if (m.type() === 'error' && /^Failed to load resource/.test(t)) return;   // printed with its URL by the response event below
-    if (m.type() === 'error' || (warnings && m.type() === 'warning')) note('[page] ' + t.slice(0, 300));
+    if (m.type() === 'error' || (warnings && m.type() === 'warning') || /too many active webgl contexts/i.test(t)) note('[page] ' + t.slice(0, 300));
   });
-  page.on('pageerror', e => { console.error('[pageerror]', e.message); process.exit(1); });   // stop on an error during rendering, so no broken film is produced
+  const fontsMissing = [];   // a page that loads its faces itself (document.fonts.load, new FontFace) rejects with a bare "network error"
+  page.on('pageerror', e => {   // stop on an error during rendering, so no broken film is produced
+    console.error('[pageerror]', e.message);
+    if (fontsMissing.length && /network error/i.test(e.message)) console.error(`  that is the missing font file${fontsMissing.length > 1 ? 's' : ''} above (${fontsMissing.join(', ')})`);
+    process.exit(1);
+  });
   page.on('response', r => {
     if (r.status() < 400) return;
     const u = r.url(), p = new URL(u).pathname, type = r.request().resourceType();
@@ -43,7 +63,13 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
       note(`[page] ${r.status()} ${u}`);
       console.error(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); process.exit(1);
     }
-    if (!warned.has(u)) { warned.add(u); note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`); }
+    if (warned.has(u)) return; warned.add(u);
+    if (type === 'font') {   // the text would come out in another face: say which file, and where fonts come from
+      fontsMissing.push(p);
+      let shown = p; try { shown = decodeURIComponent(p); } catch {}   // a bare % in a file name
+      note(`[page] font file missing: ${shown} (${r.status()}). Fonts are not kept in git: a library demo's build.sh fetches them ` +
+        `(its CREDITS names each face); in your own page, put the file there or correct the @font-face url`);
+    } else note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`);
   });
   page.on('requestfailed', r => { if (!/favicon/.test(r.url()) && r.failure()?.errorText !== 'net::ERR_ABORTED') note(`[page] request failed ${r.url()} (${r.failure()?.errorText})`); });
   await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : ''));
@@ -56,6 +82,11 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   try { await page.waitForFunction(() => window.READY === true, null, { timeout: 180000 }); }
   catch (e) { console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); process.exit(1); }
   finally { clearTimeout(hint); }
+  const lost = gl && await glLost(page);   // a blank film is worse than a failed render
+  if (lost) {
+    console.error(`the WebGL context (${lost}) was lost before the first frame: ${GL_LOST_HELP}`);
+    process.exit(1);
+  }
   await warnIfSoftwareGL(page);
   return { browser, page };
 }

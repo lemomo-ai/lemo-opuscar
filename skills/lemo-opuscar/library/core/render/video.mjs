@@ -5,7 +5,7 @@
 // The same demo can render several versions in parallel, but each version needs its own --out: two renders writing the same --out fail with an error instead of silently overwriting each other.
 // <out>.lock holds the owner's pid; if the owner is gone, or the lock file hasn't been refreshed for over 12 hours (the pid was reused by another process), it counts as stale and a new render takes over.
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
-import { openDemo, closeServer, requireDemo, takeSize } from './page.mjs';
+import { openDemo, closeServer, requireDemo, takeSize, GL_LOST_HELP, glLost } from './page.mjs';
 const args = process.argv.slice(2), { w: W, h: H } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0]; requireDemo(dir);
 const FPS = +opt('--fps', 24), WK = +opt('--workers', 3), Q = opt('--q', '');
@@ -34,7 +34,13 @@ for (const n of fs.readdirSync(outDir)) if (n.startsWith(`.${base}_segs-`)) {
   try { const p = Number(fs.readFileSync(path.join(outDir, n, 'pid'), 'utf8')); if (!alive(p)) fs.rmSync(path.join(outDir, n), { recursive: true, force: true }); } catch {}
 }
 let segDir = null, cleaned = false; const procs = new Set();   // running ffmpeg processes: stop them before cleaning the directory, so they don't error on a deleted directory
-const cleanup = () => { if (cleaned) return; cleaned = true; for (const p of procs) p.kill('SIGKILL'); if (segDir) fs.rmSync(segDir, { recursive: true, force: true }); try { fs.unlinkSync(lock); } catch {} };
+const cleanup = () => {
+  if (cleaned) return; cleaned = true; for (const p of procs) p.kill('SIGKILL');
+  // on Windows a killed ffmpeg lets go of its segment a moment later (EBUSY): retry, and remove the lock in any case
+  try { if (segDir) fs.rmSync(segDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
+  catch (e) { console.error(`could not remove ${segDir} (${e.code}); the next render into this folder clears it`); }
+  try { fs.unlinkSync(lock); } catch {}
+};
 process.on('exit', cleanup);
 for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { cleanup(); process.exit(128 + (sig === 'SIGINT' ? 2 : 15)); });
 const fail = msg => { console.error(msg); cleanup(); process.exit(1); };
@@ -44,6 +50,8 @@ segDir = fs.mkdtempSync(path.join(outDir, `.${base}_segs-`)); fs.writeFileSync(p
 const probe = await openDemo(dir, { w: W, h: H, q: Q }); const DUR = await probe.page.evaluate(() => window.DUR); await probe.browser.close();
 if (!(DUR > 0)) fail(`window.DUR must be a positive number of seconds (got ${DUR})`);
 const TOTAL = Math.round(DUR * FPS), per = Math.ceil(TOTAL / WK), t0 = Date.now();
+let abort = null;   // a worker found the WebGL context lost: every worker stops feeding and lets its ffmpeg finish (on Windows a killed
+                    // ffmpeg keeps its segment busy for a while), then the render fails with nothing left behind
 try { await Promise.all([...Array(WK)].map(async (_, w) => {
   const a = w * per, b = Math.min(TOTAL, a + per); if (a >= b) return;
   const { browser, page } = await openDemo(dir, { w: W, h: H, q: Q });
@@ -55,16 +63,20 @@ try { await Promise.all([...Array(WK)].map(async (_, w) => {
   let done; const closed = new Promise(r => { done = r; }); ff.on('close', code => done(code));
   ff.on('error', e => { dead = e.code === 'ENOENT' ? 'ffmpeg is not installed (or not on PATH)' : e.message; done(-1); });
   ff.stdin.on('error', () => { dead ??= 'ffmpeg closed its input early'; });
-  for (let f = a; f < b && !dead; f++) {
+  for (let f = a; f < b && !dead && !abort; f++) {
     await page.evaluate(t => window.render(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 95 });
     if (dead) break;
     if (!ff.stdin.write(buf)) await Promise.race([new Promise(r => ff.stdin.once('drain', r)), closed]);
     if ((f - a) % 60 === 0) console.log(`w${w} ${f - a}/${b - a}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+    if ((f - a) % 60 === 59 || f === b - 1) { const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
+      if (lost) { abort ??= `the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`; break; } }
   }
   ff.stdin.end(); const code = await closed; await browser.close();
+  if (abort) return;
   if (dead || code !== 0) fail(`ffmpeg failed for worker ${w}: ${dead || 'exit code ' + code} (ffmpeg's own message, if any, is above)`);
 })); } catch (e) { fail(`render stopped: ${String(e.message || e).split('\n')[0]}`); }   // e.g. the page's render(t) threw
+if (abort) fail(abort);
 const list = path.join(segDir, 'segs.txt');
 fs.writeFileSync(list, [...Array(WK)].map((_, w) => `file 'seg_${w}.mp4'`).filter((_, w) => w * per < TOTAL).join('\n'));
 try { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', 'segs.txt', '-c', 'copy', 'merged.mp4'], { cwd: segDir, stdio: ['ignore', 'inherit', 'inherit'] }); }
