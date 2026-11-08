@@ -61,6 +61,7 @@ styles/*/demo/**/*.flac
 styles/*/demo/**/*.mp4
 styles/*/demo/**/*.woff
 styles/*/demo/**/*.woff2
+styles/*/demo/**/*.part
 styles/*/demo/**/*.gltf
 styles/*/demo/**/*.glb
 styles/*/demo/**/*.bin

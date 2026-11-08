@@ -11,7 +11,7 @@ Work in `styles/<slug>/` (lowercase letters, digits, hyphens; unique). Start fro
 | `style.json` | the only metadata source: `slug`, `num`, `en`, `cn`, `category_en`, `category_cn`, `film`, `line`, `line_cn`, `uses`, `frame_sec`, `dur` |
 | `STYLE.md` | the style's invariants only: look, materials and rendering, colour logic, type, motion, camera grammar, sound palette, the medium's pitfalls, native moves, range of variation. No story, arc, beat table, durations or end card. Ends with a link to `DEMO.md` |
 | `DEMO.md` | opens with "One example among many. Don't reuse its story, arc, shots, props or timings." Then the demo's story and structure, shot list, score structure, palette and props, end card (the "LemoLab × Claude Opus 5.5" sign-off lives only here, as the library demo's), build notes and code entry points, and for a scene style the `content.json` fields |
-| `demo/` | the source, a one-command `build.sh` and `CREDITS` are committed, for agents to read. `TREATMENT.md`, `PRODUCTION_LOG.md`, fonts, audio, textures and models stay local (gitignored); `CREDITS` names every asset so it can be found again |
+| `demo/` | the source, a one-command `build.sh` and `CREDITS` are committed, for agents to read. `TREATMENT.md`, `PRODUCTION_LOG.md`, fonts, audio, textures and models stay local (gitignored); `CREDITS` names every asset so it can be found again, and `build.sh` fetches the fonts first (for example `demo/tools/fonts.sh`: the same files, from URLs pinned to a commit or a version), so a fresh clone builds |
 | `demo/stills/` | stills the docs link (`styleframe.jpg` is the gallery card) |
 | `<slug>.mp4`, `<slug>.srt`, `poster.jpg` | the 1080p film, its subtitles when it is spoken, its poster |
 
