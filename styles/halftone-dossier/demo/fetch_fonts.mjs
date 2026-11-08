@@ -8,4 +8,10 @@ for(const f of fams){
   for(const u of urls){const name=`f${n++}.woff2`;const b=Buffer.from(await (await fetch(u)).arrayBuffer());fs.writeFileSync('fonts/'+name,b);css=css.split(u).join('fonts/'+name);}
   out+=css;console.log(f,urls.length);
 }
-fs.writeFileSync('fonts.css',out);
+// fonts.css is in git. Keep it when Google Fonts still slices the families the same way and each slice still covers at
+// least the characters it did (a unicode-range only grew), so a build on a fresh clone leaves git clean.
+const ranges = css => [...css.matchAll(/unicode-range:([^;]*);/g)].map(m => m[1].split(',').map(r => r.trim().slice(2).split('-').map(h => parseInt(h, 16))).map(([a, b = a]) => [a, b]));
+const covers = (nw, od) => od.every(([a, b]) => { for (let c = a; c <= b; c++) if (!nw.some(([x, y]) => c >= x && c <= y)) return false; return true; });
+const old = fs.existsSync('fonts.css') ? fs.readFileSync('fonts.css', 'utf8') : '', shape = s => s.replace(/unicode-range:[^;]*;/g, '');
+const ro = ranges(old), rn = ranges(out);
+if (shape(old) !== shape(out) || !ro.every((r, i) => covers(rn[i], r))) { fs.writeFileSync('fonts.css', out); console.log('fonts.css rewritten: Google Fonts slices these families differently now (commit it with the demo)'); }

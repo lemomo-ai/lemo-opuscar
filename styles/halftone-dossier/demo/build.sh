@@ -24,7 +24,7 @@ STILLS="$HERE/stills"; [ "$DEST" = "$FILM" ] || STILLS="$DEST"
 mkdir -p "$DEST" "$STILLS" "$HERE/out"
 cd "$LIB"
 
-# 0. fonts (gitignored .woff2 slices from Google Fonts; fetch_fonts.mjs also rewrites fonts.css with the same names)
+# 0. fonts (gitignored .woff2 slices from Google Fonts; fonts.css in git names them; fetch_fonts.mjs rewrites it only when the slicing changes)
 [ -f "$HERE/fonts/f0.woff2" ] || (cd "$HERE" && mkdir -p fonts && node fetch_fonts.mjs)
 
 # 1. score + sound effects + master, synthesised and seeded -> music.wav (120 BPM, one bar = 2 s)

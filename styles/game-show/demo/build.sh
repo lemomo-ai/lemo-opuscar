@@ -21,7 +21,7 @@ mkdir -p "$DEST"; DEST=$(cd "$DEST" && pwd)                 # absolute: the step
 mkdir -p "$DEST" "$HERE/out"
 cd "$HERE"
 
-# 0. fonts (gitignored .woff2 slices from Google Fonts; fetch_fonts.mjs also rewrites fonts.css with the same names)
+# 0. fonts (gitignored .woff2 slices from Google Fonts; fonts.css in git names them; fetch_fonts.mjs rewrites it only when the slicing changes)
 [ -f "$HERE/fonts/f0.woff2" ] || (cd "$HERE" && mkdir -p fonts && node fetch_fonts.mjs)
 
 # 1. the page: main.js from main_v1.js (shared helpers, characters) + main_b.js (scenes), then index.html

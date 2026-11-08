@@ -1,4 +1,5 @@
-// Fetch the demo's Google Fonts (OFL, see CREDITS) as woff2 slices into fonts/ and rewrite fonts.css to point at them.
+// Fetch the demo's Google Fonts (OFL, see CREDITS) as woff2 slices into fonts/; fonts.css (in git) points at them
+// and is rewritten only when the families or their slicing change.
 // build.sh runs it when fonts/ is empty (the .woff2 files are gitignored). Run from demo/: node fetch_fonts.mjs
 // Names: f0… for the frame template's five families (same order as halftone-dossier), fr0… for Fredoka.
 import fs from 'fs';
@@ -18,4 +19,10 @@ for(const [f,pre] of fams){
   }
   out+=css;console.log(f,urls.length);
 }
-fs.writeFileSync('fonts.css',out);
+// fonts.css is in git. Keep it when Google Fonts still slices the families the same way and each slice still covers at
+// least the characters it did (a unicode-range only grew), so a build on a fresh clone leaves git clean.
+const ranges = css => [...css.matchAll(/unicode-range:([^;]*);/g)].map(m => m[1].split(',').map(r => r.trim().slice(2).split('-').map(h => parseInt(h, 16))).map(([a, b = a]) => [a, b]));
+const covers = (nw, od) => od.every(([a, b]) => { for (let c = a; c <= b; c++) if (!nw.some(([x, y]) => c >= x && c <= y)) return false; return true; });
+const old = fs.existsSync('fonts.css') ? fs.readFileSync('fonts.css', 'utf8') : '', shape = s => s.replace(/unicode-range:[^;]*;/g, '');
+const ro = ranges(old), rn = ranges(out);
+if (shape(old) !== shape(out) || !ro.every((r, i) => covers(rn[i], r))) { fs.writeFileSync('fonts.css', out); console.log('fonts.css rewritten: Google Fonts slices these families differently now (commit it with the demo)'); }
