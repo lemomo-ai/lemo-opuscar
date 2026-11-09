@@ -124,7 +124,7 @@ Render 6–9 key shots with the real drawing code, tiled into one sheet (`core/r
 **Deliver**, in the project folder (the complete list):
 
 - `<name>.mp4` (24 fps unless `STYLE.md` sets another rate, about −14 LUFS) and `poster.jpg`;
-- `<name>.srt`, when the film has narration, dialogue or subtitles;
+- `subtitles_<lang>.srt`, when the film has narration, dialogue or subtitles (not `<name>.srt`: players auto-load it on top of the burned-in subtitles);
 - `TREATMENT.md`;
 - `CREDITS`: every third-party asset in the film (sample libraries, music, fonts, images, the voice engine) with its source and licence (TECHNIQUE.md §11);
 - the source, with a one-command `build.sh` (TECHNIQUE.md §2).
