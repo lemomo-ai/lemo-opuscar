@@ -1,0 +1,24 @@
+The Butterfly (蝴蝶) — Crayon World 3D (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+IMAGES, FOOTAGE, MODELS
+- None. The world is built from three.js primitives in film.js and redrawn in crayon by code (engine/npr.js, engine/crayon.js,
+  engine/gl.js). No photographs, no scans, no AI-generated images, no 3D model files.
+
+LIBRARIES
+- three.js (MIT), from the library's node_modules.
+- numpy, scipy, soundfile (BSD), from the library's .venv.
+
+FONTS (SIL Open Font License 1.1; subset by tools/fonts.py from Google Fonts, not in git; licence texts in fonts/)
+- Long Cang (© The Long Cang Project Authors, github.com/googlefonts/longcang): the Chinese line. fonts/OFL-longcang.txt
+- Patrick Hand (© Patrick Wagesreiter): the English line. fonts/OFL-patrickhand.txt
+
+SOUND
+- Sampled instruments through the library's core/audio/sampler.py, all CC0:
+  - Nylon guitar: FreePats project (freepats.zenvoid.org), Spanish Classical Guitar.
+  - Clarinet: VS Chamber Orchestra: Community Edition (Versilian Studios).
+  - Alto recorder, glockenspiel: Versilian Community Sample Library (Versilian Studios).
+- Music box: synthesised (core/audio/pluck.py). Water and birds: synthesised from noise and sine chirps (core/audio/sfx.py).
+- Score: original, tools/score.py.
+
+PLACE
+The village, the garden and the people are fictional.
