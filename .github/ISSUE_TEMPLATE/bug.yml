@@ -1,0 +1,47 @@
+name: Bug report · 报告问题
+description: Something in the library, the skill or a tool fails or behaves wrongly. · 库、skill 或工具出错、表现不对。
+labels: [bug]
+body:
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Before you post · 发帖前
+      options:
+        - label: This is about the code or docs in this repository, not a request for someone to make a video, and not a song, lyrics or a link. · 这是关于本仓库代码或文档的问题，不是请人代做视频，也不是歌曲、歌词或链接。
+          required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened · 发生了什么
+      description: What you ran or asked for, what you expected, what you got. · 你运行了什么或提了什么要求、预期结果、实际结果。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce · 复现步骤
+      placeholder: |
+        1. sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Error output · 报错输出
+      description: Paste the error text or the end of the log. · 贴上报错文字或日志末尾。
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: System and versions · 系统和版本
+      placeholder: macOS 15 / Windows 11 / Ubuntu 24.04; node 22; ffmpeg 7.1; Claude Code / Codex
+    validations:
+      required: true
+  - type: input
+    id: style
+    attributes:
+      label: Style (if any) · 涉及的风格（如有）
+      placeholder: impasto / 油画厚涂

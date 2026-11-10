@@ -1,0 +1,25 @@
+name: Idea or question · 建议或提问
+description: A suggestion for the library, a style, the docs, or a question about how to use them. · 对库、风格、文档的建议，或使用上的问题。
+labels: [enhancement]
+body:
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Before you post · 发帖前
+      options:
+        - label: This is about this repository, not a request for someone to make a video, and not a song, lyrics or a link. · 这是关于本仓库的内容，不是请人代做视频，也不是歌曲、歌词或链接。
+          required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea or question · 你的建议或问题
+      description: What you want, and why it would help. · 你想要什么，为什么有用。
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: What you tried · 你已经试过什么
+      description: Which style, which agent, what you looked at in the docs. · 用了哪个风格、哪个 agent、看过文档哪部分。
+    validations:
+      required: true
