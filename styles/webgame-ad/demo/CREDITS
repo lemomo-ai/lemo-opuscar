@@ -1,0 +1,31 @@
+What Your Tap Costs (买你这一下) — Web Game Ad (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+IMAGES, FOOTAGE, MODELS
+- None. Every frame is drawn in code on a canvas (engine/fx.js, engine/hero.js, engine/props.js, film.js): the fire, rays,
+  gold type, characters, phone, panels, charts and the masked company names. No photographs, no screenshots of real ads or
+  games, no logos, no AI-generated images, no 3D models.
+
+FONTS (SIL Open Font License 1.1; subset by tools/fonts.py from Google Fonts; licence texts in fonts/)
+- Ma Shan Zheng (The Ma Shan Zheng Project Authors) — the ad's brush copy. fonts/OFL-mashanzheng.txt
+- Noto Serif SC 700 / 900 (Google, Adobe) — claims and numbers. fonts/OFL-notoserifsc.txt
+- Noto Sans SC 500 / 700 / 900 (Google, Adobe) — labels, sources, subtitles. fonts/OFL-notosanssc.txt
+
+VOICE
+- Edge TTS (Microsoft), zh-CN-YunxiNeural, +40 %, through the library's core/tts/tts_zh.py; checked with
+  core/tts/asr_check.py (faster-whisper, MIT; Whisper models, MIT).
+
+MUSIC AND SOUND (sampled through core/audio/sampler.py; downloaded with sh tools/fetch.sh instruments <pack>)
+- VS Chamber Orchestra: Community Edition (Versilian Studios) — CC0: trumpet, horn, trombone, tuba (sustained and
+  staccato), violin section (sustained and tremolo), solo contrabass, timpani, gong, bass drum.
+- Versilian Community Sample Library (Versilian Studios) — CC0: glockenspiel, triangle, đàn tranh (standing in for the guzheng), clash
+  cymbals, frame drum, woodblock, hi-hat, claps, gong, concert harp, xylophone, suspended cymbal, marimba, bass drum.
+- Karoryfer Samples / sfzinstruments — CC0: erhu.
+- FreePats project (freepats.zenvoid.org) — CC0: finger bass.
+- Drums: "MuldjordKit" by Lars Muldjord (drumgizmo.org), FreePats version — CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/): kick, snare, crash.
+- Whooshes, roar and click: synthesised by core/audio/sfx.py.
+
+FACTS
+- See FACTS.md: every figure with its source URL and quoted wording; company disclosures and third-party estimates
+  (DataEye, 伽马数据, 华安证券, 运营研究社) are marked as such, on screen and there. Company names are partly masked.
+- The slogan 「是兄弟，就来砍我」 is used as the genre's common meme; no spokesperson's face, name or voice appears.
