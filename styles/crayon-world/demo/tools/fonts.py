@@ -4,6 +4,8 @@ import sys, os, re, ssl, urllib.request, urllib.parse
 D = sys.argv[1]
 film = open(os.path.join(D, 'film.js'), encoding='utf-8').read()
 zh, en = re.search(r"const LINE = '([^']*)', LINE_EN = '([^']*)'", film).groups()   # the only words on screen
+cr = re.search(r"const CREDIT = '([^']*)'", film)
+if cr: en += cr.group(1)   # the sign-off is printed in the English face (includes U+00D7)
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
 try:
     import certifi

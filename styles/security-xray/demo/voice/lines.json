@@ -1,0 +1,124 @@
+[
+ {
+  "id": "v01a",
+  "text": "I never see the passengers.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v01b",
+  "text": "Only what they pack.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v02a",
+  "text": "Blue is metal.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v02b",
+  "text": "Orange is organic.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v03",
+  "text": "Black: nothing gets through.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v04a",
+  "text": "A power bank.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v04b",
+  "text": "Seventy-four watt-hours.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v05",
+  "text": "Under one hundred, it stays in the bag.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v06a",
+  "text": "Five hundred milliliters.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v07a",
+  "text": "The bottle stays.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v07b",
+  "text": "The bag flies.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v08a",
+  "text": "Three a.m.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v08b",
+  "text": "Six of something.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v09a",
+  "text": "Live crabs.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v09b",
+  "text": "Tied up, and one still kicking.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v10",
+  "text": "Live seafood can't fly in the cabin.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v11a",
+  "text": "Five fifty-two.",
+  "voice": "af_heart",
+  "speed": 0.86,
+  "asr": "552"
+ },
+ {
+  "id": "v11b",
+  "text": "Someone's breakfast.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ {
+  "id": "v12",
+  "text": "Over twelve hundred bags tonight.",
+  "voice": "af_heart",
+  "speed": 0.86,
+  "asr": "Over 1,200 bags tonight."
+ },
+ {
+  "id": "v13",
+  "text": "I know every one of them inside out.",
+  "voice": "af_heart",
+  "speed": 0.74
+ }
+]

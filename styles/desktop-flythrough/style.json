@@ -1,11 +1,16 @@
 {
  "slug": "desktop-flythrough",
- "num": "77",
- "en": "Desktop Flythrough",
- "cn": "桌面穿梭",
- "category_en": "Materials & 3D",
- "category_cn": "材质与 3D",
+ "num": "70",
+ "en": "Tabletop App Flythrough",
+ "cn": "桌面卡片穿梭",
+ "aka": [
+  "Desktop Flythrough",
+  "桌面穿梭"
+ ],
+ "category_en": "Screens & Interfaces",
+ "category_cn": "屏幕界面",
  "film": "Before the Ding",
+ "film_cn": "叮之前",
  "line": "A cat photo hops across app cards on a sunlit desk, from one phone to a friend's.",
  "line_cn": "一张猫照片跳过桌上的应用卡片，从一台手机飞到朋友手机里，一镜跟到底。",
  "uses": [

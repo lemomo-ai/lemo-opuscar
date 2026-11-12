@@ -1,0 +1,4 @@
+# local, rebuilt by build.sh: NASADEM tiles, the cropped DEM, the route, font sources, and the plot they make (4.7 MB)
+data/
+plot.json
+out/

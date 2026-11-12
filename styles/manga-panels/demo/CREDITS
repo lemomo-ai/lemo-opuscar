@@ -1,0 +1,33 @@
+Manga Panels (黑白漫画分格) — "KOMA ONE: Thirty Frames a Second" (library demo)
+Every asset in the film, with its source and licence.
+
+BRAND, PRODUCT, CHARACTER
+- KOMA, the KOMA ONE pocket camera and the street photographer are fictional, made for this demo.
+  "KOMA" (コマ) is the Japanese word for a manga panel and a film frame.
+- The camera is an original design in the general design language of rangefinder-style retro cameras
+  (silver top and bottom plates, leatherette, short prime lens, viewfinder window, knurled dials).
+  It copies no real brand or model and carries no logo, badge, lettering or numbers.
+
+IMAGES (Codex image generation · Codex 生图)
+- These images belong to this demo only. A film in this style generates its own images for its own topic;
+  the demo's character, camera and city are not for reuse, recolouring or editing into another film.
+- All 15 drawings were generated with Codex image generation (OpenAI image generation through the Codex CLI,
+  core/image/gen_image.py) from the prompts in prompts/, each with the style suffix in
+  tools/style_suffix.txt. Re-printed as screentone by tools/prep.py. No photo, existing artwork, character or
+  logo was used as a reference; the only references are images generated for this film.
+- The photographer: character reference char_shoot (no ref), then every pose with --ref to it (tools/gen_all.sh).
+- The camera: product reference prod_hero; the other ten images that show the camera are edits in edit mode
+  (the first drawing of the same pose + prod_hero, "replace only the camera"; tools/gen_camswap.sh,
+  prompts/prod_hero_redesign.txt, prompts/_camswap*.txt).
+- Backgrounds and inserts without the camera: bg_city, pigeons, feet, crowd (prompts/*.txt).
+
+FONTS (SIL Open Font License 1.1, Google Fonts, subset to the glyphs used by tools/fonts.sh)
+- Noto Sans SC 900 — Google (https://fonts.google.com/noto/specimen/Noto+Sans+SC)
+- Noto Serif SC 900 — Google (https://fonts.google.com/noto/specimen/Noto+Serif+SC)
+- Dela Gothic One — artakana (https://fonts.google.com/specimen/Dela+Gothic+One)
+- Barlow Condensed 600, 800 Italic — Jeremy Tribby (https://fonts.google.com/specimen/Barlow+Condensed)
+
+MUSIC AND SOUND
+- Score: synthesized with numpy in mix.py (power chords, bass, drums, square-wave lead, the shutter as percussion).
+- Foley: synthesized with numpy (mix.py, core/audio/sfx.py helpers): ink brush, paper, shutter, iris, impacts,
+  focus beeps, heartbeat, wings, flip book.

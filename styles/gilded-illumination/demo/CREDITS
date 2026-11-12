@@ -1,0 +1,30 @@
+Gilded Illumination demo · 《借来的光》 Borrowed Light · third-party assets and sources
+
+## Pictures
+- All drawn in code (Canvas 2D: lib.js, world.js, film.js): the leaf texture, pigments, landscape, figures, border and plaque.
+  No photographs, footage, 3D models, downloaded images or AI-generated images (no Codex image generation was used).
+
+## Voice
+- Kokoro-82M (hexgrad), voice bf_emma, speed 0.8, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: core/tts/asr_check.py (faster-whisper, MIT; OpenAI Whisper weights, MIT).
+  Script: demo/voice/lines.json. All narration and subtitle lines are original.
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
+  Instruments: violin, violas, harp, recorder, soft organ, organ pedal, frame drum, tambourine, suspended cymbal,
+  timpani, tubular bells, glockenspiel, hand chimes (core/audio/sampler.py; the exact list of each build is written to
+  demo/out/instruments.txt). Composed for this film in demo/audio.py.
+- Foley (wind, steps on stone, the lantern's ring, the flame, brush, burnishing hiss) is procedural (core/audio/sfx.py and demo/audio.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- Grenze Gotisch: Omnibus-Type, https://github.com/google/fonts/tree/main/ofl/grenzegotisch (GrenzeGotisch[wght].ttf, saved as GrenzeGotisch.ttf)
+- Uncial Antiqua: Astigmatic, https://github.com/google/fonts/tree/main/ofl/uncialantiqua
+- IM Fell English roman and italic: Igino Marini, https://github.com/google/fonts/tree/main/ofl/imfellenglish
+  (IMFeENrm28P.ttf, IMFeENit28P.ttf, saved as IMFellEnglish.ttf, IMFellEnglish-Italic.ttf)
+- Noto Serif SC 500 / 700: Google / Adobe, https://github.com/google/fonts/tree/main/ofl/notoserifsc
+  Static instances subset to the Chinese on screen (fonts/make_fonts.py) from the variable font NotoSerifSC[wght].ttf,
+  downloaded by build.sh into demo/fonts/src/.
+
+## Facts
+- None. The film is a fable; it states no facts or figures. The painted world is invented and copies no specific
+  painting, figure, layout or border.

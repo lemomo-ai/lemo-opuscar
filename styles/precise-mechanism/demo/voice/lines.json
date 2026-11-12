@@ -1,0 +1,13 @@
+[
+ {"id": "v01", "text": "This watch has no battery.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v02", "text": "Yet it drifts only a few seconds a day.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v03", "text": "Open it up, and three systems share the work.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v04", "text": "A wound spring stores the power.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v05", "text": "A train of gears passes it on, faster at every step.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v06", "text": "In this teaching movement, four thousand eight hundred times faster.", "voice": "bm_george", "speed": 0.88, "asr": "In this teaching movement, 4,800 times faster."},
+ {"id": "v07", "text": "Left alone, the spring would empty in a single rush.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v08", "text": "So the escapement lets it out, half a tooth at a time.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v09", "text": "The balance swings back and forth, five beats every second.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v10", "text": "Each beat is one tick.", "voice": "bm_george", "speed": 0.88},
+ {"id": "v11", "text": "Spring, gears, balance. That is how it keeps time.", "voice": "bm_george", "speed": 0.88}
+]

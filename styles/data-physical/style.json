@@ -1,11 +1,12 @@
 {
  "slug": "data-physical",
- "num": "59",
+ "num": "96",
  "en": "Data Physicalization",
  "cn": "数据实物化",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "category_en": "Data & Maps",
+ "category_cn": "数据地图",
  "film": "Two Spirals",
+ "film_cn": "两条螺旋",
  "line": "Twelve years of wind and solar stacked as real plates, spiralling round a walnut dial until solar overtakes.",
  "line_cn": "十二年风电和太阳能装机叠成实物，绕表盘升成两条螺旋，2021 年太阳能反超。",
  "uses": [

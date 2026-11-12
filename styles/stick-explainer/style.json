@@ -1,0 +1,19 @@
+{
+ "slug": "stick-explainer",
+ "num": "18",
+ "en": "Stick-figure Explainer",
+ "cn": "火柴人讲解",
+ "category_en": "Sketch & Board",
+ "category_cn": "速写板书",
+ "film": "Six Hands Away",
+ "film_cn": "隔着几只手",
+ "line": "A chain of hands from you to a stranger: tested with letters in 1967, explained by rings that outgrow the Earth, closed around the globe.",
+ "line_cn": "从你到一个陌生人，一串手拉起来：1967 年用信验证，一圈圈的人算到超过地球，最后围着地球合上。",
+ "uses": [
+  "Science explainers",
+  "Networks & social ideas",
+  "Data comparisons"
+ ],
+ "frame_sec": 9.5,
+ "dur": 52.0
+}

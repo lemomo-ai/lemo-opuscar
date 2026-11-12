@@ -1,0 +1,65 @@
+[
+ {
+  "id": "v01",
+  "text": "How many people stand between you and any stranger on Earth?",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v02",
+  "text": "Just six handshakes, they say.",
+  "voice": "af_heart",
+  "speed": 0.8
+ },
+ {
+  "id": "v03",
+  "text": "In nineteen sixty-seven, Stanley Milgram tested it.",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "In 1967, Stanley Milgram tested it."
+ },
+ {
+  "id": "v04",
+  "text": "Letters could only pass between people who knew each other.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v05",
+  "text": "The ones that arrived went through about five people.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v06",
+  "text": "Why so few? Everyone knows a lot of people.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v07",
+  "text": "Say you know a hundred. Two steps out, that's ten thousand.",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "Say you know 100. Two steps out, that's 10,000."
+ },
+ {
+  "id": "v08",
+  "text": "Five steps out: more people than live on Earth.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v09",
+  "text": "Online, it shrank: four point seven four, then three point five seven.",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "Online, it shrank: 4.74, then 3.57."
+ },
+ {
+  "id": "v10",
+  "text": "And the stranger? Probably a friend of a friend of a friend.",
+  "voice": "af_heart",
+  "speed": 0.76
+ }
+]

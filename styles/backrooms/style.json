@@ -1,11 +1,15 @@
 {
  "slug": "backrooms",
- "num": "36",
+ "num": "64",
  "en": "Liminal Found Footage",
- "cn": "后室 / 新怪谈",
- "category_en": "Cinema & Eras",
- "category_cn": "电影与时代",
+ "cn": "后室录像带",
+ "aka": [
+  "后室 / 新怪谈"
+ ],
+ "category_en": "Film & Tape",
+ "category_cn": "胶片录像",
  "film": "Night Shift Orientation",
+ "film_cn": "夜班入职培训",
  "line": "A new night-shift hire films their first night in an endless yellow office, following the rules on the wall.",
  "line_cn": "新夜班员工拍下入职第一晚：无尽的黄色办公空间，和墙上的员工守则。",
  "uses": [
@@ -13,6 +17,6 @@
   "Mystery & ARG",
   "Game teasers"
  ],
- "frame_sec": 35.82,
+ "frame_sec": 8.96,
  "dur": 59.7
 }

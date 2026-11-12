@@ -5,7 +5,7 @@ An unofficial film. LEMO AI NEWS is LemoLab's own channel brand; no company in t
 
 News sources (per fact, with quoted wording: FACTS.md)
 - Google: Gemini API changelog and latest-model page (ai.google.dev); blog.google "Gemini 4 Argon" (30 Sep 2026)
-- Korea Exchange KOSPI daily closes, retrieved via Naver Finance (data/kospi_daily.csv)
+- Korea Exchange KOSPI daily closes, retrieved via Naver Finance (the closes used are written into main.js, KDATA)
 - The Korea Herald (15 Oct 2026); The Korea Times (16 Oct 2026); Bloomberg (15 Oct 2026, headline and summary)
 - Euronews, Luca Bertuzzi (14 Oct 2026) — only for the requests sent to OpenAI and Anthropic
 - Meta AI research blog "Muse Spark Open" (15 Oct 2026)
@@ -13,7 +13,8 @@ News sources (per fact, with quoted wording: FACTS.md)
 
 Data
 - KOSPI daily closing prices 15 Sep – 15 Oct 2026: Korea Exchange index data as served by Naver Finance's chart API
-  (api.stock.naver.com/chart/domestic/index/KOSPI); raw responses kept in data/. Facts, not a creative work.
+  (api.stock.naver.com/chart/domestic/index/KOSPI); the 19 closes the film uses are written into main.js (KDATA).
+  Facts, not a creative work.
 
 Map data
 - Natural Earth 1:50m Admin 0 countries — public domain (naturalearthdata.com), via world-atlas 2.0.2 (ISC licence,
@@ -35,7 +36,7 @@ Fonts (SIL Open Font License 1.1, subsets from Google Fonts)
 
 Images
 - Two illustrative background plates (data-centre aisle, silicon wafer): AI-generated with the Codex CLI image tool
-  (image_gen) from the prompts in tools/gen_plates.sh; committed as assets/plates/plate_datacenter.jpg and
+  (image_gen) from the prompts in prompts/ (tools/gen_plates.sh runs them); committed as assets/plates/plate_datacenter.jpg and
   assets/plates/plate_wafer.jpg. They are illustrations, not news pictures: they show no real place, event,
   person, text or logo, and carry an "ILLUSTRATION / 示意 · AI 生成画面" tag whenever they are on screen.
 - Charts, maps, documents, the quote card, the spec card and the LEMO plate are drawn in code. No third-party logos;

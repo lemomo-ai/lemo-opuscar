@@ -1,0 +1,29 @@
+Half a Beat (慢半拍) — Silhouette Rhythm (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+No AI-generated images, no photographs, no stock footage. Every silhouette, the sky, the water and every
+ripple and droplet are drawn in code (film.js, shapes.js, sky.js).
+
+FONTS (SIL Open Font License 1.1; not in git: build.sh downloads them from github.com/google/fonts and
+make_fonts.py subsets them; licence texts in fonts/)
+- Anton — The Anton Project Authors (https://github.com/googlefonts/AntonFont), ofl/anton/Anton-Regular.ttf
+  — fonts/OFL-Anton.txt
+- Barlow Condensed Medium — The Barlow Project Authors (https://github.com/jpt/barlow),
+  ofl/barlowcondensed/BarlowCondensed-Medium.ttf — fonts/OFL-BarlowCondensed.txt
+- Noto Sans SC (variable, instanced at 900 and 500) — Google / Adobe, ofl/notosanssc/NotoSansSC[wght].ttf
+  — fonts/OFL-NotoSansSC.txt
+
+SOUND
+- Score and foley are made in code (audio.py). The foley (splashes, wingbeats, drips, distant calls, a
+  record scratch, a slide whistle, wind and water) is synthesised.
+- Drums: "MuldjordKit" by Lars Muldjord (drumgizmo.org), FreePats version, licensed under CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/)
+- Samples (CC0): FreePats project (freepats.zenvoid.org) — kalimba; Karoryfer Samples / sfzinstruments — bass;
+  VS Chamber Orchestra: Community Edition (Versilian Studios) — violins, cellos, log drum, bass drum;
+  Versilian Community Sample Library (Versilian Studios) — marimba, vibraphone, glockenspiel, hand chimes,
+  harp, woodblock, claps, shaker, conga, cajon.
+  Fetch with: sh tools/fetch.sh instruments vcsl; vsco2ce; freepats; karoryfer.
+
+BEHAVIOUR
+- No numbers or claims appear on screen. What the flamingos do follows real birds: group marching and
+  head-flagging displays, a running start across the water to take off, flight with neck and legs stretched
+  out. The young bird's shorter, straighter bill and downy outline are a character design, not a field guide.

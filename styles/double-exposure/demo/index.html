@@ -1,0 +1,961 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>山海 · Mountains and Seas</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script type="module">
+// 《山海》 Mountains and Seas, 50.5 s. Double exposure: animal silhouettes (PhyloPic CC0 / PD) used as windows onto CC0 photographs.
+// stag / dusk ridge -> (through the window) wolf / misty forest -> (whip) eagle / snow peaks -> (dive, screen dissolve)
+// salmon / river town underwater -> (the two whole silhouettes superimposed, screen blend) humpback / harbour -> (breach) whale over the night sea -> register on the shore.
+// WebGL2: each shot is one full-screen shader pass into a float FBO, then a composite pass. Everything is a pure function of t.
+import { clamp, lerp, seg, ss, eio, eo, ei, mulberry } from '/core/lib.js';
+
+const W = innerWidth || 1920, H = innerHeight || 1080, SC = W / 1920;
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const gl = cv.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false, alpha: false });
+const hasFloat = !!gl.getExtension('EXT_color_buffer_float');
+gl.getExtension('OES_texture_float_linear');
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const load = src => new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = () => j(new Error('load ' + src)); i.src = src; });
+const Q = new URLSearchParams(location.search);
+
+// ---------------------------------------------------------------- GL plumbing
+function shader(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) + '\n' + src.split('\n').map((l, i) => (i + 1) + ': ' + l).join('\n')); return s; }
+function program(fs) {
+  const p = gl.createProgram();
+  gl.attachShader(p, shader(gl.VERTEX_SHADER, `#version 300 es
+in vec2 a; void main(){ gl_Position = vec4(a, 0., 1.); }`));
+  gl.attachShader(p, shader(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const info = gl.getActiveUniform(p, i); u[info.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(p, info.name); }
+  return { p, u };
+}
+const vb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+function tex(src, opt = {}) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  if (opt.nomip) { gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); }
+  else { gl.generateMipmap(gl.TEXTURE_2D); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, opt.repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, opt.repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE);
+  return t;
+}
+function fbo() {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  if (hasFloat) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, W, H, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+  return { f, t };
+}
+
+// ---------------------------------------------------------------- shared GLSL
+const COMMON = `#version 300 es
+precision highp float;
+out vec4 o;
+uniform vec2 uRes; uniform float uT;
+uniform vec4 uCam;          // world centre x,y, zoom, roll
+float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }
+float vn(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),u.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x), u.y); }
+float fbm(vec2 p){ float a=0., m=.5; for(int i=0;i<5;i++){ a+=m*vn(p); p=p*2.03+vec2(1.7,9.2); m*=.5; } return a; }
+float fbm3(vec2 p){ float a=0., m=.5; for(int i=0;i<3;i++){ a+=m*vn(p); p=p*2.03+vec2(1.7,9.2); m*=.5; } return a; }
+mat2 rot(float a){ float c=cos(a), s=sin(a); return mat2(c,-s,s,c); }
+vec2 P(){ vec2 p = gl_FragCoord.xy / uRes * vec2(1920.,1080.); p.y = 1080.-p.y; return p; }   // design pixels, y down
+vec2 Wc(vec2 p, float d, vec4 cam){ float z = 1. + (cam.z-1.)*d; vec2 c = vec2(960.,540.) + (cam.xy-vec2(960.,540.))*d;
+  return c + rot(cam.w)*(p-vec2(960.,540.))/z; }
+vec2 W(vec2 p, float d){ return Wc(p, d, uCam); }
+float zoomAt(float d){ return 1. + (uCam.z-1.)*d; }
+vec2 Sc(vec2 w, float d){ float z = 1. + (uCam.z-1.)*d; vec2 c = vec2(960.,540.) + (uCam.xy-vec2(960.,540.))*d;
+  return vec2(960.,540.) + rot(-uCam.w)*((w-c)*z); }
+// silhouette mask: texture R = sharp alpha, G = blurred alpha, B = signed distance (0.5 = edge). xf = (x, y, height, angle), asp = tex w/h
+vec2 silUV(vec2 w, vec4 xf, float asp){ vec2 l = rot(-xf.w)*(w-xf.xy)/xf.z; return vec2(l.x/asp + .5, l.y + .5); }
+vec2 sampleMask(sampler2D m, vec2 uv){ vec2 s = textureLod(m, clamp(uv, 0., 1.), 0.).rg; float in_ = step(0., uv.x)*step(0., uv.y)*step(uv.x, 1.)*step(uv.y, 1.); return s*in_; }
+vec3 sampleMask3(sampler2D m, vec2 uv){ vec3 s = textureLod(m, clamp(uv, 0., 1.), 0.).rgb; float in_ = step(0., uv.x)*step(0., uv.y)*step(uv.x, 1.)*step(uv.y, 1.); return mix(vec3(0.,0.,1.), s, in_); }
+float photo(sampler2D t, vec2 w, vec4 r){ vec2 uv = (w - r.xy)/r.zw + .5; return texture(t, clamp(uv, 0., 1.)).r; }
+vec3 photoC(sampler2D t, vec2 w, vec4 r){ vec2 uv = (w - r.xy)/r.zw + .5; return texture(t, clamp(uv, 0., 1.)).rgb; }
+// a whale swims with its body: a vertical wave travelling head -> tail, growing toward the flukes, which pitch with it
+vec2 whaleWarp(vec2 uw, float asp, float tail, float ph, float amp){
+  vec2 q = (uw - vec2(.74, .5))*vec2(abs(asp),1.);
+  vec2 r = (rot(tail*smoothstep(.0, .6, q.x)*1.2)*q)/vec2(abs(asp),1.) + vec2(.74,.5);
+  r.y += amp*pow(smoothstep(.18, 1., r.x), 1.6)*sin(ph - 4.4*r.x);
+  return r;
+}
+uniform float uWPh, uWA;
+const vec3 WARM = vec3(1., .63, .32);
+uniform vec4 uL[40]; uniform int uLN;  // warm lights: x, y (in layer world), radius, intensity
+vec3 lights(vec2 wl, float zl){
+  vec3 c = vec3(0.);
+  for(int i=0;i<40;i++){ if(i>=uLN) break; vec4 L = uL[i]; if(L.w<=0.) continue;
+    vec2 d = wl - L.xy; float r2 = dot(d,d);
+    float core = exp(-r2/(L.z*L.z*.035)); float glow = exp(-r2/(L.z*L.z)) ;
+    c += L.w*(WARM*glow*.55 + vec3(1.,.86,.62)*core*1.4); }
+  return c;
+}
+`;
+
+// ---------------------------------------------------------------- shot 1: stag on a dusk ridge (develop, then push through the window)
+const FS0 = COMMON + `
+uniform sampler2D uMask, uForest;
+uniform vec4 uSil; uniform float uAsp, uDev, uHead, uMixB;
+uniform vec4 uCamB; uniform vec2 uRef, uAnchor;
+void main(){
+  vec2 p = P();
+  vec2 w = W(p, 1.), wb = W(p, .2), wh = W(p, .5), wm = W(p, .8);
+  // high-key dusk sky, a low white sun behind the far hills
+  float v = wb.y/1080.;
+  float cl = fbm(wb/vec2(760.,150.) + vec2(uT*.025, 0.)), cl2 = fbm(wb/vec2(320.,70.) + vec2(uT*.05, 4.));
+  float sky = mix(.93, .62, smoothstep(.8, .0, v)) + (cl-.5)*.1 - smoothstep(.55,.8,cl2)*.07*smoothstep(.75,.25,v);
+  vec2 sp = vec2(430., 742. + uT*7.); float ds = length(wb - sp);
+  sky += .12*exp(-ds/420.) + .08*exp(-ds/110.);
+  sky = mix(sky, 1.02, smoothstep(40., 37., ds));
+  vec3 col = vec3(sky);
+  // two ranges of far hills, mist between
+  float h1 = 790. + (fbm3(vec2(wh.x/460., 1.))-.5)*190.;
+  col = mix(col, vec3(.72), smoothstep(h1, h1+3., wh.y)*.8);
+  col = mix(col, vec3(.86), smoothstep(.48,.78, fbm(wh/vec2(380.,60.) + vec2(uT*.06, 2.)))*smoothstep(h1-60., h1+80., wh.y)*.6);
+  float h2 = 880. + (fbm3(vec2(wm.x/300., 7.))-.5)*120.;
+  col = mix(col, vec3(.5), smoothstep(h2, h2+3., wm.y)*.85);
+  col = mix(col, vec3(.8), smoothstep(.5,.8, fbm(wm/vec2(300.,50.) + vec2(uT*.1, 9.)))*smoothstep(h2-40., h2+60., wm.y)*.55);
+  // the stag: head lifts about the neck
+  vec2 uv = silUV(w, uSil, uAsp);
+  vec2 piv = vec2(.60, .47); float hw = smoothstep(.50,.36,uv.y) * smoothstep(.50,.60,uv.x);
+  vec2 uvh = piv + rot(uHead*hw)*((uv-piv)*vec2(uAsp,1.))/vec2(uAsp,1.);
+  uvh.y += .006*sin(uT*2.1)*smoothstep(.3,.5,uvh.y)*smoothstep(.72,.55,uvh.y);      // breathing
+  uvh.x += .009*sin(uT*1.35)*smoothstep(.6,.95,uvh.y);                             // weight shifts across the legs
+  uvh.x += .004*sin(uT*1.35 + 1.)*smoothstep(.45,.2,uvh.y)*smoothstep(.5,.62,uvh.x); // head bobs with the step
+  vec2 m = sampleMask(uMask, uvh);
+  // inside: the misty forest, in forest-layer coordinates; at the end of the push it is exactly the wolf shot's first frame
+  vec2 fwA = uAnchor + (W(p, .22) - uRef);
+  vec2 fwB = Wc(p, .7, uCamB);
+  vec2 fw = mix(fwA, fwB, uMixB);
+  float f = photo(uForest, fw, vec4(1050., 260., -2300., 1533.));
+  float inside = mix(.05 + .86*pow(f, 1.45), .04 + .72*pow(f, 1.7), uMixB);
+  inside *= mix(.5, 1., smoothstep(.04, .32, uvh.y)*(1.-uMixB) + uMixB);       // antlers print darker
+  inside *= mix(.42 + .58*smoothstep(.3, 1., m.g), 1., uMixB);
+  inside += .05*(fbm(fw/90. + vec2(uT*.25,0.))-.5);
+  float fog = fbm(fw/vec2(330.,90.) + vec2(uT*.22, 0.));
+  inside = mix(inside, .87, smoothstep(.46,.78,fog)*smoothstep(.45,.75, fw.y/1080.)*.6);
+  // develop: the photograph prints into the dark shape from the hooves up
+  float front = mix(1.1, -.15, uDev);
+  float dv = smoothstep(front, front + .2, uvh.y);
+  float ins = mix(.07, inside, dv) + .06*exp(-pow((uvh.y - front - .1)/.05, 2.))*step(.01, uDev)*(1.-uDev);
+  col += vec3(.06)*m.g*(1.-m.r)*(1.-uMixB);                                 // soft halo lifts the shape off the sky
+  col = mix(col, vec3(ins), max(m.r, uMixB));
+  col += lights(fw, 1.) * max(m.r, uMixB) * dv;
+  // the ridge he stands on, with grass moving in the wind
+  float gy = 936. - (w.x - 1150.)*.06 + (fbm3(vec2(w.x/210., 3.))-.5)*34.;
+  float cx = floor(w.x/6.); float hb = hash(vec2(cx, 2.)); float bh = 10. + 34.*hb*hb;
+  float sway = sin(uT*1.6 + cx*.13)*6.*hb;
+  float yy = (gy - w.y)/bh;                                                 // 0 at ground, 1 at tip
+  float blade = step(0., yy)*step(yy, 1.)*step(abs(fract(w.x/6.) - .5 - sway*yy/6.), .22*(1.-yy)+.06);
+  float ground = smoothstep(gy-1., gy+1., w.y);
+  col = mix(col, vec3(.08), max(ground, blade)*(1.-uMixB));
+  o = vec4(col, 1.);
+}`;
+
+// ---------------------------------------------------------------- shot 2: wolf / misty forest
+const FS1 = COMMON + `
+uniform sampler2D uMask, uForest, uPine;
+uniform vec4 uSil; uniform float uAsp, uHowl, uMoonFlare, uHead;
+void main(){
+  vec2 p = P();
+  vec2 w = W(p, 1.), wb = W(p, .35), wf = W(p, .7), wg = W(p, 1.45);
+  float cl = fbm(wb/vec2(520.,200.) + vec2(uT*.05, 0.)), cl2 = fbm(wb/vec2(240.,110.) + vec2(uT*.09, 3.));
+  float v = wb.y/1080.;
+  float sky = mix(.84, .5, smoothstep(.0,.62,1.-v)) - smoothstep(.42,.8,cl)*.3*smoothstep(.7,0.,v) + (cl2-.5)*.09;
+  vec2 mp = vec2(1430., 250.); float dm = length(wb-mp);
+  sky += (.28 + .25*uMoonFlare)*exp(-dm/(200.+90.*uMoonFlare)) + .42*smoothstep(48.,44.,dm);
+  float ridge = 860. + (fbm3(vec2(wb.x/380., 2.))-.5)*160.;
+  sky = mix(sky, .52, smoothstep(ridge, ridge+4., wb.y)*.8);
+  vec3 col = vec3(sky);
+  vec2 uv = silUV(w, uSil, uAsp);
+  vec2 piv = vec2(.30, .40); float hw = smoothstep(.46,.30,uv.y) * smoothstep(.55,.32,uv.x);
+  vec2 uvh = piv + rot(uHead*hw)*((uv-piv)*vec2(uAsp,1.))/vec2(uAsp,1.);
+  uvh.y += .005*sin(uT*2.4)*smoothstep(.35,.55,uvh.y)*smoothstep(.85,.6,uvh.y);      // breathing
+  vec2 m = sampleMask(uMask, uvh);
+  float f = photo(uForest, wf, vec4(1050., 260., -2300., 1533.));
+  float inside = .04 + .72*pow(f, 1.7);
+  inside *= mix(.45, 1., smoothstep(.05, .5, uvh.y));
+  inside *= .42 + .58*smoothstep(.3, 1., m.g);
+  inside += .05*(fbm(wf/90. + vec2(uT*.25,0.))-.5);
+  vec2 wt = W(p, .85);
+  float tall = texture(uPine, clamp((wt - vec2(-240., -40.))/vec2(2400., 1300.), 0., 1.)).b;
+  float haze = smoothstep(60., 560., wt.y);
+  inside = mix(inside, mix(.36, .1, haze), tall*.75);
+  col = mix(col, vec3(inside), m.r);
+  float fog = fbm(wf/vec2(330.,90.) + vec2(uT*.22, 0.));
+  float fogY = smoothstep(.45,.75, wf.y/1080.);
+  col = mix(col, vec3(.87), smoothstep(.46,.78,fog)*fogY*.66);
+  vec4 pn = texture(uPine, clamp((w - vec2(-240., -40.))/vec2(2400., 1300.), 0., 1.), 1.3);
+  col = mix(col, vec3(.13), pn.r*.9);
+  col = mix(col, vec3(.84), smoothstep(.5,.8,fbm(w/vec2(250.,60.)+vec2(uT*.3,5.)))*smoothstep(.82,.95,w.y/1080.)*.45);
+  vec4 pf = texture(uPine, clamp((wg - vec2(-240., -40.))/vec2(2400., 1300.), 0., 1.));
+  col = mix(col, vec3(.04), pf.g);
+  col += lights(wf, zoomAt(.7)) * m.r * (1.-pf.g);
+  col += WARM*.09*uHowl*m.r*smoothstep(.3,.9,f);
+  o = vec4(col, 1.);
+}`;
+
+// ---------------------------------------------------------------- shot 3: eagle / snow mountains
+const FS2 = COMMON + `
+uniform sampler2D uMask, uMount;
+uniform vec4 uSil; uniform float uAsp, uFlap, uFold;
+void main(){
+  vec2 p = P();
+  vec2 w = W(p, 1.), wb = W(p, .3), wm = W(p, .3), wc = W(p, 1.9);
+  float v = wb.y/1080.;
+  float cl = fbm(wb/vec2(600.,230.) + vec2(uT*.06, 0.)), cl2 = fbm(wb/vec2(300.,120.) + vec2(uT*.12, 7.));
+  float sky = mix(.5, .22, smoothstep(.0,.9,1.-v)) + (cl-.5)*.32 + (cl2-.5)*.12;
+  sky += .18*exp(-length(wb-vec2(400.,820.))/500.);
+  vec3 col = vec3(sky);
+  vec2 uv = silUV(w, uSil, uAsp);
+  vec2 q = (uv - vec2(.5, .3))*vec2(uAsp, 1.);
+  float side = sign(q.x); float ax = abs(q.x);
+  float wing = smoothstep(.07, .16, ax);
+  float ang = (uFlap*(1. + .8*smoothstep(.2, 1.2, ax)) ) * wing;
+  vec2 sp = vec2(side*.1, -.02);
+  vec2 qq = q;
+  if (wing > 0.) { qq = sp + rot(-side*ang)*(q - sp); qq.x = side*(.1 + (abs(qq.x)-.1)*(1. + uFold)); }
+  vec2 uvw = qq/vec2(uAsp,1.) + vec2(.5,.3);
+  vec2 m = sampleMask(uMask, uvw);
+  float mt = photo(uMount, wm, vec4(980., 330., 2300., 1533.));
+  float inside = .04 + .96*pow(mt, 1.45);
+  inside *= .72 + .28*smoothstep(.35, 1., m.g);
+  col = mix(col, vec3(inside), m.r);
+  col += lights(wm, zoomAt(.3)) * m.r;
+  float wf = fbm(wc/vec2(420.,140.) + vec2(uT*.4, 1.));
+  col = mix(col, vec3(.8), smoothstep(.58,.82,wf)*.55);
+  for (int k=0;k<2;k++){
+    float dk = 1.7 + float(k)*1.1; vec2 ws2 = W(p, dk) + vec2(uT*(700.+float(k)*600.), uT*90.);
+    vec2 cs = vec2(150., 60.); vec2 cell = floor(ws2/cs); vec2 fr = fract(ws2/cs) - .5;
+    float h = hash(cell + float(k)*17.);
+    if (h > .86) { vec2 c2 = vec2(hash(cell+3.)-.5, hash(cell+7.)-.5)*vec2(.3,.6); vec2 d2 = fr - c2;
+      float br = hash(cell+11.);
+      float streak = exp(-pow(d2.y*cs.y/(1.6+float(k)*1.4), 2.)) * smoothstep(.22+.15*br, 0., abs(d2.x));
+      col += vec3(.9)*streak*(.18 + .25*br + .15*float(k)); }
+  }
+  o = vec4(col, 1.);
+}`;
+
+// ---------------------------------------------------------------- shot 4: salmon / river town, underwater; morphs into the humpback
+const FS4 = COMMON + `
+uniform sampler2D uMaskF, uMaskW, uTown, uCity;
+uniform vec4 uSilF, uSilW; uniform float uAspF, uAspW, uMorph, uSea, uTail, uSwim, uFAv, uFYaw, uFFin, uSweep, uSweepOn;
+uniform vec4 uTownR, uCityR;
+const float SY = 40.;
+// salmon skeleton along the body axis (mask uv): head at u = .10, tail tip at u = .90, spine at v = .555.
+// Carangiform swimming: the head barely moves, a wave runs head -> tail with amplitude growing toward the tail,
+// the caudal fin lags. Seen from the side the sideways sway shows as foreshortening of the rear body and the tail fin
+// (it narrows as it turns away), plus a small vertical bend of the spine so the travelling wave reads.
+const float FUH = .10, FUT = .90, FV0 = .555, TAU = 6.28318;
+float fEnv(float s){ return .03 + .97*s*s; }
+float fBend(float s){ return uFAv*fEnv(s)*sin(uSwim - TAU*s); }
+float fBendD(float s){ return uFAv*(1.94*s*sin(uSwim - TAU*s) - fEnv(s)*TAU*cos(uSwim - TAU*s)); }
+float fYaw(float s){ float fin = smoothstep(.78, .9, s); return uFYaw*s*s*(1. + .7*fin)*cos(uSwim - TAU*s - .7*fin); }
+vec2 fishRest(vec2 uv, float asp){
+  float A = abs(asp), L = (FUT - FUH)*A;
+  // 1) undo the spine bend: each cross-section stays perpendicular to the bent spine
+  float X = uv.x*A, x = X, dv = uv.y - FV0;
+  for (int i=0;i<3;i++){ float s = clamp((x/A - FUH)/(FUT - FUH), 0., 1.);
+    float g = fBendD(s)/L, c = inversesqrt(1. + g*g);
+    dv = (uv.y - FV0 - fBend(s))/c; x = X + dv*g*c; }
+  // 2) undo the foreshortening: walk from the head, each step projected by cos(yaw)
+  float u1 = x/A, s1 = (u1 - FUH)/(FUT - FUH), sR = s1;
+  if (s1 > 0. && s1 < 1.25) {
+    float Pp = 0.; bool hit = false;
+    for (int i=1;i<=28;i++){ float sa = float(i-1)/28.*1.3, sb = float(i)/28.*1.3;
+      float st = cos(fYaw(min(.5*(sa + sb), 1.)))*(sb - sa);
+      if (!hit && Pp + st >= s1) { sR = sa + (s1 - Pp)/st*(sb - sa); hit = true; }
+      Pp += st; }
+    if (!hit) sR = 2.;
+  }
+  vec2 r = vec2(FUH + sR*(FUT - FUH), FV0 + dv);
+  // the pelvic fin gives a small paddle now and then
+  vec2 piv = vec2(.452, .79);
+  float wF = smoothstep(.40, .43, r.x)*smoothstep(.53, .50, r.x)*smoothstep(.76, .80, r.y);
+  r = piv + (rot(uFFin*wF)*((r - piv)*vec2(A, 1.)))/vec2(A, 1.);
+  return r;
+}
+vec2 uvToWorld(vec2 uv, vec4 xf, float asp){ return xf.xy + rot(xf.w)*vec2((uv.x - .5)*asp, uv.y - .5)*xf.z; }
+void main(){
+  vec2 p = P();
+  vec2 w = W(p, 1.), wb = W(p, .3), ws = W(p, .5), wg = W(p, 1.15);
+  // water: lighter under the surface, falling to dark below; the sea is deeper and darker than the river
+  float depth = max(wb.y - SY, 0.);
+  float water = mix(.46, .1, smoothstep(0., 1100. + 700.*uSea, depth)) * (1. - .3*uSea);
+  water += (fbm(wb/vec2(500.,260.) + vec2(uT*.04, 0.)) - .5)*.08;
+  vec3 col = vec3(water);
+  // the surface seen from below: a bright, shivering band, and above it the underside mirror
+  float sw = W(p, 1.).y;
+  float rip = fbm(vec2(w.x/90. + uT*.6, uT*.4)) ;
+  float surf = smoothstep(SY + 70., SY - 4., sw + (rip-.5)*24.);
+  col = mix(col, vec3(.62 + .3*fbm(vec2(w.x/40. - uT*.8, w.y/12.))), surf);
+  col += .25*exp(-abs(sw - SY - (rip-.5)*24.)/7.);
+  // light shafts slanting down from the surface
+  float ray = vn(vec2((ws.x + ws.y*.42)/120., uT*.13)) * vn(vec2((ws.x + ws.y*.42)/47., 3.+uT*.07));
+  col += .2*smoothstep(.25, .7, ray) * exp(-max(ws.y - SY, 0.)/700.) * (1.-surf);
+  // the riverbed: dark stones, swaying weed; it sinks away as the river opens into the sea
+  float bed = 950. + (fbm3(vec2(wg.x/260., 1.))-.5)*80. + uSea*900.;
+  float stones = smoothstep(.45,.7, fbm3(wg/vec2(46.,30.)));
+  float bedC = mix(.11, .2, stones*smoothstep(bed+30., bed, wg.y));
+  col = mix(col, vec3(bedC), smoothstep(bed, bed+3., wg.y));
+  float cx = floor(wg.x/26.); float hb = hash(vec2(cx, 5.));
+  cx = floor(wg.x/38.); hb = hash(vec2(cx, 5.));
+  if (hb > .5) { float wh = 70. + 170.*hash(vec2(cx, 9.)); float yy = (bed + 10. - wg.y)/wh;
+    float bend = (hash(vec2(cx, 2.)) - .5)*50.;
+    float sway = (sin(uT*1.3 + cx*.7)*16. + bend)*yy*yy;
+    float d = abs(fract(wg.x/38.)*38. - 19. - sway);
+    float wdt = 7.*(1.-yy*.85)*(.6 + .8*hash(vec2(cx, 4.)));
+    col = mix(col, vec3(.06), step(0., yy)*smoothstep(1., .8, yy)*smoothstep(wdt + 2.5, wdt - 1.5, d)*.85); }
+  // silt drifting downstream at two depths (the near layer passes fastest)
+  for (int k=0;k<2;k++){
+    float dk = .65 + float(k)*.75; vec2 ws2 = W(p, dk) - vec2(uT*(30.+float(k)*45.), -sin(uT*.5)*8.);
+    vec2 cs = vec2(64., 64.); vec2 cell = floor(ws2/cs); vec2 fr = fract(ws2/cs) - .5;
+    float h = hash(cell + float(k)*13.);
+    if (h > .8) { vec2 c2 = vec2(hash(cell+3.)-.5, hash(cell+7.)-.5)*.6; float r = (1. + 2.4*hash(cell+5.))*(1.+float(k)*.9)/64.;
+      col += vec3(.75)*smoothstep(r, r*.3, length(fr - c2))*(.1 + .16*float(k)); }
+  }
+  // the salmon, deformed along its skeleton; the town inside bends with the body
+  vec2 uf = silUV(w, uSilF, uAspF);
+  vec2 ufR = fishRest(uf, uAspF);
+  vec3 mf = sampleMask3(uMaskF, ufR);
+  vec2 dW = uvToWorld(ufR, uSilF, uAspF) - w;                      // body-local offset, carried into the photograph
+  // the humpback (its own vertical body wave)
+  vec2 uw = silUV(w, uSilW, uAspW);
+  vec2 uwt = whaleWarp(uw, uAspW, uTail, uWPh, uWA);
+  vec3 mw = sampleMask3(uMaskW, uwt);
+  vec2 wt = W(p, .6);
+  vec3 tc = photoC(uTown, wt + dW*(zoomAt(1.)/zoomAt(.6)), uTownR);
+  float tl = dot(tc, vec3(.3,.59,.11));
+  float head = smoothstep(.15, .36, ufR.x);                          // keep the head dark: no lamp where the eye and gills are
+  float warmPx = smoothstep(.08, .22, tc.r - tc.b) * smoothstep(.4, .75, tl) * head;
+  float lit = smoothstep(uSweep - 60., uSweep + 60., w.x) * uSweepOn;      // head (right) to tail
+  float vy = clamp(ufR.y, 0., 1.);
+  float tin = (.05 + 1.05*tl + .26*smoothstep(.8, .2, vy)) * mix(.55, 1., head);
+  vec3 town = vec3(tin) * (1. - .5*warmPx*lit) + WARM*warmPx*lit*(.45 + .9*tl);
+  town *= mix(.28, 1., smoothstep(.3, .8, mf.g));
+  float eye = length((ufR - vec2(.152, .505))*vec2(abs(uAspF), 1.));   // a dark eye, so the head reads as a head
+  town *= 1. - .55*smoothstep(.034, .022, eye);
+  vec3 cc = photoC(uCity, wt, uCityR);
+  float clum = dot(cc, vec3(.3,.59,.11));
+  float wy = clamp(uwt.y, 0., 1.);
+  vec3 city = vec3(.06 + 1.25*clum + .32*smoothstep(.75, .2, wy) + .1*(fbm(wt/vec2(160.,60.) + vec2(uT*.12, 0.))-.5));
+  city *= .6 + .4*smoothstep(.3, 1., mw.g);
+  // salmon -> humpback: two whole silhouettes, one printing out as the other prints in (a double exposure, never a blend of shapes)
+  float aF = mf.r*(1. - uMorph), aW = mw.r*uMorph;
+  col += vec3(.07)*(mf.g*(1. - mf.r)*(1. - uMorph) + mw.g*(1. - mw.r)*uMorph);
+  col = mix(col, city, aW);
+  col = mix(col, town, aF);
+  col = mix(col, 1. - (1. - town)*(1. - city), clamp(min(aF, aW)*1.8, 0., 1.)*.8);
+  o = vec4(col, 1.);
+}`;
+
+// ---------------------------------------------------------------- shot 5: humpback / harbour city over the night sea, then register on the shore
+const FS3 = COMMON + `
+uniform sampler2D uMask, uCity, uWaves;
+uniform vec4 uSil; uniform float uAsp, uTail, uSweep, uSweepOn, uLitAll;
+uniform float uReg, uDis, uShore, uRim; uniform vec4 uCityS, uCityR;
+void main(){
+  vec2 p = P();
+  vec2 w = W(p, 1.), wb = W(p, .25), wc = W(p, .6), ws = W(p, 1.15);
+  float hz = 770.;
+  float v = wb.y/1080.;
+  vec2 mp = vec2(1440., 235.); float dm = length(wb-mp);
+  float cl = fbm(wb/vec2(560.,170.) + vec2(uT*.035, 0.));
+  float sky = mix(.34, .07, smoothstep(.0,.75,1.-v)) + (cl-.5)*.14;
+  sky += .45*exp(-dm/260.) + .25*exp(-dm/70.) + .55*smoothstep(62.,58.,dm)*(1.-.15*fbm3(wb/14.));
+  sky += smoothstep(.992,1.,hash(floor(wb/2.)))*.3*smoothstep(.55,.2,v);
+  vec3 col = vec3(sky);
+  // the harbour photograph in screen space, waterline on the horizon (used for the register and the shore)
+  vec2 uvS = (p - uCityS.xy)/uCityS.zw + .5;
+  vec3 sc = texture(uCity, clamp(uvS, 0., 1.)).rgb;
+  float slum = dot(sc, vec3(.3,.59,.11));
+  float edgeS = smoothstep(0., .06, uvS.x)*smoothstep(1., .94, uvS.x);
+  float sWarm = smoothstep(.05, .2, sc.r - sc.b)*smoothstep(.2, .5, slum);
+  float hzS = Sc(vec2(960., hz), 1.15).y;
+  // sea
+  float sv = .28 + .7*(1. - exp(-max(ws.y-hz, 0.)/650.));
+  float wv = texture(uWaves, vec2(.5 + (ws.x-960.)/2900., sv)).r;
+  if (ws.y > hz) {
+    vec2 ms = Sc(mp, .25), hs = Sc(vec2(960., hz), 1.15);
+    float dx = abs(p.x - ms.x);
+    float rw = 30. + max(p.y-hs.y, 0.)*.5;
+    float road = exp(-dx*dx/(2.*rw*rw));
+    float sea = .06 + .62*pow(wv, 1.3) + road*(.1 + smoothstep(.12,.55,wv)*1.3) + .12*exp(-(ws.y-hz)/40.);
+    vec3 seaC = vec3(sea);
+    float under = exp(-pow((ws.x - uSil.x)/420., 2.)) * exp(-(ws.y-hz)/260.);
+    seaC += WARM*under*(.15 + smoothstep(.2,.6,wv))*uLitAll*.7*(1.-uShore);
+    float hzW = W(vec2(p.x, Sc(vec2(960., hz), 1.15).y), 1.).y;
+    vec2 wr = vec2(w.x + (wv-.45)*60., 2.*hzW - w.y + (wv-.45)*30.);
+    vec2 ur = silUV(wr, uSil, uAsp);
+    vec2 urt = whaleWarp(ur, uAsp, uTail, uWPh, uWA);
+    float mrr = sampleMask(uMask, urt).g;
+    float fadeR = exp(-max(w.y-hzW, 0.)/320.);
+    seaC = mix(seaC, vec3(.2 + .45*smoothstep(.15,.6,wv)) + WARM*uLitAll*smoothstep(.25,.6,wv)*.7, mrr*fadeR*.75*(1.-uDis));
+    // the shore's lights broken up on the water (the photograph's own reflections, shivered by the waves)
+    vec2 uvR = (vec2(p.x + (wv-.45)*26., p.y) - uCityS.xy)/uCityS.zw + .5;
+    vec3 rc = texture(uCity, clamp(uvR, 0., 1.)).rgb; float rl = dot(rc, vec3(.3,.59,.11));
+    float rWarm = smoothstep(.05, .2, rc.r - rc.b);
+    vec3 refl = (vec3(rl*.9) + WARM*rWarm*rl*1.6) * smoothstep(.15, .5, rl) * edgeS * (.55 + .7*smoothstep(.2,.6,wv));
+    seaC = 1. - (1.-seaC)*(1.-refl*uShore);
+    col = mix(col, seaC, smoothstep(hz, hz+3., ws.y));
+  }
+  // the shore above the horizon: buildings and lamps keyed out of the photograph's dark sky
+  if (uShore > 0.) {
+    float key = smoothstep(.13, .3, slum) * step(p.y, hzS + 2.) * edgeS;
+    vec3 shore = vec3(.05 + 1.15*slum) * (1. - .5*sWarm) + WARM*sWarm*(.8 + 1.3*slum);
+    col = mix(col, shore, key*uShore);
+  }
+  // whale (head to the right); the tail flexes about the peduncle
+  vec2 uv = silUV(w, uSil, uAsp);
+  vec2 uvt = whaleWarp(uv, uAsp, uTail, uWPh, uWA);
+  vec3 m3 = sampleMask3(uMask, uvt);
+  float sd = (m3.b - .5)*.5*uSil.z;
+  float e = 0.;                                                        // the outline opens outward as it lets go
+  float mr = m3.r * (1. - uDis);
+  vec2 uvA = (wc - uCityR.xy)/uCityR.zw + .5;
+  vec2 uvI = mix(uvA, uvS, uReg);
+  vec3 cc = texture(uCity, clamp(uvI, 0., 1.)).rgb;
+  float lum = dot(cc, vec3(.3,.59,.11));
+  float lit = smoothstep(.3,.7,lum) * smoothstep(uSweep, uSweep-80., w.x) * uSweepOn;
+  float wy = clamp(uvt.y, 0., 1.);
+  float lift = 1. - uReg*.35;                                                  // in register the inner sky darkens to meet the night
+  float inside = .06 + 1.25*lum + (.32*smoothstep(.75, .2, wy) + .14*smoothstep(.45, .9, wy))*lift + .1*(fbm(wc/vec2(160.,60.) + vec2(uT*.12, 0.))-.5);
+  inside *= .6 + .4*smoothstep(.3, 1., m3.g);
+  vec3 ins = mix(vec3(inside), vec3(inside)*WARM*1.5, lit*.8) + WARM*lit*.5;
+  col = mix(col, ins, mr);
+  col += vec3(.75,.72,.66)*.09*m3.g*(1.-m3.r)*(1.-uDis);
+  // after the register the whale stays as a faint second exposure: a pale veil over the shore and the sky, densest where its inner sky was
+  float ghost = m3.r * uDis/.64;
+  col = 1. - (1.-col)*(1. - (.07 + .12*smoothstep(.8, .15, wy))*ghost);
+  // the outline, last, as a thin warm line
+  col += WARM*exp(-pow((sd - e)/1.8, 2.))*uRim*.9;
+  col = mix(col, vec3(.42), exp(-abs(w.y-hz)/26.)*.35*(1.-mr));
+  o = vec4(col, 1.);
+}`;
+
+// ---------------------------------------------------------------- composite: dissolve, blur, flash, title, grade, grain, subtitles
+const FSC = `#version 300 es
+precision highp float;
+out vec4 o;
+uniform sampler2D uA, uB, uTitle, uSub; uniform vec2 uRes; uniform float uMix, uScr, uT, uTitleA, uTitleBlur, uCredA, uCredBlur, uFlash, uZoom, uSplitOn, uSprayDrop;
+uniform vec4 uSplit, uSpray;
+uniform vec3 uBlurA;
+float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }
+vec3 blurred(sampler2D s, vec2 uv, vec3 b){
+  if (length(b.xy) < .5 && b.z < .001) return texture(s, uv).rgb;
+  vec3 a = vec3(0.); float n = 0.;
+  for (int i=0;i<24;i++){ float k = float(i)/23. - .5;
+    vec2 off = b.xy/uRes*k + (uv-.5)*b.z*k;
+    a += texture(s, uv + off).rgb; n += 1.; }
+  return a/n;
+}
+float dev(vec2 tuv, float rb, float ch){
+  float ta = 0.;
+  for (int i=0;i<9;i++){ vec2 o2 = vec2(float(i%3)-1., float(i/3)-1.)*rb/uRes; vec4 s = texture(uTitle, tuv+o2); ta += ch < .5 ? s.r : s.g; }
+  return ta/9.;
+}
+void main(){
+  vec2 uv0 = gl_FragCoord.xy/uRes;
+  vec2 uv = .5 + (uv0 - .5)/uZoom;
+  vec3 a = blurred(uA, uv, uBlurA);
+  vec3 c = a;
+  if (uMix > 0.) { vec3 b = texture(uB, uv).rgb;
+    vec3 scr = 1. - (1.-a)*(1.-b);
+    c = mix(mix(a, b, uMix), scr, uScr*sin(3.14159*uMix)); }
+  vec2 pp = vec2(uv0.x*1920., (1.-uv0.y)*1080.);
+  if (uSplitOn > 0.) {
+    // the waterline: above it the air (B), below it the river/sea from inside (A); lifted where the whale breaks through
+    float ly = uSplit.x - uSplit.z*exp(-pow((pp.x - uSplit.y)/230., 2.)) + 6.*sin(pp.x/57. + uT*8.) + 3.*sin(pp.x/19. - uT*13.);
+    float dy = pp.y - ly;
+    vec3 aR = blurred(uA, uv + vec2(0., -9./uRes.y)*exp(-max(dy, 0.)/50.), uBlurA);
+    vec3 b = texture(uB, uv).rgb;
+    float above = smoothstep(1.5, -1.5, dy) * uSplit.w;
+    c = mix(aR, b, above);
+    c += (vec3(.85)*exp(-dy*dy/10.) + vec3(.4)*exp(-abs(dy)/24.)*.4)*uSplit.w;
+  }
+  if (uSpray.w > 0.) {
+    // spray: drops thrown up from the breach, falling back, carried down the frame as the camera keeps rising
+    for (int i=0;i<170;i++){ float fi = float(i);
+      float age = uSpray.z - hash(vec2(fi, 4.))*.4; if (age <= 0.) continue;
+      float ang = -1.5708 + (hash(vec2(fi, 1.))-.5)*2.1, spd = 240. + 900.*pow(hash(vec2(fi, 2.)), 2.);
+      vec2 pos = vec2(uSpray.x + (hash(vec2(fi, 3.))-.5)*640., uSpray.y + (hash(vec2(fi, 6.))-.5)*40.) + vec2(cos(ang), sin(ang))*spd*age + vec2(0., 950.*age*age + uSprayDrop);
+      float r = 1.8 + 4.2*hash(vec2(fi, 5.));
+      c += vec3(1.)*smoothstep(r, r*.15, length(pp - pos))*exp(-age*1.1)*uSpray.w*1.2;
+    }
+    float age0 = max(uSpray.z, 0.);
+    c += vec3(.8)*.22*exp(-length((pp - vec2(uSpray.x, uSpray.y + uSprayDrop - 40.*age0))/vec2(330. + 200.*age0, 90. + 60.*age0)))*exp(-age0*2.)*uSpray.w;
+  }
+  c = mix(c, vec3(.92), uFlash);
+  vec2 tuv = vec2(uv0.x, 1.-uv0.y);
+  if (uTitleA > 0.) c = mix(c, vec3(.96,.9,.8), dev(tuv, uTitleBlur, 0.)*uTitleA);
+  if (uCredA > 0.) c = mix(c, vec3(.93,.89,.82), dev(tuv, uCredBlur, 1.)*uCredA);
+  c = max(c, 0.);
+  vec3 x = c/(1.+c*.12);
+  x = clamp(x, 0., 1.4);
+  vec3 s = x + (x*x*(3.-2.*x) - x)*.42;
+  float lum = dot(s, vec3(.333));
+  float hi = smoothstep(.45, .95, lum);
+  s *= vec3(1.+.05*hi, 1.+.015*hi, 1.-.05*hi);
+  s += vec3(-.006, 0., .014)*(1.-lum);
+  vec2 d = (uv0-.5)*vec2(1.25,1.);
+  s *= 1. - .55*pow(length(d), 2.3);
+  float g = hash(gl_FragCoord.xy + fract(uT*24.)*vec2(91.3, 17.7)) - .5;
+  s += g*.028;
+  vec4 sb = texture(uSub, tuv);
+  s = mix(s, sb.rgb, sb.a);
+  o = vec4(clamp(s, 0., 1.), 1.);
+}`;
+
+// ---------------------------------------------------------------- assets made at load
+function pineLayer(g, seed, baseY, amp, hMin, hMax, density, x0, x1, ground = true) {
+  const r = mulberry(seed), ox = 240, oy = 40;
+  const n1 = x => { const i = Math.floor(x), f = x - i, h = k => { const s = Math.sin(k * 127.1 + seed * 31.7) * 43758.5453; return s - Math.floor(s); }; const u = f * f * (3 - 2 * f); return h(i) + (h(i + 1) - h(i)) * u; };
+  g.lineCap = 'round';
+  for (let x = x0; x < x1; x += density * (.45 + r() * 1.1)) {
+    const gy = baseY + (n1(x / 300) - .5) * amp + oy, h = hMin + r() * (hMax - hMin), w = h * (.17 + r() * .07);
+    const cx = x + ox + (r() - .5) * 6, lean = (r() - .5) * .04;
+    g.lineWidth = Math.max(1, h * .012); g.beginPath(); g.moveTo(cx, gy + 6); g.lineTo(cx + lean * h, gy - h); g.stroke();
+    const n = Math.max(14, h / 3.2 | 0);
+    for (let k = 0; k < n; k++) {
+      const f = k / n, y = gy - h + h * f, tx = cx + lean * h * (1 - f);
+      for (const side of [-1, 1]) {
+        if (r() < .12) continue;
+        const len = w * Math.pow(f, .85) * (.45 + .8 * r()) * (f < .08 ? .3 : 1), droop = len * (.25 + .35 * r());
+        g.lineWidth = Math.max(.8, h * (.006 + .01 * r()));
+        g.beginPath(); g.moveTo(tx, y); g.quadraticCurveTo(tx + side * len * .6, y + droop * .2, tx + side * len, y + droop); g.stroke();
+      }
+    }
+  }
+  if (!ground) return;
+  g.beginPath(); g.moveTo(x0 + ox, 1300);
+  for (let x = x0; x <= x1; x += 8) g.lineTo(x + ox, baseY + 25 + (n1(x / 300) - .5) * amp + oy);
+  g.lineTo(x1 + ox, 1300); g.closePath(); g.fill();
+}
+function pineTexture() {
+  const a = mk(2400, 1300), ga = a.getContext('2d'); ga.strokeStyle = ga.fillStyle = '#fff';
+  pineLayer(ga, 23, 1010, 60, 60, 150, 15, -240, 2160);
+  const b = mk(2400, 1300), gb = b.getContext('2d'); gb.strokeStyle = gb.fillStyle = '#fff';
+  pineLayer(gb, 11, 1150, 50, 260, 520, 70, -240, 330);
+  pineLayer(gb, 37, 1160, 40, 240, 470, 64, 1650, 2160);
+  const d = mk(2400, 1300), gd = d.getContext('2d'); gd.strokeStyle = gd.fillStyle = '#fff';
+  pineLayer(gd, 51, 520, 140, 200, 420, 46, 860, 1240, false);
+  const ia = ga.getImageData(0, 0, 2400, 1300).data, ib = gb.getImageData(0, 0, 2400, 1300).data, idd = gd.getImageData(0, 0, 2400, 1300).data;
+  const c = mk(2400, 1300), gc = c.getContext('2d'), id = gc.createImageData(2400, 1300);
+  for (let i = 0; i < 2400 * 1300; i++) { id.data[i * 4] = ia[i * 4 + 3]; id.data[i * 4 + 1] = ib[i * 4 + 3]; id.data[i * 4 + 2] = idd[i * 4 + 3]; id.data[i * 4 + 3] = 255; }
+  gc.putImageData(id, 0, 0); return c;
+}
+// exact Euclidean distance transform (Felzenszwalb & Huttenlocher), on squared distances
+function edt(f, w, h) {
+  const n = Math.max(w, h), d = new Float64Array(n), v = new Int32Array(n), z = new Float64Array(n + 1), ff = new Float64Array(n);
+  const pass = (get, set, len) => {
+    for (let q = 0; q < len; q++) ff[q] = get(q);
+    let k = 0; v[0] = 0; z[0] = -1e20; z[1] = 1e20;
+    for (let q = 1; q < len; q++) {
+      let s = ((ff[q] + q * q) - (ff[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+      while (s <= z[k]) { k--; s = ((ff[q] + q * q) - (ff[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]); }
+      k++; v[k] = q; z[k] = s; z[k + 1] = 1e20;
+    }
+    k = 0; for (let q = 0; q < len; q++) { while (z[k + 1] < q) k++; d[q] = (q - v[k]) * (q - v[k]) + ff[v[k]]; set(q, d[q]); }
+  };
+  for (let x = 0; x < w; x++) pass(y => f[y * w + x], (y, val) => { f[y * w + x] = val; }, h);
+  for (let y = 0; y < h; y++) pass(x => f[y * w + x], (x, val) => { f[y * w + x] = val; }, w);
+  return f;
+}
+async function maskTexture(src, px, sdf = false) {
+  const img = await load(src);
+  const vb = (await (await fetch(src)).text()).match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+  const sw = +vb[1], sh = +vb[2], pad = .12, s = px / sw;
+  const w = Math.round(sw * s * (1 + 2 * pad)), h = Math.round(sh * s * (1 + 2 * pad));
+  const a = mk(w, h), ga = a.getContext('2d'); ga.drawImage(img, sw * s * pad, sh * s * pad, sw * s, sh * s);
+  const b = mk(w, h), gb = b.getContext('2d'); gb.filter = `blur(${Math.round(px * .03)}px)`; gb.drawImage(a, 0, 0);
+  const da = ga.getImageData(0, 0, w, h).data, db = gb.getImageData(0, 0, w, h).data;
+  let sdC = null;
+  if (sdf) {
+    // signed distance at quarter resolution, encoded 0.5 + sd / (0.5 h): positive outside
+    const K = 2, gw = Math.ceil(w / K), gh = Math.ceil(h / K), fo = new Float64Array(gw * gh), fi = new Float64Array(gw * gh);
+    for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
+      const sx = Math.min(w - 1, x * K + 2), sy = Math.min(h - 1, y * K + 2), inside = da[(sy * w + sx) * 4 + 3] > 127;
+      fo[y * gw + x] = inside ? 0 : 1e20; fi[y * gw + x] = inside ? 1e20 : 0;
+    }
+    edt(fo, gw, gh); edt(fi, gw, gh);
+    const c = mk(gw, gh), gc = c.getContext('2d'), id = gc.createImageData(gw, gh);
+    for (let i = 0; i < gw * gh; i++) { const sd = (Math.sqrt(fo[i]) - Math.sqrt(fi[i])) * K; const e = clamp(.5 + sd / (.5 * h), 0, 1) * 255; id.data[i * 4] = id.data[i * 4 + 1] = id.data[i * 4 + 2] = e; id.data[i * 4 + 3] = 255; }
+    gc.putImageData(id, 0, 0);
+    const up = mk(w, h), gu = up.getContext('2d'); gu.imageSmoothingQuality = 'high'; gu.drawImage(c, 0, 0, w, h);
+    sdC = gu.getImageData(0, 0, w, h).data;
+  }
+  const c = mk(w, h), gc = c.getContext('2d'), id = gc.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) { id.data[i * 4] = da[i * 4 + 3]; id.data[i * 4 + 1] = db[i * 4 + 3]; id.data[i * 4 + 2] = sdC ? sdC[i * 4] : (da[i * 4 + 3] > 127 ? 0 : 255); id.data[i * 4 + 3] = 255; }
+  gc.putImageData(id, 0, 0);
+  return { t: tex(c), asp: w / h, padH: 1 + 2 * pad };
+}
+
+// ---------------------------------------------------------------- words: title and credit (static, developed in the composite), subtitles (per frame)
+const FONT_ZH = 'ZhSerif', FONT_EN = 'Newsreader', FONT_ENI = 'NewsreaderItalic';
+const TITLE = { zhX: 1668, zhY: [452, 612] };
+const CRED = { x: 128, y0: 150 };
+function titleTexture() {
+  const c1 = mk(1920, 1080), g1 = c1.getContext('2d');
+  g1.fillStyle = '#fff'; g1.textAlign = 'center'; g1.textBaseline = 'middle';
+  g1.font = `600 132px ${FONT_ZH}`;
+  g1.fillText('山', TITLE.zhX, TITLE.zhY[0]); g1.fillText('海', TITLE.zhX, TITLE.zhY[1]);
+  g1.fillRect(TITLE.zhX - 2, 714, 4, 120);
+  // credit block in the empty night sky, top left (packed into G)
+  const c2 = mk(1920, 1080), g = c2.getContext('2d');
+  g.fillStyle = '#fff'; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.font = `italic 400 58px ${FONT_ENI}`; g.fillText('Mountains and Seas', CRED.x, CRED.y0);
+  g.font = `400 30px ${FONT_EN}`; g.fillText('Double Exposure', CRED.x, CRED.y0 + 62);
+  const dw = g.measureText('Double Exposure').width;
+  g.font = `600 34px ${FONT_ZH}`; g.fillText('双重曝光', CRED.x + dw + 22, CRED.y0 + 63);
+  g.fillRect(CRED.x, CRED.y0 + 96, 56, 2);
+  g.font = `400 32px ${FONT_EN}`; g.fillText('LemoLab × Claude Opus 5.5', CRED.x, CRED.y0 + 146);
+  const a1 = g1.getImageData(0, 0, 1920, 1080).data, a2 = g.getImageData(0, 0, 1920, 1080).data;
+  const c = mk(1920, 1080), gc = c.getContext('2d'), id = gc.createImageData(1920, 1080);
+  for (let i = 0; i < 1920 * 1080; i++) { id.data[i * 4] = a1[i * 4 + 3]; id.data[i * 4 + 1] = a2[i * 4 + 3]; id.data[i * 4 + 3] = 255; }
+  gc.putImageData(id, 0, 0);
+  return tex(c, { nomip: true });
+}
+const SUBS = [
+  { t0: 0.7, t1: 4.4, zh: '每只动物，身体里都装着一个地方。', en: 'Every animal carries a place inside it.', side: 'L' },
+  { t0: 9.5, t1: 13.2, zh: '狼装着一片森林，林里的灯都亮着。', en: 'The wolf, a forest with its lamps lit.', side: 'R' },
+  { t0: 15.9, t1: 19.5, zh: '鹰装着云层之上的雪。', en: 'The eagle, the snow above the clouds.', side: 'L' },
+  { t0: 23.5, t1: 27.2, zh: '鲑鱼装着一条流向大海的河。', en: 'The salmon, the river that runs to the sea.', side: 'L' },
+  { t0: 34.1, t1: 37.3, zh: '鲸装着一座灯火通明的港湾。', en: 'The whale, a harbour full of light.', side: 'L' },
+  { t0: 41.9, t1: 45.6, zh: '海的尽头，那个地方就是家。', en: 'And where the sea ends, that place is home.', side: 'L' },
+];
+const subC = mk(1920, 1080), subG = subC.getContext('2d');
+let subTex = null, subKey = '';
+function drawSubs(t) {
+  const cue = SUBS.find(s => t >= s.t0 && t < s.t1);
+  const a = cue ? Math.min(seg(t, cue.t0, cue.t0 + .3), 1 - seg(t, cue.t1 - .3, cue.t1)) : 0;
+  const key = cue ? cue.zh + Math.round(a * 60) : '';
+  if (key === subKey && subTex) return;
+  subKey = key;
+  subG.clearRect(0, 0, 1920, 1080);
+  if (cue && a > 0) {
+    const R = cue.side === 'R', x = R ? 1792 : 128;
+    subG.textAlign = R ? 'right' : 'left'; subG.textBaseline = 'alphabetic';
+    subG.font = `600 36px ${FONT_ZH}`; const wz = subG.measureText(cue.zh).width;
+    subG.font = `italic 400 28px ${FONT_ENI}`; const we = subG.measureText(cue.en).width;
+    const bw = Math.max(wz, we) + 140, bx = R ? x + 70 - bw : x - 70;
+    // a soft, wide pool of shade under the words, no box and no outline
+    const gr = subG.createRadialGradient(bx + bw / 2, 975, 10, bx + bw / 2, 975, bw * .62);
+    gr.addColorStop(0, `rgba(6,8,10,${.42 * a})`); gr.addColorStop(1, 'rgba(6,8,10,0)');
+    subG.save(); subG.translate(bx + bw / 2, 975); subG.scale(1, .22); subG.translate(-(bx + bw / 2), -975);
+    subG.fillStyle = gr; subG.fillRect(bx - 200, 975 - bw, bw + 400, bw * 2); subG.restore();
+    subG.fillStyle = `rgba(241,234,223,${a})`; subG.font = `600 36px ${FONT_ZH}`; subG.fillText(cue.zh, x, 962);
+    subG.fillStyle = `rgba(214,206,193,${a})`; subG.font = `italic 400 28px ${FONT_ENI}`; subG.fillText(cue.en, x, 1004);
+  }
+  if (!subTex) subTex = tex(subC, { nomip: true });
+  else { gl.bindTexture(gl.TEXTURE_2D, subTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, subC); }
+}
+
+// ---------------------------------------------------------------- timeline (film seconds)
+const DUR = 50.5;
+const T_AB0 = 5.5, T_AB1 = 5.95;              // stag -> wolf, through the window
+const T_WHIP = 14.42;                           // wolf -> eagle
+const T_X0 = 21.3, T_X1 = 22.1;                 // eagle -> salmon, screen dissolve
+const T_SURF = 31.35;                           // salmon/whale breaches -> whale over the sea
+const T_REG0 = 39.0, T_REG1 = 42.4, T_DIS0 = 42.4, T_DIS1 = 44.4, T_TITLE = 45.6, T_CRED = 46.0;
+const rngL = mulberry(5);
+// forest cabins (forest-layer coordinates): the first one lights inside the stag, the rest inside the wolf
+const L1 = [[728, 566], [752, 560], [660, 590], [812, 548], [598, 612], [880, 530], [530, 640], [940, 522], [640, 660], [846, 640], [990, 506]]
+  .map(([x, y], i) => [x + (rngL() - .5) * 10, y + (rngL() - .5) * 8, 7 + rngL() * 6, i === 0 ? 4.9 : 5.85 + i * .21]);
+const L2 = [[1180, 492], [1205, 500], [980, 520], [760, 470], [1420, 515], [560, 500], [890, 455], [1300, 470], [660, 528]]
+  .map(([x, y], i) => [x, y, 8 + (i % 3) * 3, 15.6 + i * .2]);
+const sil = {};
+
+// stag
+const STAG = [1180, 560, 780];
+function camA(t) {
+  const k1 = ss(seg(t, 0, 3.9));
+  const z0 = lerp(1.0, 1.16, k1);
+  const k2 = seg(t, 3.75, 5.6);
+  const z = z0 * Math.exp(Math.log(8 / 1.16) * (k2 * k2 * (3 - 2 * k2) * .35 + Math.pow(k2, 2.4) * .65));
+  const F = [1140, 640];
+  const kc = ss(seg(t, .4, 5.4));
+  return [lerp(1010, F[0], kc), lerp(548, F[1], kc), z, lerp(0, -.07, ss(seg(t, 3.9, 5.5)))];
+}
+// wolf
+function cam1(t) {
+  const k = eio(seg(t, 6.8, 10.2));
+  const z = lerp(3.2, 1.0, k) * lerp(1, .975, seg(t, 10.2, 13.9));
+  const x = lerp(lerp(590, 617, ss(seg(t, 5.5, 6.8))), 930, k), y = lerp(560, 548, k), r = lerp(-.07, 0, eo(seg(t, 6.6, 10.2)));
+  return [x, y - 2400 * ei(seg(t, 13.9, T_WHIP + .02)), z, r];
+}
+// eagle
+function eaglePos(t) { const u = seg(t, 14.3, 20.7); return [lerp(1500, 470, u), 470 + 40 * Math.sin(u * 4.2)]; }
+function bank(t) { return Math.sin(Math.PI * ss(seg(t, 19.1, 20.6))); }
+function cam2(t) {
+  const ex = eaglePos(t)[0];
+  const x = lerp(ex - 260, ex + 170, ss(seg(t, 14.5, 20.6)));
+  const y = 560 + 2400 * (1 - eo(seg(t, T_WHIP - .02, 14.85)));
+  const r = (.05 * Math.sin((t - 14.6) * 1.1) + .1 * bank(t)) * (1 - seg(t, 20.4, 20.8));
+  const push = 1 + .2 * Math.sin(Math.PI * ss(seg(t, 15.9, 19.4)));
+  return [x, y, lerp(1.06, 1.0, ss(seg(t, 14.5, 20.6))) * push, r];
+}
+function eagleXf(t) {
+  let [x, y] = eaglePos(t);
+  const c = cam2(Math.min(t, 20.65));
+  let h = 640, a = .1 * Math.sin((t - 14.7) * 1.1) + .28 * bank(t);
+  const d = Math.pow(ss(seg(t, 20.6, 21.6)), 1.6);
+  x = lerp(x, c[0], ss(seg(t, 20.6, 21.05))); y = lerp(y, c[1] + 60, ss(seg(t, 20.6, 21.05)));
+  h *= 1 + 9 * d; a = lerp(a, -.22, d);
+  return [x, y, h, a];
+}
+function flap(t) {
+  let a = 0;
+  for (const t0 of [15.2, 16.9, 18.6]) { const u = (t - t0) / .7; if (u > 0 && u < 1) a += .42 * Math.sin(u * Math.PI * 2) * Math.sin(u * Math.PI); }
+  return a + .05 * Math.sin(t * 1.9) * (1 - seg(t, 20.4, 20.8)) - .18 * seg(t, 20.65, 21.0);
+}
+// salmon -> whale, underwater
+const T_D = T_X0;
+const T_SW0 = 30.0, T_BR = 31.05, T_SW1 = 31.8, T_K2 = 33.0, SY = 40;
+// tail-beat speed: the salmon's quick beat slows into the whale's long stroke; power strokes drive the breach
+function omega(t) { return 2 * Math.PI * (lerp(1.1, .3, ss(seg(t, 27.0, 29.6))) + .3 * Math.sin(Math.PI * seg(t, 29.8, 31.6))); }
+const PH = new Map();
+function swimPhase(t) {
+  if (t <= T_D) return 0;
+  const key = Math.round(t * 1000); if (PH.has(key)) return PH.get(key);
+  const n = Math.ceil((t - T_D) / .004), h = (t - T_D) / n; let a = 0;
+  for (let i = 0; i < n; i++) a += omega(T_D + (i + .5) * h) * h;
+  if (PH.size > 400) PH.clear(); PH.set(key, a); return a;
+}
+function whaleAmp(t) { return (.045 + .035 * Math.sin(Math.PI * seg(t, 29.8, 31.6))) * ss(seg(t, 27.4, 29.2)) * (1 - .85 * eo(seg(t, T_REG0, 42.0))); }
+function camD(t) {
+  const x = 900 + 150 * (t - T_D);
+  const y = 540 - 1300 * Math.pow(seg(t, 30.2, 31.75), 2.2) + 40 * (1 - eo(seg(t, T_D, 23.0)));
+  const z = lerp(1.0, .82, eio(seg(t, 26.8, 29.8)));
+  return [x, y, z, .015 * Math.sin(t * .7)];
+}
+function fishXf(t) {
+  const c = camD(t), ph = swimPhase(t), fade = 1 - ss(seg(t, 27.0, 29.0));
+  // each tail beat pushes the fish forward: a surge twice per cycle on top of the cruise
+  // thrust comes twice per tail cycle (as the tail sweeps through the midline): a push, then a glide
+  const x = c[0] + lerp(-330, -40, eo(seg(t, T_D, 26.6))) - 230 * eio(seg(t, 26.8, 29.8)) - 11 * Math.sin(2 * ph) * fade;
+  const y = 572 + 16 * Math.sin(t * 1.1) + 3 * Math.sin(2 * ph + .8) * fade;
+  const h = lerp(360, 330 * 3.755 / 3.325, ss(seg(t, 27.2, 29.6)));      // grows to the whale's length as it prints out
+  return [x, y, h, .008 * Math.sin(2 * ph + .3) * fade + .02 * Math.sin(t * .9)];
+}
+// whale over the sea, register on the shore
+function cam3(t) {
+  const k = eio(seg(t, 30.9, 32.9));
+  const tt = Math.min(t, T_REG0);
+  return [lerp(820, 960, k), lerp(830, 540, k), lerp(1.08, 1.0, k) * lerp(1, 1.09, ss(seg(tt, 32.9, T_REG0))), lerp(.03, 0, k)];
+}
+function whaleEW(t) {                           // the whale swimming over the sea (world), from 33 s
+  const ph = swimPhase(t), u = t - T_K2;
+  let x = eX0() + 13 * Math.min(u, T_REG0 - T_K2) + 7 * Math.sin(ph), y = 570 + 2.5 * u + 8 * Math.sin(ph + .8), h = 300, a = .028 * Math.sin(ph + .4);
+  const r = ss(seg(t, T_REG0, T_REG1 + .4));
+  return [lerp(x, Math.min(eX0() + 13 * (T_REG0 - T_K2), 885), r), lerp(y, 742, r), lerp(h, 330, r), lerp(a, 0, r)];
+}
+let EX0 = null;
+function eX0() { if (EX0 === null) EX0 = Math.min(whaleScreenD0(T_K0)[0] + 70, 840); return EX0; }   // cam3 is centred and at zoom 1 at 33 s
+function toScreen(xf, cam) { const s = screenOf(xf[0], xf[1], 1, cam); return [s[0], s[1], xf[2] * cam[2], xf[3] - cam[3]]; }
+function toWorld(S, cam) { const w = worldOf(S[0], S[1], 1, cam); return [w[0], w[1], S[2] / cam[2], S[3] + cam[3]]; }
+const hermite = (p0, m0, p1, m1, u, d) => { const u2 = u * u, u3 = u2 * u; return (2 * u3 - 3 * u2 + 1) * p0 + (u3 - 2 * u2 + u) * d * m0 + (-2 * u3 + 3 * u2) * p1 + (u3 - u2) * d * m1; };
+const T_K0 = 29.6, T_K1 = 31.1;
+function whaleScreenD0(t) { const f = fishXf(t); return toScreen([f[0], f[1], 330, f[3]], camD(t)); }
+function whaleScreenE(t) { return toScreen(whaleEW(t), cam3(t)); }
+let KEYS = null;
+function keys() {
+  if (KEYS) return KEYS;
+  const e = .02, A = whaleScreenD0(T_K0), A1 = whaleScreenD0(T_K0 + e), A0 = whaleScreenD0(T_K0 - e);
+  const C = whaleScreenE(T_K2), C1 = whaleScreenE(T_K2 + e), C0 = whaleScreenE(T_K2 - e);
+  const mA = A.map((v, i) => (A1[i] - A0[i]) / (2 * e)), mC = C.map((v, i) => (C1[i] - C0[i]) / (2 * e));
+  const B = [lerp(A[0], C[0], .5), 410, lerp(A[2], C[2], .5), 0], mB = [60, -30, 0, 0];
+  return KEYS = { A, mA, B, mB, C, mC };
+}
+// one continuous arc in screen space from the underwater whale to the whale swimming over the sea
+function whaleScreen(t) {
+  const K = keys(); let S;
+  if (t <= T_K1) { const u = seg(t, T_K0, T_K1), d = T_K1 - T_K0; S = [0, 1, 2].map(i => hermite(K.A[i], K.mA[i], K.B[i], K.mB[i], u, d)); }
+  else { const u = seg(t, T_K1, T_K2), d = T_K2 - T_K1; S = [0, 1, 2].map(i => hermite(K.B[i], K.mB[i], K.C[i], K.mC[i], u, d)); }
+  S[0] = hermite(K.A[0], Math.max(K.mA[0], 0), K.C[0], Math.max(K.mC[0], 0), seg(t, T_K0, T_K2), T_K2 - T_K0);   // always moving right
+  // pitch: the head lifts first, the body follows, then it levels out to swim
+  const base = lerp(K.A[3], K.C[3], ss(seg(t, T_K0, T_K2)));
+  S[3] = base + .26 * Math.sin(Math.PI * ss(seg(t, 29.75, 32.5))) + .025 * Math.sin(swimPhase(t) + .4) * seg(t, 31.5, 33);
+  return S;
+}
+function whaleDXf(t) {
+  if (t <= T_K0) { const f = fishXf(t); return [f[0], f[1], 330, f[3]]; }
+  return toWorld(whaleScreen(t), camD(t));
+}
+function whaleXf(t) { return t < T_K2 ? toWorld(whaleScreen(t), cam3(t)) : whaleEW(t); }
+function whaleScreenAny(t) { return t <= T_K0 ? whaleScreenD0(t) : t < T_K2 ? whaleScreen(t) : whaleScreenE(t); }
+// the harbour inside the whale is anchored to the whale on screen (same mapping above and below the water), sliding back slowly
+function cityRect(t, cam) {
+  const S = whaleScreenAny(t), k = S[2] / 300, wS = 1700 * k;
+  const c = worldOf(S[0] + 250 * k - 14 * (t - 27), S[1] + 8 * k, .6, cam), z6 = 1 + (cam[2] - 1) * .6;
+  return [c[0], c[1], wS / z6, wS * 1707 / 2560 / z6];
+}
+function surfY(t) { const c = camD(t); return screenOf(c[0], SY, 1, c)[1]; }
+function screenOf(wx, wy, d, cam) {            // world point at depth d -> screen (JS twin of Sc)
+  const z = 1 + (cam[2] - 1) * d, cx = 960 + (cam[0] - 960) * d, cy = 540 + (cam[1] - 540) * d;
+  const dx = (wx - cx) * z, dy = (wy - cy) * z, c = Math.cos(-cam[3]), s = Math.sin(-cam[3]);
+  return [960 + c * dx - s * dy, 540 + s * dx + c * dy];
+}
+function worldOf(sx, sy, d, cam) {             // screen -> world at depth d (JS twin of Wc)
+  const z = 1 + (cam[2] - 1) * d, cx = 960 + (cam[0] - 960) * d, cy = 540 + (cam[1] - 540) * d;
+  const dx = sx - 960, dy = sy - 540, c = Math.cos(cam[3]), s = Math.sin(cam[3]);
+  return [cx + (c * dx - s * dy) / z, cy + (s * dx + c * dy) / z];
+}
+
+// ---------------------------------------------------------------- draw
+let P0, P1, P2, P3, P4, PC, FA, FB, TX = {};
+function bindTex(prog, name, t, unit) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(prog.u[name], unit); }
+function lightsU(prog, list, t, fade = 1) {
+  const a = new Float32Array(160); let n = 0;
+  for (const [x, y, r, on] of list) {
+    const k = seg(t, on, on + .12);
+    const flick = .9 + .1 * Math.sin(t * 7 + x * .13) * Math.sin(t * 3.1 + y);
+    a.set([x, y, r, k * flick * fade * (1 + .8 * Math.exp(-(t - on) * 9) * (t > on ? 1 : 0))], n * 4); n++;
+  }
+  gl.uniform4fv(prog.u.uL, a); gl.uniform1i(prog.u.uLN, n);
+}
+const CAMS = [camA, cam1, cam2, camD, cam3];
+function drawScene(i, t, target) {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, target.f); gl.viewport(0, 0, W, H);
+  const prog = [P0, P1, P2, P4, P3][i]; gl.useProgram(prog.p);
+  gl.uniform2f(prog.u.uRes, W, H); gl.uniform1f(prog.u.uT, t);
+  gl.uniform4f(prog.u.uCam, ...CAMS[i](t));
+  if (i === 0) {
+    const s = sil.stag; gl.uniform4f(prog.u.uSil, STAG[0], STAG[1], STAG[2] * s.padH, 0); gl.uniform1f(prog.u.uAsp, s.asp);
+    gl.uniform1f(prog.u.uDev, ss(seg(t, .3, 1.75)));
+    gl.uniform1f(prog.u.uHead, -.07 * ss(seg(t, 1.2, 2.5)));
+    gl.uniform1f(prog.u.uMixB, ss(seg(t, 4.3, 5.55)));
+    const camB = cam1(T_AB0), camEnd = camA(5.6);
+    gl.uniform4f(prog.u.uCamB, ...camB);
+    const ref = worldOf(960, 540, .22, camEnd), anc = worldOf(960, 540, .7, camB);
+    gl.uniform2f(prog.u.uRef, ...ref); gl.uniform2f(prog.u.uAnchor, ...anc);
+    bindTex(prog, 'uMask', s.t, 0); bindTex(prog, 'uForest', TX.forest, 1);
+    lightsU(prog, L1.slice(0, 1), t);
+  } else if (i === 1) {
+    const s = sil.wolf; gl.uniform4f(prog.u.uSil, 660, 570, 960 * s.padH, 0); gl.uniform1f(prog.u.uAsp, -s.asp);
+    const howl = Math.min(seg(t, 12.5, 12.9), 1 - seg(t, 13.5, 14.0));
+    gl.uniform1f(prog.u.uHowl, howl); gl.uniform1f(prog.u.uMoonFlare, howl);
+    gl.uniform1f(prog.u.uHead, -.085 * ss(seg(t, 12.45, 12.95)));
+    bindTex(prog, 'uMask', s.t, 0); bindTex(prog, 'uForest', TX.forest, 1); bindTex(prog, 'uPine', TX.pine, 2);
+    lightsU(prog, L1, t, 1 + .5 * howl);
+  } else if (i === 2) {
+    const s = sil.eagle, [x, y, h, a] = eagleXf(t);
+    gl.uniform4f(prog.u.uSil, x, y, h * s.padH, a); gl.uniform1f(prog.u.uAsp, s.asp);
+    gl.uniform1f(prog.u.uFlap, flap(t)); gl.uniform1f(prog.u.uFold, -.12 * seg(t, 20.65, 21.0));
+    bindTex(prog, 'uMask', s.t, 0); bindTex(prog, 'uMount', TX.mount, 1);
+    lightsU(prog, L2, t);
+  } else if (i === 3) {
+    const sf = sil.salmon, sw = sil.whale, cam = camD(t);
+    const [fx, fy, fh, fa] = fishXf(t), [wx, wy, wh, wa] = whaleDXf(t);
+    const mo = ss(seg(t, 27.5, 29.3));
+    gl.uniform4f(prog.u.uSilF, fx, fy, fh * sf.padH, fa); gl.uniform1f(prog.u.uAspF, -sf.asp);
+    gl.uniform4f(prog.u.uSilW, wx, wy, wh * sw.padH, wa); gl.uniform1f(prog.u.uAspW, -sw.asp);
+    gl.uniform1f(prog.u.uMorph, mo); gl.uniform1f(prog.u.uSea, ss(seg(t, 26.6, 30.0)));
+    const ph = swimPhase(t);
+    gl.uniform1f(prog.u.uSwim, ph); gl.uniform1f(prog.u.uFAv, .03); gl.uniform1f(prog.u.uFYaw, .62);
+    { const c = 2.7, k = ((t - 22) % c + c) % c; gl.uniform1f(prog.u.uFFin, -.4 * Math.pow(Math.sin(Math.PI * clamp(k / .45)), 2)); }
+    gl.uniform1f(prog.u.uWPh, ph); gl.uniform1f(prog.u.uWA, whaleAmp(t));
+    gl.uniform1f(prog.u.uTail, .15 * Math.sin(ph - 3.6) * ss(seg(t, 27.4, 29.2)));
+    // the inner photographs ride with the fish (depth 0.6 coordinates), drifting back slowly: the window slides
+    const sfc = screenOf(fx, fy, 1, cam), anc = worldOf(sfc[0], sfc[1], .6, cam), drift = -26 * (t - T_D);
+    gl.uniform4f(prog.u.uTownR, anc[0] + 150 + drift, anc[1] + 15, 1450, 1450 * 1644 / 2560);
+    gl.uniform4f(prog.u.uCityR, ...cityRect(t, cam));
+    gl.uniform1f(prog.u.uSweep, lerp(fx + 520, fx - 520, ss(seg(t, 23.0, 25.0))));
+    gl.uniform1f(prog.u.uSweepOn, seg(t, 22.9, 23.1));
+    bindTex(prog, 'uMaskF', sf.t, 0); bindTex(prog, 'uMaskW', sw.t, 1); bindTex(prog, 'uTown', TX.town, 2); bindTex(prog, 'uCity', TX.city, 3);
+    lightsU(prog, [], t);
+  } else {
+    const s = sil.whale, [x, y, h, a] = whaleXf(t);
+    gl.uniform4f(prog.u.uSil, x, y, h * s.padH, a); gl.uniform1f(prog.u.uAsp, -s.asp);
+    const ph = swimPhase(t);
+    gl.uniform1f(prog.u.uWPh, ph); gl.uniform1f(prog.u.uWA, whaleAmp(t));
+    gl.uniform1f(prog.u.uTail, .15 * Math.sin(ph - 3.6) * (1 - .7 * eo(seg(t, T_REG0, 42.0))));
+    gl.uniform4f(prog.u.uCityR, ...cityRect(t, CAMS[4](t)));
+    gl.uniform1f(prog.u.uSweep, lerp(200, 1800, ss(seg(t, 33.6, 35.2))));
+    gl.uniform1f(prog.u.uSweepOn, seg(t, 33.5, 33.7)); gl.uniform1f(prog.u.uLitAll, ss(seg(t, 34.0, 35.2)));
+    gl.uniform1f(prog.u.uReg, ss(seg(t, T_REG0, T_REG1)));
+    gl.uniform1f(prog.u.uShore, ss(seg(t, T_REG1 - .6, T_DIS0 + .8)));
+    gl.uniform1f(prog.u.uDis, .64 * ss(seg(t, T_DIS0, T_DIS1)));
+    gl.uniform1f(prog.u.uRim, Math.min(seg(t, T_DIS0, T_DIS0 + .4), 1 - .5 * ss(seg(t, T_DIS1 - .4, T_DIS1 + 1.2))));
+    const camR = cam3(T_REG0), hzS = screenOf(960, 770, 1.15, camR)[1];
+    const cw = 2250, ch = cw * 1707 / 2560;
+    gl.uniform4f(prog.u.uCityS, 900, hzS - .01 * ch, cw, ch);
+    bindTex(prog, 'uMask', s.t, 0); bindTex(prog, 'uCity', TX.city, 1); bindTex(prog, 'uWaves', TX.waves, 2);
+    lightsU(prog, [], t);
+  }
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function sceneAt(t) { return t < T_AB1 ? 0 : t < T_WHIP ? 1 : t < T_X1 ? 2 : t < T_SW1 ? 3 : 4; }
+window.render = function (t) {
+  t = clamp(+t || 0, 0, DUR);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+  for (const p of [P0, P1, P2, P3, P4, PC]) { const l = gl.getAttribLocation(p.p, 'a'); if (l >= 0) { gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0); } }
+  const sA = sceneAt(t);
+  drawScene(sA, t, FA);
+  let mixv = 0, scr = 0;
+  if (t >= T_AB0 && t < T_AB1) { drawScene(1, t, FB); mixv = ss(seg(t, T_AB0, T_AB1)); scr = 0; }
+  if (t >= T_X0 && t < T_X1) { drawScene(3, t, FB); mixv = seg(t, T_X0, T_X1); scr = .55; }
+  const split = t >= T_SW0 && t < T_SW1;
+  if (split) drawScene(4, t, FB);
+  // motion blur from the camera's screen velocity (whips, the breach) + radial blur for the push and the dive
+  const dt = 1 / 60, cf = CAMS[sA], c0 = cf(Math.max(0, t - dt)), c1 = cf(Math.min(DUR, t + dt));
+  let bx = -(c1[0] - c0[0]) * c0[2] * SC * .4, by = (c1[1] - c0[1]) * c0[2] * SC * .4;
+  if (sA === 0) { bx = 0; by = 0; }
+  if (Math.abs(by) > 600 * SC) by = Math.sign(by) * 600 * SC;
+  let radial = 0;
+  if (sA === 0) radial = Math.min(.03, Math.abs(Math.log(c1[2] / c0[2])) * .6);
+  if (sA === 2) radial = .1 * Math.sin(Math.PI * seg(t, 20.65, 21.6));
+  const flash = 0;
+  const wsB = whaleScreenAny(T_BR), sprayAge = t - T_BR;
+  const drop = screenOf(960, 600, 1, cam3(t))[1] - screenOf(960, 600, 1, cam3(T_BR))[1];
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+  drawSubs(t);
+  gl.useProgram(PC.p);
+  gl.uniform2f(PC.u.uRes, W, H); gl.uniform1f(PC.u.uT, t); gl.uniform1f(PC.u.uMix, mixv); gl.uniform1f(PC.u.uScr, scr);
+  gl.uniform3f(PC.u.uBlurA, bx, by, radial); gl.uniform1f(PC.u.uFlash, flash);
+  gl.uniform1f(PC.u.uSplitOn, split ? 1 : 0);
+  gl.uniform4f(PC.u.uSplit, split ? surfY(t) : -100, whaleScreenAny(t)[0] + 120, 75 * Math.exp(-Math.pow((t - T_BR) / .22, 2)), ss(seg(t, T_SW0, T_SW0 + .4)));
+  gl.uniform4f(PC.u.uSpray, wsB[0] + 60, surfY(T_BR) - 20, sprayAge, sprayAge > -0.05 && sprayAge < 2.2 ? 1 : 0);
+  gl.uniform1f(PC.u.uSprayDrop, drop);
+  gl.uniform1f(PC.u.uZoom, 1 + .035 * eio(seg(t, T_DIS1 - .4, DUR)));
+  gl.uniform1f(PC.u.uTitleA, ss(seg(t, T_TITLE, T_TITLE + .7))); gl.uniform1f(PC.u.uTitleBlur, lerp(9, 0, eo(seg(t, T_TITLE, T_TITLE + .9))) * SC);
+  gl.uniform1f(PC.u.uCredA, ss(seg(t, T_CRED, T_CRED + .7))); gl.uniform1f(PC.u.uCredBlur, lerp(7, 0, eo(seg(t, T_CRED, T_CRED + .9))) * SC);
+  bindTex(PC, 'uA', FA.t, 0); bindTex(PC, 'uB', FB.t, 1); bindTex(PC, 'uTitle', TX.title, 2); bindTex(PC, 'uSub', subTex, 3);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+};
+window.DUR = DUR;
+window.SUBS = SUBS;
+window.TEXTS = t => {
+  const out = [];
+  if (t >= T_TITLE + .7) out.push({ id: 'title', text: '山海', x0: 1590 * SC, y0: 380 * SC, x1: 1746 * SC, y1: 690 * SC });
+  if (t >= T_CRED + .7) {
+    out.push({ id: 'film', text: 'Mountains and Seas', x0: 120 * SC, y0: 95 * SC, x1: 660 * SC, y1: 165 * SC });
+    out.push({ id: 'style', text: 'Double Exposure 双重曝光', x0: 120 * SC, y0: 180 * SC, x1: 460 * SC, y1: 225 * SC });
+    out.push({ id: 'credit', text: 'LemoLab × Claude Opus 5.5', x0: 120 * SC, y0: 268 * SC, x1: 560 * SC, y1: 310 * SC });
+  }
+  return out;
+};
+
+(async () => {
+  const fonts = [new FontFace(FONT_ZH, 'url(fonts/NotoSerifSC-600-film.ttf)', { weight: '600' }),
+    new FontFace(FONT_EN, 'url(fonts/Newsreader-VF.ttf)', { weight: '200 800' }),
+    new FontFace(FONT_ENI, 'url(fonts/Newsreader-Italic-VF.ttf)', { weight: '200 800', style: 'italic' })];
+  for (const f of fonts) { await f.load(); document.fonts.add(f); }
+  const [forest, mount, city, waves, town] = await Promise.all(['assets/forest.jpg', 'assets/mountains.jpg', 'assets/city.jpg', 'assets/waves.jpg', 'assets/rivertown.jpg'].map(load));
+  TX.forest = tex(forest); TX.mount = tex(mount); TX.city = tex(city); TX.waves = tex(waves); TX.town = tex(town);
+  TX.pine = tex(pineTexture());
+  [sil.stag, sil.wolf, sil.eagle, sil.salmon, sil.whale] = await Promise.all([
+    maskTexture('assets/stag.svg', 2400), maskTexture('assets/wolf.svg', 2600), maskTexture('assets/eagle.svg', 3000),
+    maskTexture('assets/salmon.svg', 2600, true), maskTexture('assets/humpback.svg', 3000, true)]);
+  TX.title = titleTexture();
+  P0 = program(FS0); P1 = program(FS1); P2 = program(FS2); P3 = program(FS3); P4 = program(FS4); PC = program(FSC);
+  FA = fbo(); FB = fbo();
+  window.render(0); window.READY = true;
+})().catch(e => { document.title = 'ERR ' + e.message; console.error(e); throw e; });
+</script></body></html>

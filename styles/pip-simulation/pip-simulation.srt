@@ -1,0 +1,49 @@
+1
+00:00:00,400 --> 00:00:05,900
+160 只小人，每只天生一个速度。
+160 Pips. Each one is born with its own speed.
+
+2
+00:00:06,000 --> 00:00:10,550
+吃到一颗能活下来，吃到两颗多生一只。
+One bean keeps you alive. Two beans make a copy.
+
+3
+00:00:10,650 --> 00:00:13,650
+跑得快的，先抢到豆子。
+The fast ones get there first.
+
+4
+00:00:13,750 --> 00:00:17,700
+可速度很耗体力，它们很快就跑不动了。
+But speed burns energy, and they run dry.
+
+5
+00:00:17,800 --> 00:00:21,220
+慢的，一直在走。
+The slow ones just keep going.
+
+6
+00:00:22,000 --> 00:00:27,200
+天黑时，慢的留下的后代是快的三倍。
+By nightfall, the slow ones have left three times as many children.
+
+7
+00:00:27,300 --> 00:00:31,300
+再跑一次，跑 20 代。
+Now run it again. 20 generations.
+
+8
+00:00:31,400 --> 00:00:36,000
+每天早上，台面上的蓝色都多一点。
+Every morning, there is a little more blue on the board.
+
+9
+00:00:38,000 --> 00:00:44,600
+平均速度从 1.25 降到 0.73。
+The average speed falls from 1.25 to 0.73.
+
+10
+00:00:45,000 --> 00:00:50,480
+跑得快不一定更好。在这套规则下，慢的赢了。
+Faster wasn't better. Under these rules, the slow ones win.

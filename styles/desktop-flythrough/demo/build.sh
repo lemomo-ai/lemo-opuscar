@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: 《叮之前》 Before the Ding (Desktop Flythrough demo)
+# One command: 《叮之前》 Before the Ding (Tabletop App Flythrough demo)
 #   sh styles/desktop-flythrough/demo/build.sh        Chinese voice-over, the library demo  → styles/desktop-flythrough/desktop-flythrough.mp4
 #   sh styles/desktop-flythrough/demo/build.sh en     English voice-over (same picture, same clock) → desktop-flythrough-en.mp4
 # Steps: fonts → voice (edge-tts, checked with Whisper) → voice clock → events → score, foley, mix → picture → master → reading-time check → stills.

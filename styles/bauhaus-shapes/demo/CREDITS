@@ -1,0 +1,23 @@
+Bauhaus Shapes · COMPOUND 《复利是怎么滚起来的》 — credits
+
+Picture
+- Every frame is drawn by the code in index.html and film.js (Canvas 2D). No images, no generated pictures.
+
+Fonts (not in git; build.sh downloads them)
+- Jost, variable (fonts/Jost-VF.ttf) — The Jost Project Authors (indestructible-type), SIL Open Font License 1.1, fonts/OFL-Jost.txt.
+  https://github.com/google/fonts/tree/main/ofl/jost
+- Noto Sans SC, variable (fonts/src/NotoSansSC-VF.ttf, subset by subset.sh to fonts/NotoSansSC-VF-sub.woff2) — Google / Adobe,
+  SIL Open Font License 1.1, fonts/OFL-NotoSansSC.txt. https://github.com/google/fonts/tree/main/ofl/notosanssc
+
+Voice (not in git; build.sh makes it)
+- Kokoro v1.0 (kokoro-onnx, Apache 2.0), voice af_heart, generated locally by core/tts/tts.py from voice/lines.json
+  (sh tools/fetch.sh voice).
+
+Music and effects (not in git; build.sh makes them)
+- Effects are synthesized by core/audio/sfx.py.
+- Instrument samples via core/audio/sampler.py (sh tools/fetch.sh instruments vsco2ce | vcsl | freepats), all CC0:
+  VS Chamber Orchestra: Community Edition (Versilian Studios) — cellos pizzicato, marimba, vibraphone, glockenspiel;
+  Versilian Community Sample Library (Versilian Studios) — concert harp; FreePats project (freepats.zenvoid.org) — kalimba.
+
+Numbers
+- See FACTS.md.

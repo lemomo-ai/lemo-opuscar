@@ -1,0 +1,29 @@
+The Hidden Column 《藏起来的那一列》 — Spreadsheet Film demo (52 s)
+
+DATA
+- Charig CR, Webb DR, Payne SR, Wickham JE. "Comparison of treatment of renal calculi by open surgery,
+  percutaneous nephrolithotomy, and extracorporeal shockwave lithotripsy." Br Med J (Clin Res Ed) 1986;292(6524):879–882.
+  https://doi.org/10.1136/bmj.292.6524.879 — the group counts used on screen; see FACTS.md.
+- Wikipedia, "Simpson's paradox", kidney stone treatment table (CC BY-SA 4.0 text; only the published numbers are used,
+  no text is reproduced on screen). https://en.wikipedia.org/wiki/Simpson%27s_paradox
+- Julious SA, Mullee MA. "Confounding and Simpson's paradox." BMJ 1994;309(6967):1480–1481. https://doi.org/10.1136/bmj.309.6967.1480
+
+FONTS (SIL Open Font License 1.1; not in git, build.sh downloads and subsets them)
+- Inter — The Inter Project Authors, https://github.com/rsms/inter ; file from https://github.com/google/fonts/tree/main/ofl/inter
+  licence text: fonts/OFL-inter.txt
+- Noto Sans SC — Adobe / Google, https://github.com/notofonts/noto-cjk ; file from https://github.com/google/fonts/tree/main/ofl/notosanssc
+  licence text: fonts/OFL-notosanssc.txt
+
+VOICE
+- Kokoro-82M (Apache 2.0), voice af_bella, via core/tts/tts.py; speech check with faster-whisper (MIT).
+
+MUSIC (sampled instruments via core/audio/sampler.py; fetch with sh tools/fetch.sh instruments)
+- Drums: "MuldjordKit" by Lars Muldjord (drumgizmo.org), FreePats version, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+- Piano: "Salamander Grand Piano V3" by Alexander Holm, CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+- Electric bass, hi-hat, marimba, xylophone, glockenspiel: FreePats project (freepats.zenvoid.org) and
+  Versilian Community Sample Library (Versilian Studios), CC0
+- Sound effects: synthesised in code (core/audio/sfx.py)
+
+PICTURE
+- Drawn entirely in code (index.html, Canvas 2D). No images or footage. The spreadsheet shell is generic and drawn
+  for this film; it shows no product name, logo or brand colours.

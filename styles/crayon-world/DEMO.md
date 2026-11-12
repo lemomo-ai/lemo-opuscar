@@ -4,6 +4,8 @@ One example among many. Don't reuse its story, arc, shots, props or timings.
 
 Demo: *The Butterfly* (《蝴蝶》, 64.5 s) · `crayon-world.mp4` · source in [`demo/`](demo/)
 
+Style and demo by [2nd1st](https://github.com/2nd1st), contributed to Lemo-Opuscar in [pull request #17](https://github.com/lemomo-ai/lemo-opuscar/pull/17).
+
 ## Story & structure
 
 An old woman has died. The film is her last visit, in first person: she wakes on a wild flower on the hillside above her village, flies down over the wheat and the roofs, over the bamboo fence into the garden she planted, and lands on one flower in the row. Her husband is watering the row with a long-handled ladle. At her flower he stops, looks down at it for a moment and doesn't pour; he waters the next ones, then looks back at it. Cut to his eyes: a yellow butterfly sits on that flower. It takes off toward the village and the hill, his gaze follows it up, and the page prints what he says: 等我哦。 / *Wait for me.*
@@ -47,7 +49,7 @@ D major, 3/4, 78 BPM (one bar = 2.308 s). Take-off (bar 3), the cut (19), the bu
 
 ## End card
 
-None: the film ends on the printed words, held over the music box running down. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
+No separate card: the film ends on the printed words, held over the music box running down. On the last bar line (bar 26, 60.0 s, with the final strummed chord) the sign-off `2nd1st × LemoLab × Claude Opus 5.5` is written in on the same blank paper, letter by letter over 1.4 s in the film's own crayon type (Patrick Hand, 32 px, indigo line colour), right-aligned on the paper between the roof and the tree at the right (`CREDIT`, `CR_AT` in `film.js`); it holds to the end, 4.5 s. 2nd1st made this style and its demo. The "LemoLab × Claude Opus 5.5" sign-off belongs to this library's demo only; a user's film carries no LemoLab credit and no copy of this card.
 
 ## Build notes
 
@@ -55,7 +57,11 @@ None: the film ends on the printed words, held over the music box running down. 
 sh styles/crayon-world/demo/build.sh
 ```
 
-Fonts (if missing) → sample libraries (if missing) → `tools/score.py` → picture at 24 fps with `core/render/video.mjs` (≈ 1 min on an M-series Mac, 4 workers) → `mux.sh` (−14 LUFS, light grain) → `readcheck.mjs` → poster at 32.5 s (over the fence into the garden) and four stills.
+Fonts (if missing) → sample libraries (if missing) → `tools/score.py` → picture at 24 fps with `core/render/video.mjs` (≈ 1 min on an M-series Mac, 4 workers; `WORKERS=2` for fewer) → `mux.sh` (−14 LUFS, no grain) → delivery encode → `readcheck.mjs` → poster at 32.5 s (over the fence into the garden) and four stills.
+
+On a fresh clone: the fonts need the network (Google Fonts); the sample packs come from `sh tools/fetch.sh instruments freepats`, `vcsl` and `vsco2ce` (build.sh fetches any that are missing); three.js and playwright-core from the library's `npm install`, numpy/scipy/soundfile from its `.venv`.
+
+File size: every drawing is new wax and paper texture, so at `mux.sh`'s crf 19 the film is about 500 MB. build.sh therefore masters without added grain (the second frame of each drawing is then an exact repeat and costs almost nothing) and re-encodes the master with x264 `-preset slow -crf 30`, audio copied, to about 150 MB. Strokes, outlines and type keep their look; only the finest paper tooth softens a little. `CRF=<n>` changes it.
 
 ![Waking on the slope](demo/stills/frame_wake.jpg) ![Over the village](demo/stills/frame_village.jpg)
 ![On her flower, watching him](demo/stills/frame_landed.jpg) ![His words](demo/stills/frame_words.jpg)
@@ -68,7 +74,7 @@ Fonts (if missing) → sample libraries (if missing) → `tools/score.py` → pi
 | `demo/film.js` | the world, the camera route and gaze, his watering, the butterfly, the words, `frame(t)` and `texts(t)` |
 | `demo/main.js` | the page contract (`render(t)`, `DUR`, `TEXTS(t)`); `?to=<s>` renders only the start |
 | `demo/tools/score.py` | the score and foley, written to `demo/out/mix.wav` |
-| `demo/tools/fonts.py` | subsets Long Cang and Patrick Hand to the two printed lines (reads `LINE` and `LINE_EN` in `film.js`; needs the network) |
+| `demo/tools/fonts.py` | subsets Long Cang and Patrick Hand to the two printed lines and the sign-off (reads `LINE`, `LINE_EN` and `CREDIT` in `film.js`; needs the network) |
 
 Pitfalls tied to this demo:
 

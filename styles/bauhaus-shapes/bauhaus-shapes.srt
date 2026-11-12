@@ -1,0 +1,59 @@
+1
+00:00:00,800 --> 00:00:03,350
+从一个点开始。
+Start with one dot.
+
+2
+00:00:03,500 --> 00:00:06,680
+每 10 年，它翻一倍。
+Every 10 years, it doubles.
+
+3
+00:00:07,350 --> 00:00:12,150
+70 年后，它是 128。
+After 70 years, it's 128.
+
+4
+00:00:12,300 --> 00:00:17,080
+换个做法：每年把利息取走，利率不变。
+Now take the interest out every year, at the same rate.
+
+5
+00:00:17,230 --> 00:00:21,250
+70 年后，只有 6 出头。
+Seventy years later, you have just over 6.
+
+6
+00:00:21,400 --> 00:00:24,110
+奇怪的地方在这里。
+Here is the strange part.
+
+7
+00:00:24,260 --> 00:00:27,670
+最后 10 年，多出 64。
+The last 10 years add 64.
+
+8
+00:00:27,820 --> 00:00:33,050
+等于之前所有的增长，再加上最初那个点。
+That's all the growth before them, plus the dot you started with.
+
+9
+00:00:33,200 --> 00:00:36,960
+同一道坡，晚出发 10 年，
+Start 10 years later, on the same slope,
+
+10
+00:00:37,110 --> 00:00:39,790
+终点只剩一半。
+and you finish with half.
+
+11
+00:00:41,500 --> 00:00:45,800
+72 除以年利率，
+72, divided by your yearly rate,
+
+12
+00:00:45,950 --> 00:00:49,880
+就是翻一倍要的年数。
+tells you how many years it takes to double.

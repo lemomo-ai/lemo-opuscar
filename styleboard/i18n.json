@@ -1,0 +1,1082 @@
+{
+ "_doc": [
+  "Site text that style.json does not hold. tags: the use filters on the gallery (id, English, Chinese); tag_of: 1-3 tags per style;",
+  "uses_cn: Chinese for each English \"uses\" phrase in style.json; about: one sentence on what the style looks like, per style, in both languages.",
+  "styleboard/build.py --site stops when a style has no tags, a use has no Chinese, or a style has no \"about\"."
+ ],
+ "tags": [
+  {
+   "id": "science",
+   "en": "Science & how-it-works",
+   "zh": "科普讲解"
+  },
+  {
+   "id": "product",
+   "en": "Product & launch",
+   "zh": "产品发布"
+  },
+  {
+   "id": "news",
+   "en": "News & documentary",
+   "zh": "新闻纪实"
+  },
+  {
+   "id": "data",
+   "en": "Data & reports",
+   "zh": "数据报告"
+  },
+  {
+   "id": "story",
+   "en": "Stories",
+   "zh": "讲故事"
+  },
+  {
+   "id": "music",
+   "en": "Music & rhythm",
+   "zh": "MV 与节奏"
+  },
+  {
+   "id": "brand",
+   "en": "Titles & brand",
+   "zh": "片头与品牌"
+  },
+  {
+   "id": "culture",
+   "en": "Culture & heritage",
+   "zh": "文化与节日"
+  }
+ ],
+ "tag_of": {
+  "archive-lighttable": [
+   "culture",
+   "brand",
+   "news"
+  ],
+  "art-deco": [
+   "brand"
+  ],
+  "ascii-crt": [
+   "product",
+   "brand"
+  ],
+  "assembly-line-diagram": [
+   "science"
+  ],
+  "backrooms": [
+   "story"
+  ],
+  "bauhaus-shapes": [
+   "science",
+   "data",
+   "brand"
+  ],
+  "blueprint": [
+   "science",
+   "product"
+  ],
+  "brick-toy": [
+   "product",
+   "story"
+  ],
+  "briefing-board": [
+   "science",
+   "data"
+  ],
+  "caption-news": [
+   "news",
+   "data"
+  ],
+  "cel-anime-80s": [
+   "music",
+   "story"
+  ],
+  "chalkboard": [
+   "science",
+   "culture"
+  ],
+  "circuit-board": [
+   "science",
+   "product"
+  ],
+  "city-symphony": [
+   "music",
+   "brand"
+  ],
+  "colored-pencil": [
+   "science",
+   "story"
+  ],
+  "comic-history": [
+   "news",
+   "story"
+  ],
+  "countdown": [
+   "product",
+   "news"
+  ],
+  "crayon-book": [
+   "story"
+  ],
+  "crayon-world": [
+   "story"
+  ],
+  "dark-documentary": [
+   "news",
+   "science"
+  ],
+  "dark-keynote": [
+   "product"
+  ],
+  "data-physical": [
+   "data"
+  ],
+  "dataviz": [
+   "data",
+   "news"
+  ],
+  "desktop-flythrough": [
+   "product"
+  ],
+  "double-exposure": [
+   "brand",
+   "music"
+  ],
+  "engraving": [
+   "science",
+   "culture"
+  ],
+  "firefly-pointillism": [
+   "story"
+  ],
+  "flat-space-explainer": [
+   "science"
+  ],
+  "flow-field": [
+   "data",
+   "science",
+   "news"
+  ],
+  "game-show": [
+   "music",
+   "data"
+  ],
+  "gilded-illumination": [
+   "story",
+   "culture",
+   "brand"
+  ],
+  "glass-product": [
+   "product"
+  ],
+  "halftone-dossier": [
+   "story"
+  ],
+  "hardcore-info": [
+   "science",
+   "product"
+  ],
+  "hd-2d": [
+   "story"
+  ],
+  "hologram-hud": [
+   "product"
+  ],
+  "impasto": [
+   "music",
+   "culture",
+   "brand"
+  ],
+  "ink-wash": [
+   "culture",
+   "story",
+   "brand"
+  ],
+  "instruction-manual": [
+   "product",
+   "science"
+  ],
+  "ipad-sketch": [
+   "science"
+  ],
+  "iso-infographic": [
+   "science",
+   "data"
+  ],
+  "isometric-picture-book": [
+   "science",
+   "data"
+  ],
+  "kino-montage": [
+   "news",
+   "brand"
+  ],
+  "lidar-survey": [
+   "science",
+   "culture"
+  ],
+  "living-screencast": [
+   "product"
+  ],
+  "lowpoly-island": [
+   "story"
+  ],
+  "manga-panels": [
+   "music",
+   "product"
+  ],
+  "map-explainer": [
+   "news",
+   "data"
+  ],
+  "marker-paper": [
+   "science"
+  ],
+  "memphis-diorama": [
+   "brand"
+  ],
+  "microgame": [
+   "product",
+   "story"
+  ],
+  "microscope": [
+   "science",
+   "product"
+  ],
+  "midcentury-toon": [
+   "product",
+   "science"
+  ],
+  "neon-tubes": [
+   "brand",
+   "music",
+   "story"
+  ],
+  "news-package": [
+   "news"
+  ],
+  "newsreel": [
+   "news",
+   "culture"
+  ],
+  "one-bit-dither": [
+   "science",
+   "story"
+  ],
+  "one-line": [
+   "brand",
+   "story"
+  ],
+  "oscilloscope-math": [
+   "science"
+  ],
+  "paper-lantern": [
+   "story",
+   "culture"
+  ],
+  "paper-popup": [
+   "story"
+  ],
+  "papercut-red": [
+   "culture",
+   "story"
+  ],
+  "pen-plotter": [
+   "data"
+  ],
+  "pictogram-motion": [
+   "brand",
+   "science",
+   "story"
+  ],
+  "pip-simulation": [
+   "science",
+   "data"
+  ],
+  "pixel-rpg": [
+   "story"
+  ],
+  "pop-art": [
+   "brand",
+   "data",
+   "science"
+  ],
+  "precise-mechanism": [
+   "science",
+   "product"
+  ],
+  "printed-long-take": [
+   "story"
+  ],
+  "risograph": [
+   "brand"
+  ],
+  "rubber-hose": [
+   "brand",
+   "story"
+  ],
+  "satellite-briefing": [
+   "news",
+   "data",
+   "science"
+  ],
+  "scifi-toon": [
+   "story",
+   "brand"
+  ],
+  "scratch-film": [
+   "story"
+  ],
+  "security-xray": [
+   "science",
+   "product"
+  ],
+  "shadow-puppet": [
+   "culture",
+   "story"
+  ],
+  "silent-film": [
+   "story",
+   "brand"
+  ],
+  "silhouette-rhythm": [
+   "music",
+   "brand"
+  ],
+  "silkscreen-poster": [
+   "brand",
+   "culture"
+  ],
+  "sketchnote": [
+   "science"
+  ],
+  "spreadsheet": [
+   "data"
+  ],
+  "spy-titles": [
+   "brand"
+  ],
+  "stained-glass": [
+   "culture",
+   "story"
+  ],
+  "stick-explainer": [
+   "science",
+   "data"
+  ],
+  "swiss-motion": [
+   "brand"
+  ],
+  "teardown": [
+   "product",
+   "science"
+  ],
+  "telestrator": [
+   "news",
+   "science"
+  ],
+  "text-flash-cuts": [
+   "brand",
+   "story"
+  ],
+  "thermal-camera": [
+   "science"
+  ],
+  "tilt-shift": [
+   "brand"
+  ],
+  "transit-map": [
+   "data"
+  ],
+  "ukiyoe": [
+   "culture",
+   "story"
+  ],
+  "urban-sketch": [
+   "brand",
+   "culture"
+  ],
+  "vintage-collage": [
+   "culture",
+   "news"
+  ],
+  "visual-investigation": [
+   "news"
+  ],
+  "watercolor": [
+   "science",
+   "story"
+  ],
+  "white-model": [
+   "data"
+  ],
+  "whiteboard": [
+   "science"
+  ],
+  "woodcut": [
+   "culture",
+   "story",
+   "brand"
+  ]
+ },
+ "uses_cn": {
+  "Brand history": "品牌历史",
+  "Archive stories": "档案故事",
+  "Museums": "博物馆",
+  "Luxury & hospitality": "奢侈品与酒店",
+  "Galas": "晚会",
+  "Invitations": "邀请函",
+  "Developer tools": "开发者工具",
+  "Sci-fi": "科幻",
+  "Tech brands": "科技品牌",
+  "How a process works": "讲清一个流程",
+  "Biology and medicine": "生物与医学",
+  "Supply chains and pipelines": "供应链与流水线",
+  "Horror": "恐怖",
+  "Mystery & ARG": "悬疑与 ARG",
+  "Game teasers": "游戏先导片",
+  "Finance and economics explainers": "金融与经济科普",
+  "Mechanisms and principles": "机制与原理",
+  "Titles and chapter cards": "片头与章节卡",
+  "Engineering": "工程",
+  "Hardware launches": "硬件发布",
+  "Tech explainers": "技术讲解",
+  "Toys & kids": "玩具与儿童",
+  "Product builds": "产品组装",
+  "Space": "太空",
+  "Option comparisons": "方案比选",
+  "Briefings": "简报",
+  "Social news": "社媒新闻",
+  "Report explainers": "报告解读",
+  "Data shorts": "数据短片",
+  "Music videos": "音乐 MV",
+  "Game trailers": "游戏预告",
+  "Nostalgia": "怀旧",
+  "Word origins": "字源",
+  "Myth-busting": "辟谣",
+  "Lessons": "课堂",
+  "Energy": "能源",
+  "Supply chains": "供应链",
+  "Devices": "电子设备",
+  "City films": "城市片",
+  "Music montages": "音乐蒙太奇",
+  "Openers": "开场片",
+  "Natural-science cutaways": "自然科学剖面图",
+  "Picture-book explainers": "绘本式讲解",
+  "Hidden structures and processes": "看不见的结构与过程",
+  "Territorial changes in history": "历史上的版图变化",
+  "Light explainers on geopolitics": "轻松讲地缘政治",
+  "Market share and turf-war stories": "市场份额与地盘之争",
+  "Launches": "发射",
+  "Countdowns": "倒计时",
+  "Live events": "现场直播",
+  "Picture books": "绘本",
+  "Bedtime stories": "睡前故事",
+  "Kids' learning": "儿童启蒙",
+  "Short stories": "短篇故事",
+  "Tributes": "致敬片",
+  "Journeys": "旅程",
+  "History of science and engineering": "科学与工程史",
+  "Archaeology, sites and reconstructions": "考古、遗址与复原",
+  "Astronomy, deep space and survey": "天文、深空与巡天",
+  "Product launches": "产品发布",
+  "SaaS": "SaaS",
+  "Keynotes": "发布会",
+  "Annual reports": "年报",
+  "Investor decks": "投资人路演",
+  "Energy data": "能源数据",
+  "Data journalism": "数据新闻",
+  "Reports": "报告",
+  "Climate & science": "气候与科学",
+  "App explainers": "应用讲解",
+  "Workflows": "工作流程",
+  "Products": "产品",
+  "Brand and city films": "品牌片与城市片",
+  "Documentary and series openings": "纪录片与剧集片头",
+  "Music video intros": "MV 开场",
+  "Museum labels": "展品说明",
+  "Science explainers": "科普讲解",
+  "Brand heritage": "品牌传承",
+  "Picture-book stories": "绘本故事",
+  "Many becoming one": "众人汇成一个",
+  "Night and nature lyric": "夜色与自然抒情",
+  "Scale and size": "尺度与大小",
+  "Classroom": "课堂",
+  "Storms, monsoons and other weather": "台风、季风等天气",
+  "Ocean currents and river floods": "洋流与河流洪水",
+  "Any flow measured against a threshold": "任何对照阈值的流动",
+  "Tech timelines": "科技编年",
+  "Year in review": "年度回顾",
+  "Variety shows": "综艺",
+  "Fables and picture-book stories": "寓言与绘本故事",
+  "Holiday and festival shorts": "节日短片",
+  "Brand and origin stories": "品牌与起源故事",
+  "Consumer tech": "消费电子",
+  "Beauty": "美妆",
+  "Humour": "幽默",
+  "Pet content": "萌宠",
+  "Social shorts": "社媒短片",
+  "Hardware explainers": "硬件科普",
+  "Product engineering": "产品工程",
+  "Science education": "科学教育",
+  "Fantasy": "奇幻",
+  "Story films": "故事片",
+  "Spec walkthroughs": "规格导览",
+  "Launch videos": "发布短片",
+  "Trade shows": "展会",
+  "Art & culture": "艺术文化",
+  "Emotional ads": "情感广告",
+  "Wuxia": "武侠",
+  "Cultural brands": "文化品牌",
+  "Poetry": "诗歌",
+  "Assembly and set-up guides": "组装与安装指南",
+  "Safety instructions": "安全须知",
+  "Product onboarding": "产品上手引导",
+  "Food & drink explainers": "饮食科普",
+  "Craft and how-to": "手作与教程",
+  "Lifestyle science": "生活里的科学",
+  "Process explainers": "流程讲解",
+  "Everyday rules": "日常规则",
+  "Queues": "排队",
+  "Comparisons": "对比",
+  "Industry histories": "行业史",
+  "Milestones": "里程碑",
+  "Collective effort": "众人合力",
+  "Heritage": "文化遗产",
+  "Environment": "环境",
+  "Site surveys": "场地勘测",
+  "Product tutorials": "产品教程",
+  "Feature launches": "新功能发布",
+  "Onboarding": "新手引导",
+  "World building": "世界观",
+  "Calm content": "治愈系",
+  "Anime openings": "动画片头",
+  "News and geopolitics": "新闻与地缘政治",
+  "Energy, trade and shipping": "能源、贸易与航运",
+  "Rivers, borders and terrain": "河流、边界与地形",
+  "Worked problems": "例题演算",
+  "Web heroes": "网页头图",
+  "Ambient loops": "氛围循环",
+  "Seasons": "四季",
+  "Biomedicine": "生物医学",
+  "Materials science": "材料科学",
+  "Skincare science": "护肤科学",
+  "Set-up guides": "安装指南",
+  "Help centres": "帮助中心",
+  "How-to": "操作教程",
+  "Shop openings and mascot stories": "开业与吉祥物故事",
+  "Nightlife and city-pop music videos": "夜生活与城市流行 MV",
+  "City and festival night idents": "城市与节庆夜景片头",
+  "News round-ups": "新闻汇总",
+  "Bulletins": "新闻简报",
+  "Market updates": "市场快讯",
+  "History stories": "历史故事",
+  "Fads & eras": "潮流与年代",
+  "Anniversaries": "周年纪念",
+  "History told through a chain of media": "用一串媒介讲历史",
+  "Printing, scanning and signals": "印刷、扫描与信号",
+  "Night scenes and space": "夜景与太空",
+  "Brand stories": "品牌故事",
+  "Life milestones": "人生大事",
+  "Minimal ads": "极简广告",
+  "Maths and physics lessons": "数学与物理课",
+  "Signals and electronics": "信号与电子",
+  "Journeys and travel": "旅程与旅行",
+  "Farewells and anniversaries": "告别与纪念日",
+  "Places and their stories": "地方和它的故事",
+  "Children's books": "童书",
+  "Lunar New Year": "春节",
+  "Festive greetings": "节日祝福",
+  "Folk tales": "民间故事",
+  "Maps and terrain": "地图与地形",
+  "Measurements and records": "测量与纪录",
+  "Generative and data drawings": "生成与数据绘图",
+  "Public services and city stories": "公共服务与城市故事",
+  "Brand and event identity films": "品牌与活动形象片",
+  "Explainers told through signs and objects": "用标志和物件讲解",
+  "Evolution and natural selection": "进化与自然选择",
+  "Game theory and agent-based models": "博弈论与个体模拟",
+  "Epidemics, queues and markets": "疫情、排队与市场",
+  "Recaps": "回顾",
+  "Everyday-object explainers": "日常物件科普",
+  "Brand and product posters": "品牌与产品海报",
+  "Small data stories": "小数据故事",
+  "How machines work": "机器怎么运转",
+  "Product and engineering explainers": "产品与工程讲解",
+  "Science teaching": "科学教学",
+  "Wildlife": "野生动物",
+  "Landscapes": "风景",
+  "Indie brands": "独立品牌",
+  "Zines": "独立小志",
+  "Lifestyle": "生活方式",
+  "Food & drink": "餐饮",
+  "Retro ads": "复古广告",
+  "Kids": "儿童",
+  "Climate": "气候",
+  "News explainers": "新闻解读",
+  "Geography": "地理",
+  "Comedy": "喜剧",
+  "Things that happen in the dark": "黑暗里发生的事",
+  "One mark to a whole system": "从一笔到整个系统",
+  "Small adventures told in light and shadow": "光影里的小冒险",
+  "Airport and customs screening": "机场与海关安检",
+  "Parcel and cargo inspection": "包裹与货物查验",
+  "Product internals": "产品内部结构",
+  "Myths & folklore": "神话传说",
+  "Festivals": "节庆",
+  "Retro brands": "复古品牌",
+  "Silent storytelling": "无声叙事",
+  "Sports and team films": "体育与团队片",
+  "Nature and festival openers": "自然与节庆开场",
+  "Destination guides": "目的地指南",
+  "Tourism": "旅游推广",
+  "Event posters": "活动海报",
+  "Lecture notes": "课堂笔记",
+  "One-page summaries": "一页纸总结",
+  "Data literacy": "数据素养",
+  "Finance & costs": "财务与成本",
+  "Analytics explainers": "数据分析讲解",
+  "Title sequences": "片头",
+  "Event openers": "活动开场",
+  "Trailers": "预告片",
+  "Legends": "传说",
+  "Holiday stories": "节日故事",
+  "Networks & social ideas": "网络与社会概念",
+  "Data comparisons": "数据对比",
+  "Brand identity": "品牌形象",
+  "Events": "活动",
+  "Design education": "设计教学",
+  "Product pages": "产品页",
+  "Spec explainers": "参数讲解",
+  "Sports analysis": "体育分析",
+  "Match recaps": "赛事回顾",
+  "Coaching": "战术教学",
+  "Suspense & drama trailers": "悬疑与剧情预告",
+  "Manifesto films": "宣言片",
+  "Building and energy inspection": "建筑与能耗检测",
+  "Wildlife at night": "夜间野生动物",
+  "Machines and electrics": "机器与电气",
+  "City promos": "城市宣传",
+  "Real estate": "房地产",
+  "Transport": "交通",
+  "Growth over time": "发展历程",
+  "Networks": "网络结构",
+  "Travel": "旅行",
+  "Japanese culture": "日本文化",
+  "City & travel": "城市与旅行",
+  "Architecture": "建筑",
+  "Lifestyle brands": "生活方式品牌",
+  "The history of an object": "一件东西的历史",
+  "Magazine-style explainers on ideas and society": "杂志风的思想与社会讲解",
+  "Archive and collecting stories": "档案与收藏故事",
+  "Reconstructions": "事件复原",
+  "Fact-checks": "事实核查",
+  "Incident reports": "事故报告",
+  "Nature documentary": "自然纪录片",
+  "Urban planning": "城市规划",
+  "Exhibitions": "展览",
+  "City data": "城市数据",
+  "Explainers": "讲解片",
+  "Online courses": "网课",
+  "Science": "科学",
+  "Craft brands": "手作品牌",
+  "Book trailers": "新书预告"
+ },
+ "about": {
+  "archive-lighttable": {
+   "en": "Real archive objects (glass negatives, letters, telegrams, clippings) lie on a cool, backlit light table and come alive under a loupe.",
+   "zh": "玻璃底片、信件、电报、剪报等真实档案摆在冷光灯台上，放大镜一落，物件就活过来。"
+  },
+  "art-deco": {
+   "en": "Black lacquer, engraved gold line and airbrushed geometry: a 1930s poster that moves.",
+   "zh": "黑漆底、雕刻般的金线和喷绘几何：一张会动的 1930 年代海报。"
+  },
+  "ascii-crt": {
+   "en": "Everything on screen is a real character on a monospace grid, lit by the phosphor of an old monochrome CRT.",
+   "zh": "画面上的一切都是等宽网格里的真实字符，靠老式单色显像管的荧光发亮。"
+  },
+  "assembly-line-diagram": {
+   "en": "A process shown as a factory cut open: rooms on floors are work stations with tiny workers, and coloured pipes carry the goods from one to the next.",
+   "zh": "把一个过程画成剖开的工厂：每层每间是一个工位，小工人在干活，彩色管道把东西一站站送下去。"
+  },
+  "backrooms": {
+   "en": "Camcorder tapes recovered from empty, endless, fluorescent-lit spaces: rules instead of monsters.",
+   "zh": "从空旷无尽、日光灯照着的空间里找回的摄像机录像带，吓人的不是怪物，是守则。"
+  },
+  "bauhaus-shapes": {
+   "en": "Circles, squares and triangles in flat colour on matte paper, each drawn to scale as an amount, laid out on a visible construction grid.",
+   "zh": "只用圆、方、三角和直线，平涂在哑光纸上；每个形状按比例代表一个数量，排在看得见的构成网格上。"
+  },
+  "blueprint": {
+   "en": "Engineering drawings that come alive on a sheet of cyanotype paper: white technical line work on Prussian blue, drawn in drafting order, with annotations that move.",
+   "zh": "在蓝晒纸上活过来的工程图：普鲁士蓝底上的白色制图线，按制图顺序画出，标注会动。"
+  },
+  "brick-toy": {
+   "en": "Stop-motion toy-brick films shot like macro photography on a real desk: a world built from interlocking plastic bricks with round studs, animated a pose at a time.",
+   "zh": "在真实书桌上用微距拍的积木定格动画：带圆凸点的塑料积木拼成世界，一个姿势一个姿势地动。"
+  },
+  "briefing-board": {
+   "en": "One real whiteboard wall, filmed: window light on enamel, ghosts of erased marker, frame and tray.",
+   "zh": "实拍的一整面白板墙：窗光落在搪瓷板面上，留着没擦净的马克笔印，还有边框和笔槽。"
+  },
+  "caption-news": {
+   "en": "Social-video news that reads with the sound off: huge captions over real footage, slammed in a chunk at a time.",
+   "zh": "关掉声音也能看懂的社媒新闻：大字幕压在真实素材上，一块一块砸进画面。"
+  },
+  "cel-anime-80s": {
+   "en": "Hand-painted cel animation from the golden age of Japanese OVAs, re-created in code: two-tone cels over airbrushed backgrounds, backlit neon, late-80s videotape on a CRT.",
+   "zh": "重现日本 OVA 黄金年代的赛璐璐动画：双色平涂、喷绘背景、背光霓虹，像老录像带在显像管上播。"
+  },
+  "chalkboard": {
+   "en": "A real classroom blackboard on which chalk writes itself, stroke by stroke in true stroke order, with no hand, no chalk stick and no eraser in sight.",
+   "zh": "真实教室的黑板上，粉笔字按正确笔顺一笔一笔自己写出来，看不到手、粉笔和板擦。"
+  },
+  "circuit-board": {
+   "en": "The subject is drawn as a circuit board seen from above: copper under green solder mask, routes as traces, places as pads, whatever flows as light.",
+   "zh": "把题材画成俯视的电路板：绿色阻焊层下是铜，路线是走线，地点是焊盘，流动的东西是光。"
+  },
+  "city-symphony": {
+   "en": "A city film cut like minimalist music: time-lapse turns traffic, crowds and clouds into rivers of light, and cuts grow denser with the score.",
+   "zh": "像极简音乐一样剪的城市片：延时摄影把车流、人群和云变成光河，剪辑跟着配乐越来越密。"
+  },
+  "colored-pencil": {
+   "en": "A real 3D cutaway world redrawn every frame as a coloured-pencil plate on toothed paper, with graphite contours and pencilled paper tags.",
+   "zh": "真 3D 剖面世界，每帧重画成粗纹纸上的彩铅图版：铅笔轮廓、层层排线、手写纸标签。"
+  },
+  "comic-history": {
+   "en": "Countries as paper puppets on a printed paper map: whoever takes land cuts a scrap and slaps it on, panel by panel across one comic page.",
+   "zh": "国家是开口钉连着的纸偶，站在印刷纸地图上；谁占了地就剪一块纸拍上去，一格一格排在一页漫画里。"
+  },
+  "countdown": {
+   "en": "An edit style, not a look: real footage of one event shown in real time, the screen splitting into more cells as zero nears, then merging.",
+   "zh": "一种剪法而不是画风：真实素材按真实时间播放，越近零点分屏越多，归零时合成一个画面。"
+  },
+  "crayon-book": {
+   "en": "A picture-book page drawn live in wax crayon on toothy paper, with a watercolour wash that reveals what the crayon was hiding.",
+   "zh": "在粗纹纸上用蜡笔现场画出的绘本页，水彩一刷，蜡笔藏着的东西就显出来。"
+  },
+  "crayon-world": {
+   "en": "A real 3D world redrawn in a child’s wax crayon twelve times a second, with true depth and a camera moving through it on one sheet of paper.",
+   "zh": "真 3D 世界被孩子的蜡笔每秒重画 12 次：有真实的纵深和运镜，每一帧仍是同一张纸上的蜡笔画。"
+  },
+  "dark-documentary": {
+   "en": "A black world that only exists where a scan of light has passed, leaving fading echoes: contours, range rings, wireframes, and facts read off instruments.",
+   "zh": "漆黑的世界，只有扫描光掠过的地方才显形，留下慢慢淡去的回波：等高线、距离环、线框，事实以仪表读数出现。"
+  },
+  "dark-keynote": {
+   "en": "A software launch film where the interface itself is the star: near-black gradient, hairline grid, soft light, one brand accent, and UI that moves with snap-grid precision.",
+   "zh": "界面本身当主角的软件发布片：近黑渐变、极细网格、柔光、一个品牌色，元素按网格精准吸附移动。"
+  },
+  "data-physical": {
+   "en": "Real statistics built as real objects: every unit a countable piece (plate, block, coin, bar) stacked to exact scale and shot like a studio product.",
+   "zh": "把真实统计数据做成实物：每个单位是一块数得清的材料，按准确比例叠起，像产品一样棚拍。"
+  },
+  "dataviz": {
+   "en": "A chart that tells a story: real data, drawn mark by mark on cream paper by a red–blue pencil, with handwritten notes pinned to the numbers.",
+   "zh": "会讲故事的图表：红蓝铅笔在米色纸上一笔一笔画出真实数据，手写批注钉在数字旁边。"
+  },
+  "desktop-flythrough": {
+   "en": "App screens and tools lie on a sunlit desk as printed paper cards; small voxel characters carry the work card to card, chased by one unbroken camera.",
+   "zh": "应用界面印成纸卡摊在洒满阳光的书桌上，体素小人把活儿一张张往下传，镜头一镜到底紧跟。"
+  },
+  "double-exposure": {
+   "en": "An animal silhouette as a window onto a second photograph, in monochrome with warm lamps, the shape and the world inside it moving at different speeds.",
+   "zh": "动物剪影是一扇窗，里面是另一张照片；黑白影像配暖色灯光，剪影和里面的世界以不同速度移动。"
+  },
+  "engraving": {
+   "en": "An intaglio plate that engraves itself: a burin cuts swelling lines into copper, a proof is pulled, and outline, hatching and cross-hatching build a finished plate.",
+   "zh": "自己刻出来的铜版画：雕刀推出粗细起伏的线，拓出样张，轮廓、排线、交叉线一层层叠成图版。"
+  },
+  "firefly-pointillism": {
+   "en": "Thousands of soft breathing points of light on black form every figure and word, and scatter and gather to become the next.",
+   "zh": "黑底上成千上万个呼吸的柔光点组成人物、动物和字，散开、飞走、再聚成新的东西。"
+  },
+  "flat-space-explainer": {
+   "en": "Solid flat shapes with hard-ring glows on deep night blue, drawn to true scale, with a scale readout as the camera travels through orders of magnitude.",
+   "zh": "深夜蓝底上的平涂实心形状，光晕是两圈硬边环；每帧按真实比例画，镜头穿越数量级时角落读出尺度。"
+  },
+  "flow-field": {
+   "en": "An invisible flow made visible as thousands of thin ink streamlines on warm paper, computed from real data and bending round coasts and mountains.",
+   "zh": "把看不见的流动画成暖色纸上成千上万条细墨流线，由真实数据算出，绕着海岸和山脉弯转。"
+  },
+  "game-show": {
+   "en": "A rhythm-game variety show in flat vector: toy-like mascots with thick ink outlines on candy-coloured stripes and sunbursts, every hit locked to the beat.",
+   "zh": "扁平矢量的节奏游戏综艺：粗墨线的玩具感角色站在糖果色条纹和放射光上，每一下都卡在拍子上。"
+  },
+  "gilded-illumination": {
+   "en": "The whole frame is one gilded miniature: flat mineral pigments in firm ink lines, white-lead highlights, and real gold leaf that shines only when light crosses it.",
+   "zh": "整个画面是一幅泥金细密画：矿物颜料平涂、墨线勾边、铅白点高光，真金箔只在光扫过时发亮。"
+  },
+  "glass-product": {
+   "en": "Launch-film product rendering in transparent and frosted glass: dark-field studio, strip-light sweeps, dispersion, caustics, light travelling inside the object, slow exploded views that snap shut on a downbeat.",
+   "zh": "透明与磨砂玻璃的产品发布片：暗场灯条扫光、色散、焦散，光在物体里走，爆炸图踩着重拍合拢。"
+  },
+  "halftone-dossier": {
+   "en": "A retro print case file: cream archive paper, overprinted halftone dots in a few flat inks, huge headlines with misregistered shadows, rubber stamps that slam, and thick-outlined characters.",
+   "zh": "复古印刷的案卷：米色档案纸，几色网点叠印，大标题带错位的影子，橡皮章重重盖下，角色描粗边。"
+  },
+  "hardcore-info": {
+   "en": "A real-sized 3D object traced live into a black-line technical drawing on warm paper, with numbered leaders and one accent colour for the one path explained.",
+   "zh": "按真实尺寸建模的物件实时描成暖白纸上的黑线工程图，编号引线跟着零件走，只有讲解的那条路径用一种强调色。"
+  },
+  "hd-2d": {
+   "en": "Hand-made pixel sprites stand like paper cut-outs in a lit, fogged 3D diorama, shot high through a tilt-shift lens: a toy world where every lamp casts real shadows.",
+   "zh": "像素小人像纸片一样立在有光有雾的 3D 微缩场景里，高角度移轴拍摄，每盏灯都投下真实的影子。"
+  },
+  "hologram-hud": {
+   "en": "An object is scanned into a glowing wireframe; target boxes lock onto its parts and each number rolls from garbage glyphs to the real value.",
+   "zh": "物体被扫描成发光线框，目标框逐个锁定部件，数字从乱码滚到真实数值。"
+  },
+  "impasto": {
+   "en": "Thick oil paint laid with a palette knife: big, flat, sharp-edged planes of colour, raked by light so every ridge of paint shows.",
+   "zh": "用调色刀堆上去的厚油彩：大块平整、边缘锐利的色面，侧光一照，每道颜料棱都看得见。"
+  },
+  "ink-wash": {
+   "en": "Xieyi ink painting on rice paper, animated: blank paper is space, one brushstroke is a mountain, a wave, a gesture or a cut.",
+   "zh": "动起来的宣纸写意：留白就是空间，一笔可以是山、是浪、是一个动作，也可以是一次剪辑。"
+  },
+  "instruction-manual": {
+   "en": "A printed assembly manual come to life: true isometric black line art, flat white parts, faceless people and the manual’s own steps, arrows and magnifiers.",
+   "zh": "一份会动的组装说明书：等轴测黑线稿、白色平涂零件、无脸小人，用说明书自己的步骤号、箭头和放大圈来讲。"
+  },
+  "ipad-sketch": {
+   "en": "A cream drawing canvas on a tablet: grainy pencil lines first, flat colour blocks after, slightly off the line, and the canvas pinched, panned and turned between ideas.",
+   "zh": "平板上的米色画布：先下颗粒铅笔线，再铺略微错位的平涂色块，画布在想法之间缩放、平移、旋转。"
+  },
+  "iso-infographic": {
+   "en": "A system diagram comes alive: an isometric diorama of flat three-tone blocks, thin ink labels and Isotype numbers, where things open to show their insides.",
+   "zh": "动起来的系统图：三色平涂块搭成等距模型，细墨线标注，Isotype 数字，东西能打开看内部。"
+  },
+  "isometric-picture-book": {
+   "en": "A calm explainer of an everyday rule, set in one real place drawn in flat-colour isometric, where small faceless people do the thing in order.",
+   "zh": "平静地讲清一条日常规则：真实场所画成平涂等距图，没有五官的小人按顺序把事做一遍。"
+  },
+  "kino-montage": {
+   "en": "Real archive footage, photographs and documents, printed as one ink-and-paper poster with a single red, and cut on a machine beat.",
+   "zh": "真实档案影像、照片和文件印成一张只用一种红的油墨海报，踩着机器般的节拍剪辑。"
+  },
+  "lidar-survey": {
+   "en": "Real airborne laser points of a place float in the dark; a scan line passes through and they condense into a raking-lit surface, measured with hairline instruments.",
+   "zh": "真实的机载激光点云悬在黑暗里，扫描线扫过，点凝成侧光下的实体地表，再用细线测量。"
+  },
+  "living-screencast": {
+   "en": "A product walkthrough that looks like a real screen recording, where a low-resolution mascot lives inside a high-resolution interface and acts out what the software is doing.",
+   "zh": "看起来像真实录屏的产品演示：低分辨率的吉祥物住在高清界面里，把软件正在做的事演出来。"
+  },
+  "lowpoly-island": {
+   "en": "A tiny faceted world seen through an orthographic isometric lens: everything is a geometric block, and everything that appears arrives with a bounce and a note.",
+   "zh": "正交等距镜头里的多面体小世界：一切都是几何块，每样东西出现时都弹一下、响一个音。"
+  },
+  "manga-panels": {
+   "en": "A black-and-white manga page that moves: G-pen ink, screentone dots, one spot colour, panels opening on the beat and lettered sound effects.",
+   "zh": "会动的黑白漫画页：G 笔墨线、网点纸、一个点缀色，分格踩着节拍打开，拟声字一个个砸进来。"
+  },
+  "map-explainer": {
+   "en": "Real elevation and imagery built into a 3D map lit by a low sun, with a glowing data layer of routes and measurements laid on true geography.",
+   "zh": "用真实高程和影像搭成 3D 地图，低角度暖阳照明，发光的数据层（航线、测量、柱子）贴着真实地理展开。"
+  },
+  "marker-paper": {
+   "en": "Matte white paper and a black bullet-tip marker, with red and blue for meaning only: a problem drawn and solved one sheet at a time.",
+   "zh": "哑光白纸加一支黑色圆头马克笔，红和蓝只用来表达含义：一张纸一个问题，一笔笔画出推理和答案。"
+  },
+  "memphis-diorama": {
+   "en": "A place built as a tabletop model: a small world in flat Memphis colours, ink outlines and hard purple shadows, inside a grainy frame on warm white paper.",
+   "zh": "把一个地方做成桌面模型：暖白纸上一圈颗粒画框，里面是孟菲斯平涂色、墨线、硬紫影子的小世界。"
+  },
+  "microgame": {
+   "en": "A rapid-fire party-game film: one command word, a few seconds, one action, each game in a different art style, faster and faster.",
+   "zh": "连珠炮式的派对小游戏片：一个口令、几秒钟、一个动作，每关换一种画风，越来越快。"
+  },
+  "microscope": {
+   "en": "Real microscopy of a real specimen, seen as it is, and one continuous change of scale from the glass slide in the hand to a single cell.",
+   "zh": "真实标本的显微影像，照原样呈现，一个连续变倍从手里的玻片一路推到单个细胞。"
+  },
+  "midcentury-toon": {
+   "en": "1950s flat colour and limited animation for follow-along films: colour printed slightly off a broken ink line, still bodies with working hands, abstract colour-block rooms.",
+   "zh": "50 年代平涂加有限动画的跟做教学片：颜色略偏出断续墨线，身体不动只动手，房间是抽象色块。"
+  },
+  "neon-tubes": {
+   "en": "Real neon signs on a rainy night street: bent glass tubes on painted boards strike with a flicker, light the wet walls and double in every puddle.",
+   "zh": "雨夜老街上的真霓虹招牌：弯好的玻璃灯管装在漆过的招牌板上，一闪亮起，照亮湿墙，倒映在每个水坑里。"
+  },
+  "news-package": {
+   "en": "A TV newsroom's on-air package built in code: a sting that becomes the channel bug, a story rundown, a lower-third strap and full-frame graphics that carry the facts.",
+   "zh": "用代码做出整套电视新闻包装：片头收成台标，串联单、标题条和整屏图表负责讲事实。"
+  },
+  "newsreel": {
+   "en": "A late-1920s sound newsreel cut from real archive material: searchlight-and-globe ident, spinning newspapers, a fast, cheerful announcer, title cards, wipes and a hot band.",
+   "zh": "用真实档案剪成的 20 年代末有声新闻片：探照灯地球片头、飞转的报纸、轻快的播音和热闹的乐队。"
+  },
+  "one-bit-dither": {
+   "en": "A real 3D world in exactly two inks: every grey becomes dots fixed to the surfaces, and the camera moves freely without the pattern swimming.",
+   "zh": "只用两种墨的真 3D 世界：每一级灰都变成贴在表面上的点阵，镜头自由移动，点阵不会游动。"
+  },
+  "one-line": {
+   "en": "A single ink line that never leaves the paper.",
+   "zh": "一根从头到尾不离开纸面的墨线。"
+  },
+  "oscilloscope-math": {
+   "en": "Mathematics drawn by an electron beam: thin glowing green lines on a phosphor screen with a dotted graticule, every number computed from what draws the picture.",
+   "zh": "电子束画出来的数学：荧光屏上发光的细绿线和点状刻度，屏上每个数字都由画图的同一组数值算出。"
+  },
+  "paper-lantern": {
+   "en": "A layered paper-cut shadow box lit from behind: 6–9 sheets of cut card in a shallow box, warm light glowing through, soft shadows between layers.",
+   "zh": "背后打光的纸雕灯：浅盒里叠着六到九层镂空卡纸，暖光透出来，层与层之间落下柔和的影子。"
+  },
+  "paper-popup": {
+   "en": "A pop-up book on a real desk becomes a stage: white-bordered cut-paper actors perform before sets that spring from the page, under lamp light and a macro lens.",
+   "zh": "真实书桌上的立体书变成舞台：带白边的剪纸角色在书页弹起的纸布景前表演，台灯照着，微距拍摄。"
+  },
+  "papercut-red": {
+   "en": "Chinese window-flower paper-cuts brought to life: jointed red cut-outs on paper grounds, where the cut is the drawing and the holes are where the light gets in.",
+   "zh": "动起来的窗花剪纸：带关节的红纸人物贴在纸底上，剪痕就是线条，镂空处透进光来。"
+  },
+  "pen-plotter": {
+   "en": "A pen plotter on a desk draws the subject stroke by stroke with real pens and ink, with pen changes, pen-up travel and the camera beside the machine.",
+   "zh": "桌上的绘图仪用真笔真墨一笔一笔画：换笔、抬笔空走、落笔出墨，镜头就在机器旁边。"
+  },
+  "pictogram-motion": {
+   "en": "A beat-locked flash-card film built from three things only: a sliding square-grid pattern, geometric pictograms of round-capped bars and a disc head, and bold bilingual type.",
+   "zh": "卡着鼓点的快闪片，只用三样东西：滑动的方格图案、圆头线条拼成的几何小人和粗体双语字。"
+  },
+  "pip-simulation": {
+   "en": "Small flocked characters run a real simulation on a paper lab board; they are the data points, and at the end they line up into the chart.",
+   "zh": "一群植绒小人在纸面实验板上跑真实的模拟；它们自己就是数据点，最后排成图表。"
+  },
+  "pixel-rpg": {
+   "en": "A short film that looks, sounds and behaves like a mid-90s console RPG: 320×180 pixels, limited palette, typing text boxes, menus, save files, echoing chip music.",
+   "zh": "看、听、玩起来都像 90 年代中期主机 RPG：320×180 像素、逐字对话框、存档和芯片音乐。"
+  },
+  "pop-art": {
+   "en": "Sixties pop-art screen prints: Ben-Day dots fixed to the paper, heavy black key lines, flat primaries and plates that never quite register.",
+   "zh": "六十年代波普丝印海报：印在纸上的本戴点、粗黑轮廓线、平涂三原色、总也套不准的色版。"
+  },
+  "precise-mechanism": {
+   "en": "A real mechanism in 3D coloured like an anatomy plate, one flat colour per subsystem, running at true ratios while the camera cuts it open and explodes it.",
+   "zh": "真 3D 机械按解剖图上色：每个子系统一种平涂色，按真实传动比运转，镜头把它剖开、按系统炸开。"
+  },
+  "printed-long-take": {
+   "en": "A three-dimensional world rendered as a scratchboard print, ink and paper with one red, crossed by one unbroken camera move.",
+   "zh": "一个刮版画质感的三维世界，只有墨、纸和一种红，镜头一镜到底从中穿过。"
+  },
+  "risograph": {
+   "en": "Animation that looks printed frame by frame on a stencil duplicator: two or three translucent spot inks on warm paper, halftone dots, and plates that never quite align.",
+   "zh": "像用孔版印刷机逐帧印出来的动画：两三种半透明专色叠在暖色纸上，网点可见，套版总差一点。"
+  },
+  "rubber-hose": {
+   "en": "Black-and-white hand-inked cartoons where every object is alive and swings to a hot jazz band.",
+   "zh": "黑白手工勾墨的卡通，每样东西都是活的，跟着热爵士乐队摇摆。"
+  },
+  "satellite-briefing": {
+   "en": "Real satellite imagery of a real place, graded to an analyst's grey, with thin white measurement lines drawn on the ground: reticle, outlines, one reading.",
+   "zh": "真实地点的卫星影像调成分析用的灰，地面上画细白测量线：瞄准框、轮廓和一个读数。"
+  },
+  "scifi-toon": {
+   "en": "Adult-animation sci-fi sitcom: thick boiling outlines, flat colour, a duo whose reactions don't match, a glowing portal, and one palette per world.",
+   "zh": "成人科幻情景喜剧：抖动的粗轮廓、平涂色、反应对不上的二人组、发光传送门，每个世界一套配色。"
+  },
+  "scratch-film": {
+   "en": "Pictures scratched through black emulsion with a needle and tinted with dye, redrawn fifteen times a second so the lines boil and light glows through every cut.",
+   "zh": "用针在黑色乳剂上刮出画面再染色，每秒重画 15 次，线条跳动，光从每道刻痕里透出来。"
+  },
+  "security-xray": {
+   "en": "Seen through a baggage-screening console: dual-energy X-ray images with fixed material colours, and the operator present only as boxes and readings on screen.",
+   "zh": "透过安检机屏幕看：双能 X 光图像按材质上色（有机物橙、金属蓝），安检员只以屏上的框和读数出现。"
+  },
+  "shadow-puppet": {
+   "en": "Chinese shadow theatre: translucent dyed-hide puppets, carved like lace, pressed against a cotton screen and lit from behind by oil lamps.",
+   "zh": "中国皮影戏：镂刻得像花边的半透明彩色皮影贴着棉布幕，油灯从背后照亮。"
+  },
+  "silent-film": {
+   "en": "An engraved-illustration silent film projected in a picture house: ink line and silver wash, a flickering 4:3 print between velvet curtains, intertitles, and a cinema pianist.",
+   "zh": "在老影院放映的版画风默片：墨线加银灰淡彩，画面在丝绒幕间闪烁，字幕卡代替对白，钢琴伴奏。"
+  },
+  "silhouette-rhythm": {
+   "en": "Pure black silhouettes against a saturated sunset change pose on every beat; on the key beat all freezes but the sky, and the water doubles everything.",
+   "zh": "饱和夕阳前的纯黑剪影每个节拍换一个姿势；重拍时一切定住，只有天空还在动，水面映出倒影。"
+  },
+  "silkscreen-poster": {
+   "en": "Opaque, hard-edged flat inks pulled one colour at a time through a screen: 4–6 inks, stepped colour bands instead of gradients, thin paper-white gaps where registration slips.",
+   "zh": "不透明的硬边平涂油墨，一次一色刮过丝网：四到六色，分级色带代替渐变，套印走位处露出纸白。"
+  },
+  "sketchnote": {
+   "en": "One page of visual notes on dot-grid paper drawn as you watch: black fineliner, grey marker for shadow, and one yellow for the thing that matters.",
+   "zh": "点阵纸上边看边画的一页视觉笔记：黑色针管笔写画，灰色马克笔做阴影，只有最重要的那件事用黄色。"
+  },
+  "spreadsheet": {
+   "en": "A whole film inside one spreadsheet: cells are the pixels, conditional formatting paints the pictures and the sheet’s own zoom and scroll are the camera.",
+   "zh": "整支片在一个表格里：单元格是像素，条件格式画出画面，表格自己的缩放和滚动就是镜头。"
+  },
+  "spy-titles": {
+   "en": "A cut-paper, four-ink opening title sequence for a film that never existed: silhouettes move through sets built from the credits, and every brass stab is a cut.",
+   "zh": "一部不存在的电影的剪纸四色片头：剪影穿行在演职员字幕搭成的布景里，铜管每响一下就切一刀。"
+  },
+  "stained-glass": {
+   "en": "A medieval stained-glass window seen from inside a dark stone hall, alive only where the sun touches it: light is the clock, the camera and the story.",
+   "zh": "从昏暗石厅里看中世纪彩色玻璃窗，阳光照到哪里哪里才动：光就是时钟、镜头和故事。"
+  },
+  "stick-explainer": {
+   "en": "Plain stick people on warm paper with one accent colour; held hands are one continuous line, so a crowd joins into a line, a ring or a shape.",
+   "zh": "暖色纸上的简笔小人加一种强调色；牵手是一条连续的线，所以一群人能连成一排、一个圈或一个形状。"
+  },
+  "swiss-motion": {
+   "en": "International Typographic Style in motion: a modular grid, one typeface, one signal colour, and movement as exact as a printing press.",
+   "zh": "动起来的瑞士国际主义排版：模块网格、一种字体、一种信号色，动作像印刷机一样精准。"
+  },
+  "teardown": {
+   "en": "A real product rebuilt from its own engineering files, lit like a studio packshot and taken apart on camera: layers lift on one axis, every part named.",
+   "zh": "按真实产品的工程文件建模，像产品照一样打光，在镜头前沿一根轴逐层拆开，零件逐个标名。"
+  },
+  "telestrator": {
+   "en": "The TV football analysis segment: rewind, freeze and draw on the broadcast picture, with rings under players' feet, ball arrows and a red patch for uncovered space.",
+   "zh": "电视足球分析环节：倒回、定格，在转播画面上给球员画圈、给球画箭头，把没人盯的空当涂红。"
+  },
+  "text-flash-cuts": {
+   "en": "Avant-garde TV anime: full-screen heavy Mincho title cards cut in for a few frames, symbolic geometric architecture and a red, black and white palette.",
+   "zh": "先锋电视动画：整屏粗明朝体字卡只闪几帧，建筑简化成象征性几何，红黑白三色。"
+  },
+  "thermal-camera": {
+   "en": "Seen through a radiometric thermal camera: a low-resolution iron-palette picture where brightness is temperature, with the camera’s spot meters and scales on screen.",
+   "zh": "透过测温热像仪看：低分辨率的铁红色调画面，亮度就是温度，屏上带着测温点、色标等仪器读数。"
+  },
+  "tilt-shift": {
+   "en": "A real-looking place photographed from high above with a tilted lens and a time-lapse camera, so the whole world reads as a tabletop model.",
+   "zh": "从高处用移轴镜头延时拍摄一个看似真实的地方，整个世界看起来像桌上的模型。"
+  },
+  "transit-map": {
+   "en": "A metro schematic printed on a physical sheet: lines held to eight directions, white stops, black-outlined interchange capsules, water as a flat blue band.",
+   "zh": "印在纸上的地铁线路图：线路只走八个方向，白色站点，黑边换乘胶囊，水是一条平涂蓝带。"
+  },
+  "ukiyoe": {
+   "en": "Edo-period woodblock prints come alive: flat colour, carved ink lines, bokashi skies, tactile paper, and a camera that glides like an unrolling handscroll.",
+   "zh": "动起来的江户木版画：平涂色块、刻出的墨线、晕染的天空和纸纹，镜头像展开手卷一样移动。"
+  },
+  "urban-sketch": {
+   "en": "A sketchbook page drawn on location: fine sepia fineliner lines that wobble, overshoot and never quite close, with loose transparent watercolour dropped on top.",
+   "zh": "现场写生的速写本一页：棕褐针管笔线条发抖、出头、总合不拢，上面随手点染透明水彩。"
+  },
+  "vintage-collage": {
+   "en": "A magazine collage on a paper table: old engravings, stamps and photos cut out with white margins over torn flat colour, moving like cut-out animation.",
+   "zh": "纸桌上的杂志拼贴：老版画、邮票、旧照片带白边剪下，压在撕开的平涂色纸上，像剪纸动画一样动。"
+  },
+  "visual-investigation": {
+   "en": "A cold investigation desk: footage, photographs, documents, sound and maps from one real event, laid out on one shared clock so they check each other.",
+   "zh": "一张冷静的调查桌：同一事件的影像、照片、文件、录音和地图排上同一条时间轴，互相印证。"
+  },
+  "watercolor": {
+   "en": "A hand-painted journal page that paints itself: translucent strokes with dry-brush flying white on warm cotton paper, handwritten notes beside them, no vector lines.",
+   "zh": "一页自己画出来的手绘笔记：暖色棉纸上半透明的笔触带着飞白，旁边是手写注释，没有矢量线。"
+  },
+  "white-model": {
+   "en": "A pure white massing model of a real place stands in a dark room, and a projector paints data onto it as light, one layer at a time.",
+   "zh": "暗室里摆着一座真实地点的纯白体块模型，投影机把数据当作光，一层一层刷上去。"
+  },
+  "whiteboard": {
+   "en": "An explainer drawn live on one glossy whiteboard: handwriting written stroke by stroke, markers with no hand, movable magnets, and a camera that travels instead of cutting.",
+   "zh": "在一块光面白板上现场画的讲解：字一笔一笔写出来，不见拿笔的手，镜头在板上走而不切。"
+  },
+  "woodcut": {
+   "en": "A relief print that carves itself: every frame is a black wood block, and light only exists where a knife has cut it away.",
+   "zh": "自己刻出来的凸版画：每一帧都是一块黑木版，只有刀刻掉的地方才有光。"
+  }
+ }
+}

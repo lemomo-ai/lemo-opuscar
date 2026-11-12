@@ -1,0 +1,147 @@
+{
+ "dur": 51.9,
+ "vo": {
+  "v1": [
+   0.6,
+   3.185
+  ],
+  "v2": [
+   5.0,
+   7.771
+  ],
+  "v3": [
+   9.7,
+   11.53
+  ],
+  "v4": [
+   13.4,
+   16.154
+  ],
+  "v5": [
+   16.8,
+   20.723
+  ],
+  "v6": [
+   21.4,
+   25.148
+  ],
+  "v7": [
+   25.8,
+   31.558
+  ],
+  "v9": [
+   33.7,
+   36.747
+  ],
+  "v10": [
+   38.0,
+   40.279
+  ],
+  "v11": [
+   40.9,
+   44.432
+  ],
+  "v12": [
+   45.05,
+   48.717
+  ]
+ },
+ "w": {
+  "sugar": 25.8,
+  "ham": 27.68,
+  "cheese": 29.64,
+  "spoonful": 19.1,
+  "apart2": 7.06,
+  "arteries": 41.44,
+  "furnaces": 43.36,
+  "run": 48.15,
+  "lunch": 46.67,
+  "bus": 39.64
+ },
+ "subs": [
+  {
+   "t0": 0.6,
+   "t1": 3.785,
+   "en": "Most factories put things together.",
+   "zh": "大多数工厂，是把东西装起来。",
+   "n": 0
+  },
+  {
+   "t0": 5.0,
+   "t1": 8.371,
+   "en": "The one inside you takes them apart.",
+   "zh": "你身体里这一座，专门拆。",
+   "n": 0
+  },
+  {
+   "t0": 9.7,
+   "t1": 12.13,
+   "en": "It starts at the crushers.",
+   "zh": "第一站，粉碎机。",
+   "n": 1
+  },
+  {
+   "t0": 13.4,
+   "t1": 16.754,
+   "en": "An acid drum churns it all to paste,",
+   "zh": "酸液滚筒把它搅成一团糊，",
+   "n": 2
+  },
+  {
+   "t0": 16.8,
+   "t1": 21.323,
+   "en": "and a gatekeeper lets it out, a spoonful at a time.",
+   "zh": "看门人一次只放出去一勺。",
+   "n": 3
+  },
+  {
+   "t0": 21.4,
+   "t1": 25.748,
+   "en": "On the sorting line, the sandwich comes apart:",
+   "zh": "到了分拣线，三明治被拆开：",
+   "n": 4
+  },
+  {
+   "t0": 25.8,
+   "t1": 29.59,
+   "en": "bread into sugar, ham into amino acids,",
+   "zh": "面包变成糖，火腿变成氨基酸，",
+   "n": 4
+  },
+  {
+   "t0": 29.59,
+   "t1": 32.158,
+   "en": "cheese into fatty acids.",
+   "zh": "奶酪变成脂肪酸。",
+   "n": 4
+  },
+  {
+   "t0": 33.7,
+   "t1": 37.347,
+   "en": "The liver shelves the sugar, and it waits.",
+   "zh": "肝把糖码上货架，然后等着。",
+   "n": 5
+  },
+  {
+   "t0": 38.0,
+   "t1": 40.879,
+   "en": "6 hours later: the bus.",
+   "zh": "6 个小时以后：公交车来了。",
+   "n": 0
+  },
+  {
+   "t0": 40.9,
+   "t1": 45.032,
+   "en": "Down the arteries, into tiny furnaces.",
+   "zh": "顺着动脉，送进一个个小熔炉。",
+   "n": 6
+  },
+  {
+   "t0": 45.05,
+   "t1": 49.317,
+   "en": "Taken apart, lunch becomes the strength to run.",
+   "zh": "拆开了的午饭，变成你奔跑的力气。",
+   "n": 0
+  }
+ ]
+}

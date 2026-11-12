@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: "The Lampbearer" (HD-2D demo, the tilt-shift cut)
+# One command: "The Lampbearer" (2.5D Pixel Art demo, the tilt-shift cut)
 #   sh styles/hd-2d/demo/build.sh                    rebuild the film, subtitles, poster and style frame in place
 #   OUT=<dir> sh styles/hd-2d/demo/build.sh          write the film, .srt, poster.jpg and styleframe.jpg to <dir> instead
 #   STOP_BEFORE_VIDEO=1 sh styles/hd-2d/demo/build.sh   stop after the sound and the subtitles (no frame render)

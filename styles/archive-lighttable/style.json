@@ -1,11 +1,15 @@
 {
  "slug": "archive-lighttable",
- "num": "62",
+ "num": "90",
  "en": "Archive Light Table",
- "cn": "档案灯台",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "cn": "档案看片台",
+ "aka": [
+  "档案灯台"
+ ],
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
  "film": "Two Seconds Short",
+ "film_cn": "差两秒",
  "line": "The telegram said 57 seconds; under a loupe, the Wrights' glass negatives and the archive say 59.",
  "line_cn": "电报说最长飞了 57 秒；放大镜下，莱特兄弟的底片和档案说是 59 秒。",
  "uses": [

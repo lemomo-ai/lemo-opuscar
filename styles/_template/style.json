@@ -1,11 +1,12 @@
 {
  "slug": "my-style",
- "num": "99",
+ "num": "",
  "en": "My Style",
  "cn": "我的风格",
  "category_en": "Graphic & Type",
- "category_cn": "图形与排版",
+ "category_cn": "平面排版",
  "film": "Title of the Demo Film",
+ "film_cn": "demo 片的中文片名",
  "line": "One sentence: what happens in the demo film.",
  "line_cn": "一句话：demo 片里发生了什么。",
  "uses": [

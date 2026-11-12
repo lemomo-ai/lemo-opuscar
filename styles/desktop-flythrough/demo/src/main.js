@@ -1,4 +1,4 @@
-// Desktop Flythrough — 叮之前 / Before the Ding. One take over a dotted paper mat on an oak desk, with voice-over and subtitles. Page contract: render(t), DUR, EV, TEXTS.
+// Tabletop App Flythrough — 叮之前 / Before the Ding. One take over a dotted paper mat on an oak desk, with voice-over and subtitles. Page contract: render(t), DUR, EV, TEXTS.
 import * as THREE from 'three';
 import { makeWorld } from './world.js';
 import { makePost } from './post.js';

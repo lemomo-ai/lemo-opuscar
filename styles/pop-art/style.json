@@ -1,0 +1,19 @@
+{
+ "slug": "pop-art",
+ "num": "34",
+ "en": "Pop Art",
+ "cn": "波普艺术",
+ "category_en": "Print & Printmaking",
+ "category_cn": "印刷版画",
+ "film": "The Same Banana",
+ "film_cn": "同一根香蕉",
+ "line": "Almost every banana in the shops is one plant, copied: a wall of identical prints, an old banana eaten black by dots, and a wave of colour that turns into many bananas.",
+ "line_cn": "超市里几乎每根香蕉都是同一株植物的复制：一面一模一样的版画墙，一根被网点吃黑的老香蕉，最后一波换色翻出上千种香蕉。",
+ "uses": [
+  "Everyday-object explainers",
+  "Brand and product posters",
+  "Small data stories"
+ ],
+ "frame_sec": 42.4,
+ "dur": 52.0
+}

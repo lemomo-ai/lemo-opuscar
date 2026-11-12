@@ -1,0 +1,114 @@
+[
+ {
+  "id": "v01_0",
+  "text": "In her whole life,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v01_1",
+  "text": "one bee makes this much honey.",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "1B makes this much honey."
+ },
+ {
+  "id": "v02_0",
+  "text": "One twelfth of a teaspoon.",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "1 12th of a teaspoon."
+ },
+ {
+  "id": "v03_0",
+  "text": "So where does it come from?",
+  "voice": "af_heart",
+  "speed": 0.7
+ },
+ {
+  "id": "v04_0",
+  "text": "It starts as nectar,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v04_1",
+  "text": "sugar water that is mostly water.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v05_0",
+  "text": "A bee carries it home",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v05_1",
+  "text": "in her honey stomach,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v06_0",
+  "text": "There, an enzyme called invertase begins splitting the sugar.",
+  "voice": "af_heart",
+  "speed": 0.74,
+  "asr": "There, an enzyme called inverteous begins splitting the sugar."
+ },
+ {
+  "id": "v07_0",
+  "text": "Inside the hive,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v07_1",
+  "text": "thousands of wings fan it dry,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v08_0",
+  "text": "from up to eighty percent water,",
+  "voice": "af_heart",
+  "speed": 0.78,
+  "asr": "From up to 80% water."
+ },
+ {
+  "id": "v08_1",
+  "text": "down to about eighteen.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v09_0",
+  "text": "Then the bees seal it under wax. Honey.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v10_0",
+  "text": "One pound of it takes nectar",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v10_1",
+  "text": "from two million flowers.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v11_0",
+  "text": "A whole hive's work,",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v11_1",
+  "text": "one spoonful at a time.",
+  "voice": "af_heart",
+  "speed": 0.78
+ }
+]

@@ -1,0 +1,796 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>3D Map Explainer · Strait of Hormuz</title>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<style>
+@font-face{font-family:NotoSC;src:url(fonts/NotoSansSC-500-sub.woff2) format('woff2');font-weight:500}
+@font-face{font-family:NotoSC;src:url(fonts/NotoSansSC-700-sub.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Barlow;src:url(fonts/BarlowCondensed-Regular.ttf);font-weight:400}
+@font-face{font-family:Barlow;src:url(fonts/BarlowCondensed-Medium.ttf);font-weight:500}
+@font-face{font-family:Barlow;src:url(fonts/BarlowCondensed-SemiBold.ttf);font-weight:600}
+html,body{margin:0;background:#05080c;overflow:hidden}
+canvas{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style></head>
+<body>
+<script type="module">
+// The whole film, one timeline (shot list in ../DEMO.md): 52 s with the end card, 96 bpm, one bar = 2.5 s.
+//   S1 0–6.4 globe push · S2 6.4–10.6 gulf dive · S3 10.6–15 narrows · S4 15–20 cross-section
+//   S5 20–24.6 lane flight · S6 24.6–40.4 volume, pipelines, comparison · S7 40.4–50 globe pull-back
+// ?t0=&t1= cuts a range out of the timeline (build.sh).
+import * as THREE from 'three';
+import { makePost } from './post.js';
+import { clamp, lerp, seg, ss, eo, eio, ei, track, mulberry } from '/core/lib.js';
+
+const Wd = 1920, Ht = 1080, Q = new URLSearchParams(location.search);
+const FULL = 52;                                   // 50 s of film + the end card (sign-off) held to 52 s
+const T0 = +(Q.get('t0') || 0), T1 = Q.has('t1') ? +Q.get('t1') : FULL;
+
+// ---------- data ----------
+const J = u => fetch(u).then(r => r.json()), B = u => fetch(u).then(r => r.arrayBuffer());
+const [meta, wmeta, hraw, wraw, CUES] = await Promise.all([J('assets/meta.json'), J('assets/wide_meta.json'), B('assets/height.bin'), B('assets/wide_height.bin'), J('voice/cues.json')]);
+const hbuf = new Float32Array(hraw), wbuf = new Float32Array(wraw);
+const EX = 3.2, DEX = 150;                          // land ×3.2, water depth ×150 in the cross-section
+const { GW, GH, km_px, width_km: WK, height_km: HK } = meta;
+const [MX0, MY0] = meta.merc;
+const nm = 1.852, D2R = Math.PI / 180;
+
+function merc(lon, lat) { const n = 2 ** meta.z * 256; return [(lon + 180) / 360 * n, (1 - Math.asinh(Math.tan(lat * D2R)) / Math.PI) / 2 * n]; }
+function xz(lon, lat) { const [mx, my] = merc(lon, lat); return [(mx - MX0) * km_px - WK / 2, (my - MY0) * km_px - HK / 2]; }
+const [WX0, WZ0] = xz(wmeta.bbox[0], wmeta.bbox[3]), [WX1, WZ1] = xz(wmeta.bbox[2], wmeta.bbox[1]);
+function bil(buf, w, h, gx, gz) {
+  const x0 = Math.max(0, Math.min(w - 2, Math.floor(gx))), z0 = Math.max(0, Math.min(h - 2, Math.floor(gz)));
+  const fx = clamp(gx - x0), fz = clamp(gz - z0);
+  const a = buf[z0 * w + x0], b = buf[z0 * w + x0 + 1], c = buf[(z0 + 1) * w + x0], d = buf[(z0 + 1) * w + x0 + 1];
+  return (a * (1 - fx) + b * fx) * (1 - fz) + (c * (1 - fx) + d * fx) * fz;
+}
+function hAt(X, Z) {
+  if (Math.abs(X) < WK / 2 && Math.abs(Z) < HK / 2) return bil(hbuf, GW, GH, (X + WK / 2) / WK * (GW - 1), (Z + HK / 2) / HK * (GH - 1));
+  return bil(wbuf, wmeta.GW, wmeta.GH, (X - WX0) / (WX1 - WX0) * (wmeta.GW - 1), (Z - WZ0) / (WZ1 - WZ0) * (wmeta.GH - 1));
+}
+const yOf = h => Math.max(h, 0) / 1000 * EX;
+function geo(lon, lat, lift = 0) { const [X, Z] = xz(lon, lat); return new THREE.Vector3(X, yOf(hAt(X, Z)) + lift, Z); }
+function sea(lon, lat, y = .06) { const [X, Z] = xz(lon, lat); return new THREE.Vector3(X, y, Z); }
+
+// ---------- renderer, two worlds: the map (km, flat) and the globe (km, sphere R = 6371) ----------
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(2); renderer.setSize(Wd, Ht);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.25;
+document.body.appendChild(renderer.domElement);
+if (Q.has('dbg')) renderer.debug.onShaderError = (gl, prog, vs, fs) => { const l = gl.getShaderInfoLog(fs) || ''; for (let i = 0; i < Math.min(l.length, 1200); i += 250) console.error('SH ' + l.slice(i, i + 250)); const src = gl.getShaderSource(fs).split('\n'); for (let k = 58; k < 66; k++) console.error('L' + (k + 1) + ' ' + (src[k] || '').slice(0, 200)); };
+const scene = new THREE.Scene();
+const HAZE = new THREE.Color(0x5f6872);
+scene.background = HAZE.clone();
+scene.fog = new THREE.Fog(HAZE, 300, 900);
+
+const tl = new THREE.TextureLoader();
+const load = u => new Promise((r, e) => tl.load(u, r, undefined, e));
+const [albedo, waterTex, shadowTex, walbedo, wwaterTex, wshadowTex, worldTex] = await Promise.all(
+  ['assets/albedo.jpg', 'assets/water.png', 'assets/shadow.png', 'assets/wide_albedo.jpg', 'assets/wide_water.png', 'assets/wide_shadow.png', 'assets/world.jpg'].map(load));
+for (const t of [albedo, walbedo, worldTex]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; }
+for (const t of [shadowTex, wshadowTex]) t.anisotropy = 8;
+
+// the cross-section cut: everything on the camera side of the section line is removed (S4)
+const CUT = { p: new THREE.Vector4(0, 0, 0, 0), d: { value: 0 } };
+const cutU = { cutP: { value: CUT.p }, cutD: CUT.d };
+const CUT_GLSL = `uniform vec4 cutP; uniform float cutD;
+  bool cutAway(vec3 w){ if (cutD <= 0.) return false; float s = dot(w.xz - cutP.xy, cutP.zw); return s > 0. && s < cutD; }
+`;
+
+function roughFrom(tex) {
+  const c = document.createElement('canvas'); c.width = tex.image.width; c.height = tex.image.height;
+  const g = c.getContext('2d'); g.drawImage(tex.image, 0, 0); const id = g.getImageData(0, 0, c.width, c.height);
+  for (let i = 0; i < id.data.length; i += 4) { const w = id.data[i] / 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = 245 * (1 - w) + 185 * w; }
+  g.putImageData(id, 0, 0); return new THREE.CanvasTexture(c);
+}
+const LIGHT_CHUNK = THREE.ShaderChunk.lights_fragment_begin.replaceAll('RE_Direct( directLight,', 'directLight.color *= mix( 1.0, texture2D( tShadow, vMapUv ).r, 0.88 );\n\t\tRE_Direct( directLight,');
+function terrainMat(map, water, shadow, clipRect) {
+  const m = new THREE.MeshStandardMaterial({ map, roughnessMap: roughFrom(water), roughness: 1, metalness: 0 });
+  m.onBeforeCompile = sh => {
+    Object.assign(sh.uniforms, cutU, { tShadow: { value: shadow }, clipR: { value: clipRect || new THREE.Vector4(1, 1, -1, -1) } });
+    sh.vertexShader = 'varying vec3 vWp;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n vWp = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = 'uniform sampler2D tShadow; uniform vec4 clipR; varying vec3 vWp;\n' + CUT_GLSL + sh.fragmentShader
+      .replace('void main() {', 'void main() {\n if (vWp.x > clipR.x && vWp.x < clipR.z && vWp.z > clipR.y && vWp.z < clipR.w) discard;\n if (cutAway(vWp)) discard;')
+      .replace('#include <lights_fragment_begin>', LIGHT_CHUNK);
+  };
+  return m;
+}
+function terrainMesh(w, h, gw, gh, buf, mat) {
+  const g = new THREE.PlaneGeometry(w, h, gw - 1, gh - 1); g.rotateX(-Math.PI / 2);
+  const p = g.attributes.position; for (let i = 0; i < p.count; i++) p.setY(i, yOf(buf[i]));
+  g.computeVertexNormals(); return new THREE.Mesh(g, mat);
+}
+scene.add(terrainMesh(WK, HK, GW, GH, hbuf, terrainMat(albedo, waterTex, shadowTex)));
+{
+  const inset = 1.5, clip = new THREE.Vector4(-WK / 2 + inset, -HK / 2 + inset, WK / 2 - inset, HK / 2 - inset);
+  const wm = terrainMesh(WX1 - WX0, WZ1 - WZ0, wmeta.GW, wmeta.GH, wbuf, terrainMat(walbedo, wwaterTex, wshadowTex, clip));
+  wm.position.set((WX0 + WX1) / 2, -.03, (WZ0 + WZ1) / 2); scene.add(wm);
+}
+const sun = new THREE.DirectionalLight(0xffe2b8, 3.1);
+sun.position.set(-150, 62, -70); sun.target.position.set(0, 0, 0);
+scene.add(sun, sun.target, new THREE.HemisphereLight(0x9fb6c8, 0x4a3420, 0.55));
+
+// ---------- glowing ribbons: routes, lanes, boundaries, wakes, pipelines (map and globe) ----------
+// width = max(world width, pixel width). aNorm is the 3D side vector (flat map: horizontal; globe: tangent to the sphere)
+const camera = new THREE.PerspectiveCamera(28, Wd / Ht, 2, 900);
+const gcam = new THREE.PerspectiveCamera(28, Wd / Ht, 100, 2e5);
+const PIXK = 2 * Math.tan(THREE.MathUtils.degToRad(14)) / Ht;
+const RIB_V = `attribute float aSide; attribute vec3 aNorm; attribute float aAlong;
+  uniform float wW, pxW, pixK; varying float vSide, vAlong; varying vec3 vW;
+  void main(){ vec4 wp = modelMatrix * vec4(position, 1.); float pw = length(cameraPosition - wp.xyz) * pixK;
+    float hw = max(wW * .5, pxW * .5 * pw); wp.xyz += aNorm * aSide * hw; vSide = aSide; vAlong = aAlong; vW = wp.xyz;
+    gl_Position = projectionMatrix * viewMatrix * wp; }`;
+const RIB_F = `varying float vSide, vAlong; varying vec3 vW; uniform vec3 col; uniform float k, inten, revA, revB, soft, head, headAmt, dash, duty,
+  flowSp, flowLen, flowAmt, flowPh, base, wakeLen, wakeAmt, L, endFade, normalA; uniform float shipS[8]; uniform float shipA[8];
+  ${CUT_GLSL}
+  void main(){
+    if (cutAway(vW)) discard;
+    float d = vSide; float g = exp(-d * d * k);
+    float vis = smoothstep(revA - soft, revA, vAlong) * (1. - smoothstep(revB, revB + soft, vAlong));
+    if (vis <= 0.) discard;
+    float e = smoothstep(0., endFade, vAlong) * smoothstep(L, L - endFade, vAlong);
+    float a = base;
+    if (dash > 0.) a *= step(fract(vAlong / dash), duty);
+    if (flowAmt > 0.) { float f = fract((vAlong - flowPh) / flowSp); a += flowAmt * smoothstep(1. - flowLen / flowSp, 1., f) * smoothstep(1., .985, f); }
+    a += headAmt * exp(-pow((vAlong - head) / (2.5 * max(1., soft / 2.)), 2.));
+    if (wakeAmt > 0.) for (int j = 0; j < 8; j++) { float x = shipS[j] - vAlong; if (x > 0. && x < wakeLen) a += wakeAmt * shipA[j] * pow(1. - x / wakeLen, 2.); }
+    if (normalA > 0.) { gl_FragColor = vec4(col, normalA * g * vis * e * inten); return; }
+    gl_FragColor = vec4(col * g * a * inten * vis * e, 1.); }`;
+function ribbon(pts, o, sc = scene, up = null) {
+  const pos = [], side = [], nrm = [], al = [], idx = []; let L = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)];
+    const t = new THREE.Vector3().subVectors(b, a); const u = up ? pts[i].clone().normalize() : new THREE.Vector3(0, 1, 0);
+    const n = new THREE.Vector3().crossVectors(t, u).normalize();
+    if (i) L += pts[i].distanceTo(pts[i - 1]);
+    const p = pts[i];
+    for (const s of [1, -1]) { pos.push(p.x, p.y, p.z); side.push(s); nrm.push(n.x, n.y, n.z); al.push(L); }
+    if (i) { const q = 2 * i; idx.push(q - 2, q - 1, q, q - 1, q + 1, q); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('aSide', new THREE.Float32BufferAttribute(side, 1));
+  g.setAttribute('aNorm', new THREE.Float32BufferAttribute(nrm, 3)); g.setAttribute('aAlong', new THREE.Float32BufferAttribute(al, 1)); g.setIndex(idx);
+  const U = { col: new THREE.Color(o.col ?? 0xffa63d), k: o.k ?? 3, inten: 0, wW: o.wW ?? 0, pxW: o.pxW ?? 2, pixK: PIXK, revA: 0, revB: 1e9, soft: o.soft ?? 2,
+    head: -1e6, headAmt: 0, dash: o.dash ?? 0, duty: o.duty ?? .55, flowSp: o.flowSp ?? 30, flowLen: o.flowLen ?? 6, flowAmt: o.flowAmt ?? 0, flowPh: 0,
+    base: o.base ?? 1, wakeLen: o.wakeLen ?? 12, wakeAmt: o.wakeAmt ?? 0, L, endFade: o.endFade ?? .01, normalA: o.normalA ?? 0,
+    shipS: new Array(8).fill(-1e6), shipA: new Array(8).fill(0) };
+  const uniforms = { ...cutU }; for (const k in U) uniforms[k] = { value: U[k] };
+  const normal = (o.normalA ?? 0) > 0;
+  const m = new THREE.Mesh(g, new THREE.ShaderMaterial({ uniforms, vertexShader: RIB_V, fragmentShader: RIB_F, side: THREE.DoubleSide, transparent: true, depthWrite: false,
+    blending: normal ? THREE.NormalBlending : THREE.AdditiveBlending, toneMapped: false }));
+  m.renderOrder = o.order ?? 2; m.frustumCulled = false; sc.add(m);
+  m.L = L; m.u = uniforms; return m;
+}
+const smooth = (pts, n) => new THREE.CatmullRomCurve3(pts, false, 'centripetal').getSpacedPoints(n);
+function offset(pts, d) {
+  return pts.map((p, i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)];
+    const t = new THREE.Vector3().subVectors(b, a).setY(0).normalize(); return new THREE.Vector3(p.x + t.z * d, p.y, p.z - t.x * d); });
+}
+function arc(pts) { const s = [0]; for (let i = 1; i < pts.length; i++) s.push(s[i - 1] + pts[i].distanceTo(pts[i - 1])); return s; }
+function along(pts, S, s) {
+  s = clamp(s, 0, S[S.length - 1]); let lo = 0, hi = S.length - 1;
+  while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (S[mid] <= s) lo = mid; else hi = mid; }
+  const f = (s - S[lo]) / ((S[hi] - S[lo]) || 1), p = pts[lo].clone().lerp(pts[hi], f);
+  return { p, dir: new THREE.Vector3().subVectors(pts[hi], pts[lo]).normalize() };
+}
+function nearest(pts, S, lon, lat) { const [X, Z] = xz(lon, lat); let bi = 0, bd = 1e9; pts.forEach((p, i) => { const d = (p.x - X) ** 2 + (p.z - Z) ** 2; if (d < bd) { bd = d; bi = i; } }); return S[bi]; }
+const rv = (r, a) => { for (const k in a) r.u[k].value = a[k]; };
+
+// ---------- S2: tanker routes from the gulf's terminals, converging on the strait (schematic) ----------
+const TERM = [
+  { ll: [48.81, 29.68], via: [[49.0, 29.35]], to: 0, t: 6.3 }, { ll: [48.17, 29.07], via: [[48.6, 29.0]], to: 0, t: 6.45 },
+  { ll: [50.31, 29.24], via: [[50.2, 28.85]], to: 1, t: 6.6 }, { ll: [50.17, 26.64], via: [[50.55, 27.05]], to: 2, t: 6.75 },
+  { ll: [51.60, 25.92], via: [[51.85, 26.45]], to: 3, t: 6.9 }, { ll: [52.87, 25.15], via: [[53.15, 25.8]], to: 4, t: 7.05 },
+  { ll: [52.73, 24.12], via: [[52.85, 24.55], [53.7, 25.55]], to: 5, t: 7.2 }];
+const TRUNK_LL = [[49.25, 29.05], [50.0, 28.4], [50.9, 27.65], [51.9, 27.0], [53.0, 26.55], [54.2, 26.25]];
+
+// ---------- the traffic separation scheme (OSM ways 220138792 / 220138754 + approximation, see FACTS.md) ----------
+const IN = [[57.70, 25.30], [57.30, 25.72], [56.98, 26.10], [56.78, 26.36], [56.673, 26.504], [56.592, 26.624], [56.465, 26.624], [56.345, 26.595],
+  [56.12, 26.52], [55.80, 26.41], [55.501, 26.364], [55.13, 26.296], [54.95, 26.33]];
+const inPts = smooth(IN.map(([lo, la]) => sea(lo, la)), 1200);
+const outPts = offset(inPts, 4 * nm).reverse();
+const inS = arc(inPts), outS = arc(outPts);
+const FLY0 = nearest(inPts, inS, 56.48, 26.62), FLYV = 4.0;      // S5: the camera flies west along the inbound lane from here
+const trunkPts = smooth([...TRUNK_LL.map(([a, b]) => sea(a, b)), outPts[0].clone()], 400), trunkS = arc(trunkPts);
+const routes = TERM.map(T => {
+  const end = along(trunkPts, trunkS, nearest(trunkPts, trunkS, ...TRUNK_LL[T.to])).p;
+  const pts = smooth([sea(...T.ll), ...T.via.map(v => sea(...v)), end.clone()], 160);
+  return { T, glow: ribbon(pts, { pxW: 12, k: 3.2, base: .22 }), core: ribbon(pts, { pxW: 2.2, k: 1.2, flowAmt: 2.2, flowSp: 46, flowLen: 14, base: .9, col: 0xffc36b }) };
+});
+const trunk = { glow: ribbon(trunkPts, { pxW: 16, k: 3, base: .26 }), core: ribbon(trunkPts, { pxW: 2.8, k: 1.2, flowAmt: 2.4, flowSp: 60, flowLen: 18, base: 1, col: 0xffc36b }) };
+const AMB = 0xffa63d, AMB2 = 0xffc36b, ICE = 0xd9e6ee;
+const lanes = [inPts, outPts].map((pts, li) => ({
+  pts, S: li ? outS : inS,
+  band: ribbon(pts, { wW: 2 * nm, pxW: 7, k: 2.6, base: li ? .17 : .24, col: AMB }),
+  core: ribbon(pts, { wW: .5, pxW: 2.4, k: 2, base: li ? 1.8 : 2.4, col: AMB2, flowAmt: 2.2, flowSp: 22, flowLen: 5 }),
+  edges: [-nm, nm].map(d => ribbon(offset(pts, d), { wW: .14, pxW: 1.5, k: 1, base: .55, dash: 1.6, col: ICE, order: 3 })),
+  wake: ribbon(pts, { wW: 1.1, pxW: 3, k: 2.2, base: 0, wakeAmt: .55, wakeLen: 13, col: 0xfff1dc, order: 4 }),
+}));
+
+// ships: flat hull glyph; the glyph keeps roughly the same screen size from any height
+const hull = new THREE.Shape(); { const L = 3.3, Bm = .78; hull.moveTo(L, 0); hull.lineTo(L * .3, Bm); hull.lineTo(-L, Bm * .92); hull.lineTo(-L, -Bm * .92); hull.lineTo(L * .3, -Bm); hull.lineTo(L, 0); }
+const hullG = new THREE.ShapeGeometry(hull, 12); hullG.rotateX(-Math.PI / 2);
+const deckG = new THREE.BoxGeometry(.7, .36, 1.3);
+const SHIPS = [[0, 56.93, 26.17, 13.0], [0, 56.70, 26.47, 13.2], [0, 56.24, 26.57, 13.4], [0, 55.86, 26.43, 13.6], [0, 56.05, 26.49, 13.8],
+  [1, 55.80, 26.36, 13.1], [1, 56.10, 26.46, 13.3], [1, 56.55, 26.55, 13.5], [1, 56.85, 26.20, 13.7], [1, 57.10, 25.90, 13.9]];
+const VSHIP = 2.2;
+// three more ahead of the camera in S5, two coming the other way
+for (const k of [16, 29, 43]) SHIPS.push([0, ...unxz(along(inPts, inS, FLY0 + k).p), 19.6]);
+for (const k of [30, 52]) SHIPS.push([1, ...unxz(along(inPts, inS, FLY0 + k).p), 19.6]);
+function unxz(p) {           // invert xz() numerically (two short Newton steps on lon/lat)
+  let lo = 56.3, la = 26.5; for (let i = 0; i < 6; i++) { const [x, z] = xz(lo, la), [x1] = xz(lo + .001, la), [, z1] = xz(lo, la + .001); lo += (p.x - x) / ((x1 - x) / .001); la += (p.z - z) / ((z1 - z) / .001); } return [lo, la]; }
+const ships = SHIPS.map(([li, lo, la, ta]) => {
+  const L = lanes[li], s0 = nearest(L.pts, L.S, lo, la) - VSHIP * (ta - 13);
+  const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xf4e6cf).multiplyScalar(1.15), toneMapped: false, transparent: true, depthWrite: false });
+  const g = new THREE.Group(); g.add(new THREE.Mesh(hullG, mat)); const d = new THREE.Mesh(deckG, mat); d.position.set(-2.4, .18, 0); g.add(d);
+  g.renderOrder = 5; scene.add(g); return { li, s0, ta, g, mat, off: [.75, -.6, .55, -.8, .65, -.7, .8, -.55][SHIPS.findIndex(q => q[3] === ta && q[1] === lo) % 8] };
+});
+
+// ---------- S3/S4: the narrowest line, Larak Island ↔ Great Quoin Island (21 nm / 39 km, IEA), and the cross-section along it ----------
+const MA = geo(56.343, 26.823, .05), MB = sea(56.505, 26.505, .05);
+const SEC = (() => {
+  const A = [56.343, 26.823], Bq = [56.505, 26.505], dl = [Bq[0] - A[0], Bq[1] - A[1]];
+  const ll = k => [A[0] + dl[0] * k, A[1] + dl[1] * k];
+  const N = 520, k0 = -1.2, k1 = 1.65, pts = [];
+  for (let i = 0; i < N; i++) { const k = lerp(k0, k1, i / (N - 1)), [lo, la] = ll(k), [X, Z] = xz(lo, la); pts.push({ k, X, Z, h: hAt(X, Z) }); }
+  const P0 = pts[0], P1 = pts[N - 1], tx = P1.X - P0.X, tz = P1.Z - P0.Z, tl = Math.hypot(tx, tz);
+  let nx = -tz / tl, nz = tx / tl; if (nx > 0) { nx = -nx; nz = -nz; }        // normal toward the west: the camera side, cut away
+  // depth under each lane, where the lane centreline crosses the line
+  const cross = (lp) => { let best = 1e9, bp = null; for (const p of lp) { const s = Math.abs((p.x - P0.X) * nx + (p.z - P0.Z) * nz); if (s < best) { best = s; bp = p; } } return bp; };
+  return { pts, P0, P1, nx, nz, len: tl, ll, inX: cross(inPts), outX: cross(outPts) };
+})();
+const BASE = -30;
+const wall = (() => {
+  const pos = [], bed = [], sAl = [], idx = []; let s = 0;
+  SEC.pts.forEach((p, i) => {
+    if (i) s += Math.hypot(p.X - SEC.pts[i - 1].X, p.Z - SEC.pts[i - 1].Z);
+    const top = p.h > 0 ? p.h / 1000 * EX : 0, bd = p.h > 0 ? top : p.h / 1000 * DEX;
+    pos.push(p.X, top, p.Z, p.X, BASE, p.Z); bed.push(bd, bd); sAl.push(s, s);
+    if (i) { const q = 2 * i; idx.push(q - 2, q - 1, q, q - 1, q + 1, q); }
+  });
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('aBed', new THREE.Float32BufferAttribute(bed, 1)); g.setAttribute('aS', new THREE.Float32BufferAttribute(sAl, 1)); g.setIndex(idx);
+  const m = new THREE.ShaderMaterial({ side: THREE.DoubleSide, transparent: true, toneMapped: false,
+    uniforms: { op: { value: 0 }, dex: { value: DEX }, lane: { value: new THREE.Vector4(0, 0, 0, 0) } },
+    vertexShader: `attribute float aBed, aS; varying float vY, vBed, vS; void main(){ vY = position.y; vBed = aBed; vS = aS; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }`,
+    fragmentShader: `varying float vY, vBed, vS; uniform float op, dex; uniform vec4 lane;
+      void main(){
+        vec3 c;
+        if (vY > 0.001) c = mix(vec3(.36, .28, .19), vec3(.62, .50, .34), clamp(vY / .6, 0., 1.));            // rock above the sea: Larak, the coasts
+        else if (vY > vBed) {                                                                               // water: teal at the surface, navy at depth
+          float k = clamp(-vY / 19., 0., 1.); c = mix(vec3(.022, .085, .10), vec3(.006, .02, .04), pow(k, .7));
+          float m = -vY / (dex * .001);                                                                     // metres of depth
+          float l = abs(fract(m / 25. + .5) - .5) * 25. ;                                                    // a faint line every 25 m
+          c += vec3(.06, .10, .12) * (1. - smoothstep(.0, .5, l)) * .6;
+          if (vY > -.12) c += vec3(.35, .5, .55) * .5;                                                       // the sea surface line
+        } else {                                                                                            // sea floor and the rock below it
+          float q = clamp((vBed - vY) / 9., 0., 1.); c = mix(vec3(.26, .20, .14), vec3(.07, .06, .055), q);
+          if (vBed - vY < .18) c = vec3(.62, .48, .30);                                                     // the floor itself, a warm line
+          c *= .93 + .07 * sin(vY * 2.2 + sin(vS * .25) * 1.5);                                             // faint strata
+        }
+        // the lanes, marked on the surface
+        if (vY > -.35 && vY < .25 && ((vS > lane.x && vS < lane.y) || (vS > lane.z && vS < lane.w))) c = mix(c, vec3(1., .72, .32), .85);
+        gl_FragColor = vec4(c, op); }` });
+  const mesh = new THREE.Mesh(g, m); mesh.renderOrder = 1; mesh.visible = false; scene.add(mesh);
+  // along-line positions of the two lanes (2 nm wide each)
+  const sOf = p => Math.hypot(p.x - SEC.P0.X, p.z - SEC.P0.Z);
+  const si = sOf(SEC.inX), so = sOf(SEC.outX);
+  m.uniforms.lane.value.set(si - nm, si + nm, so - nm, so + nm);
+  return { mesh, m, si, so };
+})();
+const depthAt = s => { const p = SEC.pts[Math.round(clamp(s / SEC.len) * (SEC.pts.length - 1))]; return -p.h; };
+const laneDepth = [wall.si, wall.so].map(s => Math.round(depthAt(s) / 5) * 5);
+
+// ---------- S6: data pillars. One slab = 1 million b/d ----------
+function pillar(ll, n, col, emis, R, SH, at = null) {
+  const P = at ? at.clone() : sea(...ll, 0), grp = new THREE.Group(); grp.position.copy(P); scene.add(grp);
+  const slabG = new THREE.CylinderGeometry(R, R, SH * .87, 48, 1);
+  const mat = new THREE.MeshStandardMaterial({ color: col, emissive: emis, emissiveIntensity: .38, roughness: .45, metalness: .1 });
+  const ringG = new THREE.TorusGeometry(R, R * .022, 6, 64); ringG.rotateX(Math.PI / 2);
+  const edgeM = new THREE.MeshBasicMaterial({ color: new THREE.Color(col).multiplyScalar(2.2), toneMapped: false });
+  const slabs = [];
+  for (let k = 0; k < n; k++) {
+    const s = new THREE.Group(); s.add(new THREE.Mesh(slabG, mat)); const r = new THREE.Mesh(ringG, edgeM); r.position.y = SH * .435; s.add(r);
+    s.position.y = k * SH + SH / 2; grp.add(s); slabs.push(s);
+  }
+  return { grp, slabs, P, SH, R, mat };
+}
+const PB = pillar([56.50, 26.58], 20, 0xffb04a, 0xff9a2e, 3.6, 5.5);
+// spare pipeline capacity, the two estimates, on the same scale, in a row west of the big one (all on open water)
+const TEAL = 0x2fa3b0, TEAL_E = 0x1d7f8c, TEAL2 = 0x8fd6de, TEAL2_E = 0x4fa9b4;
+const PE = pillar(null, 3, TEAL, TEAL_E, 3.6, 5.5, PB.P.clone().add(new THREE.Vector3(-24, 0, 0)));         // EIA 2.6
+const PI = pillar(null, 4, TEAL, TEAL_E, 3.6, 5.5, PB.P.clone().add(new THREE.Vector3(-48, 0, 0)));         // IEA: 3.5 solid ...
+const PI2 = pillar(null, 2, TEAL2, TEAL2_E, 3.6, 5.5, PB.P.clone().add(new THREE.Vector3(-48, 5.5 * 3.5, 0))); // ... + the 3.5–5.5 range, lighter
+function growPillar(p, n, k, start = 0) {           // show n slabs (fractional) grown by k ∈ [0,1]
+  const v = n * k;
+  p.slabs.forEach((s, i) => { const f = clamp(v - i); s.visible = f > 0 && i >= start - 1e-6; const part = i + 1 > n ? n - i : 1; s.scale.set(1, Math.max(.001, f * part), 1); s.position.y = i * p.SH + p.SH * f * part / 2; });
+}
+
+// ---------- S6: the two bypass pipelines (EIA): Abqaiq → Yanbu (Red Sea), Habshan → Fujairah (Gulf of Oman). Routes simplified ----------
+const PIPES = [
+  { ll: [[49.68, 25.94], [48.2, 25.55], [46.4, 25.05], [44.2, 24.65], [42.0, 24.35], [39.8, 24.15], [38.06, 24.09]], a: 'ABQAIQ', b: 'YANBU', name: 'EAST–WEST PIPELINE', t: 30.0 },
+  { ll: [[53.73, 23.83], [54.6, 24.15], [55.5, 24.6], [56.33, 25.13]], a: 'HABSHAN', b: 'FUJAIRAH', name: 'HABSHAN–FUJAIRAH', t: 30.35 }];
+for (const P of PIPES) {
+  const pts = smooth(P.ll.map(([lo, la]) => geo(lo, la, .5)), 300);
+  P.pts = pts; P.case = ribbon(pts, { pxW: 10, k: 1.0, normalA: .7, col: 0x2b2119, order: 2 });
+  P.glow = ribbon(pts, { pxW: 22, k: 3, base: .38, col: AMB, order: 3 }); P.core = ribbon(pts, { pxW: 3.6, k: 1.0, base: 1.8, flowAmt: 2.4, flowSp: 90, flowLen: 22, col: AMB2, order: 3 });
+}
+
+// ---------- the globe ----------
+const gscene = new THREE.Scene(); gscene.background = new THREE.Color(0x04070b);
+const RE = 6371;
+const gdir = (lat, lon) => new THREE.Vector3(Math.cos(lat * D2R) * Math.sin(lon * D2R), Math.sin(lat * D2R), Math.cos(lat * D2R) * Math.cos(lon * D2R));
+{
+  const NU = 360, NV = 180, pos = [], uv = [], idx = [];
+  for (let j = 0; j <= NV; j++) for (let i = 0; i <= NU; i++) {
+    const lat = 90 - j * 180 / NV, lon = -180 + i * 360 / NU, p = gdir(lat, lon).multiplyScalar(RE);
+    pos.push(p.x, p.y, p.z); uv.push(i / NU, 1 - j / NV);
+  }
+  for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) { const a = j * (NU + 1) + i, b = a + NU + 1; idx.push(a, b, a + 1, b, b + 1, a + 1); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  const gm = new THREE.MeshStandardMaterial({ map: worldTex, roughness: .85, metalness: 0 });
+  // the gulf on the globe uses the same Sentinel-2 imagery as the map (z9), so the dive into the map is a clean match
+  const [mx0, my0, mx1, my1] = wmeta.merc;
+  gm.onBeforeCompile = sh => {
+    sh.uniforms.tWide = { value: walbedo }; sh.uniforms.wM = { value: new THREE.Vector4(mx0, my0, mx1, my1) }; sh.uniforms.wz = { value: wmeta.z };
+    sh.vertexShader = 'varying vec3 vOP;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vOP = position;');
+    sh.fragmentShader = 'uniform sampler2D tWide; uniform vec4 wM; uniform float wz; varying vec3 vOP;\n' + sh.fragmentShader.replace('#include <map_fragment>', `
+      vec4 sampledDiffuseColor = texture2D( map, vMapUv );
+      { vec3 dn = normalize(vOP); float la = asin(dn.y), lo = atan(dn.x, dn.z); float N = exp2(wz) * 256.;
+        float mx = (lo + PI) / (2. * PI) * N, my = (1. - log(tan(PI * .25 + la * .5)) / PI) * .5 * N;
+        vec2 uw = vec2((mx - wM.x) / (wM.z - wM.x), 1. - (my - wM.y) / (wM.w - wM.y));
+        if (uw.x > 0. && uw.x < 1. && uw.y > 0. && uw.y < 1.) { float e = smoothstep(0., .04, min(min(uw.x, 1. - uw.x), min(uw.y, 1. - uw.y)));
+          sampledDiffuseColor = mix(sampledDiffuseColor, texture2D(tWide, uw), e); } }
+      diffuseColor *= sampledDiffuseColor;`);
+  };
+  gscene.add(new THREE.Mesh(g, gm));
+  // atmosphere: a thin rim, warm on the day side
+  const am = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide, toneMapped: false,
+    uniforms: { sunD: { value: gdir(12, -8) } },
+    vertexShader: `varying vec3 vN, vP; void main(){ vN = normalize(normal); vec4 w = modelMatrix * vec4(position, 1.); vP = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `varying vec3 vN, vP; uniform vec3 sunD; void main(){ vec3 v = normalize(cameraPosition - vP); float r = 1. - clamp(dot(vN, v), 0., 1.);
+      float rim = pow(r, 3.2); float day = smoothstep(-.2, .45, dot(vN, sunD));
+      vec3 c = mix(vec3(.20, .36, .60), vec3(.98, .80, .58), day * .5); gl_FragColor = vec4(c * rim * (.08 + .55 * day), 1.); }` });
+  gscene.add(new THREE.Mesh(new THREE.SphereGeometry(RE * 1.012, 160, 80), am));
+  const gs = new THREE.DirectionalLight(0xffe6c4, 3.0); gs.position.copy(gdir(12, -8).multiplyScalar(5e4)); gscene.add(gs, new THREE.HemisphereLight(0x3a5878, 0x0a0a10, .12));
+  // stars, fixed
+  const R = mulberry(7), sp = [];
+  for (let i = 0; i < 1600; i++) { const u = R() * 2 - 1, th = R() * Math.PI * 2, r = Math.sqrt(1 - u * u); sp.push(r * Math.cos(th) * 9e4, u * 9e4, r * Math.sin(th) * 9e4); }
+  const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
+  gscene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0x9aa6b4, size: 1.3, sizeAttenuation: false, transparent: true, opacity: .55 })));
+}
+// routes out of Hormuz (schematic sea paths; the Asia share is EIA's 84 % of Hormuz crude in 2024)
+function gpath(ll, n = 300) {
+  const P = [];
+  for (let i = 0; i < ll.length - 1; i++) { const a = gdir(...ll[i]), b = gdir(...ll[i + 1]), ang = a.angleTo(b), m = Math.max(2, Math.ceil(ang / .01));
+    for (let j = 0; j < m; j++) { const f = j / m, s = Math.sin(ang); P.push(a.clone().multiplyScalar(Math.sin((1 - f) * ang) / s).add(b.clone().multiplyScalar(Math.sin(f * ang) / s))); } }
+  P.push(gdir(...ll[ll.length - 1]));
+  return smooth(P.map(p => p.multiplyScalar(RE + 4)), n);
+}
+const HZ = [[26.35, 56.6], [24.8, 58.6], [21.0, 61.5]];
+const GROUTES = [
+  { n: 'INDIA', ll: [...HZ, [20.0, 66.5], [22.3, 69.2]], asia: 1, t: 42.0, lab: [21.0, 74.0] },
+  { n: 'CHINA', ll: [...HZ, [13.5, 68.0], [6.0, 80.0], [5.8, 94.5], [2.6, 101.2], [1.2, 104.2], [8.0, 109.5], [18.0, 113.5], [24.0, 119.0], [30.0, 122.8]], asia: 1, t: 42.4, lab: [33.5, 112.0] },
+  { n: 'JAPAN · SOUTH KOREA', ll: [...HZ, [13.5, 68.0], [6.0, 80.0], [5.8, 94.5], [2.6, 101.2], [1.2, 104.2], [8.0, 109.5], [18.0, 116.0], [24.5, 123.5], [31.5, 129.0], [34.6, 135.5]], asia: 1, t: 42.8, lab: [38.5, 134.0] },
+  { n: 'EUROPE', ll: [...HZ, [14.5, 54.0], [12.6, 45.0], [12.6, 43.4], [20.0, 38.6], [27.5, 34.0], [29.9, 32.6], [31.5, 32.3], [34.0, 25.0], [37.0, 12.0]], asia: 0, t: 42.0, lab: [42.5, 18.0] }];
+for (const r of GROUTES) {
+  const pts = gpath(r.ll); r.pts = pts;
+  r.glow = ribbon(pts, { pxW: 10, k: 3, base: .22, col: AMB }, gscene, true);
+  r.core = ribbon(pts, { pxW: 2.2, k: 1.2, base: 1, flowAmt: 2.2, flowSp: 260, flowLen: 70, col: AMB2 }, gscene, true);
+}
+const HZG = gdir(26.57, 56.25).multiplyScalar(RE);
+// globe camera: [log altitude km, camera lat, lon, target lat, lon]
+const GCAM_KEYS = ([
+  [0.0, [Math.log(26000), 17, 44, 20, 50]],
+  [2.5, [Math.log(15000), 21, 48, 24, 51]],
+  [4.6, [Math.log(4200), 24.2, 51.6, 26.9, 52.1]],
+  [5.6, null]]);
+let GCAM, GCAM2;
+const GCAM2_KEYS = ([
+  [40.8, null],
+  [41.8, [Math.log(3600), 22.0, 58.6, 24.0, 59.2]],
+  [43.5, [Math.log(10500), 17.0, 72.0, 19.0, 78.0]],
+  [47.0, [Math.log(15500), 16.0, 84.0, 18.0, 90.0]],
+  [50.0, [Math.log(16800), 15.5, 87.0, 17.5, 93.0]]]);
+function setGlobeCam(t) {
+  const dissolve = (t >= 5.6 && t < 6.4) || (t >= 40.0 && t < 40.8);
+  const [la, cla, clo, tla, tlo] = dissolve ? mapToGlobe(t) : t < 20 ? GCAM(clamp(t, 0, 5.6)) : GCAM2(clamp(t, 40.8, 50)); const alt = Math.exp(la) * (1 + .012 * Math.max(0, t - 50));   // past 50 s: keep drifting out, slowly
+  const td = gdir(tla, tlo), north = new THREE.Vector3(0, 1, 0).addScaledVector(td, -td.y).normalize();
+  gcam.position.copy(gdir(cla, clo).multiplyScalar(RE + alt)); gcam.up.copy(north); gcam.lookAt(td.clone().multiplyScalar(RE));
+  const ox = t > 40 ? 330 * eio(seg(t, 41.5, 44.5)) : 0; if (ox > .5) gcam.setViewOffset(Wd, Ht, ox, 0, Wd, Ht); else gcam.clearViewOffset();
+  gcam.near = Math.max(50, alt * .3); gcam.far = 2e5; gcam.updateProjectionMatrix(); gcam.updateMatrixWorld(); return alt;
+}
+
+// ---------- map camera: two continuous moves, joined by one hard cut at 20.0 s ----------
+// keys: t, [log distance km, pitch°, yaw°, target lon, target lat, target height km]
+const YAWN = Math.atan2(SEC.nx, SEC.nz) / D2R;
+const SECMID = SEC.ll(.22);
+const CAM_A = track([
+  [5.6, [Math.log(1230), 79, -3, 52.25, 27.35, 0]],
+  [6.4, [Math.log(1150), 78, -2.5, 52.6, 27.25, 0]],
+  [8.6, [Math.log(720), 68, 1, 54.35, 26.85, 0]],
+  [10.6, [Math.log(300), 52, 8, 56.3, 26.45, 0]],
+  [12.2, [Math.log(242), 46.5, 10, 56.41, 26.40, 0]],
+  [14.2, [Math.log(228), 45, 11, 56.42, 26.43, 0]],
+  [15.7, [Math.log(150), 8, YAWN - 4, SECMID[0], SECMID[1], -6.0]],
+  [16.8, [Math.log(136), 5, YAWN + 4, SECMID[0], SECMID[1], -9.5]],
+  [20.0, [Math.log(128), 4.5, YAWN + 10, SECMID[0], SECMID[1], -9.5]]]);
+// S5 flies west along the inbound lane, just behind and above the traffic
+const flyKeys = [20.0, 21.5, 23.0, 24.4].map((t, i) => {
+  const s = FLY0 + (t - 20) * FLYV, P = along(inPts, inS, s), h = P.dir;
+  const yaw = Math.atan2(-h.x, -h.z) / D2R;
+  return [t, [Math.log(lerp(30, 26, i / 3)), lerp(15, 13, i / 3), yaw, P.p.x, P.p.z, 0]];
+});
+const CAM_B = track([
+  ...flyKeys.map(([t, v]) => [t, v]),
+  [27.0, [Math.log(360), 20, 22, ...xz(56.45, 26.58), 50]],
+  [29.6, [Math.log(372), 22, 15, ...xz(56.45, 26.58), 50]],
+  [31.0, [Math.log(2380), 64, 2, ...xz(46.8, 24.5), 0]],
+  [33.7, [Math.log(2300), 63, 3, ...xz(47.2, 24.5), 0]],
+  [35.2, [Math.log(345), 4, 178, PB.P.x - 24, PB.P.z, 50]],
+  [39.8, [Math.log(334), 3.5, 175, PB.P.x - 24, PB.P.z, 50]],
+  [40.8, [Math.log(1350), 70, 4, ...xz(56.0, 26.2), 0]]]);
+function mapCam(t) {
+  let d, p, y, X, Z, ty;
+  if (t < 20) { const [ld, pd, yd, lo, la, h] = CAM_A(clamp(t, 5.6, 20)); [X, Z] = xz(lo, la); d = Math.exp(ld); p = pd; y = yd; ty = h; }
+  else { const [ld, pd, yd, x, z, h] = CAM_B(clamp(t, 20, 40.8)); X = x; Z = z; d = Math.exp(ld); p = pd; y = yd; ty = h; }
+  p *= D2R; y *= D2R;
+  return { d, cam: new THREE.Vector3(X + Math.sin(y) * Math.cos(p) * d, ty + Math.sin(p) * d, Z + Math.cos(y) * Math.cos(p) * d), tgt: new THREE.Vector3(X, ty, Z) };
+}
+// the same view on the globe: used through both dissolves, so map and globe line up exactly
+function mapToGlobe(t) { const { cam, tgt } = mapCam(t); const [clo, cla] = unxz(cam), [tlo, tla] = unxz(tgt); return [Math.log(cam.y), cla, clo, tla, tlo]; }
+function setCamera(t) {
+  const { d, cam, tgt } = mapCam(t);
+  camera.position.copy(cam);
+  camera.near = Math.max(.2, d * .06); camera.far = d * 6 + 400; camera.lookAt(tgt); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
+  scene.fog.near = d * 1.05; scene.fog.far = d * 3.4 + 60;
+  return d;
+}
+
+GCAM = track(GCAM_KEYS.map(([t, v]) => [t, v || mapToGlobe(t)]));
+GCAM2 = track(GCAM2_KEYS.map(([t, v]) => [t, v || mapToGlobe(t)]));
+
+// ---------- post ----------
+const post = makePost(renderer, scene, camera, Wd, Ht, { ssaa: 2, ao: false });
+post.dof.maxCoc = 7; post.bloom.strength = .55; post.bloom.radius = .55; post.bloom.threshold = .95;
+const VU = post.vig.uniforms; VU.amt.value = .42; VU.warm.value = .25; VU.sat.value = .92; VU.contrast.value = .12;
+const gpost = makePost(renderer, gscene, gcam, Wd, Ht, { ssaa: 2, ao: false });
+gpost.dof.maxCoc = 0; gpost.bloom.strength = .7; gpost.bloom.radius = .6; gpost.bloom.threshold = .9;
+const GU = gpost.vig.uniforms; GU.amt.value = .5; GU.warm.value = .2; GU.sat.value = .95; GU.contrast.value = .1;
+
+// ---------- overlay ----------
+const ov = document.createElement('canvas'); ov.width = Wd * 2; ov.height = Ht * 2; ov.style.width = Wd + 'px'; ov.style.height = Ht + 'px'; document.body.appendChild(ov);
+const g = ov.getContext('2d');
+const snap = document.createElement('canvas'); snap.width = Wd * 2; snap.height = Ht * 2; const sg = snap.getContext('2d');
+await Promise.all(['400 20px Barlow', '500 20px Barlow', '600 20px Barlow', '500 20px NotoSC', '700 20px NotoSC'].map(f => document.fonts.load(f, '霍尔木兹海峡ABC')));
+const scrW = (v, cam) => { const p = v.clone().project(cam); return [(p.x + 1) / 2 * Wd, (1 - p.y) / 2 * Ht, p.z]; };
+const scr = v => scrW(v, camera);
+const C = { land: '#2b2119', sea: '#bcdbe6', light: '#f6eee0', amber: '#ffc36b', amberSoft: 'rgba(255,214,150,.92)', ice: '#d9e6ee', dim: 'rgba(240,232,216,.66)' };
+let TX = [];
+function txt(s, x, y, o) {
+  g.save(); g.font = `${o.w || 500} ${o.size}px ${o.f || 'Barlow'}`; g.letterSpacing = (o.sp || 0) + 'px';
+  g.textAlign = o.align || 'center'; g.textBaseline = o.base || 'middle'; g.globalAlpha = clamp(o.a ?? 1); g.fillStyle = o.col || C.light;
+  g.fillText(s, x, y); const w = g.measureText(s).width;
+  const x0 = o.align === 'left' ? x : o.align === 'right' ? x - w : x - w / 2;
+  if ((o.a ?? 1) > .5 && !o.nobox) TX.push({ id: o.id || s, text: s, x0, y0: y - o.size * .6, x1: x0 + w, y1: y + o.size * .6 });
+  g.restore(); return w;
+}
+const tw = (s, size, w = 500, sp = 0, f = 'Barlow') => { g.save(); g.font = `${w} ${size}px ${f}`; g.letterSpacing = sp + 'px'; const r = g.measureText(s).width; g.restore(); return r; };
+function line(pts, col, w = 1.4, a = 1, dash = null) { g.save(); g.globalAlpha = a; g.strokeStyle = col; g.lineWidth = w; if (dash) g.setLineDash(dash); g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); g.restore(); }
+function dot(x, y, r, col, a = 1) { g.save(); g.globalAlpha = a; g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.restore(); }
+
+const STY = {
+  land: { size: 30, w: 600, sp: 9, col: C.land, a: .82 }, landS: { size: 20, w: 600, sp: 5, col: C.land, a: .78 },
+  landL: { size: 30, w: 600, sp: 9, col: C.light, a: .9 }, landLSub: { size: 15, w: 500, sp: 5, col: C.light, a: .8, dy: 26 },
+  sea: { size: 21, w: 500, sp: 7, col: C.sea, a: .92 }, island: { size: 15, w: 600, sp: 3, col: C.land, a: .85 },
+  islandW: { size: 15, w: 600, sp: 3, col: C.light, a: .88, align: 'left' }, pin: { size: 15, w: 600, sp: 3, col: C.light, a: .9, align: 'left' } };
+// [lon, lat, text, style, from, to]
+const LABELS = [
+  [54.9, 27.95, 'IRAN', 'land', 6.7, 10.2], [49.3, 25.2, 'SAUDI ARABIA', 'land', 6.7, 10.2], [51.2, 25.25, 'QATAR', 'landS', 6.8, 10.2],
+  [54.75, 24.0, 'UNITED ARAB EMIRATES', 'landS', 6.9, 10.2], [47.75, 29.45, 'KUWAIT', 'landS', 6.8, 10.2], [47.0, 31.0, 'IRAQ', 'landS', 6.8, 10.2],
+  [53.4, 26.85, 'PERSIAN GULF', 'sea', 6.7, 10.2], [57.75, 25.3, 'GULF OF OMAN', 'sea', 6.9, 10.2],
+  [57.25, 27.18, 'IRAN', 'land', 10.6, 14.6], [56.78, 26.0, 'GULF OF OMAN', 'sea', 10.6, 14.6], [55.93, 26.84, 'QESHM IS.', 'island', 10.6, 14.6],
+  [56.535, 27.055, 'HORMUZ IS.', 'islandW', 10.6, 14.6], [56.415, 26.86, 'LARAK IS.', 'islandW', 10.6, 14.6],
+  [56.17, 25.98, 'OMAN', 'landL', 10.8, 14.6], [56.17, 25.98, 'MUSANDAM', 'landLSub', 10.8, 14.6],
+  [44.5, 23.6, 'SAUDI ARABIA', 'land', 30.8, 34.0], [38.3, 22.9, 'RED SEA', 'sea', 30.8, 34.0], [51.0, 27.6, 'PERSIAN GULF', 'sea', 30.8, 34.0],
+  [54.4, 23.1, 'UAE', 'landS', 30.8, 34.0], [52.5, 29.6, 'IRAN', 'land', 30.8, 34.0]];
+const BOTTOM_SAFE = 190;                              // the subtitle shelf
+
+function mapLabels(t) {
+  for (const [lo, la, s, kind, a0, a1] of LABELS) {
+    let a = ss(seg(t, a0, a0 + .6)) * (1 - ss(seg(t, a1 - .5, a1))); if (a <= .01) continue;
+    const st = STY[kind], [x, y, z] = scr(geo(lo, la, .3)); if (z > 1) continue;
+    const w = tw(s, st.size, st.w, st.sp), x0 = st.align === 'left' ? x : x - w / 2, x1 = x0 + w;
+    const m = Math.min(x0 - 40, Wd - 40 - x1, y - 40, (x0 < 1250 ? Ht - BOTTOM_SAFE : Ht - 70) - y);
+    a *= ss(seg(m, 0, 50)); if (a <= .01) continue;
+    txt(s, x, y + (st.dy || 0), { ...st, a: a * st.a, id: 'L' + s + a0 });
+  }
+}
+
+// the subtitle shelf: Chinese over English, left-aligned like a map legend, on a soft dark floor
+function subtitles(t) {
+  const c = CUES.find(c => t >= c.t0 - .12 && t < c.t1 + .12);
+  g.save(); const gr = g.createLinearGradient(0, Ht - 250, 0, Ht); gr.addColorStop(0, 'rgba(6,10,15,0)'); gr.addColorStop(1, 'rgba(6,10,15,.55)');
+  g.fillStyle = gr; g.fillRect(0, Ht - 250, Wd, 250); g.restore();
+  if (!c) return;
+  const a = ss(seg(t, c.t0 - .12, c.t0 + .08)) * (1 - ss(seg(t, c.t1 - .08, c.t1 + .12)));
+  const X = 96, Y = Ht - 104;
+  g.save(); g.globalAlpha = a; g.fillStyle = C.amber; g.fillRect(X - 22, Y - 22, 3, 74); g.restore();
+  txt(c.zh, X, Y, { size: 36, w: 500, sp: 1.5, f: 'NotoSC', align: 'left', col: C.light, a, id: 'sub-zh', nobox: true });
+  txt(c.en, X + 1, Y + 42, { size: 25, w: 500, sp: 1.2, align: 'left', col: 'rgba(232,224,208,.92)', a, id: 'sub-en', nobox: true });
+}
+
+function credits(t) {
+  const a = ss(seg(t, .6, 1.4));
+  txt('DATA EIA · IEA · ELEVATION AWS TERRAIN TILES · IMAGERY SENTINEL-2 CLOUDLESS 2016 BY EOX (CC BY 4.0) · LANES © OPENSTREETMAP CONTRIBUTORS (ODbL) · ROUTES SCHEMATIC · VERTICAL ×3.2',
+    Wd - 40, Ht - 26, { size: 11.5, w: 500, sp: 1.1, align: 'right', col: 'rgba(240,232,216,.55)', base: 'alphabetic', a, id: 'credits', nobox: true });
+}
+
+// S1: the strait, pinned on the globe; the title lives here
+function globeTitle(t) {
+  const a = ss(seg(t, 2.1, 2.8)) * (1 - ss(seg(t, 5.3, 5.9))); if (a <= 0) return;
+  const [x, y] = scrW(HZG, gcam);
+  const r = seg(t, 2.0, 3.2);
+  for (const k of [0, .33, .66]) { const q = (r * 1.4 + k) % 1; g.save(); g.globalAlpha = a * (1 - q) * .8; g.strokeStyle = C.amber; g.lineWidth = 1.4; g.beginPath(); g.arc(x, y, 6 + 34 * q, 0, 7); g.stroke(); g.restore(); }
+  dot(x, y, 4, C.amber, a);
+  const lx = Math.min(x + 90, Wd - 620), ly = Math.min(y + 170, Ht - 300), e = eo(seg(t, 2.2, 2.9));
+  line([[x + 5, y + 5], [x + 5 + (lx - 14 - x - 5) * e, y + 5 + (ly - 70 - y - 5) * e]], 'rgba(255,214,150,.85)', 1.2, a);
+  txt('26°34′N   56°15′E', lx, ly - 46, { size: 17, w: 500, sp: 4, align: 'left', col: C.amberSoft, a, id: 'g-coord' });
+  txt('STRAIT OF HORMUZ', lx - 2, ly, { size: 58, w: 600, sp: 7, align: 'left', col: C.light, a: a * ss(seg(t, 2.3, 2.9)), id: 'g-title' });
+  txt('霍尔木兹海峡', lx, ly + 52, { size: 36, w: 500, sp: 8, f: 'NotoSC', align: 'left', col: 'rgba(246,238,224,.92)', a: a * ss(seg(t, 2.5, 3.0)), id: 'g-title-zh' });
+}
+
+// S2: terminals light up
+function terminals(t) {
+  const fade = 1 - ss(seg(t, 9.2, 10.4));
+  for (const R of routes) {
+    const k = seg(t, R.T.t, R.T.t + .25); if (k <= 0 || fade <= 0) continue;
+    const [x, y] = scr(sea(...R.T.ll, .1));
+    dot(x, y, 3.4 * eo(k), C.amber, fade);
+    const r = seg(t, R.T.t, R.T.t + .9); if (r < 1) { g.save(); g.globalAlpha = fade * (1 - r) * .9; g.strokeStyle = C.amber; g.lineWidth = 1.4; g.beginPath(); g.arc(x, y, 4 + 18 * eo(r), 0, 7); g.stroke(); g.restore(); }
+  }
+}
+
+// S3: the narrowest point
+function measure(t) {
+  const mk = seg(t, 11.0, 11.8), out = 1 - ss(seg(t, 14.3, 14.8)); if (mk <= 0 || out <= 0) return;
+  const [ax, ay] = scr(MA), [bx, by] = scr(MB), e = eio(mk);
+  const mx = (ax + bx) / 2, my = (ay + by) / 2;
+  const px = mx + (ax - mx) * e, py = my + (ay - my) * e, qx = mx + (bx - mx) * e, qy = my + (by - my) * e;
+  const ux = bx - ax, uy = by - ay, ul = Math.hypot(ux, uy) || 1, nx = -uy / ul * 7, ny = ux / ul * 7;
+  line([[px, py], [qx, qy]], 'rgba(246,238,224,.95)', 1.5, out);
+  const tk = ss(seg(t, 11.7, 12.0)) * out;
+  for (const [x, y] of [[ax, ay], [bx, by]]) line([[x - nx, y - ny], [x + nx, y + ny]], 'rgba(246,238,224,.95)', 1.5, tk);
+  dot(bx, by, 3, C.light, tk);
+  const la = ss(seg(t, 11.7, 12.2)) * out;
+  const lx = ax + (bx - ax) * .36 + 22, ly = ay + (by - ay) * .36;
+  txt('GREAT QUOIN IS.', bx - 12, by + 4, { size: 15, w: 600, sp: 3, align: 'right', col: C.light, a: la * .85, id: 'quoin' });
+  txt('NARROWEST POINT', lx + 1, ly - 16, { size: 15, w: 500, sp: 4, align: 'left', col: C.amberSoft, a: la, id: 'mlab' });
+  txt('21 NM · 39 KM', lx, ly + 14, { size: 34, w: 600, sp: 3, align: 'left', col: C.light, a: la, id: 'mval' });
+}
+
+// S4: the cross-section, labelled like an engineering drawing
+function section(t) {
+  const a = ss(seg(t, 15.95, 16.3)) * (1 - ss(seg(t, 19.75, 20.0))); if (a <= 0) return;
+  const P = s => { const k = clamp(s / SEC.len), i = Math.round(k * (SEC.pts.length - 1)), p = SEC.pts[i]; return p; };
+  const at = (s, y) => { const p = P(s); return scr(new THREE.Vector3(p.X, y, p.Z)); };
+  // depth scale at the deep (south) end of the line, where it is closest to the camera
+  const sEnd = SEC.len * .9;
+  const [x0, y0] = at(sEnd, 0), [x1, y1] = at(sEnd, -100 / 1000 * DEX);
+  line([[x0 + 16, y0], [x1 + 16, y1]], C.light, 1.2, a);
+  for (const m of [0, 50, 100]) { const [x, y] = at(sEnd, -m / 1000 * DEX); line([[x + 10, y], [x + 22, y]], C.light, 1.2, a); txt(m + ' M', x + 30, y, { size: 18, w: 600, sp: 2, align: 'left', col: C.light, a, id: 'dm' + m }); }
+  // the lanes, and how deep the water is under them
+  for (const [s, nm_, dep] of [[wall.si, 'INBOUND', laneDepth[0]], [wall.so, 'OUTBOUND', laneDepth[1]]]) {
+    const [x, y] = at(s, 0), [xb, yb] = at(s, -dep / 1000 * DEX);
+    const e = eo(seg(t, 16.6, 17.4));
+    line([[x, y], [x + (xb - x) * e, y + (yb - y) * e]], C.amber, 1.4, a, [4, 4]);
+    txt(nm_, x, y - 26, { size: 17, w: 600, sp: 4, col: C.amberSoft, a, id: 'sl' + nm_ });
+    txt(`≈ ${dep} M`, xb, yb + 26, { size: 28, w: 600, sp: 2, col: C.light, a: a * ss(seg(t, 17.2, 17.7)), id: 'sd' + nm_ });
+  }
+  // the two islands on the line
+  for (const [k, nmI] of [[0, 'LARAK IS.'], [1, 'GREAT QUOIN IS.']]) { const sI = Math.hypot(...(() => { const [X, Z] = xz(...SEC.ll(k)); return [X - SEC.P0.X, Z - SEC.P0.Z]; })()); const [x, y] = at(sI, .4); txt(nmI, x, y - 54, { size: 15, w: 600, sp: 3, col: C.light, a: a * .9, id: 'si' + k }); }
+  // caption, upper left, away from the subtitles
+  const ca = a * ss(seg(t, 15.95, 16.3));
+  txt('SECTION · NARROWEST LINE', 96, 118, { size: 17, w: 600, sp: 4, align: 'left', col: C.amberSoft, a: ca, id: 'sec-t' });
+  txt('DEEP ENOUGH FOR THE LARGEST TANKERS', 95, 162, { size: 40, w: 600, sp: 3, align: 'left', col: C.light, a: ca, id: 'sec-h' });
+  txt(`WATER DEPTH ×${DEX} · LAND ×${EX}`, 96, 202, { size: 14, w: 500, sp: 2.5, align: 'left', col: C.dim, a: ca, id: 'sec-n' });
+}
+
+// S5: a ruler across both lanes
+function ruler(t) {
+  const a = ss(seg(t, 21.2, 21.8)) * (1 - ss(seg(t, 24.2, 24.7))); if (a <= 0) return;
+  const s = FLY0 + 17;                                                   // a fixed spot the camera flies toward
+  const P = along(inPts, inS, s), h = P.dir, L = new THREE.Vector3(h.z, 0, -h.x);   // left of travel
+  const pt = d => scr(P.p.clone().addScaledVector(L, d).setY(.08));
+  const marks = [-nm, nm, 3 * nm, 5 * nm].map(pt);
+  const e = eio(seg(t, 21.3, 22.1));
+  const mid = (u, v) => [(u[0] + v[0]) / 2, (u[1] + v[1]) / 2];
+  const [p0, p3] = [marks[0], marks[3]];
+  line([[p0[0], p0[1]], [p0[0] + (p3[0] - p0[0]) * e, p0[1] + (p3[1] - p0[1]) * e]], C.light, 1.6, a);
+  marks.forEach(([x, y], i) => { const k = ss(seg(t, 21.3 + i * .18, 21.6 + i * .18)); line([[x, y - 12], [x, y + 12]], C.light, 1.6, a * k); });
+  const la = a * ss(seg(t, 21.8, 22.2));
+  const lab = [['INBOUND · 2 NM', C.amberSoft], ['BUFFER · 2 NM', C.dim], ['OUTBOUND · 2 NM', C.amberSoft]];
+  for (let i = 0; i < 3; i++) { const [x, y] = mid(marks[i], marks[i + 1]); txt(lab[i][0], x, y - 32, { size: 20, w: 600, sp: 3, col: lab[i][1], a: la, id: 'rul' + i }); }
+}
+
+// S6: labels for the pillars and the pipelines
+function pillarLabels(t) {
+  // the big one: 20 million b/d
+  const a = ss(seg(t, 26.9, 27.3)) * (1 - ss(seg(t, 29.8, 30.2))) + ss(seg(t, 35.4, 35.9)) * (1 - ss(seg(t, 40.0, 40.4)));
+  if (a > 0) {
+    const [x, y] = scr(PB.P.clone().setY(PB.SH * 20 + 3));
+    const lx = x + 36, ly = y - 10;
+    line([[x + 4, y + 2], [lx - 6, ly + 14]], 'rgba(255,214,150,.9)', 1.2, a);
+    txt('20', lx, ly, { size: 76, w: 600, sp: 1, align: 'left', col: '#ffd08a', a, id: 'pb-n' });
+    txt('MILLION BARRELS A DAY', lx + tw('20', 76, 600, 1) + 12, ly - 12, { size: 18, w: 600, sp: 3, align: 'left', col: C.light, a, id: 'pb-u' });
+    txt('2024 AVERAGE · EIA', lx + tw('20', 76, 600, 1) + 12, ly + 14, { size: 14, w: 500, sp: 2.5, align: 'left', col: C.dim, a, id: 'pb-s' });
+    // scale ticks every 5
+    for (const k of [5, 10, 15]) { const [tx, ty] = scr(PB.P.clone().setY(k * PB.SH)); const ox = -PB.R * 1.3; const [ux, uy] = scr(PB.P.clone().add(new THREE.Vector3(ox, k * PB.SH, 0))); txt(String(k), ux - 8, uy, { size: 14, w: 600, sp: 1, align: 'right', col: 'rgba(255,224,176,.85)', a, id: 'pt' + k }); }
+  }
+  // the two estimates of spare pipeline capacity: same type tier as the 20
+  const b = ss(seg(t, 36.2, 36.7)) * (1 - ss(seg(t, 40.0, 40.4)));
+  if (b > 0) {
+    const est = [[PE, 2.6, '2.6', 'EIA ESTIMATE', 36.2], [PI, 5.5, '3.5–5.5', 'IEA ESTIMATE', 36.9]];
+    for (const [P, top, num, who, t0] of est) {
+      const c = b * ss(seg(t, t0, t0 + .5));
+      const [x, y] = scr(P.P.clone().setY(P.SH * top + 2.5));
+      txt(num, x, y - 100, { size: 70, w: 600, sp: 1, col: '#9fe3ea', a: c, id: 'est' + num });
+      txt('MILLION BARRELS A DAY', x, y - 58, { size: 15, w: 600, sp: 3, col: C.light, a: c, id: 'estu' + num });
+      txt(who, x, y - 34, { size: 17, w: 600, sp: 3, col: '#cfeff2', a: c, id: 'ests' + num });
+    }
+    // one caption tying the two together, above them
+    const [ex] = scr(PE.P.clone().setY(PE.SH * 2.6)), [ix, iy] = scr(PI2.P.clone().setY(PI2.P.y + PI2.SH * 2 + 2.5));
+    txt('SPARE CAPACITY TO BYPASS THE STRAIT', (ex + ix) / 2, iy - 170, { size: 18, w: 600, sp: 4, col: '#9fe3ea', a: b * ss(seg(t, 36.2, 36.6)), id: 'est-cap' });
+  }
+}
+function pipeLabels(t) {
+  for (const P of PIPES) {
+    const a = ss(seg(t, P.t + .6, P.t + 1.0)) * (1 - ss(seg(t, 33.7, 34.1))); if (a <= 0) continue;
+    const [ax, ay] = scr(P.pts[0]), [bx, by] = scr(P.pts[P.pts.length - 1]);
+    dot(ax, ay, 4, C.amber, a); dot(bx, by, 4, C.amber, a);
+    txt(P.a, ax + 10, ay + 18, { size: 14, w: 600, sp: 3, align: 'left', col: C.land, a, id: 'pa' + P.a });
+    txt(P.b, bx + (P.b === 'YANBU' ? -10 : 10), by - 16, { size: 14, w: 600, sp: 3, align: P.b === 'YANBU' ? 'right' : 'left', col: P.b === 'YANBU' ? C.land : C.light, a, id: 'pb' + P.b });
+    const m = along(P.pts, arc(P.pts), arc(P.pts).at(-1) * (P.b === 'YANBU' ? .45 : .5)).p, [mx, my] = scr(m);
+    txt(P.name, mx, my + (P.b === 'YANBU' ? -24 : 26), { size: 18, w: 600, sp: 4, col: C.land, a, id: 'pn' + P.b });
+  }
+}
+
+// S7: the globe, the routes east
+function globeLabels(t) {
+  for (const r of GROUTES) {
+    const a = ss(seg(t, r.t + 1.0, r.t + 1.6)); if (a <= 0) continue;
+    const [x, y, z] = scrW(gdir(...r.lab).multiplyScalar(RE), gcam); if (z > 1) continue;
+    txt(r.n, x, y, { size: r.asia ? 18 : 15, w: 600, sp: 4, col: r.asia ? C.amberSoft : C.dim, a: a * (r.asia ? 1 : .8), id: 'g' + r.n });
+  }
+  const a = ss(seg(t, 44.0, 44.7)) * (1 - ss(seg(t, 48.3, 48.7)));
+  if (a > 0) {
+    const X = 1330, Y = 330;
+    txt('84%', X, Y, { size: 96, w: 600, sp: 2, align: 'left', col: '#ffd08a', a, id: 'g84' });
+    txt('OF THE CRUDE OIL THROUGH HORMUZ', X + 4, Y + 68, { size: 20, w: 600, sp: 3.5, align: 'left', col: C.light, a, id: 'g84a' });
+    txt('WENT TO ASIA IN 2024 · EIA', X + 4, Y + 96, { size: 20, w: 600, sp: 3.5, align: 'left', col: C.light, a, id: 'g84b' });
+  }
+}
+
+// end card (48.7 → 52): a map title block in the empty sky right of the globe — title, style, sign-off
+function endCard(t) {
+  const a = ss(seg(t, 48.6, 49.0)); if (a <= 0) return;
+  const X = 1330, Y = 300, e = eo(seg(t, 48.6, 49.2));
+  // north arrow + rule, like the title block of a chart
+  g.save(); g.globalAlpha = a; g.fillStyle = C.amber;
+  g.beginPath(); g.moveTo(X + 7, Y - 92); g.lineTo(X + 14, Y - 70); g.lineTo(X + 7, Y - 75); g.lineTo(X, Y - 70); g.closePath(); g.fill();
+  g.fillRect(X + 26, Y - 80, 60 * e, 3); g.restore();
+  txt('N', X + 7, Y - 56, { size: 13, w: 600, sp: 1, col: C.amberSoft, a, id: 'end-n', nobox: true });
+  txt('STRAIT OF HORMUZ', X - 2, Y, { size: 54, w: 600, sp: 6, align: 'left', col: C.light, a, id: 'end-title' });
+  txt('霍尔木兹海峡', X, Y + 52, { size: 36, w: 500, sp: 8, f: 'NotoSC', align: 'left', col: 'rgba(246,238,224,.92)', a, id: 'end-zh' });
+  line([[X, Y + 92], [X + 440 * e, Y + 92]], 'rgba(246,238,224,.35)', 1, a);
+  const w1 = txt('3D MAP EXPLAINER', X, Y + 122, { size: 20, w: 600, sp: 4, align: 'left', col: C.amberSoft, a, id: 'end-style' });
+  txt('立体地图解说', X + w1 + 16, Y + 122, { size: 22, w: 500, sp: 4, f: 'NotoSC', align: 'left', col: C.amberSoft, a, id: 'end-style-zh' });
+  txt('LemoLab × Claude Opus 5.5', X, Y + 178, { size: 30, w: 600, sp: 2, align: 'left', col: C.light, a, id: 'end-sign' });
+}
+
+// ---------- the frame at film time t ----------
+const EVF = [];
+function mapFrame(t, dist) {
+  // cut-away for the cross-section (15.0 → 20.0)
+  const cutOn = t >= 15.65 && t < 20.0;
+  CUT.p.set(SEC.P0.X, SEC.P0.Z, SEC.nx, SEC.nz); CUT.d.value = cutOn ? 2 + 600 * eio(seg(t, 15.7, 16.6)) : 0;
+  wall.mesh.visible = cutOn; wall.m.uniforms.op.value = ss(seg(t, 15.7, 16.0));
+  // routes (S2)
+  const routeFade = 1 - ss(seg(t, 9.6, 11.0));
+  for (const R of routes) { const k = eo(seg(t, R.T.t + .1, R.T.t + 1.3)); for (const r of [R.glow, R.core]) rv(r, { revB: k * r.L, inten: routeFade, flowPh: t * 26, soft: 6 }); }
+  { const k = eio(seg(t, 6.6, 8.6)); for (const r of [trunk.glow, trunk.core]) rv(r, { revB: k * r.L, inten: (1 - ss(seg(t, 10.0, 11.4))) * (t < 25 ? 1 : 0), flowPh: t * 30, soft: 8 }); }
+  // lanes ignite on the downbeat at 12.5; dim while the camera is far away over Arabia
+  const far = ss(seg(dist, 900, 1600));
+  for (const [li, L] of lanes.entries()) {
+    const sStart = li ? nearest(L.pts, L.S, 55.15, 26.25) : nearest(L.pts, L.S, 57.35, 25.68);
+    const k = eo(seg(t, 12.5 + li * .12, 14.0 + li * .12)), head = lerp(sStart, L.S[L.S.length - 1], k);
+    const on = ss(seg(t, 12.45, 12.7)) * (1 - .5 * far), near = lerp(.32, 1, ss(seg(dist, 25, 160)));
+    rv(L.band, { inten: on * near * near }); rv(L.core, { inten: on * near });
+    for (const r of [L.band, L.core]) rv(r, { revB: head, head, headAmt: 1.1 * (1 - ss(seg(k, .8, 1))), flowPh: t * 9 });
+    const ke = eo(seg(t, 12.7 + li * .12, 14.3 + li * .12)), he = lerp(sStart, L.S[L.S.length - 1], ke);
+    for (const r of L.edges) rv(r, { revB: he, inten: ss(seg(t, 12.7, 13.0)) * (1 - far) });
+    rv(L.wake, { inten: 1 - far });
+  }
+  // ships
+  const shipS = [[], []], shipA = [[], []], sc = clamp(dist / 240, .2, 1);
+  for (const s of ships) {
+    const a = ss(seg(t, s.ta, s.ta + .5)) * (1 - far), L = lanes[s.li], cur = s.s0 + VSHIP * (t - 13);
+    const P = along(L.pts, L.S, cur), off = s.off; s.g.position.set(P.p.x + P.dir.z * off, .12, P.p.z - P.dir.x * off); s.g.rotation.y = Math.atan2(-P.dir.z, P.dir.x);
+    const cutHide = cutOn && ((P.p.x - SEC.P0.X) * SEC.nx + (P.p.z - SEC.P0.Z) * SEC.nz) > 0;
+    s.g.visible = a > 0 && !cutHide; s.mat.opacity = a; s.g.scale.setScalar(sc * (.85 + .15 * a));
+    shipS[s.li].push(cur); shipA[s.li].push(cutHide ? 0 : a);
+  }
+  lanes.forEach((L, li) => { rv(L.wake, { wakeLen: 13 * sc }); for (let j = 0; j < 8; j++) { L.wake.u.shipS.value[j] = shipS[li][j] ?? -1e6; L.wake.u.shipA.value[j] = shipA[li][j] ?? 0; } });
+  // pillars: the big one grows 25.0 → 27.6, one slab per beat-eighth; the small one 35.0 → 36.0
+  PB.grp.visible = t >= 25.9; growPillar(PB, 20, eio(seg(t, 25.9, 28.3)));
+  for (const q of [PE, PI, PI2]) q.grp.visible = t >= 35.3;
+  growPillar(PE, 2.6, eo(seg(t, 35.3, 36.1))); growPillar(PI, 3.5, eo(seg(t, 35.7, 36.6))); growPillar(PI2, 2.0, eo(seg(t, 36.6, 37.2)));
+  // pipelines draw 30.0 → 32.4
+  for (const P of PIPES) { const k = eio(seg(t, P.t, P.t + 1.8)); const fade = 1 - ss(seg(t, 34.0, 35.0)) * .6;
+    for (const r of [P.case, P.glow, P.core]) rv(r, { revB: k * r.L, inten: (t >= P.t ? 1 : 0) * fade, head: k * r.L, headAmt: r === P.core ? 1.5 * (1 - ss(seg(k, .85, 1))) : 0, soft: 12, flowPh: t * 120 }); }
+  // depth of field: proportional to distance, deeper in the low shots
+  const low = t >= 15 && t < 24.6 ? 1 : 0;
+  post.dof.focus = dist; post.dof.aper = dist * lerp(lerp(3.5, 10.5, ss(seg(t, 6.0, 12.0))), 7, low * 0);
+  if (t >= 20 && t < 24.6) post.dof.aper = dist * 16;
+  if (t >= 34.6 && t < 40.4) { post.dof.aper = dist * 9; }
+  // keep the glow of a pillar close to the lens from blooming into a blob while the camera rises
+  post.bloom.strength = (t >= 24.4 && t < 28.5) ? .55 * lerp(.35, 1, ss(seg(dist, 90, 320))) : .55;
+  VU.fade.value = 1;
+  post.composer.render();
+}
+function globeFrame(t) {
+  setGlobeCam(t);
+  const asia = t >= 40;
+  for (const r of GROUTES) {
+    const k = asia ? eio(seg(t, r.t, r.t + 2.6)) : 1;
+    const base = asia ? (r.asia ? 1 : .35) : .3 * ss(seg(t, .3, 1.6));
+    for (const q of [r.glow, r.core]) rv(q, { revB: asia ? k * q.L : 1e9, inten: base, flowPh: t * 900, head: k * q.L, headAmt: asia && r.asia ? 1.4 * (1 - ss(seg(k, .85, 1))) : 0, soft: 80 });
+  }
+  GU.fade.value = ss(seg(t, 0, .7));
+  gpost.composer.render();
+}
+function frame(t) {
+  TX = [];
+  // how much globe is on screen: S1 hands over to the map 5.6 → 6.4, S7 takes back 40.0 → 40.8
+  const gW = t < 5.6 ? 1 : t < 6.4 ? 1 - ss(seg(t, 5.6, 6.4)) : t < 40.0 ? 0 : t < 40.8 ? ss(seg(t, 40.0, 40.8)) : 1;
+  const dist = gW < 1 ? setCamera(t) : 0;
+  g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, Wd, Ht);
+  if (gW > 0 && gW < 1) {
+    globeFrame(t); g.setTransform(1, 0, 0, 1, 0, 0); sg.clearRect(0, 0, Wd * 2, Ht * 2); sg.drawImage(renderer.domElement, 0, 0);
+    mapFrame(t, dist);
+    g.globalAlpha = gW; g.drawImage(snap, 0, 0); g.globalAlpha = 1;
+    // a warm flash of atmosphere as we pass through it
+    g.fillStyle = `rgba(232,214,180,${.22 * Math.sin(Math.PI * gW)})`; g.fillRect(0, 0, Wd * 2, Ht * 2);
+    g.setTransform(2, 0, 0, 2, 0, 0);
+  } else if (gW >= 1) globeFrame(t);
+  else mapFrame(t, dist);
+  // overlay, in order: map text, data text, subtitles, credits
+  if (gW < 1) {
+    g.save(); g.globalAlpha = 1; mapLabels(t); terminals(t); measure(t); section(t); ruler(t); pillarLabels(t); pipeLabels(t); g.restore();
+  }
+  if (t < 6.4) globeTitle(t);
+  if (t > 40) { globeLabels(t); endCard(t); }
+  if (!Q.has('nosubs')) subtitles(t);          // ?nosubs=1: stills without the subtitle shelf (poster, gallery card)
+  credits(t);
+}
+
+window.DUR = T1 - T0;
+window.render = t => frame(t + T0);
+window.TEXTS = t => { window.render(t); return TX.map(o => ({ ...o })); };
+// cue events for the mixer, on the film timeline (mix.py reads events.json from the full timeline)
+EVF.push(
+  { t: 0, type: 'space' }, { t: 2.1, type: 'pin' }, { t: 5.6, type: 'dive' },
+  ...TERM.map((T, i) => ({ t: T.t, type: 'terminal', i, pan: -.6 + i * .13 })), { t: 6.6, type: 'trunk' },
+  { t: 11.0, type: 'measure' }, { t: 11.7, type: 'tick' }, { t: 12.5, type: 'ignite' },
+  ...SHIPS.map(s => ({ t: s[3], type: 'ship', lane: s[0] })),
+  { t: 14.3, type: 'orbit' }, { t: 15.7, type: 'cut' }, { t: 16.6, type: 'sound' },
+  { t: 20.0, type: 'hardcut' }, { t: 21.3, type: 'ruler' },
+  { t: 24.6, type: 'crane' }, ...Array.from({ length: 20 }, (_, i) => ({ t: 25.9 + 2.4 * eioInv(i / 20), type: 'slab', i })),
+  { t: 29.4, type: 'whoosh' }, { t: 30.0, type: 'pipe', i: 0 }, { t: 30.35, type: 'pipe', i: 1 }, { t: 33.7, type: 'whoosh' },
+  { t: 35.3, type: 'small' }, ...Array.from({ length: 3 }, (_, i) => ({ t: 35.3 + .8 * (i / 2.6), type: 'slab', i, small: 1 })), ...Array.from({ length: 3 }, (_, i) => ({ t: 35.7 + .9 * (i / 3.5), type: 'slab', i, small: 1 })), { t: 36.6, type: 'iea' },
+  { t: 40.0, type: 'rise' }, ...GROUTES.map(r => ({ t: r.t, type: 'groute', asia: r.asia })), { t: 44.0, type: 'stat' }, { t: 47.5, type: 'final' }, { t: 48.6, type: 'sign' }, { t: 50.0, type: 'close' });
+function eioInv(y) { let lo = 0, hi = 1; for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (eio(m) < y) lo = m; else hi = m; } return lo; }
+window.EV = EVF.map(e => ({ ...e, t: e.t - T0 })).filter(e => e.t >= 0 && e.t <= T1 - T0);
+window.render(0);
+window.READY = true;
+</script>
+</body></html>

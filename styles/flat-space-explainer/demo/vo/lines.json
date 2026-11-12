@@ -1,0 +1,68 @@
+[
+ {
+  "id": "v1",
+  "text": "This is our galaxy. A hundred thousand light-years across.",
+  "voice": "af_heart",
+  "speed": 0.86,
+  "asr": "This is our galaxy, 100,000 light-years across."
+ },
+ {
+  "id": "v3",
+  "text": "The Sun's light takes more than eight minutes to reach the Earth.",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v4a",
+  "text": "Shrink the Earth to a basketball,",
+  "voice": "af_heart",
+  "speed": 0.72,
+  "asr": "Shrink the earth to a basket ball."
+ },
+ {
+  "id": "v4b",
+  "text": "and the Space Station flies less than a centimetre above it.",
+  "voice": "af_heart",
+  "speed": 0.72,
+  "asr": "and the Space Station flies less than a centimeter above it."
+ },
+ {
+  "id": "v5a",
+  "text": "We drew Orbi big, so you could see it.",
+  "voice": "af_heart",
+  "speed": 0.68,
+  "asr": "We drew or by big, so you could see it."
+ },
+ {
+  "id": "v5b",
+  "text": "This is its true size: about one grape.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v6a",
+  "text": "Now Orbi shrinks with us, into your blood.",
+  "voice": "af_heart",
+  "speed": 0.74,
+  "asr": "Now or by shrinks with us, into your blood."
+ },
+ {
+  "id": "v6b",
+  "text": "Some cells here hunt.",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v7",
+  "text": "Now Orbi is virus-sized: a thousand times thinner than a hair.",
+  "voice": "af_heart",
+  "speed": 0.84,
+  "asr": "Now Orbi is virusized, a thousand times thinner than a hair."
+ },
+ {
+  "id": "v8",
+  "text": "From galaxy to virus: ten times smaller, twenty-eight times over.",
+  "voice": "af_heart",
+  "speed": 0.86
+ }
+]

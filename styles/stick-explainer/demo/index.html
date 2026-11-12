@@ -1,0 +1,611 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Stick-figure Explainer</title>
+<style>
+@font-face{font-family:Jost;src:url(fonts/Jost.ttf) format('truetype');font-weight:100 900}
+@font-face{font-family:NotoSC;src:url(fonts/NotoSansSC-sub.ttf) format('truetype');font-weight:100 900}
+html,body{margin:0;background:#F3F0EA;overflow:hidden}canvas{display:block}
+</style>
+</head><body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// Stick-figure Explainer (火柴人讲解): figure skeleton, springs, hand-holding, three style frames (the whole film is in full.js)
+// One skeleton figure: hip point + curved spine + two-segment arms + two IK legs + round head. Drawing A: one line weight for the whole body, round caps, each limb a single quadratic curve.
+// Motion: every joint parameter is a damped spring chasing a "target pose"; the target poses contain the anticipation (crouch, arms pulled in), the springs give follow-through and overlap (forearm slower than upper arm, head slower than body).
+// ?scene=full (default: the whole demo film, in full.js) | film (opening shot S1 on its own, &from=&to= picks a range) | f1 | f2 | f3 (three style frames)
+const W = 1920, H = 1080;
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const C = { paper:'#F3F0EA', ink:'#24242C', mute:'#9C978C', tint:'#E2DDD2', sig:'#EB4A2A', soft:'#F4C3B4' };
+const LW = 7;                         // the one figure line width for the whole film (1080p)
+const GUIDE = 3;                      // line width of guides (dashed boxes, ticks)
+const EN = 'Jost', ZH = 'NotoSC';
+const SCENE = new URLSearchParams(location.search).get('scene') || 'full';
+
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), lerp=(a,b,t)=>a+(b-a)*t;
+const seg=(t,a,b)=>clamp((t-a)/(b-a)), ss=t=>{t=clamp(t);return t*t*(3-2*t)};
+const bell=(t,a,b)=>{const u=seg(t,a,b);return Math.sin(Math.PI*u)**2};   // 0→1→0, smooth start and end
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hex(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16))}
+function mix(a,b,t){const A=hex(a),B=hex(b);return 'rgb('+A.map((v,i)=>Math.round(lerp(v,B[i],clamp(t)))).join(',')+')'}
+
+// ---------------- Paper: only a very fine matte grain, no vignette, no fibres ----------------
+let paperC=null;
+function paper(){
+  if(!paperC){
+    paperC=document.createElement('canvas');paperC.width=W;paperC.height=H;
+    const x=paperC.getContext('2d');x.fillStyle=C.paper;x.fillRect(0,0,W,H);
+    const id=x.getImageData(0,0,W,H),d=id.data,r=mulberry(11);
+    for(let i=0;i<d.length;i+=4){const n=(r()+r()-1)*3.2;d[i]+=n;d[i+1]+=n;d[i+2]+=n;}
+    x.putImageData(id,0,0);
+  }
+  g.drawImage(paperC,0,0);
+}
+
+// ---------------- Skeleton ----------------
+// Units: figure height = 1. Angle a has direction vector (sin a, cos a) (screen y points down): 0 points down, +π/2 right, ±π up.
+const GEO = { thigh:.215, shin:.215, hipH:.42, spine:.285, sh:.065, upper:.18, fore:.155, gap:0, headR:.112, stance:.09 };
+function rest(){ return { hx:0, hy:0, lean:0, bend:0, head:0,
+  la:-.56, lb:.24, ra:.56, rb:-.24, lfx:0, lfy:0, rfx:0, rfy:0, hdx:0, hdy:0 }; }
+const KEYS = Object.keys(rest());
+const dirv=a=>[Math.sin(a),Math.cos(a)];
+
+// Two-segment IK: hip H, foot F, knee toward side (-1 left / +1 right)
+function ik(H,F,L1,L2,side){
+  let dx=F[0]-H[0],dy=F[1]-H[1],d=Math.hypot(dx,dy);const m=(L1+L2)*.9995;
+  if(d>m){F=[H[0]+dx/d*m,H[1]+dy/d*m];dx=F[0]-H[0];dy=F[1]-H[1];d=m;}
+  const a=(L1*L1-L2*L2+d*d)/(2*d),h=Math.sqrt(Math.max(0,L1*L1-a*a));
+  const px=H[0]+a*dx/d,py=H[1]+a*dy/d;let nx=-dy/d,ny=dx/d;
+  if(nx*side<0){nx=-nx;ny=-ny}
+  return [[px+nx*h,py+ny*h],F];
+}
+// Compute all joints of one figure (pixels). The head sits right on the neck (no gap); its lag only rotates, never translates, so the head always stays attached to the body.
+function joints(f,p){
+  const S=f.S, bx=f.x, gy=f.gy, prof=!!f.prof, face=f.face||1;
+  const Hp=[bx+p.hx*S, gy-(GEO.hipH-p.hy)*S];
+  const sd=dirv(Math.PI-p.lean);                      // spine points up: lean>0 leans right
+  const N=[Hp[0]+sd[0]*GEO.spine*S, Hp[1]+sd[1]*GEO.spine*S];
+  const mid=[(Hp[0]+N[0])/2,(Hp[1]+N[1])/2], perp=[-sd[1],sd[0]];
+  const Cc=[mid[0]+perp[0]*p.bend*S, mid[1]+perp[1]*p.bend*S];
+  const u=1-GEO.sh/GEO.spine;                           // shoulder point on the spine curve
+  const Sh=[(1-u)*(1-u)*Hp[0]+2*(1-u)*u*Cc[0]+u*u*N[0],(1-u)*(1-u)*Hp[1]+2*(1-u)*u*Cc[1]+u*u*N[1]];
+  const lag=clamp(p.hdx/GEO.headR*.9,-.35,.35);         // head follow-through: turns a little about the neck
+  const hd=dirv(Math.PI-(p.lean+p.head+lag)), hr=GEO.headR*S;
+  const Hd=[N[0]+hd[0]*hr, N[1]+hd[1]*hr];
+  const arm=(a,b)=>{const e=dirv(a),E=[Sh[0]+e[0]*GEO.upper*S,Sh[1]+e[1]*GEO.upper*S];const w=dirv(a+b);return [E,[E[0]+w[0]*GEO.fore*S,E[1]+w[1]*GEO.fore*S]]};
+  const st=prof?0:GEO.stance;
+  const footL=[bx+(-st+p.lfx)*S, gy-p.lfy*S], footR=[bx+(st+p.rfx)*S, gy-p.rfy*S];
+  const kL=prof?face:-1, kR=prof?face:1;
+  return { Hp,N,Cc,Sh,Hd, aL:arm(p.la,p.lb), aR:arm(p.ra,p.rb),
+    lL:ik(Hp,footL,GEO.thigh*S,GEO.shin*S,kL), lR:ik(Hp,footR,GEO.thigh*S,GEO.shin*S,kR) };
+}
+
+// ---------------- Figure drawing (parameter): ?fig=A | B | C ----------------
+// The three drawings share one skeleton and one set of springs and change only how the joints are joined into lines. Nowhere is there a polyline:
+// A even hose: each limb is one quadratic curve (the joint as control point), one line width for the whole body.
+// B tapered stroke: limbs grow out of the torso, thick at the root and thin at hands and feet, like one stroke of a brush or marker; curved at the joints too.
+// C one-line body: both legs are one stroke (foot→knee→hip→knee→foot), both arms one stroke (hand→elbow→shoulder→elbow→hand), the spine runs on into the head circle in one stroke.
+const FIGS = {
+  A:{ kind:'hose',  name:'Even hose',      zh:'等粗软管', w:8, head:7.5, k:.8 },
+  B:{ kind:'taper', name:'Tapered stroke', zh:'渐细笔触', torso:[12.5,8.5], leg:[12.5,3.6], arm:[10.5,3.4], head:7, k:.6 },
+  C:{ kind:'line',  name:'One-line body',  zh:'一笔连体', w:6.5, head:6.5, soft:.7 },
+};
+const FIGKEY = new URLSearchParams(location.search).get('fig') || 'A';   // this style uses A, the even hose; B and C are two other drawings of the same skeleton
+let FS = FIGS[FIGKEY] || FIGS.A;
+// Joint control point: at k=0 the curve only bends toward the joint, at k=1 it passes exactly through it. In between = a soft bent hose.
+function ctrl(A,B,E,k){ const m=[(A[0]+E[0])/2,(A[1]+E[1])/2]; return [B[0]+(B[0]-m[0])*k, B[1]+(B[1]-m[1])*k]; }
+const qpt=(A,Q,E,t)=>{const s=1-t;return [s*s*A[0]+2*s*t*Q[0]+t*t*E[0], s*s*A[1]+2*s*t*Q[1]+t*t*E[1]]};
+const qder=(A,Q,E,t)=>[2*(1-t)*(Q[0]-A[0])+2*t*(E[0]-Q[0]), 2*(1-t)*(Q[1]-A[1])+2*t*(E[1]-Q[1])];
+// A tapered quadratic curve: w0 → w1, filled outline + round ends
+function taper(A,Q,E,w0,w1,n=30){
+  const L=[],R=[];
+  for(let i=0;i<=n;i++){ const t=i/n, P=qpt(A,Q,E,t); let d=qder(A,Q,E,t), l=Math.hypot(d[0],d[1]);
+    if(l<1e-6){d=[E[0]-A[0],E[1]-A[1]];l=Math.hypot(d[0],d[1])||1;}
+    const w=lerp(w0,w1,Math.pow(t,.85))/2, nx=-d[1]/l*w, ny=d[0]/l*w;
+    L.push([P[0]+nx,P[1]+ny]); R.push([P[0]-nx,P[1]-ny]); }
+  g.beginPath(); g.moveTo(L[0][0],L[0][1]); for(const p of L)g.lineTo(p[0],p[1]);
+  for(let i=R.length-1;i>=0;i--)g.lineTo(R[i][0],R[i][1]); g.closePath(); g.fill();
+  g.beginPath(); g.arc(A[0],A[1],w0/2,0,Math.PI*2); g.fill();
+  g.beginPath(); g.arc(E[0],E[1],w1/2,0,Math.PI*2); g.fill();
+}
+// Smooth curve through a list of points (Catmull-Rom → cubic Bézier); smaller soft = tighter
+function spline(P,soft){
+  const n=P.length, X=i=>P[Math.max(0,Math.min(n-1,i))];
+  g.moveTo(P[0][0],P[0][1]);
+  for(let i=0;i<n-1;i++){
+    const p0=i===0?[2*P[0][0]-P[1][0],2*P[0][1]-P[1][1]]:X(i-1), p1=X(i), p2=X(i+1),
+          p3=i+2>=n?[2*P[n-1][0]-P[n-2][0],2*P[n-1][1]-P[n-2][1]]:X(i+2), k=soft/3;
+    g.bezierCurveTo(p1[0]+(p2[0]-p0[0])*k*.5,p1[1]+(p2[1]-p0[1])*k*.5, p2[0]-(p3[0]-p1[0])*k*.5,p2[1]-(p3[1]-p1[1])*k*.5, p2[0],p2[1]);
+  }
+}
+function headDisc(j,S,fill){ g.beginPath();g.arc(j.Hd[0],j.Hd[1],GEO.headR*S,0,Math.PI*2);g.fillStyle=fill;g.fill(); }
+function figure(f,p){
+  const S=f.S, j=joints(f,p), col=f.col||C.ink, fill=f.fill||C.paper;
+  // line width scales with the square root of figure size (big figures a little thicker, small ones thinner, but never so thin they blur); hand and foot tips at least 3 px
+  // f.lws: in the film, line width scales in proportion to figure size (in the fractal ring big and small figures look equally thick); default is the square root
+  const sc=(f.lws ?? clamp(Math.sqrt(S/380),.6,1.05))*(f.lwk??1), F0=f.fs||FS, W=(v,m=3)=>Math.max(m*(f.lwk??1)*(f.lws??1),v*sc);
+  const fs={...F0, w:W(F0.w||0,5), head:W(F0.head,5)};
+  if(F0.kind==='taper'){ fs.torso=[W(F0.torso[0]),W(F0.torso[1])]; fs.leg=[W(F0.leg[0]),W(F0.leg[1])]; fs.arm=[W(F0.arm[0]),W(F0.arm[1])]; }
+  g.save(); g.strokeStyle=col; g.fillStyle=col; g.lineCap='round'; g.lineJoin='round';
+  const legs=[j.lL,j.lR], arms=[j.aL,j.aR];
+  if(fs.kind==='hose'){
+    g.lineWidth=fs.w; g.beginPath();
+    for(const [K,F] of legs){ const Q=ctrl(j.Hp,K,F,fs.k); g.moveTo(j.Hp[0],j.Hp[1]); g.quadraticCurveTo(Q[0],Q[1],F[0],F[1]); }
+    g.moveTo(j.Hp[0],j.Hp[1]); g.quadraticCurveTo(j.Cc[0],j.Cc[1],j.N[0],j.N[1]);
+    arms.forEach(([El,Hn],ai)=>{ if(ai===0&&f.noL||ai===1&&f.noR)return; const Q=ctrl(j.Sh,El,Hn,fs.k); g.moveTo(j.Sh[0],j.Sh[1]); g.quadraticCurveTo(Q[0],Q[1],Hn[0],Hn[1]); });
+    g.stroke();
+    headDisc(j,S,fill); g.lineWidth=fs.head; g.beginPath(); g.arc(j.Hd[0],j.Hd[1],GEO.headR*S,0,Math.PI*2); g.stroke();
+  } else if(fs.kind==='taper'){
+    for(const [K,F] of legs) taper(j.Hp,ctrl(j.Hp,K,F,fs.k),F,fs.leg[0],fs.leg[1]);
+    taper(j.Hp,j.Cc,j.N,fs.torso[0],fs.torso[1]);
+    for(const [El,Hn] of arms) taper(j.Sh,ctrl(j.Sh,El,Hn,fs.k),Hn,fs.arm[0],fs.arm[1]);
+    headDisc(j,S,fill); g.lineWidth=fs.head; g.beginPath(); g.arc(j.Hd[0],j.Hd[1],GEO.headR*S,0,Math.PI*2); g.stroke();
+  } else {
+    g.lineWidth=fs.w; g.beginPath();
+    spline([j.lL[1],j.lL[0],j.Hp,j.lR[0],j.lR[1]],fs.soft);                 // both legs in one stroke
+    spline([j.aL[1],j.aL[0],j.Sh,j.aR[0],j.aR[1]],fs.soft);                 // both arms in one stroke
+    g.stroke();
+    headDisc(j,S,fill);
+    // the spine is drawn up from the hip and, without lifting the pen, goes once round the head
+    const a0=Math.atan2(j.N[1]-j.Hd[1],j.N[0]-j.Hd[0]);
+    g.lineWidth=fs.head; g.beginPath(); g.moveTo(j.Hp[0],j.Hp[1]); g.quadraticCurveTo(j.Cc[0],j.Cc[1],j.N[0],j.N[1]);
+    g.arc(j.Hd[0],j.Hd[1],GEO.headR*S,a0,a0+Math.PI*2); g.stroke();
+  }
+  g.restore();
+  return j;
+}
+
+// ---------------- Spring drive ----------------
+// One damped spring per parameter (ω angular frequency, ζ damping ratio). Upper arm fast, forearm slow, head loosest → natural follow-through and overlap.
+const SPR = { hx:[20,.8], hy:[24,.62], lean:[13,.6], bend:[12,.55], head:[9,.42],
+  la:[13,.58], ra:[13,.58], lb:[9.5,.46], rb:[9.5,.46], lfx:[30,.85], lfy:[30,.85], rfx:[30,.85], rfy:[30,.85] };
+const HEADSPR=[16,.38];               // secondary follow of the head in world space (the body stops, the head arrives a little later)
+function simulate(n,target,t0,t1){
+  const dt=1/1200, every=5, out=[];   // record at 240 Hz
+  const st=[];for(let i=0;i<n;i++){const p=target(i,t0),v={};for(const k in p)v[k]=0;
+    st.push({p:{...p},v,hp:null,hv:[0,0]});}
+  const rigidHead=p=>{const hy=GEO.hipH-p.hy,s=GEO.spine,r=GEO.headR;
+    return [p.hx+Math.sin(p.lean)*s+Math.sin(p.lean+p.head)*r, hy+Math.cos(p.lean)*s+Math.cos(p.lean+p.head)*r]};
+  let step=0;
+  for(let t=t0;t<=t1+1e-9;t+=dt,step++){
+    if(step%every===0) out.push(st.map(s=>({...s.p})));
+    for(let i=0;i<n;i++){
+      const s=st[i],tg=target(i,t);
+      for(const k in SPR){const [w,z]=SPR[k];const a=w*w*(tg[k]-s.p[k])-2*z*w*s.v[k];s.v[k]+=a*dt;s.p[k]+=s.v[k]*dt;}
+      const R=rigidHead(s.p);
+      if(!s.hp)s.hp=[...R];
+      const [w,z]=HEADSPR;
+      for(let q=0;q<2;q++){const a=w*w*(R[q]-s.hp[q])-2*z*w*s.hv[q];s.hv[q]+=a*dt;s.hp[q]+=s.hv[q]*dt;}
+      s.p.hdx=clamp(s.hp[0]-R[0],-.03,.03); s.p.hdy=clamp(s.hp[1]-R[1],-.03,.03);
+    }
+  }
+  return {t0,rate:240,frames:out,at(t){const f=(t-this.t0)*this.rate,i=clamp(Math.floor(f),0,this.frames.length-2),u=clamp(f-i);
+    const A=this.frames[i],B=this.frames[i+1];return A.map((p,k)=>{const q={};for(const key of KEYS)q[key]=lerp(p[key],B[k][key],u);return q})}};
+}
+
+// Target poses of the signature move: figure s changes first (anticipation crouch → jump with arms up → lands with one hand left on top of the head), the wave spreads to both sides, and finally the whole row turns toward it.
+const UP = { la:-2.25, lb:-.5, ra:2.25, rb:.5 };
+function rowTarget(N,s,T0,STEP,o={}){
+  return (i,t)=>{
+    const p=rest(), ph=i*1.93+.4;
+    // breathing and a very slight sway: every figure has its own phase, so the row doesn't look copy-pasted
+    p.hx+=.005*Math.sin(t*1.25+ph); p.lean+=.012*Math.sin(t*1.05+ph*1.3);
+    p.hy+=.004*(.5+.5*Math.sin(t*2.1+ph)); p.la-=.03*Math.sin(t*1.5+ph); p.ra+=.03*Math.sin(t*1.5+ph+.7);
+    const d=Math.abs(i-s), dir=Math.sign(s-i);
+    if(i===s){
+      const c=ss(seg(t,T0-.4,T0-.12))*(1-ss(seg(t,T0-.1,T0-.02)));      // anticipation: crouch, arms in
+      p.hy+=.042*c; p.la-=.12*c; p.ra+=.12*c; p.lb+=.12*c; p.rb-=.12*c; p.head+=.06*c;
+      if(t>=T0-.08&&t<T0+.8){ Object.assign(p,{la:UP.la,lb:UP.lb,ra:UP.ra,rb:UP.rb}); }
+      const hop=Math.sin(Math.PI*seg(t,T0-.08,T0+.2));                    // small hop
+      if(t>T0-.08&&t<T0+.2){p.lfy=p.rfy=.055*hop;p.hy-=.055*hop;}
+      if(o.wave&&t>=T0+.15&&t<T0+1.75){                                    // wave: forearms swing back and forth, the hose bends from one side to the other
+        const w=Math.sin(2*Math.PI*1.7*(t-T0-.15))*ss(seg(t,T0+.15,T0+.45))*(1-ss(seg(t,T0+1.4,T0+1.75)));
+        p.lb=UP.lb+.75*w; p.rb=UP.rb+.75*w; p.la=UP.la+.18*w; p.ra=UP.ra+.18*w; p.lean=.04*w; }
+      if(t>=T0+(o.wave?1.75:.8)){ p.ra=2.62; p.rb=.18; p.lean=-.025; p.head=-.05;       // settle: one hand stays on top of the head, as if saying "it's me"
+        if(o.wave){ p.ra=2.5; p.rb=.55; p.la=-.72; p.lb=.62; p.lean=-.04; } }           // the other hand relaxes, with a soft bend
+
+    } else {
+      const Ti=T0+STEP*d, tau=t-Ti, amp=1-.045*(d-1);
+      const c=bell(tau,-.2,.02);                                         // anticipation: dip down first
+      p.hy+=.022*c; p.la-=.06*c; p.ra+=.06*c;
+      const hold=o.wave?.6:.36;
+      if(tau>=0&&tau<hold){ p.la=lerp(p.la,UP.la,amp);p.lb=lerp(p.lb,UP.lb,amp);p.ra=lerp(p.ra,UP.ra,amp);p.rb=lerp(p.rb,UP.rb,amp);
+        if(o.wave){const w=Math.sin(2*Math.PI*1.7*tau)*ss(seg(tau,0,.2));p.lb+=.5*w;p.rb+=.5*w;} }
+      p.lean+=-dir*.05*bell(tau,0,.5);                                    // nudged by the wave
+      const tl=T0+1.45+.07*d, L=ss(seg(t,tl,tl+.45)), k=1-.07*(d-1);      // finally: the whole row looks at the one that changed
+      p.lean+=dir*.12*L*k; p.head+=dir*.22*L*k; p.hx+=dir*.018*L;
+    }
+    return p;
+  };
+}
+
+// ---------------- Text ----------------
+let TXT=null;   // for window.TEXTS: which text this frame drew, and where
+function text(s,x,y,{size=28,w=500,col=C.ink,font=EN,align='left',track=0,a=1}={}){
+  if(a<=0)return;
+  g.save();g.globalAlpha=clamp(a);g.font=`${w} ${size}px ${font}`;g.fillStyle=col;g.textAlign=align;g.textBaseline='alphabetic';
+  g.letterSpacing=track+'px';g.fillText(s,x,y);
+  if(TXT){const m=g.measureText(s),x0=align==='left'?x:align==='right'?x-m.width:x-m.width/2;TXT.push({id:s,text:s,x0,y0:y-size*.8,x1:x0+m.width,y1:y+size*.25});}
+  g.restore();
+}
+function arrowHead(x,y,ang,len,col,lw){
+  g.save();g.strokeStyle=col;g.lineWidth=lw;g.lineCap='round';g.lineJoin='round';
+  g.beginPath();g.moveTo(x+Math.cos(ang+2.55)*len,y+Math.sin(ang+2.55)*len);g.lineTo(x,y);
+  g.lineTo(x+Math.cos(ang-2.55)*len,y+Math.sin(ang-2.55)*len);g.stroke();g.restore();
+}
+
+// ---------------- Ground wire: the row stands on one "system line", and the change runs along it ----------------
+function wire(xs,y,s,T0,STEP,t,{ext=70}={}){
+  const x0=xs[0]-ext,x1=xs[xs.length-1]+ext;
+  g.save();g.lineCap='round';g.strokeStyle=C.tint;g.lineWidth=LW;
+  g.beginPath();g.moveTo(x0,y);g.lineTo(x1,y);g.stroke();
+  // pulse: runs from the source to both sides; its head reaches each node at the same time as the node lights
+  const v=(xs[1]-xs[0])/STEP, run=t-(T0-.02);
+  if(run>0){
+    g.strokeStyle=C.sig;
+    for(const sgn of [-1,1]){
+      const head=xs[s]+sgn*run*v, tail=xs[s]+sgn*Math.max(0,run*v-170);
+      const lim=sgn<0?x0:x1, h=sgn<0?Math.max(head,lim):Math.min(head,lim), tl=sgn<0?Math.max(tail,lim):Math.min(tail,lim);
+      if(Math.abs(h-tl)>1){g.beginPath();g.moveTo(tl,y);g.lineTo(h,y);g.stroke();}
+    }
+  }
+  xs.forEach((x,i)=>{
+    const Ti=i===s?T0-.05:T0+STEP*Math.abs(i-s), on=ss(seg(t,Ti-.02,Ti+.1)), pop=bell(t,Ti-.02,Ti+.3);
+    g.beginPath();g.arc(x,y,9.5+5*pop,0,Math.PI*2);g.fillStyle=mix(C.tint,C.sig,on);g.fill();
+    if(on<.99){g.beginPath();g.arc(x,y,4.5*(1-on),0,Math.PI*2);g.fillStyle=C.paper;g.fill();}
+  });
+  g.restore();
+}
+
+// ================= Scenes =================
+const SCENES = {};
+let SIM = {};
+
+// --- f1: opening / title ---
+SCENES.f1 = {
+  dur:1, setup(){ const N=10,s=2; this.N=N;this.s=s;this.T0=1.0;this.STEP=.15;this.tf=1.0+.15*2.6;
+    this.xs=[...Array(N)].map((_,i)=>215+i*186); this.gy=912; this.S=336;
+    SIM.f1=simulate(N,rowTarget(N,s,this.T0,this.STEP),-1.5,this.tf+.05); },
+  draw(){
+    const {N,s,xs,gy,S,T0,STEP,tf}=this, P=SIM.f1.at(tf);
+    text('EP. 04   ·   SYSTEMS',124,132,{size:22,w:500,col:C.mute,track:3});
+    text('One changes.',116,250,{size:112,w:600,track:-2});
+    text('Everyone moves.',116,372,{size:112,w:600,track:-2,col:C.sig});
+    text('一个变了，整排都跟着动',122,440,{size:34,w:400,font:ZH,col:C.mute});
+    wire(xs,gy+40,s,T0,STEP,tf,{ext:120});
+    for(let i=0;i<N;i++){ const on=i===s?1:0;
+      figure({x:xs[i],gy,S,col:on?C.sig:C.ink,fill:on?C.sig:C.paper},P[i]); }
+  }
+};
+
+// --- f2: mechanism / process: the phantom jam, three rows of time slices ---
+function walkPose(ph,k=1){
+  const p=rest(); const A=.16*k;
+  p.lfx=A*Math.sin(ph); p.rfx=-A*Math.sin(ph);
+  p.lfy=.045*k*Math.max(0,Math.cos(ph)); p.rfy=.045*k*Math.max(0,-Math.cos(ph));
+  p.hy=.012+.012*Math.abs(Math.cos(ph)); p.lean=.07*k; p.bend=-.01; p.head=.04;
+  p.la=-.75*k*Math.sin(ph); p.lb=.55+.25*Math.sin(ph); p.ra=.75*k*Math.sin(ph); p.rb=.55-.25*Math.sin(ph);
+  return p;
+}
+function brakePose(){ const p=rest(); Object.assign(p,{lean:-.13,bend:.02,head:-.08,hy:.03,
+  lfx:.14,rfx:-.05,la:1.25,lb:.35,ra:.75,rb:.5}); return p; }
+function stopPose(i){ const p=rest(); Object.assign(p,{lean:-.01*(i%2),head:.02*(i%3-1),hy:.004,
+  lfx:.075,rfx:-.065,la:.5,lb:.45,ra:-.42,rb:.35}); return p; }
+SCENES.f2 = {
+  dur:1, setup(){},
+  draw(){
+    const S=182, rows=[{gy:505,lab:'0 s'},{gy:752,lab:'2 s'},{gy:999,lab:'4 s'}];
+    // state of the 8 figures in each row, back to front: w walking, b braking, s stopped
+    const st=[ 'wwwwwwwb', 'wwwwbssw', 'wbsswwww' ];
+    const front=[1640,1760,1790];
+    const gap={w:186,b:150,s:112};
+    const xsAll=st.map((row,k)=>{const xs=new Array(8);xs[7]=front[k];
+      for(let i=6;i>=0;i--){const a=row[i],b=row[i+1];const gp=(a==='s'||b==='s')?gap.s:(a==='b'||b==='b')?gap.b:gap.w;xs[i]=xs[i+1]-gp;}return xs;});
+    // centre of the jam: mean position of the stopped figures in each row → a diagonal moving backwards
+    const jam=st.map((row,k)=>{const idx=[...row].map((c,i)=>c!=='w'?i:-1).filter(i=>i>=0);
+      return [idx.reduce((a,i)=>a+xsAll[k][i],0)/idx.length, rows[k].gy-S*.52];});
+    // title
+    text('The phantom jam',116,150,{size:78,w:600,track:-1.5});
+    text('Nobody tripped. One person paused.',120,204,{size:32,w:400,col:C.mute});
+    text('没人摔倒，只是有一个人停了一下',121,254,{size:34,w:400,font:ZH,col:C.mute});
+    // the diagonal (behind the figures)
+    g.save();g.strokeStyle=C.soft;g.lineWidth=LW*2.6;g.lineCap='round';g.lineJoin='round';
+    g.beginPath();jam.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();g.restore();
+    rows.forEach((r,k)=>{
+      text(r.lab,120,r.gy-6,{size:30,w:500,col:C.mute});
+      g.save();g.strokeStyle=C.tint;g.lineWidth=LW;g.lineCap='round';
+      g.beginPath();g.moveTo(250,r.gy+30);g.lineTo(1830,r.gy+30);g.stroke();g.restore();
+      const xs=xsAll[k];
+      [...st[k]].forEach((c,i)=>{
+        const p=c==='w'?walkPose((i+k)%2?Math.PI/2+.3*Math.sin(i*2.3+k):Math.PI*1.5+.3*Math.sin(i*1.7+k)):c==='b'?brakePose():stopPose(i+k);
+        const hot=c!=='w';
+        figure({x:xs[i],gy:r.gy,S,prof:true,col:hot?C.sig:C.ink,fill:(k===0&&i===7)?C.sig:C.paper},p);
+      });
+    });
+    // two directions: people walk forward (grey), the stop travels backwards (red); legend at the top right, clear of the figures
+    const lx0=1530, lx1=1800;
+    g.save();g.lineWidth=GUIDE+1;g.lineCap='round';
+    g.strokeStyle=C.mute;g.beginPath();g.moveTo(lx0,128);g.lineTo(lx1,128);g.stroke();
+    g.strokeStyle=C.sig;g.beginPath();g.moveTo(lx0,206);g.lineTo(lx1,206);g.stroke();g.restore();
+    arrowHead(lx1,128,0,15,C.mute,GUIDE+1); arrowHead(lx0,206,Math.PI,15,C.sig,GUIDE+1);
+    text('people walk forward',lx0-28,138,{size:26,w:500,col:C.mute,align:'right'});
+    text('the stop travels backwards',lx0-28,216,{size:26,w:500,col:C.sig,align:'right'});
+    text('停顿在往后传',lx0-28,262,{size:34,w:400,font:ZH,col:C.sig,align:'right'});
+    const e=jam[2], s0=jam[1], ang=Math.atan2(e[1]-s0[1],e[0]-s0[0]);
+    const tip=[e[0]+Math.cos(ang)*34,e[1]+Math.sin(ang)*34];
+    g.save();g.strokeStyle=C.soft;g.lineWidth=LW*2.6;g.lineCap='round';
+    g.beginPath();g.moveTo(e[0],e[1]);g.lineTo(tip[0]-Math.cos(ang)*10,tip[1]-Math.sin(ang)*10);g.stroke();g.restore();
+    arrowHead(tip[0],tip[1],ang,22,C.soft,LW*2.6);
+  }
+};
+
+// --- f3: data / comparison: a bank run, one figure per cell ---
+SCENES.f3 = {
+  dur:1, setup(){},
+  draw(){
+    const cols=9, rowsN=5, S=128, cx0=190, cw=120, gy0=262, rh=172, src=[3,2];
+    const X=c=>cx0+c*cw, GY=r=>gy0+r*rh;
+    // round boxes: Chebyshev distance = the round in which a figure is reached (boxes behind the figures)
+    const box=(c0,r0,c1,r1,lab)=>{
+      const x0=X(c0)-cw*.5+10, x1=X(c1)+cw*.5-10, y0=GY(r0)-S-22, y1=GY(r1)+22;
+      g.save();g.strokeStyle=C.soft;g.lineWidth=GUIDE;g.setLineDash([2,11]);g.lineCap='round';
+      g.beginPath();g.roundRect(x0,y0,x1-x0,y1-y0,22);g.stroke();g.restore();
+      g.save();g.fillStyle=C.paper;g.beginPath();g.roundRect(x0+22,y0-17,58,34,17);g.fill();g.restore();
+      text(lab,x0+51,y0+9,{size:22,w:600,col:C.sig,align:'center'});
+    };
+    box(1,0,5,4,'R3'); box(2,1,4,3,'R2');
+    const rnd=mulberry(5); let n=0;
+    for(let r=0;r<rowsN;r++)for(let c=0;c<cols;c++){
+      const d=Math.max(Math.abs(c-src[0]),Math.abs(r-src[1])), p=rest(), dir=Math.sign(src[0]-c);
+      const j1=rnd()-.5,j2=rnd()-.5;
+      p.lean=.03*j1; p.la+=.18*j2; p.ra+=.14*j1; p.hx=.01*j2;
+      let col=C.ink, fill=C.paper;
+      if(d===0){Object.assign(p,UP);p.lfy=p.rfy=.05;p.hy=-.05;col=C.sig;fill=C.sig;}
+      else if(d===1){Object.assign(p,{la:UP.la+.15*j1,lb:UP.lb,ra:UP.ra+.15*j2,rb:UP.rb});p.lean=-.04*dir;col=C.sig;}
+      else if(d===2){ if(dir>=0){p.ra=1.9+.2*j1;p.rb=.6;p.la=-.5;}else{p.la=-1.9+.2*j1;p.lb=-.6;p.ra=.5;}
+        p.lean=.05*(dir||1);p.head=.12*(dir||1);col=C.sig;}
+      else { p.lean=dir*.05; p.head=dir*.13*(d===3?1:.5); }
+      if(d<=2)n++;
+      figure({x:X(c),gy:GY(r),S,col,fill},p);
+    }
+    // right column: title + three bars
+    const rx=1330;
+    text('Bank run',rx-4,170,{size:84,w:600,track:-1.5});
+    text('Cash covers 12 of 45 customers.',rx,222,{size:28,w:400,col:C.mute});
+    text('银行的现金只够 12 个人取',rx+1,270,{size:34,w:400,font:ZH,col:C.mute});
+    const base=930, unit=20, vals=[1,9,n], th=12, bw=92, bx=[1350,1500,1650];
+    const thY=base-th*unit;
+    vals.forEach((v,i)=>{
+      const x=bx[i], top=base-v*unit;
+      g.save();g.fillStyle=C.tint;g.beginPath();g.roundRect(x,Math.max(top,thY),bw,base-Math.max(top,thY),[6,6,0,0]);g.fill();
+      if(v>th){g.fillStyle=C.sig;g.beginPath();g.roundRect(x,top,bw,thY-top,[6,6,0,0]);g.fill();}
+      g.restore();
+      text(String(v),x+bw/2,top-18,{size:48,w:600,col:v>th?C.sig:C.ink,align:'center'});
+      text('R'+(i+1),x+bw/2,base+44,{size:24,w:500,col:C.mute,align:'center',track:1});
+    });
+    g.save();g.strokeStyle=C.ink;g.lineWidth=GUIDE;g.setLineDash([2,10]);g.lineCap='round';
+    g.beginPath();g.moveTo(1330,thY);g.lineTo(1800,thY);g.stroke();g.restore();
+    text('cash runs out at 12',1462,thY-14,{size:22,w:500,col:C.ink,align:'right'});
+    g.save();g.strokeStyle=C.tint;g.lineWidth=LW;g.lineCap='round';g.beginPath();g.moveTo(1336,base);g.lineTo(1756,base);g.stroke();g.restore();
+    text('withdrawing, by round   ·   illustrative',rx,1010,{size:20,w:500,col:C.mute,track:1});
+  }
+};
+
+// ================= Opening shot S1 on its own (0–10 s); the whole film Six Hands Away is in full.js =================
+// This scene draws only S1; the other shots are drawn as grey placeholder cards.
+// ?scene=film&from=0&to=10 → page time t maps to film time from + t.
+const QS = new URLSearchParams(location.search);
+const FROM = +(QS.get('from') ?? 0), TO = +(QS.get('to') ?? 10);
+const SHOTS = [
+  { id:'S1', t0:0,  t1:10, en:'How many hands?',          zh:'提问' },
+  { id:'S2', t0:10, t1:24, en:'The letter test, 1967',    zh:'信的实验' },
+  { id:'S3', t0:24, t1:37, en:'Why so few: it branches',  zh:'为什么这么少' },
+  { id:'S4', t0:37, t1:46, en:'The chain gets shorter',   zh:'链在变短' },
+  { id:'S5', t0:46, t1:50, en:'One shape',                zh:'连成一个形状' },
+];
+// Step response of a damped spring: 0 → 1, overshoots once and settles (used for popping up and for raising hands)
+function popS(tau,w=17,z=.45){ if(tau<=0)return 0; const wd=w*Math.sqrt(1-z*z); return 1-Math.exp(-z*w*tau)*(Math.cos(wd*tau)+z*w/wd*Math.sin(wd*tau)); }
+const L2D=(a,b,t)=>[lerp(a[0],b[0],t),lerp(a[1],b[1],t)];
+// Elbow of an arm: two-segment IK, the elbow always points down (holding hands, the arm hangs like a sagging hose; raised, the elbow points out and down)
+function elbow(Sh,Hn,L1,L2){
+  let dx=Hn[0]-Sh[0],dy=Hn[1]-Sh[1],d=Math.hypot(dx,dy)||1e-6;
+  if(d>=L1+L2) return [Sh[0]+dx/d*L1*d/(L1+L2), Sh[1]+dy/d*L1*d/(L1+L2)];
+  const a=(L1*L1-L2*L2+d*d)/(2*d),h=Math.sqrt(Math.max(0,L1*L1-a*a));
+  let nx=-dy/d,ny=dx/d; if(ny<0){nx=-nx;ny=-ny}
+  return [Sh[0]+a*dx/d+nx*h, Sh[1]+a*dy/d+ny*h];
+}
+
+// ---------------- S1: you and a stranger; the people in between pop up one by one and join hands ----------------
+const S1 = {
+  gy:868, S:360, xs:[360,560,760,960,1160,1360,1560],
+  appear:[.5,1.95,2.95,3.7,4.2,4.7,1.0],      // time figure i pops up (0 = you, 6 = the stranger)
+  clasp:[2.5,3.5,4.25,4.75,5.25,5.75],        // clasp k (k = 1..6, between figures k-1 and k), on the 120 bpm grid, faster and faster
+  P0:6.0, P1:6.75,                            // the red runs from "you" to "the stranger": one sixteenth note per link
+  LIFT:7.0, WAVE:.0625,                       // the whole row raises its joined hands, left to right
+};
+S1.lineY = S1.gy + 40;
+S1.pulseAt = k => S1.P0 + (S1.P1 - S1.P0) * k / 6;        // time the red reaches figure k's shoulder
+S1.liftAt  = k => S1.LIFT + S1.WAVE * (k - 1);            // clasp k starts to rise
+S1.linkX   = k => (S1.xs[k-1] + S1.xs[k]) / 2;
+
+function s1Target(i,t){
+  const p=rest(), ph=i*1.93+.4, {clasp,appear}=S1;
+  p.hx+=.004*Math.sin(t*1.25+ph); p.lean+=.01*Math.sin(t*1.05+ph*1.3);
+  p.hy+=.004*(.5+.5*Math.sin(t*2.1+ph)); p.la-=.03*Math.sin(t*1.5+ph); p.ra+=.03*Math.sin(t*1.5+ph+.7);
+  // a figure that just popped up first looks left at the one it will take by the hand
+  if(i>=1&&i<=5){ const c=clasp[i-1], L=ss(seg(t,appear[i]+.08,appear[i]+.32))*(1-ss(seg(t,c+.2,c+.55)));
+    p.head-=.18*L; p.lean-=.04*L; }
+  // the stranger: after popping up, glances left (waiting to be joined)
+  if(i===6){ const L=ss(seg(t,1.4,1.75))*(1-ss(seg(t,S1.P1+.05,S1.P1+.4))); p.head-=.12*L; }
+  // clasp: pull back a little first (anticipation); once joined, both figures are tugged toward each other, then spring back
+  for(let k=1;k<=6;k++){ let dir=0; if(i===k-1)dir=1; else if(i===k)dir=-1; else continue;
+    const c=clasp[k-1];
+    p.lean-=dir*.035*bell(t,c-.42,c-.2);
+    const tug=bell(t,c-.04,c+.42); p.lean+=dir*.07*tug; p.hy+=.006*tug; }
+  // nod as the red passes (a slight dip)
+  const tp=S1.pulseAt(i); p.hy+=.02*bell(t,tp-.03,tp+.24); p.head+=.05*bell(t,tp-.03,tp+.3);
+  // the stranger is joined: a small hop
+  if(i===6){ const h=Math.sin(Math.PI*seg(t,S1.P1+.02,S1.P1+.24)); if(h>0){p.lfy=p.rfy=.05*h;p.hy-=.05*h;}
+    p.hy+=.03*bell(t,S1.P1-.12,S1.P1+.03); }
+  // lift: dip first, then straighten together; the free hands at both ends go up too
+  const lk=Math.min(6,Math.max(1,i)), lt=S1.liftAt(lk);
+  p.hy+=.03*bell(t,lt-.2,lt+.04);
+  if(i===0&&t>=S1.liftAt(1)-.02){ p.la=UP.la; p.lb=UP.lb; p.lean=-.015; }
+  if(i===6&&t>=S1.liftAt(6)-.02){ p.ra=UP.ra; p.rb=UP.rb; p.lean=.015; }
+  return p;
+}
+
+// Geometry of one clasp: both hands reach from where they are to the meeting point; once joined, the control points of both arms line up through it → one continuous hose
+function linkGeo(k,t,J,sc){
+  const {clasp,S}=S1, c=clasp[k-1], i=k-1, j=k, A=J[i], B=J[j];
+  let r=seg(t,c-.3,c); r=r<.3? -.10*Math.sin(Math.PI*r/.3) : ss((r-.3)/.7);   // pull back a little before reaching
+  const lift=popS(t-S1.liftAt(k),15,.5);
+  const tc=t-c, bounce=tc>0? .045*Math.exp(-tc*6)*Math.sin(tc*21) : 0;          // rebound of the clasp
+  const Pc=[(A.Sh[0]+B.Sh[0])/2, (A.Sh[1]+B.Sh[1])/2 + (lerp(.17,-.085,lift)+bounce)*S];
+  const hi=L2D(A.aR[1],Pc,r), hj=L2D(B.aL[1],Pc,r);
+  const Ei=elbow(A.Sh,hi,GEO.upper*S*sc[i],GEO.fore*S*sc[i]), Ej=elbow(B.Sh,hj,GEO.upper*S*sc[j],GEO.fore*S*sc[j]);
+  let Qi=ctrl(A.Sh,Ei,hi,FIGS.A.k), Qj=ctrl(B.Sh,Ej,hj,FIGS.A.k);
+  const jw=r>=1?ss(seg(t,c,c+.14)):0;
+  if(jw>0){ let d=[Qj[0]-Qi[0],Qj[1]-Qi[1]], l=Math.hypot(d[0],d[1])||1; d=[d[0]/l,d[1]/l];
+    const li=Math.hypot(Pc[0]-Qi[0],Pc[1]-Qi[1]), lj=Math.hypot(Qj[0]-Pc[0],Qj[1]-Pc[1]);
+    Qi=L2D(Qi,[Pc[0]-d[0]*li,Pc[1]-d[1]*li],jw); Qj=L2D(Qj,[Pc[0]+d[0]*lj,Pc[1]+d[1]*lj],jw); }
+  return { Si:A.Sh, Qi, hi, Sj:B.Sh, Qj, hj, Pc, joined:r>=1 };
+}
+// Sample a quadratic curve (to measure length and draw the red front)
+function quadPts(A,Q,E,n=16){ const o=[]; for(let i=0;i<=n;i++)o.push(qpt(A,Q,E,i/n)); return o; }
+function polyLen(P){ let L=0; for(let i=1;i<P.length;i++)L+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]); return L; }
+function strokePoly(P,upto){ // stroke along the polyline up to length upto
+  g.beginPath(); g.moveTo(P[0][0],P[0][1]); let L=0;
+  for(let i=1;i<P.length;i++){ const s=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);
+    if(L+s>=upto){ const u=(upto-L)/s; g.lineTo(lerp(P[i-1][0],P[i][0],u),lerp(P[i-1][1],P[i][1],u)); break; }
+    g.lineTo(P[i][0],P[i][1]); L+=s; }
+  g.stroke();
+}
+
+function drawS1(t){
+  const {gy,S,xs,appear,clasp,lineY}=S1, P=SIM.s1.at(Math.min(t,10.4));
+  const ink=C.ink, sig=C.sig;
+  // small header
+  const ka=ss(seg(t,.3,.65));
+  text('EP. 05   ·   NETWORKS',124,118-10*(1-ka),{size:22,w:500,col:C.mute,track:3,a:ka});
+  // the question
+  const q1=eo3(seg(t,.95,1.35)), q2=eo3(seg(t,1.1,1.5)), qz=eo3(seg(t,1.3,1.7));
+  text('How many hands between',116,214+16*(1-q1),{size:84,w:600,track:-2,a:q1});
+  text('you and ',116,308+16*(1-q2),{size:84,w:600,track:-2,a:q2});
+  { g.save(); g.font='600 84px Jost'; g.letterSpacing='-2px'; const wYou=g.measureText('you and ').width; g.restore();
+    text('anyone?',116+wYou,308+16*(1-q2),{size:84,w:600,track:-2,col:sig,a:q2}); }
+  text('你和任何人之间，隔着几只手？',122,368+10*(1-qz),{size:36,w:400,font:ZH,col:C.mute,a:qz});
+  // the answer (when the red reaches the stranger)
+  const an=eo3(seg(t,S1.P1,S1.P1+.4));
+  text('Six, they say.',116,478+16*(1-an),{size:84,w:600,track:-2,col:sig,a:an});
+  // sign-off (?sign=1, in the last 2.5 s of S1): set like the small header at the top left, placed at the top right
+  if(QS.get('sign')){ const sa=eo3(seg(t,7.4,7.8));
+    text('LemoLab × Claude Opus 5.5',1800,118-10*(1-sa),{size:28,w:500,col:C.mute,align:'right',track:1,a:sa}); }
+
+  // system line: drawn from left to right
+  const lx0=200, lx1=1720, ld=eio3(seg(t,0,.85));
+  g.save(); g.lineCap='round'; g.strokeStyle=C.tint; g.lineWidth=LW;
+  if(ld>0){ g.beginPath(); g.moveTo(lx0,lineY); g.lineTo(lerp(lx0,lx1,ld),lineY); g.stroke(); }
+  g.restore();
+
+  // figures pop up (grow up from the feet, with a little overshoot)
+  const sc=xs.map((_,i)=>popS(t-appear[i]));
+  const arrive=ss(seg(t,S1.P1-.02,S1.P1+.1));
+  const col=i=>i===0?sig:i===6?mix(ink,sig,arrive):ink;
+  const fil=i=>i===0?sig:i===6?mix(C.paper,sig,arrive):C.paper;
+  const F=xs.map((x,i)=>({x,gy,S:S*sc[i],col:col(i),fill:fil(i),lwk:clamp(sc[i]*1.6)}));
+  const J=F.map((f,i)=>sc[i]>.01?joints(f,P[i]):null);
+  const lwOf=i=>Math.max(3,FIGS.A.w*clamp(Math.sqrt(F[i].S/380),.6,1.05)*F[i].lwk);
+
+  // nodes on the ground wire: one grows with each clasp, turns red and gets its number when the red passes
+  for(let k=1;k<=6;k++){
+    const c=clasp[k-1], x=S1.linkX(k), on=popS(t-c,20,.5), tp=S1.pulseAt(k-.5), red=ss(seg(t,tp-.02,tp+.08));
+    if(on<=0)continue;
+    g.beginPath(); g.arc(x,lineY,Math.max(0,(8.5+4*bell(t,tp-.02,tp+.3))*on),0,Math.PI*2); g.fillStyle=mix(C.tint,sig,red); g.fill();
+    const na=ss(seg(t,tp,tp+.18));
+    text(String(k),x,lineY+58+10*(1-na),{size:32,w:600,col:sig,align:'center',a:na});
+  }
+  // names
+  const ya=ss(seg(t,appear[0]+.25,appear[0]+.6)), sa=ss(seg(t,appear[6]+.25,appear[6]+.6));
+  // names go outside both ends (the two ends of the chain), clear of the numbers under the wire
+  text('YOU',xs[0]-96,gy-150,{size:22,w:600,col:C.mute,align:'right',track:3,a:ya});
+  text('你',xs[0]-96,gy-104,{size:34,w:400,font:ZH,col:C.mute,align:'right',a:ya});
+  text('A STRANGER',xs[6]+96,gy-150,{size:22,w:600,col:C.mute,align:'left',track:3,a:sa});
+  text('陌生人',xs[6]+96,gy-104,{size:34,w:400,font:ZH,col:C.mute,align:'left',a:sa});
+
+  // clasps: drawn first (behind the figures), each half in its owner's colour; once joined, one curve
+  const links=[];
+  for(let k=1;k<=6;k++){ const c=clasp[k-1];
+    if(t<c-.3||!J[k-1]||!J[k])continue;
+    const L=linkGeo(k,t,J,sc); links.push([k,L]);
+    g.save(); g.lineCap='round'; g.lineJoin='round';
+    g.strokeStyle=col(k-1); g.lineWidth=lwOf(k-1); g.beginPath(); g.moveTo(L.Si[0],L.Si[1]); g.quadraticCurveTo(L.Qi[0],L.Qi[1],L.hi[0],L.hi[1]); g.stroke();
+    g.strokeStyle=col(k);   g.lineWidth=lwOf(k);   g.beginPath(); g.moveTo(L.hj[0],L.hj[1]); g.quadraticCurveTo(L.Qj[0],L.Qj[1],L.Sj[0],L.Sj[1]); g.stroke();
+    g.restore();
+  }
+  // the red runs along the joined hands (round front, like liquid flowing through a hose)
+  for(const [k,L] of links){
+    const t0=S1.pulseAt(k-1), t1=S1.pulseAt(k), f=seg(t,t0,t1);
+    if(f<=0||!L.joined)continue;
+    const Pp=quadPts(L.Si,L.Qi,L.hi).concat(quadPts(L.hj,L.Qj,L.Sj).slice(1)), len=polyLen(Pp);
+    const half=polyLen(quadPts(L.Si,L.Qi,L.hi));
+    const reach=k===1?Math.max(half,f*len):f*len;
+    g.save(); g.lineCap='round'; g.lineJoin='round'; g.strokeStyle=sig; g.lineWidth=lwOf(k)+.6; strokePoly(Pp,reach); g.restore();
+  }
+  // figures (the holding hand is not drawn here)
+  for(let i=0;i<7;i++){ if(!J[i])continue;
+    const noL=i>=1&&t>=clasp[i-1]-.3&&!!J[i-1], noR=i<=5&&t>=clasp[i]-.3&&!!J[i+1];
+    figure({...F[i],noL,noR},P[i]);
+  }
+}
+// easing
+function eo3(x){x=clamp(x);return 1-Math.pow(1-x,3)}
+function eio3(x){x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+
+// shots other than S1: a grey card with the shot number
+function drawCard(sh,t){
+  g.fillStyle=C.tint; g.fillRect(80,80,W-160,H-160);
+  text(`${sh.id}   ·   ${sh.t0}–${sh.t1} s`,140,200,{size:28,w:600,col:C.mute,track:3});
+  text(sh.en,136,320,{size:84,w:600,col:C.mute,track:-2});
+  text(sh.zh,140,392,{size:36,w:400,font:ZH,col:C.mute});
+  text(`${(t).toFixed(2)} s`,W-140,H-130,{size:28,w:500,col:C.mute,align:'right'});
+}
+
+// sound events (film seconds): pop-ups, clasps, the red passing, arrival, lift, text
+function filmEvents(){
+  const E=[]; const {appear,clasp}=S1;
+  E.push({t:0,type:'line',d:.85});
+  appear.forEach((a,i)=>E.push({t:a,type:'pop',i,pan:(S1.xs[i]-960)/960}));
+  clasp.forEach((c,k)=>{ E.push({t:c-.3,type:'reach',k:k+1,pan:(S1.linkX(k+1)-960)/960});
+                         E.push({t:c,type:'clasp',k:k+1,pan:(S1.linkX(k+1)-960)/960}); });
+  for(let k=1;k<=6;k++) E.push({t:S1.pulseAt(k-.5),type:'node',k,pan:(S1.linkX(k)-960)/960});
+  E.push({t:S1.P0,type:'pulse',d:S1.P1-S1.P0});
+  E.push({t:S1.P1,type:'arrive',pan:.6});
+  E.push({t:S1.LIFT,type:'lift'});
+  E.push({t:.95,type:'title'}); E.push({t:S1.P1,type:'answer'});
+  E.push({t:10,type:'cue',name:'S1 end'});
+  return E;
+}
+
+SCENES.film = {
+  dur:TO-FROM,
+  setup(){ SIM.s1=simulate(7,s1Target,-1.5,10.6); },
+  draw(t){
+    const T=FROM+t, sh=SHOTS.find(s=>T>=s.t0&&T<s.t1)||SHOTS[SHOTS.length-1];
+    if(sh.id==='S1') drawS1(T); else drawCard(sh,T);
+  }
+};
+window.EV = filmEvents().filter(e=>e.t>=FROM-1e-6&&e.t<=TO+1e-6).map(e=>({...e,t:e.t-FROM}));
+window.TEXTS = t => { TXT=[]; window.render(t); const o=TXT; TXT=null; return o.filter(o=>o.x1>0&&o.x0<W); };
+
+// ================= Page contract =================
+// ?scene=full is the whole film, in full.js (the <script> below); the other scenes are here.
+const FONTS_READY = Promise.all([document.fonts.load(`600 40px ${EN}`),document.fonts.load(`500 40px ${EN}`),document.fonts.load(`400 40px ${EN}`),document.fonts.load(`400 40px ${ZH}`,'一'),document.fonts.load(`500 40px ${ZH}`,'一')]);
+if (SCENE !== 'full') {
+  const sc = SCENES[SCENE]; sc.setup();
+  window.DUR = sc.dur;
+  window.render = t => { paper(); sc.draw(t); };
+  FONTS_READY.then(()=>{ window.render(0); window.READY=true; });
+}
+</script>
+<script src="full.js"></script>
+</body></html>

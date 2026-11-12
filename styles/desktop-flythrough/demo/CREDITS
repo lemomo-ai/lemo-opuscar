@@ -1,4 +1,4 @@
-Desktop Flythrough 桌面穿梭 — demo film 叮之前 · Before the Ding
+Tabletop App Flythrough 桌面卡片穿梭 — demo film 叮之前 · Before the Ding
 
 Code: written for this film. src/post.js depth-of-field shaders are adapted from the Lemo-Opuscar library (core/three/post.js, MIT, LemoLab).
 The page contract, renderer, reading-time check, TTS and speech-check wrappers, sampler and procedural foley helpers come from the library's core/ (MIT).

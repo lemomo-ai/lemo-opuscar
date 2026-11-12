@@ -1,0 +1,15 @@
+Third-party product interfaces, names, logos and trademarks
+
+The files that REUSE.toml marks with LicenseRef-ThirdPartyMarks are pictures
+that show a third-party product's interface, names or logos, redrawn for a film,
+and the code that draws them: the pictures from the demo film of Mascot
+Screencast and that demo's drawing code, which show Anthropic's Claude app
+interface and the names Claude and Claude Code.
+
+These interfaces, names, logos and trademarks belong to their owners. They are
+excluded from the CC BY 4.0 licence of these pictures and of the film they come
+from, from the MIT licence of that code, and from every other licence in this
+repository; Lemomo (LemoLab) gives no licence for them. The rest of each picture
+is ours, under CC BY 4.0, and the rest of the code is ours, under MIT (see
+LICENSE, rules 3 and 4). Each picture may still be shared whole, as published,
+under CC BY 4.0, and the code used under MIT, for everything but them.

@@ -1,0 +1,34 @@
+CREDITS · 摩羯过琼州 Typhoon Yagi over Qiongzhou (52 s) · 流场风线 Flow-field Wind Lines
+
+VOICE
+- Narration synthesised with Kokoro-82M (hexgrad, Apache License 2.0) through kokoro-onnx (MIT); voice "bm_george".
+  https://huggingface.co/hexgrad/Kokoro-82M
+- Lines checked with faster-whisper (MIT), model base.en; not part of the film.
+
+MUSIC SAMPLES (instruments used: cellos, contrabass, glockenspiel, harp, piano, suspended cymbal, timpani, vibraphone, bowed vibraphone, violas, violins)
+- Piano: "Salamander Grand Piano V3" by Alexander Holm, CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), CC0
+- Versilian Community Sample Library (Versilian Studios), CC0
+Wind and sound effects are synthesised in code (core/audio/sfx.py and mix.py).
+
+FONTS (SIL Open Font License 1.1; licence files in fonts/)
+- Noto Serif SC (Google) — fonts/zh.ttf, subset to the characters on screen
+- Newsreader, Newsreader Italic (Production Type) — fonts/news.ttf, fonts/news-it.ttf
+- IBM Plex Mono Medium (IBM) — fonts/mono.ttf
+
+DATA (details and the wording of every source in FACTS.md; downloads in tools/fetch_data.py)
+- ETOPO1 Global Relief Model, NOAA National Geophysical Data Center (Amante & Eakins 2009, doi:10.7289/V5C8276M), via the ERDDAP mirror https://upwell.pfeg.noaa.gov/erddap/griddap/etopo180.html — US Government work, public domain. Coastlines, depth and relief contours, land shading, terrain drag.
+- China Meteorological Administration best track of Typhoon Yagi (2411) as carried in NOAA IBTrACS v04r01 (Knapp et al. 2010, BAMS 91, 363–376; Gahtan et al. 2024, doi:10.25921/82ty-9e16), https://www.ncei.noaa.gov/products/international-best-track-archive — the CMA's records as NOAA distributes them, not public domain; NOAA's usage policy follows the World Data Center for Meteorology (terms: the library's LICENSES/LicenseRef-IBTrACS.txt). Kept in data/yagi_cma_track.csv and track.js. Track, intensities, the whole wind field.
+- Landfall times, places and readings: CMA and Hainan Meteorological Service bulletins of 6–9 Sep 2024 (cited in FACTS.md, not reproduced).
+- Grade table: GB/T 19201-2006《热带气旋等级》 (Grades of tropical cyclones; values as published, FACTS.md §6).
+- South China Sea islands, Diaoyu Islands (positions; tools/make_scs.py → scs.js, FACTS.md §9):
+  · 中华人民共和国政府关于中华人民共和国领海基线的声明 (Declaration on the Baselines of the Territorial Sea, 1996-05-15), Xisha base points — https://www.mfa.gov.cn/web/wjb_673085/zzjg_673183/bjhysws_674671/bhsmgb/200904/t20090409_9866755.shtml
+  · 中华人民共和国政府关于黄岩岛领海基线的声明 (Declaration on the Baselines of the Territorial Sea of Huangyan Dao, 2024-11-10) — https://www.mfa.gov.cn/web/zyxw/202411/t20241110_11524120.shtml
+  · 中华人民共和国政府关于钓鱼岛及其附属岛屿领海基线的声明 (Declaration on the Baselines of the Territorial Sea of Diaoyu Dao and Its Affiliated Islands, 2012-09-10) — https://www.mfa.gov.cn/web/wjb_673085/zzjg_673183/bjhysws_674671/bhsmgb/201209/t20120910_320427.shtml
+  · Wikidata (CC0) coordinates: Q393044 永兴岛, Q11103595 东沙岛, Q701264 太平岛, Q2232625 中业岛, Q1150068 渚碧礁, Q5447293 永暑礁, Q1536891 美济礁, Q3273381 南威岛, Q1936216 弹丸礁; group anchors Q274388 西沙群岛, Q215664 南沙群岛, Q20050783 中沙群岛, Q698931 东沙群岛, Q628716 黄岩岛; Q220701 与那国岛 (for the illustrative dash east of Taiwan).
+- South China Sea dashed line, nine dashes: Natural Earth 1:10m Cultural Vectors, admin_0_boundary_lines_maritime_indicator_chn (China point of view), public domain — https://www.naturalearthdata.com / https://github.com/nvkelso/natural-earth-vector. Approximate positions; China has published no coordinates. The dash east of Taiwan has no published coordinates in any source reached; it is an illustrative placement (FACTS.md §9).
+- 南海诸岛 inset: ETOPO1 (same source as above) at 6′, 2–24°N 104–123°E (tools/prep_inset.py → raw/inset.json); Zengmu Ansha from Wikidata Q707510 (CC0).
+- Wind model: Holland (1980); Willoughby et al. (2006); Sobey et al. (1977); Lin & Chavas (2012) — FACTS.md §7.
+
+PICTURE
+Everything else is drawn in code: no photographs, footage, 3D models or generated images.

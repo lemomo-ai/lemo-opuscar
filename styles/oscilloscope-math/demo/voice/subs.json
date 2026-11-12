@@ -1,0 +1,72 @@
+[
+ {
+  "line": "v01",
+  "from": 0,
+  "to": 8,
+  "en": "Here is a square wave. Flat tops, sharp corners.",
+  "zh": "这是一个方波：平顶，直角。"
+ },
+ {
+  "line": "v02",
+  "from": 0,
+  "to": 8,
+  "en": "So how do you roll it out of circles?",
+  "zh": "那么，怎样用圆把它滚出来？"
+ },
+ {
+  "line": "v03",
+  "from": 0,
+  "to": 4,
+  "en": "Start with one spinning circle.",
+  "zh": "先让一个圆转起来。"
+ },
+ {
+  "line": "v04",
+  "from": 0,
+  "to": 8,
+  "en": "Follow its tip. Its height draws a sine wave.",
+  "zh": "盯住它的尖端：它的高度画出一条正弦波。"
+ },
+ {
+  "line": "v05",
+  "from": 0,
+  "to": 14,
+  "en": "Hang a smaller one on its tip: three times as fast, a third the size.",
+  "zh": "在尖端再挂一个小圆：转速是三倍，大小是三分之一。"
+ },
+ {
+  "line": "v06",
+  "from": 0,
+  "to": 12,
+  "en": "Then a fifth, a seventh, odd ones only, until the wave is square.",
+  "zh": "再加五倍、七倍，只要奇数倍，直到波形变方。"
+ },
+ {
+  "line": "v07",
+  "from": 0,
+  "to": 5,
+  "en": "But look closely at a corner.",
+  "zh": "可是，凑近看一个角。"
+ },
+ {
+  "line": "v08",
+  "from": 0,
+  "to": 10,
+  "en": "There's a spike. Add more circles, and it only gets thinner.",
+  "zh": "这里冒出一个尖。圆加得再多，它也只是变窄。"
+ },
+ {
+  "line": "v09",
+  "from": 0,
+  "to": 8,
+  "en": "It never gets shorter. About 9%, every time.",
+  "zh": "它从来不会变矮：每次都高出约 9%。"
+ },
+ {
+  "line": "v10",
+  "from": 0,
+  "to": 11,
+  "en": "Even infinitely many circles leave it there. It's called the Gibbs phenomenon.",
+  "zh": "就算有无穷多个圆，它也还在。这叫吉布斯现象。"
+ }
+]

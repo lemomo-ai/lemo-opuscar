@@ -256,7 +256,7 @@ export async function init() {
   const L = () => C.layer();
   LY = { bg: [L(), L()], ch: [L(), L()], fg: [L(), L()], tx: L(), sil: document.createElement('canvas'), knock: L() };
   LY.sil.width = RW; LY.sil.height = RH;
-  try { await document.fonts.load('120px "LongCang"', LINE); await document.fonts.load('60px "Patrick Hand"', LINE_EN); } catch (e) { }
+  try { await document.fonts.load('120px "LongCang"', LINE); await document.fonts.load('60px "Patrick Hand"', LINE_EN + CREDIT); } catch (e) { }
 }
 
 // ───────── timeline
@@ -264,6 +264,7 @@ const BAR = 3 * 60 / 78;   // the score is 3/4 at 78 BPM (tools/score.py): take-
 const WAKE = 3 * BAR, OVER = 32.5, LAND = 34.2;
 const CUT = 19 * BAR, UP = 20 * BAR, SAY = 23 * BAR;   // cut to his eyes; the butterfly takes off; his words
 const LINE = '等我哦。', LINE_EN = 'Wait for me.';
+const CREDIT = '2nd1st × LemoLab × Claude Opus 5.5';   // sign-off (library demo only): written in after the words, in the English face, held to the end
 // Her route: [time, position, look-at]. Waking and on the flower only the gaze moves (slow, few moves, holds longer than moves); the flight is one smooth curve
 const ST = START, SY = START[1];
 const FLY = [
@@ -444,10 +445,13 @@ function farFly(L, t) {
 // His words: printed on the page in a handwriting face, written in one character at a time on the blank paper between the sky and
 // the roofs, to the right (the butterfly fades out near the centre of the frame and must stay clear). The English line follows, smaller.
 const WX = 1450, WY = 520, EN_AT = SAY + 1.4, EN_Y = 628;
+// The sign-off: written in on the last bar line (26, the final chord), smaller, on the paper between the roof and the tree, held to the end (4.5 s)
+const CR_AT = 26 * BAR, CR_X = 1500, CR_Y = 770, CR_SIZE = 32;
 function words(t) {
   const k = clamp((t - SAY) / 1.1); if (k <= 0) return false;
   C.clear(LY.tx); C.text(LY.tx, LINE, WX, WY, { font: 'LongCang', size: 132, col: P.line, reveal: Math.floor(k * 12) / 12, seed: 5 });
   const e = clamp((t - EN_AT) / .9); if (e > 0) C.text(LY.tx, LINE_EN, WX, EN_Y, { font: 'Patrick Hand', size: 58, col: P.line, reveal: Math.floor(e * 12) / 12, seed: 9 });
+  const c = clamp((t - CR_AT) / 1.4); if (c > 0) C.text(LY.tx, CREDIT, CR_X, CR_Y, { font: 'Patrick Hand', size: CR_SIZE, col: P.line, p: .9, align: 'right', reveal: Math.floor(c * 12) / 12, seed: 13 });
   return true;
 }
 // Reading check (core/render/readcheck.mjs): the full text and its box from the frame each line starts to be written
@@ -455,6 +459,7 @@ export function texts(t) {
   const out = [];
   if (t >= SAY) out.push({ id: 'zh', text: LINE, x0: WX - 270, y0: WY - 120, x1: WX + 270, y1: WY + 30 });
   if (t >= EN_AT) out.push({ id: 'en', text: LINE_EN, x0: WX - 170, y0: EN_Y - 50, x1: WX + 170, y1: EN_Y + 16 });
+  if (t >= CR_AT) out.push({ id: 'credit', text: CREDIT, x0: CR_X - 480, y0: CR_Y - 30, x1: CR_X, y1: CR_Y + 10 });
   return out;
 }
 // The sky in his eyes: only a strip along the top is coloured, its lower edge ragged; below it the paper stays blank for the words

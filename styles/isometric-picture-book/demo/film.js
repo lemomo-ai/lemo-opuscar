@@ -1,4 +1,4 @@
-// 七十二个座位 · Seventy-Two Seats — library demo for "Isometric Picture-book Explainer" (narrated cut).
+// 七十二个座位 · Seventy-Two Seats — library demo for "Isometric People Scene" (narrated cut).
 // One world, built once: the apron and stand B12, a 12-row 3+3 regional jet (its roof a paper flap), a 7.5 m jet bridge,
 // and the gate inside the terminal (floor at 2.3 m, cut away above). Fourteen shots, one per narration line; everything is a function of t.
 import { C, W, H, TOPS, LEGS, iso, tri, mix, hex, css, TAU, clamp, lerp, seg, ss, eo, eio, ei, hash,

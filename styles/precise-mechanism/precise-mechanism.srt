@@ -1,0 +1,54 @@
+1
+00:00:00,800 --> 00:00:03,533
+这块表没有电池。
+This watch has no battery.
+
+2
+00:00:03,700 --> 00:00:07,286
+可它一天只差几秒。
+Yet it drifts only a few seconds a day.
+
+3
+00:00:07,450 --> 00:00:11,423
+打开看，三套系统在分工。
+Open it up, and three systems share the work.
+
+4
+00:00:11,600 --> 00:00:14,628
+上紧的发条存着动力。
+A wound spring stores the power.
+
+5
+00:00:14,800 --> 00:00:19,556
+一串齿轮把它传下去，一级比一级快。
+A train of gears passes it on, faster at every step.
+
+6
+00:00:19,750 --> 00:00:24,850
+在这台教学机芯里，快了 4800 倍。
+In this teaching movement, 4,800 times faster.
+
+7
+00:00:25,000 --> 00:00:29,406
+不加约束，发条会一口气泄光。
+Left alone, the spring would empty in a single rush.
+
+8
+00:00:29,600 --> 00:00:33,987
+所以擒纵机构每次只放过半个齿。
+So the escapement lets it out, half a tooth at a time.
+
+9
+00:00:34,150 --> 00:00:39,125
+摆轮来回摆，每秒五拍。
+The balance swings back and forth, five beats every second.
+
+10
+00:00:39,600 --> 00:00:42,183
+每一拍，就是一声滴答。
+Each beat is one tick.
+
+11
+00:00:43,400 --> 00:00:47,715
+发条、齿轮、摆轮：表就是这样走时的。
+Spring, gears, balance. That is how it keeps time.

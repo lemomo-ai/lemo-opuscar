@@ -18,13 +18,13 @@ else LIB=$HOME/lemo-opuscar
 fi
 case "$LIB" in /*|[A-Za-z]:[/\\]*) ;; *) LIB=$(pwd)/$LIB ;; esac   # C:/… is absolute too (Windows git prints paths that way)
 
-# Our clone skips demo sources, the gallery and big images; what `setup.sh demo` added stays.
+# Our clone skips demo sources, the gallery, the README's pictures and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
 # The patterns reach git as written: Git Bash on Windows would turn '/styleboard/' into 'C:/Program Files/Git/styleboard/'.
 # It runs from inside $LIB, because a -C /c/… path needs that rewriting.
 sparse() { (cd "$LIB" && MSYS_NO_PATHCONV=1 git sparse-checkout "$@"); }
 apply_sparse() {
-  set -- '/*' '!/styles/*/demo/' '!/styleboard/' '!/docs/frames/' '!/docs/cover.jpg' '!/docs/opuscar98.jpg' '!/styles/*/poster.jpg' \
+  set -- '/*' '!/styles/*/demo/' '!/styleboard/' '!/docs/readme/' '!/docs/cover.jpg' '!/styles/*/poster.jpg' \
     $(git -C "$LIB" sparse-checkout list 2>/dev/null | grep -E '^/styles/[^/*]+/(demo/|poster\.jpg)$' || true)
   sparse set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
 }
@@ -133,7 +133,12 @@ if command -v ffmpeg >/dev/null; then
 else miss="$miss ffmpeg"; fi
 command -v uv >/dev/null || find_py >/dev/null || miss="$miss python3.11+(or uv)"
 [ -n "$miss" ] && echo "! missing:$miss"
-node_ok && py_ok core || echo "! packages not installed yet: run 'sh setup.sh deps' (a few minutes) before the first render"
+# packages never installed, or installed from a package.json or requirements file that has changed since (a marker is there)
+if ! { node_ok && py_ok core; }; then
+  if [ -f "$LIB/node_modules/.lemo-ok" ] || [ -f "$LIB/.venv/.lemo-core" ]; then
+    echo "! packages changed: run 'sh setup.sh deps' to update them before the next render"
+  else echo "! packages not installed yet: run 'sh setup.sh deps' (a few minutes) before the first render"; fi
+fi
 # Package tiers: core renders; voice (TTS + speech check) and music (pluck.py) are added when a film needs them
 mark() { if "$@"; then printf '✓'; else printf '✗'; fi; }
 core_ok() { node_ok && py_ok core; }

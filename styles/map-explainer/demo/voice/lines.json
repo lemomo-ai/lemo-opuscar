@@ -1,0 +1,67 @@
+[
+ {
+  "id": "v01",
+  "text": "About a fifth of the world's oil passes through one narrow strait.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "asr": "About a fifth of the world's oil passes through one narrow straight."
+ },
+ {
+  "id": "v02",
+  "text": "It is the Gulf's only way out to the open sea.",
+  "voice": "bm_george",
+  "speed": 0.82
+ },
+ {
+  "id": "v03",
+  "text": "At its narrowest point, it is twenty-one nautical miles wide.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "asr": "At its narrowest point, it is 21 nautical miles wide."
+ },
+ {
+  "id": "v04",
+  "text": "Tankers keep to two lanes, each two miles wide.",
+  "voice": "bm_george",
+  "speed": 0.84
+ },
+ {
+  "id": "v05",
+  "text": "The channel is deep enough for the largest tankers.",
+  "voice": "bm_george",
+  "speed": 0.84
+ },
+ {
+  "id": "v06",
+  "text": "In twenty twenty-four, that averaged twenty million barrels a day.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "asr": "In 2024, that averaged 20 million barrels a day."
+ },
+ {
+  "id": "v07",
+  "text": "Pipelines can carry some of it around the strait,",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "asr": "Pipelines can carry some of it around the straight."
+ },
+ {
+  "id": "v08",
+  "text": "but their spare capacity is only two point six to five and a half million.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "asr": "But their spare capacity is only 2.6 to 5.5 million."
+ },
+ {
+  "id": "v09",
+  "text": "For most of this oil, there is no other way out.",
+  "voice": "bm_george",
+  "speed": 0.74
+ },
+ {
+  "id": "v10",
+  "text": "Most of it heads for Asia.",
+  "voice": "bm_george",
+  "speed": 0.8
+ }
+]

@@ -1,4 +1,4 @@
-// The Lampbearer — HD-2D style demo
+// The Lampbearer — 2.5D Pixel Art style demo
 import * as THREE from 'three';
 import { makePost } from './post_ts.js';   // local copy, adds a tilt-shift term (enabled with ?tilt=1)
 import { DUR, SHOTS, shotAt } from './story.js';

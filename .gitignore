@@ -3,20 +3,20 @@ node_modules/
 .lemo-deps.lock/
 __pycache__/
 .DS_Store
-# 模型与大素材（运行说明里给下载地址）
+# Models and large assets (the docs say where to download them)
 core/tts/*.onnx
 core/tts/*.bin
 core/assets/polyhaven/*.hdr
-# 渲染中间产物
+# Render intermediates
 styles/*/demo/out/
 styles/*/demo/voices/*.wav
 styles/*/demo/music/*.mp3
 styles/*/demo/music/*.wav
 styles/*/demo/music/*.npy
 styles/*/demo/mix.wav
-# 成片走 GitHub Releases
+# Finished films are published on GitHub Releases
 styles/*/*.mp4
-# 2026-09-26 收录已有作品后补充
+# More render intermediates
 styles/*/demo/out_*/
 styles/*/demo/chk/
 styles/*/demo/node_modules
@@ -25,31 +25,31 @@ styles/*/demo/tts/*.onnx
 styles/*/demo/tts/*.bin
 styles/*/demo/music.wav
 *.log
-# 喊词是输入素材（只能在 macOS 上近似重建），要提交
+# The game show's shouted words are source material (only roughly rebuildable on macOS): committed
 !styles/game-show/demo/voices/*.wav
 styles/*/demo/music/src/
 
-# ---- 2026-09-26 GitHub 发布前补充 ----
-# 内部工作文件（不公开）
+# Maintainer's working files
 /promo/
 /batch/
 /TODO.md
 /STYLES.md
 styles/*/HANDOFF.md
-# 配乐分轨、混音、拟音：build.sh 会重新生成
+# Score stems, mixes and foley: build.sh writes them again
 styles/*/demo/**/stems*/
 styles/*/demo/**/music_stems/
 styles/*/demo/**/mix*.wav
 styles/*/demo/audio/*.wav
 core/audio/*.wav
-# 大素材走 Releases 的 assets 包，用 sh tools/fetch.sh 下载（清单见 tools/assets.json）
+# Large assets come as Release packs: sh tools/fetch.sh downloads them (list in tools/assets.json)
 core/audio/instruments/
 # Demo fonts are not in git: they are free (mostly Google Fonts, OFL); each demo's CREDITS names them
 styles/*/demo/fonts/**/*.ttf
 styles/*/demo/fonts/**/*.otf
-# 发布暂存 / Pages 构建产物
+# Release staging and the built site
 /.release/
 /_site/
+/_media/
 
 # Demo folders keep code and CREDITS for agents to read; renders, media and process notes stay local
 styles/*/storyboard/
@@ -82,7 +82,7 @@ styles/*/demo/stills/*
 # Illustrative plates a demo's build needs (AI-generated, credited in CREDITS) are committed, not re-fetched
 !styles/news-package/demo/assets/plates/*.jpg
 
-# 用户自己的片子（agent 输出）
+# The user's own films (what the agent makes)
 /films/
 
 
@@ -90,7 +90,7 @@ styles/*/demo/stills/*
 styles/*/PRODUCTION_LOG*
 styles/*/demo/PRODUCTION_LOG*
 
-# 宣传物料（发帖用海报、预告片、教程片），只留本地，不上传 GitHub
+# Promotional material (posters, trailers, tutorials) stays local
 /docs/social/
 
 

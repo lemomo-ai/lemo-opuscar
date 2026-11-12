@@ -1,11 +1,16 @@
 {
  "slug": "ascii-crt",
- "num": "22",
- "en": "ASCII / CRT Terminal",
- "cn": "ASCII / CRT 终端",
- "category_en": "Graphic & Type",
- "category_cn": "图形与排版",
+ "num": "62",
+ "en": "CRT ASCII Terminal",
+ "cn": "CRT 字符终端",
+ "aka": [
+  "ASCII / CRT Terminal",
+  "ASCII / CRT 终端"
+ ],
+ "category_en": "Film & Tape",
+ "category_cn": "胶片录像",
  "film": "Tranquility.log",
+ "film_cn": "静海日志",
  "line": "A moon-base AI wakes after forty years to a signal from Earth, and replies by drawing “home” in characters.",
  "line_cn": "月球基地的 AI 沉睡 40 年后被唤醒，用字符画出“家”来回复。",
  "uses": [

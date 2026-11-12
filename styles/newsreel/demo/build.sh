@@ -12,6 +12,7 @@ export LIB
 PY="$LIB/.venv/bin/python"
 OUTDIR=$(cd "$HERE/.." && pwd)          # newsreel.mp4 / .srt / poster.jpg sit next to demo/
 cd "$LIB"
+"$PY" -c 'import numba' 2>/dev/null || { echo "newsreel: the demo needs the music tier (numba, for core/audio/pluck.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
 
 # 0. sources and fonts (skips what is already there)
 "$PY" "$HERE/tools/fetch_sources.py"

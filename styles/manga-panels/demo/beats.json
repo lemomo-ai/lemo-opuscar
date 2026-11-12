@@ -1,0 +1,47 @@
+{
+  "_note": "Single source of truth for the cut grid. Change only this file when the song changes. bpm + offset (time of bar 0, beat 0, in seconds) define the grid; cuts are in bars (fractions allowed, 0.25 = one beat); lyric lines are in seconds (t0 = first sung syllable, t1 = end of the line). The film starts at song time 'song_in' (seconds into the audio file).",
+  "song": "temp",
+  "song_in": 0.0,
+  "bpm": 160,
+  "offset": 0.0,
+  "dur": 48.0,
+  "fade_out": [46.6, 48.0],
+  "cuts": {
+    "intro": 0, "page4": 1, "title": 2,
+    "v1": 4, "v2": 6, "v3": 8, "v4": 10,
+    "p1": 12, "p2": 14, "kasha": 15, "hush": 15.5,
+    "c1": 16, "c2": 18, "c3": 20, "c4": 22, "c5": 24, "c6": 26, "c7": 28,
+    "outro": 29
+  },
+  "sections": [
+    { "id": "intro",  "bar": 0,  "bars": 4 },
+    { "id": "verse",  "bar": 4,  "bars": 8 },
+    { "id": "pre",    "bar": 12, "bars": 4 },
+    { "id": "chorus", "bar": 16, "bars": 13 },
+    { "id": "outro",  "bar": 29, "bars": 3 }
+  ],
+  "lines": [
+    { "id": "v1", "text": "街角 光在跑",       "t0": 6.0,  "t1": 8.6,  "kind": "box" },
+    { "id": "v2", "text": "人群 一秒就变了",   "t0": 9.0,  "t1": 11.6, "kind": "box" },
+    { "id": "v3", "text": "举起来 别眨眼",     "t0": 12.0, "t1": 14.6, "kind": "box" },
+    { "id": "v4", "text": "下一格 就是现在",   "t0": 15.0, "t1": 17.6, "kind": "box" },
+    { "id": "p1", "text": "对焦 零点零二秒",   "t0": 18.0, "t1": 20.6, "kind": "box" },
+    { "id": "k1", "text": "咔嚓!",             "t0": 22.5, "t1": 23.0, "kind": "sfx" },
+    { "id": "c1", "text": "一秒三十格",         "t0": 24.0, "t1": 26.6, "kind": "shout" },
+    { "id": "c2", "text": "把风停在 我手里",   "t0": 27.0, "t1": 29.6, "kind": "shout" },
+    { "id": "c3", "text": "每一格 每一格",     "t0": 30.0, "t1": 32.6, "kind": "shout" },
+    { "id": "c4", "text": "都是决定性瞬间",     "t0": 33.0, "t1": 35.6, "kind": "shout" },
+    { "id": "c5", "text": "一秒三十格",         "t0": 36.0, "t1": 38.6, "kind": "shout" },
+    { "id": "c6", "text": "把你留在 这一页",   "t0": 39.0, "t1": 41.6, "kind": "balloon" },
+    { "id": "c7", "text": "KOMA ONE",          "t0": 42.0, "t1": 43.2, "kind": "brand" },
+    { "id": "k2", "text": "咔嚓!",             "t0": 43.5, "t1": 44.0, "kind": "sfx" }
+  ],
+  "silence": [23.25, 24.0],
+  "colophon": {
+    "title_cn": "《KOMA ONE》一秒三十格",
+    "title_en": "KOMA ONE · Thirty Frames a Second",
+    "credit_cn": "画面 Codex 生图 · 音乐 代码合成",
+    "credit_en": "Images: Codex · Music: made in code",
+    "fiction": "Fictional brand, product and character."
+  }
+}

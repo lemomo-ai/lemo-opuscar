@@ -1,0 +1,127 @@
+[
+ {
+  "id": "v01_0",
+  "text": "Two treatments for kidney stones.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v02_0",
+  "text": "Treatment B worked more often:",
+  "voice": "af_bella",
+  "speed": 0.86,
+  "asr": "Treatment be worked more often."
+ },
+ {
+  "id": "v02_1",
+  "text": "eighty-three percent, against seventy-eight.",
+  "asr": "83% against 78%",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v03_0",
+  "text": "Which would you choose?",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v04_0",
+  "text": "Every cell is one real patient.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v04_1",
+  "text": "Seven hundred in all.",
+  "asr": "700 in all.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v05_0",
+  "text": "But some columns are hidden.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v06_0",
+  "text": "They hold stone size.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v07_0",
+  "text": "Big stones are harder to treat,",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v07_1",
+  "text": "and most of them went to A.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v08_0",
+  "text": "Now split the patients by stone size.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v09_0",
+  "text": "Small stones:",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v09_1",
+  "text": "\"A\" wins, ninety-three to eighty-seven.",
+  "asr": "A wins, 93 to 87.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v10_0",
+  "text": "Large stones:",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v10_1",
+  "text": "\"A\" again, seventy-three to sixty-nine.",
+  "asr": "A again, 73 to 69.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v11_0",
+  "text": "Better in every group,",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v11_1",
+  "text": "worse in total.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v12_0",
+  "text": "That's Simpson's paradox.",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v13_0",
+  "text": "Before you trust a total,",
+  "voice": "af_bella",
+  "speed": 0.86
+ },
+ {
+  "id": "v13_1",
+  "text": "unhide the columns.",
+  "voice": "af_bella",
+  "speed": 0.86
+ }
+]

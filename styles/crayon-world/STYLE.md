@@ -46,6 +46,7 @@ Not **Crayon Picture Book**: that style is a flat page drawn while you watch, th
 - Camera paths are smooth splines in time (continuous velocity), starting and ending at rest. Gaze is smoothed as a direction, with a lag, never as a look-at point.
 - Living things move in a child's way: two key drawings for a repeated action (wings, steps), simple poses, held.
 - Wind is the cheap way to keep a still frame alive: flowers sway from the base, washing on a line swings, clouds drift.
+- **Frame rate and grain**: no film grain (mux grain 0).
 
 ## 6. Camera grammar
 
@@ -77,6 +78,8 @@ Framing: keep the subject of a held shot at least 1/4 of frame height; keep pape
 - **Passing, not pointing.** Clues are flown past at the speed of the shot, never stopped at. *Fits content like:* a house's history in its objects; a company's first office; an old route to school.
 - **Blank paper for words.** Colour only part of the world and print the line where the crayon stops. *Fits content like:* a dedication; a line of a letter; the name of a place.
 - **Wind.** Sway, drift and flapping keep held frames alive without a cut. *Fits content like:* a field at dawn; a waiting room by an open window; a harbour.
+
+Our demo opens riding something that sways in the *wind*, with *the camera as someone*, uses *cut to the other's eyes* as its turn and ends on *blank paper for words*. A new film opens and ends another way: eyes opening, a hand-drawn map that becomes the ground, a fixed window held for the whole film, or an ending where the camera lies down in the grass and the sky takes the frame.
 
 ## 9. Pitfalls of the medium
 

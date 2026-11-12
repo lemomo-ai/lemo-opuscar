@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: 《量出来的蓝》 Measured Blue (Microscope Story demo)
+# One command: 《量出来的蓝》 Measured Blue (Under the Microscope demo)
 #   sh demo/build.sh            fonts -> voice + speech check -> cues -> events -> picture -> score + mix -> master
 #                               -> subtitles -> checks -> poster and style frame
 #   FETCH=1 sh demo/build.sh    first re-download the slide (Ventana-1.bif, 227 MB, CC0), rebuild every plate

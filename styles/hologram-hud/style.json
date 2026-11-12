@@ -1,11 +1,12 @@
 {
  "slug": "hologram-hud",
- "num": "52",
+ "num": "69",
  "en": "Sci-fi Hologram HUD",
  "cn": "科幻全息界面",
- "category_en": "Information & Keynote",
- "category_cn": "信息与发布",
+ "category_en": "Screens & Interfaces",
+ "category_cn": "屏幕界面",
  "film": "Volt · Spec Scan",
+ "film_cn": "Volt 规格扫描",
  "line": "An e-bike is scanned into a hologram; target boxes lock onto the battery, motor and brakes.",
  "line_cn": "电助力车被扫描成全息线框，目标框依次锁定电池、电机、刹车。",
  "uses": [

@@ -1,9 +1,11 @@
 #!/bin/sh
 # Rebuild "Five-Second Astronaut" from scratch: sh styles/microgame/demo/build.sh (runs from any directory)
+# Needs the core, voice and music tiers: setup.sh deps voice music (music/score.py uses core/audio/pluck.py, which needs numba).
 set -e
-sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/microgame/demo; O=styles/microgame
+$PY -c 'import numba' 2>/dev/null || { echo "microgame: the demo needs the music tier (numba, for core/audio/pluck.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
+sh styles/microgame/demo/tools/fonts.sh   # fonts: not in git (CREDITS names them) → fonts/ (after the numba check: that comes first)
 node $D/tools/dump_timeline.mjs                                   # 1. tempo grid → timeline.json (shared by score / mix / self-checks)
 $PY core/tts/tts.py $D/lines.json $D/voices                       # 2. Kokoro voices (am_fenrir / af_bella)
 $PY $D/tools/trim_cmd.py $D/lines.json $D/voices                  # 3. one-word commands: cut the trailing vowel ("Pump, now!" → "Pump")

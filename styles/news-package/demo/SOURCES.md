@@ -1,12 +1,12 @@
 # SOURCES · Broadcast News Package demo
 
-This film uses no third-party footage or photographs. Everything on screen is drawn in code, except two illustrative plates generated for the earlier cut. Facts and their sources, with quoted wording, are in [`FACTS.md`](FACTS.md).
+This film uses no third-party footage or photographs. Everything on screen is drawn in code, except two illustrative background plates made with an image generator. Facts and their sources, with quoted wording, are in [`FACTS.md`](FACTS.md).
 
 ## Data and documents (facts, not creative works)
 
 | What | Where | Licence / status | Used for |
 |---|---|---|---|
-| KOSPI daily closes, 8 May – 20 Oct 2026 | Korea Exchange index data via Naver Finance chart API, https://api.stock.naver.com/chart/domestic/index/KOSPI?periodType=dayCandle (raw: `data/kospi_raw_naver_api.json`, `data/kospi_raw_naver_mobile.json`; table: `data/kospi_daily.csv`) | market data (facts); source credited on screen ("KRX DATA VIA NAVER") | the line chart, 15 Sep – 15 Oct (19 closes) |
+| KOSPI daily closes, 15 Sep – 15 Oct 2026 | Korea Exchange index data via Naver Finance chart API, https://api.stock.naver.com/chart/domestic/index/KOSPI?periodType=dayCandle (the 19 closes the film uses are written into `main.js`, `KDATA`) | market data (facts); source credited on screen ("KRX DATA VIA NAVER") | the line chart, 15 Sep – 15 Oct (19 closes) |
 | Gemini API changelog; Gemini latest-model page; blog.google "Gemini 4 Argon" | ai.google.dev, blog.google | quoted for facts only; no images or logos used | story ① |
 | Korea Herald, Korea Times, Bloomberg (headline + summary) | see FACTS.md | quoted for facts only | story ② |
 | Meta AI research blog "Muse Spark Open" (15 Oct 2026) | research.meta.ai | quoted for facts only | story ④ |
@@ -17,7 +17,7 @@ This film uses no third-party footage or photographs. Everything on screen is dr
 | Asset | Source | Licence | Notes |
 |---|---|---|---|
 | Country outlines (Europe) | Natural Earth 1:50m Admin 0, via world-atlas 2.0.2 `countries-50m.json` (https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json), projected in `tools/prep.py`: only the 27 EU member states are kept as separate shapes (Cyprus as the whole island, Åland inside Finland); all other land is merged into one shape with no borders | public domain (Natural Earth); world-atlas package ISC | `assets/europe.json` |
-| `assets/plates/plate_datacenter.jpg`, `assets/plates/plate_wafer.jpg` (committed) | Codex CLI image_gen, prompts in `tools/gen_plates.sh` (generated 2026-10-19, saved as JPEG q88) | AI-generated illustrations; no text, logos, people or real places | graded duotone by `tools/prep.py` into `assets/plate_*.jpg` (build output); tagged "ILLUSTRATION / 示意 · AI 生成画面" whenever on screen. A generated conference hall was made too and left out: it would read as the Dublin venue |
+| `assets/plates/plate_datacenter.jpg`, `assets/plates/plate_wafer.jpg` (committed) | Codex CLI image_gen, prompts in `prompts/` (run by `tools/gen_plates.sh`, saved as JPEG q88) | AI-generated illustrations; no text, logos, people or real places | graded duotone by `tools/prep.py` into `assets/plate_*.jpg` (build output); tagged "ILLUSTRATION / 示意 · AI 生成画面" whenever on screen. A generated conference hall was made too and left out: it would read as the Dublin venue |
 | Charts, maps, documents, quote card, spec card, stamps, LEMO plate | drawn in `main.js` | — | LEMO AI NEWS is LemoLab's own brand |
 
 ## Sound

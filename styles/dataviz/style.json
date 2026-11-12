@@ -1,11 +1,12 @@
 {
  "slug": "dataviz",
- "num": "23",
+ "num": "94",
  "en": "Data Storytelling",
  "cn": "数据叙事",
- "category_en": "Information & Keynote",
- "category_cn": "信息与发布",
+ "category_en": "Data & Maps",
+ "category_cn": "数据地图",
  "film": "A Hundred Summers",
+ "film_cn": "一百个夏天",
  "line": "A hundred years of summer temperatures, where the chart itself tells the story.",
  "line_cn": "一百年的夏季气温，图表本身就是故事。",
  "uses": [

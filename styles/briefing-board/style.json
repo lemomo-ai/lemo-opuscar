@@ -1,11 +1,12 @@
 {
  "slug": "briefing-board",
- "num": "56",
+ "num": "87",
  "en": "Engineering Briefing Board",
  "cn": "工程简报板",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
  "film": "The Ship Decides",
+ "film_cn": "船说了算",
  "line": "Four bridge types are tested on one briefing wall, and the ship that must pass under picks the winner.",
  "line_cn": "一条河要架桥，四种桥型在一面简报墙上逐个受检，拍板的是桥下要过的船。",
  "uses": [

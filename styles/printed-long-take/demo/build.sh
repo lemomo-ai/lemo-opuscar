@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: 《三十三只》 Thirty-Three Cranes (Printed Long Take demo)
+# One command: 《三十三只》 Thirty-Three Cranes (Scratchboard Long Take demo)
 #   sh styles/printed-long-take/demo/build.sh        English narration (the library demo)
 #   sh styles/printed-long-take/demo/build.sh zh     Chinese narration
 # font, narration and its speech check, events, score + mix, picture, master, subtitles, reading-time check, poster.

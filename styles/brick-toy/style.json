@@ -1,11 +1,12 @@
 {
  "slug": "brick-toy",
- "num": "37",
+ "num": "78",
  "en": "Brick Toy",
  "cn": "积木玩具",
- "category_en": "Materials & 3D",
- "category_cn": "材质与 3D",
+ "category_en": "3D & Miniature",
+ "category_cn": "立体微缩",
  "film": "Rocket from Spare Parts",
+ "film_cn": "零件拼出的火箭",
  "line": "A brick astronaut builds a rocket from spare parts and flies to a brick moon.",
  "line_cn": "积木宇航员用零件拼出火箭，飞向积木月亮。",
  "uses": [

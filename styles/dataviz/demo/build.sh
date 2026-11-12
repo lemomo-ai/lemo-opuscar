@@ -1,9 +1,11 @@
 #!/bin/sh
 # Rebuild "A Hundred Summers" from scratch: sh styles/dataviz/demo/build.sh (runs from any directory)
+# Needs the core, voice and music tiers: setup.sh deps voice music (mix.py uses core/audio/pluck.py, which needs numba).
 set -e
-sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/dataviz/demo; S=styles/dataviz
+$PY -c 'import numba' 2>/dev/null || { echo "dataviz: the demo needs the music tier (numba, for core/audio/pluck.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
+sh styles/dataviz/demo/tools/fonts.sh   # fonts: not in git (CREDITS names them) → fonts/ (after the numba check: that comes first)
 $PY $D/tools/extract_data.py                                          # 0. GISTEMP CSV → data/jja.json (JJA column) + facts used in the narration
 $PY core/tts/tts.py $D/lines.json $D/voices                           # 1. Kokoro voice-over (af_alloy, speed 0.92)
 $PY core/tts/asr_check.py $D/lines.json $D/voices                     # 2. whisper check, line by line (should report mismatches: 0)

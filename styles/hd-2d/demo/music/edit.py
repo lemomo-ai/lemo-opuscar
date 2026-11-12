@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-The Lampbearer 守灯人 — score edit (HD-2D demo)
+The Lampbearer 守灯人 — score edit (2.5D Pixel Art demo)
 
 Source : "Precipice" by Scott Buckley (CC BY 4.0) — src/sb_precipice.mp3
 Output : score.wav (48 kHz, stereo, 24-bit, 76.5 s, peak <= -1 dBFS), CUES.md

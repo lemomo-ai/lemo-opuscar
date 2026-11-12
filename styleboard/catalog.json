@@ -1,12 +1,13 @@
 [
  {
   "slug": "caption-news",
-  "num": "63",
+  "num": "01",
   "en": "Caption News",
   "cn": "字幕新闻",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "The Bee Ledger",
+  "film_cn": "蜜蜂账本",
   "line": "America lost 1.3 million bee colonies, yet the count rose 6 %: a news short that works with the sound off.",
   "line_cn": "美国一年死掉 130 万箱蜜蜂，总数却涨了 6%：静音也能看懂的新闻。",
   "uses": [
@@ -18,12 +19,13 @@
  },
  {
   "slug": "newsreel",
-  "num": "64",
+  "num": "02",
   "en": "1920s Newsreel",
   "cn": "1920s 新闻影片",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "Knock-Knee Alert",
+  "film_cn": "膝盖警报",
   "line": "1926: the papers say the Charleston will ruin America's knees; at Ford's own picnic the kids dance it anyway.",
   "line_cn": "1926 年报纸说查尔斯顿会跳坏膝盖，福特工人野餐会上的孩子照跳不误。",
   "uses": [
@@ -35,12 +37,13 @@
  },
  {
   "slug": "countdown",
-  "num": "65",
+  "num": "03",
   "en": "Live Countdown Split-screen",
   "cn": "实时倒计时分屏",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "Counting Itself Down",
+  "film_cn": "自己倒数",
   "line": "The last minute of the Artemis II launch, uncut: one cell opens to nine, and they merge into one at ignition.",
   "line_cn": "阿尔忒弥斯二号发射的最后一分钟，一秒不剪：格子从 1 开到 9，点火合成 1。",
   "uses": [
@@ -52,12 +55,13 @@
  },
  {
   "slug": "city-symphony",
-  "num": "66",
-  "en": "Time-lapse Symphony",
-  "cn": "延时交响",
-  "cat": "剪辑与纪实",
+  "num": "04",
+  "en": "City Symphony",
+  "cn": "城市交响曲",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "One Day in New York",
+  "film_cn": "纽约的一天",
   "line": "One day in New York in time-lapse: rivers of light, a grid on the sixteenths, 1899 beside today.",
   "line_cn": "纽约的一天：延时光河、踩着十六分音符的网格，1899 年和今天并排。",
   "uses": [
@@ -65,16 +69,21 @@
    "Music montages",
    "Openers"
   ],
-  "dur": 52.0
+  "dur": 52.0,
+  "aka": [
+   "Time-lapse Symphony",
+   "延时交响"
+  ]
  },
  {
   "slug": "visual-investigation",
-  "num": "67",
+  "num": "05",
   "en": "Visual Investigation",
   "cn": "视觉调查",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "The Hindenburg: Four Minutes, 32 Seconds",
+  "film_cn": "兴登堡号：四分钟与三十二秒",
   "line": "Newsreel, photos, testimony and the 1937 inquiry on one clock: five sources point to the same spot.",
   "line_cn": "新闻片、照片、证词和调查报告排上同一条时间轴，五路来源指向一处。",
   "uses": [
@@ -86,12 +95,13 @@
  },
  {
   "slug": "kino-montage",
-  "num": "68",
+  "num": "06",
   "en": "Constructivist Montage",
   "cn": "构成主义蒙太奇",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "410 Days",
+  "film_cn": "410 天",
   "line": "The Empire State's 1931 brochure credits its builders; the site film and Hine's photos answer: 2,500 a day.",
   "line_cn": "帝国大厦的小册子写着建造者，工地实拍和老照片给出答案：每天 2,500 人。",
   "uses": [
@@ -103,12 +113,13 @@
  },
  {
   "slug": "telestrator",
-  "num": "69",
+  "num": "07",
   "en": "Sports Telestrator",
   "cn": "体育战术板",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "Freeze Frame",
+  "film_cn": "定格",
   "line": "Down 3–0 at half-time, Fenerbahçe scored three in 12 minutes: freeze, draw, split screen, shot map.",
   "line_cn": "半场 0–3，费内巴切 12 分钟连进三球：冻住画面、画线、分屏、射门图。",
   "uses": [
@@ -120,12 +131,13 @@
  },
  {
   "slug": "news-package",
-  "num": "70",
+  "num": "08",
   "en": "Broadcast News Package",
   "cn": "电视新闻包装",
-  "cat": "剪辑与纪实",
+  "cat": "剪辑纪实",
   "cat_en": "Edit & Documentary",
   "film": "The Week in AI",
+  "film_cn": "本周 AI 四件事",
   "line": "Four AI stories from one week in a full on-air package: rundown, headline strap, price board, spec card.",
   "line_cn": "一周四条 AI 新闻，一整套电视台包装：串联单、标题条、翻牌价格表、规格卡。",
   "uses": [
@@ -136,149 +148,14 @@
   "dur": 53.5
  },
  {
-  "slug": "satellite-briefing",
-  "num": "55",
-  "en": "Satellite Briefing",
-  "cn": "卫星简报",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "The Map Still Says Sea",
-  "line": "A satellite follows the map to the Aral Sea and finds a desert; only the part someone dammed came back.",
-  "line_cn": "卫星照着地图去找咸海，找到的是沙漠；只有筑了坝的那一块回来了。",
-  "uses": [
-   "Climate",
-   "News explainers",
-   "Geography"
-  ],
-  "dur": 37.8
- },
- {
-  "slug": "briefing-board",
-  "num": "56",
-  "en": "Engineering Briefing Board",
-  "cn": "工程简报板",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "The Ship Decides",
-  "line": "Four bridge types are tested on one briefing wall, and the ship that must pass under picks the winner.",
-  "line_cn": "一条河要架桥，四种桥型在一面简报墙上逐个受检，拍板的是桥下要过的船。",
-  "uses": [
-   "Engineering",
-   "Option comparisons",
-   "Briefings"
-  ],
-  "dur": 40.0
- },
- {
-  "slug": "lidar-survey",
-  "num": "57",
-  "en": "LiDAR Survey",
-  "cn": "点云测绘",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "The Fields Under the Forest",
-  "line": "A laser survey strips the canopy off a Connecticut forest and finds 3.4 km of old farm walls.",
-  "line_cn": "激光点云剥掉一片森林的树冠，露出当年农田的石墙：3.4 公里。",
-  "uses": [
-   "Heritage",
-   "Environment",
-   "Site surveys"
-  ],
-  "dur": 40.0
- },
- {
-  "slug": "white-model",
-  "num": "58",
-  "en": "Projection on White Model",
-  "cn": "白模投影",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "How a Flattened City Grew Back",
-  "line": "A projector paints Rotterdam's white model layer by layer, from the 1940 gap to today's towers.",
-  "line_cn": "投影机把数据一层层刷上鹿特丹白模：从 1940 年的空洞到今天的塔楼。",
-  "uses": [
-   "Urban planning",
-   "Exhibitions",
-   "City data"
-  ],
-  "dur": 40.0
- },
- {
-  "slug": "data-physical",
-  "num": "59",
-  "en": "Data Physicalization",
-  "cn": "数据实物化",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "Two Spirals",
-  "line": "Twelve years of wind and solar stacked as real plates, spiralling round a walnut dial until solar overtakes.",
-  "line_cn": "十二年风电和太阳能装机叠成实物，绕表盘升成两条螺旋，2021 年太阳能反超。",
-  "uses": [
-   "Annual reports",
-   "Investor decks",
-   "Energy data"
-  ],
-  "dur": 39.4
- },
- {
-  "slug": "teardown",
-  "num": "60",
-  "en": "Exploded Teardown",
-  "cn": "产品拆解",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "21 Keys, Opened",
-  "line": "Half an open-source keyboard comes apart in one orbit, down to the chip, then closes with its real dimensions.",
-  "line_cn": "开源键盘的一半在一次环绕中逐层拆开，看到主控再合拢，标上真实尺寸。",
-  "uses": [
-   "Hardware launches",
-   "Product pages",
-   "Spec explainers"
-  ],
-  "dur": 38.8
- },
- {
-  "slug": "microscope",
-  "num": "61",
-  "en": "Microscope Story",
-  "cn": "显微叙事",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "Measured Blue",
-  "line": "One continuous move from a liver slide to a single nucleus; two circles, counted pixel by pixel, differ 2.4 times in blue.",
-  "line_cn": "一镜从肝组织玻片推到单个细胞核，两个圆逐像素数出 2.4 倍的蓝。",
-  "uses": [
-   "Biomedicine",
-   "Materials science",
-   "Skincare science"
-  ],
-  "dur": 39.5
- },
- {
-  "slug": "archive-lighttable",
-  "num": "62",
-  "en": "Archive Light Table",
-  "cn": "档案灯台",
-  "cat": "实证影像",
-  "cat_en": "Evidence Films",
-  "film": "Two Seconds Short",
-  "line": "The telegram said 57 seconds; under a loupe, the Wrights' glass negatives and the archive say 59.",
-  "line_cn": "电报说最长飞了 57 秒；放大镜下，莱特兄弟的底片和档案说是 59 秒。",
-  "uses": [
-   "Brand history",
-   "Archive stories",
-   "Museums"
-  ],
-  "dur": 40.0
- },
- {
   "slug": "crayon-book",
-  "num": "01",
+  "num": "09",
   "en": "Crayon Picture Book",
   "cn": "蜡笔儿童绘本",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "绘画插画",
+  "cat_en": "Painting & Illustration",
   "film": "The Moon Can't Sleep",
+  "film_cn": "月亮睡不着",
   "line": "The moon can't sleep, so a little girl climbs onto the roof to sing it a lullaby.",
   "line_cn": "月亮失眠了，小女孩爬上屋顶给它唱摇篮曲。",
   "uses": [
@@ -290,12 +167,13 @@
  },
  {
   "slug": "watercolor",
-  "num": "02",
+  "num": "10",
   "en": "Watercolor Brush",
   "cn": "水彩笔刷",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "绘画插画",
+  "cat_en": "Painting & Illustration",
   "film": "Follow the Rain",
+  "film_cn": "跟着雨走",
   "line": "Follow the rain from Australia's red desert heart to its green coast in one unbroken painted walk.",
   "line_cn": "跟着降雨从澳洲红色腹地一路画到绿色海岸，一镜到底。",
   "uses": [
@@ -306,30 +184,14 @@
   "dur": 113.6
  },
  {
-  "slug": "ink-wash",
-  "num": "03",
-  "en": "Chinese Ink Wash",
-  "cn": "中国水墨",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
-  "film": "The Swordsman and the River",
-  "line": "A swordsman crosses the river on the water and splits the current with a single stroke.",
-  "line_cn": "侠客踏水过江，一剑断流。",
-  "uses": [
-   "Wuxia",
-   "Cultural brands",
-   "Poetry"
-  ],
-  "dur": 48.0
- },
- {
   "slug": "impasto",
-  "num": "04",
+  "num": "11",
   "en": "Impasto Oil Painting",
   "cn": "油画厚涂",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "绘画插画",
+  "cat_en": "Painting & Illustration",
   "film": "The Colour of Rain",
+  "film_cn": "雨的颜色",
   "line": "In a grey, rainy square one red umbrella opens, and a waltz paints the whole plaza in colour.",
   "line_cn": "灰色雨中广场，第一把红伞撑开，圆舞曲把整个广场刷上颜色。",
   "uses": [
@@ -340,13 +202,50 @@
   "dur": 39.7
  },
  {
+  "slug": "urban-sketch",
+  "num": "12",
+  "en": "Urban Sketch · Pen & Wash",
+  "cn": "钢笔淡彩",
+  "cat": "绘画插画",
+  "cat_en": "Painting & Illustration",
+  "film": "Where the Wind Went",
+  "film_cn": "风去了哪里",
+  "line": "A park that is only a pen sketch; wherever the wind carries her straw hat, colour follows.",
+  "line_cn": "公园只是一张钢笔速写，风把草帽吹到哪里，哪里才有颜色。",
+  "uses": [
+   "City & travel",
+   "Architecture",
+   "Lifestyle brands"
+  ],
+  "dur": 33.4
+ },
+ {
+  "slug": "colored-pencil",
+  "num": "13",
+  "en": "Colored-Pencil Science Illustration",
+  "cn": "彩铅科普插画",
+  "cat": "绘画插画",
+  "cat_en": "Painting & Illustration",
+  "film": "The Other Half",
+  "film_cn": "树的另一半",
+  "line": "Do trees feed each other? A pencil drawing sinks below the grass, follows one grain of sugar along a fungal thread to the next tree, and pulls back over a whole wood joined underground.",
+  "line_cn": "树会互相喂食吗？一张彩铅画沉到草地下面，跟着一粒糖沿菌丝走到下一棵树，再拉开看整片森林在地下连在一起。",
+  "uses": [
+   "Natural-science cutaways",
+   "Picture-book explainers",
+   "Hidden structures and processes"
+  ],
+  "dur": 50.8
+ },
+ {
   "slug": "one-line",
-  "num": "05",
+  "num": "14",
   "en": "One-line Drawing",
   "cn": "一笔画",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
   "film": "The Line That Never Lifted",
+  "film_cn": "笔不离纸",
   "line": "One unbroken line draws a whole life, then the pen passes to a child.",
   "line_cn": "一根不离纸的线画完一个人的一生，再把笔交给孩子。",
   "uses": [
@@ -358,12 +257,13 @@
  },
  {
   "slug": "whiteboard",
-  "num": "06",
+  "num": "15",
   "en": "Whiteboard Explainer",
   "cn": "白板讲解",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
   "film": "Einstein in Your Pocket",
+  "film_cn": "口袋里的爱因斯坦",
   "line": "How your phone knows where you are: GPS, atomic clocks, and the 38 microseconds relativity adds every day.",
   "line_cn": "手机怎么知道你在哪：GPS、原子钟，和相对论每天多出的 38 微秒。",
   "uses": [
@@ -374,30 +274,14 @@
   "dur": 111.0
  },
  {
-  "slug": "urban-sketch",
-  "num": "45",
-  "en": "Urban Sketch · Pen & Wash",
-  "cn": "钢笔淡彩",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
-  "film": "Where the Wind Went",
-  "line": "A park that is only a pen sketch; wherever the wind carries her straw hat, colour follows.",
-  "line_cn": "公园只是一张钢笔速写，风把草帽吹到哪里，哪里才有颜色。",
-  "uses": [
-   "City & travel",
-   "Architecture",
-   "Lifestyle brands"
-  ],
-  "dur": 33.4
- },
- {
   "slug": "chalkboard",
-  "num": "73",
+  "num": "16",
   "en": "Chalkboard",
   "cn": "黑板粉笔",
-  "cat": "手绘与绘画",
-  "cat_en": "Hand-drawn & Painting",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
   "film": "The Story of Chinese Characters",
+  "film_cn": "汉字的故事",
   "line": "Chalk writes a popular claim about two characters, wipes it, and traces 射 back three thousand years.",
   "line_cn": "粉笔写下网上的说法，再一擦，把「射」写回三千年前。",
   "uses": [
@@ -408,13 +292,104 @@
   "dur": 49.3
  },
  {
+  "slug": "sketchnote",
+  "num": "17",
+  "en": "Sketchnote",
+  "cn": "视觉笔记",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
+  "film": "How Bees Make Honey",
+  "film_cn": "蜜蜂怎样酿蜜",
+  "line": "One bee makes 1/12 of a teaspoon of honey in her life; the pen follows one yellow drop from flower to jar until the whole page is a poster.",
+  "line_cn": "一只蜜蜂一辈子只酿 1/12 茶匙蜜；笔跟着一滴黄从花走到罐子，最后整页成了一张海报。",
+  "uses": [
+   "Lecture notes",
+   "Science explainers",
+   "One-page summaries"
+  ],
+  "dur": 51.0
+ },
+ {
+  "slug": "stick-explainer",
+  "num": "18",
+  "en": "Stick-figure Explainer",
+  "cn": "火柴人讲解",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
+  "film": "Six Hands Away",
+  "film_cn": "隔着几只手",
+  "line": "A chain of hands from you to a stranger: tested with letters in 1967, explained by rings that outgrow the Earth, closed around the globe.",
+  "line_cn": "从你到一个陌生人，一串手拉起来：1967 年用信验证，一圈圈的人算到超过地球，最后围着地球合上。",
+  "uses": [
+   "Science explainers",
+   "Networks & social ideas",
+   "Data comparisons"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "ipad-sketch",
+  "num": "19",
+  "en": "Tablet Sketch Explainer",
+  "cn": "平板速写讲解",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
+  "film": "From Cherry to Cup",
+  "film_cn": "一杯咖啡，从一颗果子开始",
+  "line": "The coffee in your cup turns into a red cherry, then walks back to the cup: ripening, drying, roasting and grinding, one colour change at a time on a single pencil page.",
+  "line_cn": "杯里的咖啡变成一颗红果子，再一路走回杯子：成熟、晒干、烘焙、磨粉，一张铅笔速写页上一次换一种颜色。",
+  "uses": [
+   "Food & drink explainers",
+   "Craft and how-to",
+   "Lifestyle science"
+  ],
+  "dur": 51.0
+ },
+ {
+  "slug": "marker-paper",
+  "num": "20",
+  "en": "Marker on Paper",
+  "cn": "马克笔白纸速写",
+  "cat": "速写板书",
+  "cat_en": "Sketch & Board",
+  "film": "How Far Can You See?",
+  "film_cn": "你能看多远？",
+  "line": "A felt-tip marker works out how far the horizon is from a beach, then shows that climbing a hundred times higher only lets you see ten times farther.",
+  "line_cn": "一支马克笔在白纸上算出海边能看多远，再告诉你：爬高 100 倍，只能多看远 10 倍。",
+  "uses": [
+   "Worked problems",
+   "Science explainers",
+   "Lessons"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "ink-wash",
+  "num": "21",
+  "en": "Chinese Ink Wash",
+  "cn": "中国水墨",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
+  "film": "The Swordsman and the River",
+  "film_cn": "剑客与江",
+  "line": "A swordsman crosses the river on the water and splits the current with a single stroke.",
+  "line_cn": "侠客踏水过江，一剑断流。",
+  "uses": [
+   "Wuxia",
+   "Cultural brands",
+   "Poetry"
+  ],
+  "dur": 48.0
+ },
+ {
   "slug": "shadow-puppet",
-  "num": "07",
+  "num": "22",
   "en": "Shadow Puppetry",
   "cn": "皮影戏",
-  "cat": "东方传统",
-  "cat_en": "East Asian Traditions",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
   "film": "Hou Yi Shoots the Suns",
+  "film_cn": "后羿射日",
   "line": "Ten suns scorch the earth until the archer Hou Yi draws his bow, told with leather puppets on a lit screen.",
   "line_cn": "十日炙烤大地，后羿张弓射日。",
   "uses": [
@@ -426,12 +401,13 @@
  },
  {
   "slug": "ukiyoe",
-  "num": "08",
+  "num": "23",
   "en": "Ukiyo-e",
   "cn": "浮世绘",
-  "cat": "东方传统",
-  "cat_en": "East Asian Traditions",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
   "film": "Toward the Mountain",
+  "film_cn": "走向远山",
   "line": "A traveller walks toward a distant mountain; every shot is a woodblock print, a great wave at the climax, the mountain and the whole scroll at the end.",
   "line_cn": "旅人走向远山，每个镜头都是一幅版画；巨浪是高潮，结尾是远山与整幅画轴拉远。",
   "uses": [
@@ -443,12 +419,13 @@
  },
  {
   "slug": "papercut-red",
-  "num": "09",
+  "num": "24",
   "en": "Red Paper-cut",
   "cn": "红色窗花剪纸",
-  "cat": "东方传统",
-  "cat_en": "East Asian Traditions",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
   "film": "Nian Comes to Town",
+  "film_cn": "年兽进村",
   "line": "On New Year's Eve the beast Nian comes to town, and one girl's giant paper-cut lights up the village to scare it off.",
   "line_cn": "除夕年兽进村，小女孩剪出的大窗花照亮全村，把它吓跑。",
   "uses": [
@@ -460,12 +437,13 @@
  },
  {
   "slug": "paper-lantern",
-  "num": "10",
+  "num": "25",
   "en": "Paper-cut Lightbox",
   "cn": "纸雕灯影",
-  "cat": "东方传统",
-  "cat_en": "East Asian Traditions",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
   "film": "The Last Night Train",
+  "film_cn": "末班夜车",
   "line": "An old night train makes its last run, from a snowy mountain halt through a long tunnel to the sea, its lit windows going out one by one at the end of the line.",
   "line_cn": "一列老夜车跑最后一趟：从雪山小站穿过长隧道开到海边，到站后车窗一扇扇熄灭。",
   "uses": [
@@ -476,13 +454,50 @@
   "dur": 51.0
  },
  {
+  "slug": "stained-glass",
+  "num": "26",
+  "en": "Stained Glass",
+  "cn": "彩色玻璃窗",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
+  "film": "The Dragon of the East Window",
+  "film_cn": "东窗之龙",
+  "line": "Sunlight crosses a cathedral window from dawn to dusk, waking each pane of a knight-and-dragon tale.",
+  "line_cn": "阳光从清晨移到黄昏，照到哪一格花窗，哪一格的故事就动起来。",
+  "uses": [
+   "Legends",
+   "Heritage",
+   "Holiday stories"
+  ],
+  "dur": 56.5
+ },
+ {
+  "slug": "gilded-illumination",
+  "num": "27",
+  "en": "Gilded Illumination",
+  "cn": "金箔彩绘",
+  "cat": "传统工艺",
+  "cat_en": "Traditional Crafts",
+  "film": "Borrowed Light",
+  "film_cn": "借来的光",
+  "line": "In a painted world where only gold shines, the sun goes out; a girl carries the last lamp up the mountain and gives it its light back.",
+  "line_cn": "画里的世界只有金子会发光，可太阳熄了；一个女孩提着最后一盏灯上山，把光还给了太阳。",
+  "uses": [
+   "Fables and picture-book stories",
+   "Holiday and festival shorts",
+   "Brand and origin stories"
+  ],
+  "dur": 46.8
+ },
+ {
   "slug": "risograph",
-  "num": "12",
+  "num": "28",
   "en": "Risograph Print",
-  "cn": "Risograph 孔版印刷",
-  "cat": "印刷与版画",
+  "cn": "孔版印刷",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "Sunday Ride",
+  "film_cn": "周日骑行",
   "line": "A Sunday-morning bike ride through the city — bakery, park, riverside — each stop adding an ink until three misregistered plates overprint.",
   "line_cn": "周日早晨骑车穿过城市：面包店、公园、河边，每到一处加一版油墨，最后三版套印。",
   "uses": [
@@ -490,16 +505,20 @@
    "Zines",
    "Lifestyle"
   ],
-  "dur": 40.0
+  "dur": 40.0,
+  "aka": [
+   "Risograph 孔版印刷"
+  ]
  },
  {
   "slug": "halftone-dossier",
-  "num": "13",
+  "num": "29",
   "en": "Halftone Dossier",
-  "cn": "复古半调案卷",
-  "cat": "印刷与版画",
+  "cn": "网点档案",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "Case File: Chubby",
+  "film_cn": "胖橘案卷",
   "line": "A chubby orange cat stands trial for testing gravity and 4 a.m. parkour, and walks free.",
   "line_cn": "橘猫胖橘被立案审查：测试重力、凌晨跑酷，最后无罪释放。",
   "uses": [
@@ -507,16 +526,20 @@
    "Pet content",
    "Social shorts"
   ],
-  "dur": 30.0
+  "dur": 30.0,
+  "aka": [
+   "复古半调案卷"
+  ]
  },
  {
   "slug": "woodcut",
-  "num": "15",
+  "num": "30",
   "en": "Woodcut Print",
   "cn": "木刻版画",
-  "cat": "印刷与版画",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "The Bell Founder",
+  "film_cn": "铸钟人",
   "line": "A village spends a whole winter casting one bell; the first time it rings, the snow stops.",
   "line_cn": "村子用一整个冬天铸一口钟，钟声第一次响起，雪停了。",
   "uses": [
@@ -528,12 +551,13 @@
  },
  {
   "slug": "engraving",
-  "num": "53",
+  "num": "31",
   "en": "Copperplate Engraving",
   "cn": "铜版画",
-  "cat": "印刷与版画",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "The Honeybee, Plate VII",
+  "film_cn": "蜜蜂，图版七",
   "line": "A natural-history plate engraves itself: the burin cuts the copper, the bee builds up line by line, and a watercolour wash brings it to life.",
   "line_cn": "一张博物志图版自己刻出来：雕刀推开铜版，蜜蜂一线线成形，最后手工水彩上色。",
   "uses": [
@@ -545,12 +569,13 @@
  },
  {
   "slug": "silkscreen-poster",
-  "num": "54",
+  "num": "32",
   "en": "Silkscreen Travel Poster",
   "cn": "丝印旅行海报",
-  "cat": "印刷与版画",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "The Long Way Home",
+  "film_cn": "绕远路回家",
   "line": "A traveller crosses the world one full-bleed screen print at a time, a ticket stub counting the distance from home, until the far side turns into the way back.",
   "line_cn": "一张满屏丝印海报一座城，票根数着离家的公里数，走到世界的另一头，才发现那是回家的路。",
   "uses": [
@@ -562,12 +587,13 @@
  },
  {
   "slug": "printed-long-take",
-  "num": "75",
-  "en": "Printed Long Take",
-  "cn": "印刷长镜头",
-  "cat": "印刷与版画",
+  "num": "33",
+  "en": "Scratchboard Long Take",
+  "cn": "刮版画长镜头",
+  "cat": "印刷版画",
   "cat_en": "Print & Printmaking",
   "film": "Thirty-Three Cranes",
+  "film_cn": "三十三只",
   "line": "Red-crowned cranes in a Hokkaido valley, one scratchboard take, counted back from 33 to 1,927.",
   "line_cn": "刮版画的北海道河谷一镜到底，丹顶鹤从 33 只数回到 1,927 只。",
   "uses": [
@@ -575,16 +601,57 @@
    "Wildlife",
    "Landscapes"
   ],
-  "dur": 60.0
+  "dur": 60.0,
+  "aka": [
+   "Printed Long Take",
+   "印刷长镜头"
+  ]
+ },
+ {
+  "slug": "pop-art",
+  "num": "34",
+  "en": "Pop Art",
+  "cn": "波普艺术",
+  "cat": "印刷版画",
+  "cat_en": "Print & Printmaking",
+  "film": "The Same Banana",
+  "film_cn": "同一根香蕉",
+  "line": "Almost every banana in the shops is one plant, copied: a wall of identical prints, an old banana eaten black by dots, and a wave of colour that turns into many bananas.",
+  "line_cn": "超市里几乎每根香蕉都是同一株植物的复制：一面一模一样的版画墙，一根被网点吃黑的老香蕉，最后一波换色翻出上千种香蕉。",
+  "uses": [
+   "Everyday-object explainers",
+   "Brand and product posters",
+   "Small data stories"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "vintage-collage",
+  "num": "35",
+  "en": "Vintage Engraving Collage",
+  "cn": "复古版画拼贴",
+  "cat": "印刷版画",
+  "cat_en": "Print & Printmaking",
+  "film": "The Inverted Jenny",
+  "film_cn": "倒置的珍妮",
+  "line": "A 1918 airmail sheet printed with its plane upside down: bought for $24, cut up and scattered, and number 66 is still missing.",
+  "line_cn": "1918 年一整版印反了的航空邮票：24 美元买下、剪开散落，66 号至今下落不明。",
+  "uses": [
+   "The history of an object",
+   "Magazine-style explainers on ideas and society",
+   "Archive and collecting stories"
+  ],
+  "dur": 52.0
  },
  {
   "slug": "swiss-motion",
-  "num": "16",
+  "num": "36",
   "en": "Swiss Motion Graphics",
   "cn": "瑞士动态排版",
-  "cat": "图形与排版",
+  "cat": "平面排版",
   "cat_en": "Graphic & Type",
   "film": "Five Rules for a Poster",
+  "film_cn": "海报的五条规则",
   "line": "A concert poster lays itself out by five Swiss design rules; the fifth is to break just one.",
   "line_cn": "一张音乐会海报按瑞士设计的五条规则自己排版，第五条是只打破一条。",
   "uses": [
@@ -596,12 +663,13 @@
  },
  {
   "slug": "spy-titles",
-  "num": "17",
+  "num": "37",
   "en": "60s Spy Title Sequence",
   "cn": "60s 间谍片头",
-  "cat": "图形与排版",
+  "cat": "平面排版",
   "cat_en": "Graphic & Type",
   "film": "The Velvet Cipher",
+  "film_cn": "天鹅绒密码",
   "line": "Opening titles for an imaginary 1964 spy film: a chase for a stolen key until the shapes lock into the title.",
   "line_cn": "虚构 1964 年间谍片的片头：追一把被偷的钥匙，几何碎片最后拼成片名。",
   "uses": [
@@ -613,12 +681,13 @@
  },
  {
   "slug": "art-deco",
-  "num": "18",
+  "num": "38",
   "en": "Art Deco",
   "cn": "装饰艺术",
-  "cat": "图形与排版",
+  "cat": "平面排版",
   "cat_en": "Graphic & Type",
   "film": "Midnight at the Starlight Hotel",
+  "film_cn": "星光饭店的午夜",
   "line": "A grand hotel, 1930: a bellboy races lifts and revolving doors to deliver one letter before midnight.",
   "line_cn": "1930 年的大饭店，门童赶在午夜前把一封信送上顶楼。",
   "uses": [
@@ -629,47 +698,14 @@
   "dur": 58.4
  },
  {
-  "slug": "blueprint",
-  "num": "19",
-  "en": "Blueprint",
-  "cn": "蓝图 / 工程制图",
-  "cat": "图形与排版",
-  "cat_en": "Graphic & Type",
-  "film": "Patent Pending: The Cloud Catcher",
-  "line": "An inventor's blueprint draws, explodes and assembles a cloud-catching machine, and its revision cloud starts to rain.",
-  "line_cn": "发明家的蓝图自己画出一台接云机器，修订云线变成了真的雨云。",
-  "uses": [
-   "Engineering",
-   "Hardware launches",
-   "Tech explainers"
-  ],
-  "dur": 46.7
- },
- {
-  "slug": "stained-glass",
-  "num": "20",
-  "en": "Stained Glass",
-  "cn": "彩色玻璃窗",
-  "cat": "图形与排版",
-  "cat_en": "Graphic & Type",
-  "film": "The Dragon of the East Window",
-  "line": "Sunlight crosses a cathedral window from dawn to dusk, waking each pane of a knight-and-dragon tale.",
-  "line_cn": "阳光从清晨移到黄昏，照到哪一格花窗，哪一格的故事就动起来。",
-  "uses": [
-   "Legends",
-   "Heritage",
-   "Holiday stories"
-  ],
-  "dur": 56.5
- },
- {
   "slug": "pictogram-motion",
-  "num": "21",
+  "num": "39",
   "en": "Pictogram Motion",
   "cn": "象形运动图形",
-  "cat": "图形与排版",
+  "cat": "平面排版",
   "cat_en": "Graphic & Type",
   "film": "Left Behind",
+  "film_cn": "被落下的伞",
   "line": "A yellow umbrella left on a bus waits out a sunny day on the lost-property shelf, then opens with 312 others when the storm comes back: objects, vehicles, weather and signs as beat-locked geometric pictograms.",
   "line_cn": "一把被落在公交车上的黄伞，晴天里在失物招领的货架上等了一整天，暴雨回来时和另外 312 把一起撑开：物件、交通、天气和标识，都是卡着节拍的几何象形符号。",
   "uses": [
@@ -680,47 +716,110 @@
   "dur": 50.0
  },
  {
-  "slug": "ascii-crt",
-  "num": "22",
-  "en": "ASCII / CRT Terminal",
-  "cn": "ASCII / CRT 终端",
-  "cat": "图形与排版",
+  "slug": "bauhaus-shapes",
+  "num": "40",
+  "en": "Bauhaus Shapes",
+  "cn": "包豪斯几何",
+  "cat": "平面排版",
   "cat_en": "Graphic & Type",
-  "film": "Tranquility.log",
-  "line": "A moon-base AI wakes after forty years to a signal from Earth, and replies by drawing “home” in characters.",
-  "line_cn": "月球基地的 AI 沉睡 40 年后被唤醒，用字符画出“家”来回复。",
+  "film": "COMPOUND",
+  "film_cn": "复利是怎么滚起来的",
+  "line": "One dot doubles every ten years: 128 after seventy, 6.02 without compounding, and the last ten years are worth all the rest.",
+  "line_cn": "一个点每十年翻一倍：七十年后是 128，不复利只有 6.02，最后十年抵得上之前的全部。",
   "uses": [
-   "Developer tools",
-   "Sci-fi",
-   "Tech brands"
+   "Finance and economics explainers",
+   "Mechanisms and principles",
+   "Titles and chapter cards"
   ],
-  "dur": 59.8
+  "dur": 52.0
  },
  {
-  "slug": "dataviz",
-  "num": "23",
-  "en": "Data Storytelling",
-  "cn": "数据叙事",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "A Hundred Summers",
-  "line": "A hundred years of summer temperatures, where the chart itself tells the story.",
-  "line_cn": "一百年的夏季气温，图表本身就是故事。",
+  "slug": "flat-space-explainer",
+  "num": "41",
+  "en": "Scale Zoom Explainer",
+  "cn": "扁平尺度漫游",
+  "cat": "平面排版",
+  "cat_en": "Graphic & Type",
+  "film": "The Long Way Down",
+  "film_cn": "一路往下缩",
+  "line": "A little probe whose eye is a zoom lens fires a dotted sight line at each next stop and takes us from the Milky Way down to a virus.",
+  "line_cn": "眼睛就是变焦镜头的小探测器，一站站打出点线，带我们从银河一路缩到病毒。",
   "uses": [
-   "Data journalism",
-   "Reports",
-   "Climate & science"
+   "Science explainers",
+   "Scale and size",
+   "Classroom"
   ],
-  "dur": 50.0
+  "dur": 52.0
+ },
+ {
+  "slug": "text-flash-cuts",
+  "num": "42",
+  "en": "Text Flash Cuts",
+  "cn": "文字闪切",
+  "cat": "平面排版",
+  "cat_en": "Graphic & Type",
+  "film": "Behind You",
+  "film_cn": "身后",
+  "line": "A letter, a phone call, a wall of windows, thirteen steps: the girl who told him not to look back is always one step closer, until she turns her head.",
+  "line_cn": "一封信、一通电话、一面窗墙、十三级台阶：叫他别回头的她每一话都更近一步，直到她自己猛地回头。",
+  "uses": [
+   "Suspense & drama trailers",
+   "Title sequences",
+   "Manifesto films"
+  ],
+  "dur": 46.2,
+  "needs": [
+   "image-generation"
+  ]
+ },
+ {
+  "slug": "silhouette-rhythm",
+  "num": "43",
+  "en": "Silhouette Rhythm",
+  "cn": "剪影律动",
+  "cat": "平面排版",
+  "cat_en": "Graphic & Type",
+  "film": "Half a Beat",
+  "film_cn": "慢半拍",
+  "line": "A flock of flamingos moves on every beat, and one young bird is always half a beat late; the ripples the others left on the water teach it the beat.",
+  "line_cn": "一群踩着拍子的火烈鸟里，只有一只小火烈鸟总慢半拍；鸟群留在水面上的涟漪，教会了它拍子。",
+  "uses": [
+   "Music videos",
+   "Sports and team films",
+   "Nature and festival openers"
+  ],
+  "dur": 49.0
+ },
+ {
+  "slug": "blueprint",
+  "num": "44",
+  "en": "Blueprint",
+  "cn": "工程蓝图",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "Patent Pending: The Cloud Catcher",
+  "film_cn": "专利申请中：接云机",
+  "line": "An inventor's blueprint draws, explodes and assembles a cloud-catching machine, and its revision cloud starts to rain.",
+  "line_cn": "发明家的蓝图自己画出一台接云机器，修订云线变成了真的雨云。",
+  "uses": [
+   "Engineering",
+   "Hardware launches",
+   "Tech explainers"
+  ],
+  "dur": 46.7,
+  "aka": [
+   "蓝图 / 工程制图"
+  ]
  },
  {
   "slug": "iso-infographic",
-  "num": "24",
+  "num": "45",
   "en": "Isometric Infographic",
   "cn": "等距信息图",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
   "film": "From Bean to Cup",
+  "film_cn": "从豆到杯",
   "line": "A coffee's journey from the plantation to your hands, across one isometric world.",
   "line_cn": "一杯咖啡从种植园到你手里的旅程。",
   "uses": [
@@ -731,115 +830,122 @@
   "dur": 58.8
  },
  {
-  "slug": "dark-keynote",
-  "num": "25",
-  "en": "Dark Tech Keynote",
-  "cn": "暗色科技发布",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "Room to Think",
-  "line": "Launch film for Tidy, a fictional app: one buried cursor snaps hundreds of windows back into place.",
-  "line_cn": "虚构 app Tidy 的发布片：被埋掉的光标一键把几百个窗口归位。",
-  "uses": [
-   "Product launches",
-   "SaaS",
-   "Keynotes"
-  ],
-  "dur": 42.0
- },
- {
-  "slug": "living-screencast",
+  "slug": "teardown",
   "num": "46",
-  "en": "Living Screencast",
-  "cn": "活体实机录屏",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "Clawd Moves In",
-  "line": "Clawd hops out of the terminal into the Claude app and acts out plan mode and self-checks in one take.",
-  "line_cn": "像素小人 Clawd 搬进 Claude 应用，一镜到底演示 Plan 模式和自检。",
+  "en": "Exploded Teardown",
+  "cn": "产品拆解",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "21 Keys, Opened",
+  "film_cn": "二十一键",
+  "line": "Half an open-source keyboard comes apart in one orbit, down to the chip, then closes with its real dimensions.",
+  "line_cn": "开源键盘的一半在一次环绕中逐层拆开，看到主控再合拢，标上真实尺寸。",
   "uses": [
-   "Product tutorials",
-   "Feature launches",
-   "Onboarding"
+   "Hardware launches",
+   "Product pages",
+   "Spec explainers"
   ],
-  "dur": 59.4
+  "dur": 38.8
  },
  {
-  "slug": "hologram-hud",
-  "num": "52",
-  "en": "Sci-fi Hologram HUD",
-  "cn": "科幻全息界面",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "Volt · Spec Scan",
-  "line": "An e-bike is scanned into a hologram; target boxes lock onto the battery, motor and brakes.",
-  "line_cn": "电助力车被扫描成全息线框，目标框依次锁定电池、电机、刹车。",
+  "slug": "hardcore-info",
+  "num": "47",
+  "en": "Line-Art Cutaway",
+  "cn": "线稿剖面图解",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "Where Is Your Phone's Antenna?",
+  "film_cn": "你手机的天线在哪",
+  "line": "A phone loses signal when held by the corner; taken apart, its metal frame turns out to be the antenna, cut into pieces your hand can bridge.",
+  "line_cn": "一部手机握住底角就掉信号；拆开才发现金属边框就是天线，被切成几段，手一握就把缝连上了。",
   "uses": [
-   "Spec walkthroughs",
-   "Launch videos",
-   "Trade shows"
+   "Hardware explainers",
+   "Product engineering",
+   "Science education"
   ],
-  "dur": 39.0
+  "dur": 52.0
  },
  {
-  "slug": "transit-map",
-  "num": "72",
-  "en": "Transit Map",
-  "cn": "地铁线路图",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "6 Kilometres",
-  "line": "A printed metro map grows from one 6 km line in 1993 to 21 lines and 906 km.",
-  "line_cn": "一张纸上的线路图，从 1993 年的 6 公里长到 21 条线、906 公里。",
+  "slug": "precise-mechanism",
+  "num": "48",
+  "en": "Color-Coded Mechanism",
+  "cn": "分色机械图解",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "Three Systems Keep the Time",
+  "film_cn": "三套系统走时",
+  "line": "A watch with no battery is cut open: its three systems are dyed one by one, the train races when the escapement is pulled out, and one slowed tick lets it all out again.",
+  "line_cn": "剖开一块不用电的表：三套系统按能量流向逐一染色，抽走擒纵后齿轮疯转，最后放慢到 1/40 等那一声滴答。",
   "uses": [
-   "Transport",
-   "Growth over time",
-   "Networks"
+   "How machines work",
+   "Product and engineering explainers",
+   "Science teaching"
   ],
-  "dur": 47.0
+  "dur": 52.0
  },
  {
-  "slug": "isometric-picture-book",
-  "num": "74",
-  "en": "Isometric Picture Book",
-  "cn": "等距绘本",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "Seventy-Two Seats",
-  "line": "Travellers board an isometric plane, and the order shows why one way is nearly twice as fast.",
-  "line_cn": "等距的登机口和机舱里，小人按顺序登机，讲清哪种叫法快将近一半。",
+  "slug": "instruction-manual",
+  "num": "49",
+  "en": "Instruction Manual Art",
+  "cn": "说明书插画",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "Step Ten",
+  "film_cn": "第十步",
+  "line": "Two first-timers build a crib from a flat-pack manual, ten steps on one 45° page; step ten was never in the manual.",
+  "line_cn": "两个从没装过家具的新手照说明书装婴儿床，十步排在同一张 45° 说明书上；第十步，说明书里没有。",
   "uses": [
-   "Everyday rules",
-   "Queues",
-   "Comparisons"
+   "Assembly and set-up guides",
+   "Safety instructions",
+   "Product onboarding"
   ],
-  "dur": 59.8
+  "dur": 50.6
  },
  {
-  "slug": "circuit-board",
-  "num": "76",
-  "en": "Circuit Board",
-  "cn": "电路板",
-  "cat": "信息与发布",
-  "cat_en": "Information & Keynote",
-  "film": "Seven Milliseconds",
-  "line": "Rivers become copper traces as current runs 2,080 km from a dam to a phone charger.",
-  "line_cn": "江河变成电路板上的走线，电流从水坝跑 2,080 公里进手机充电器。",
+  "slug": "pen-plotter",
+  "num": "50",
+  "en": "Pen Plotter",
+  "cn": "笔式绘图仪",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "8848.86",
+  "film_cn": "8848.86",
+  "line": "At night under a desk lamp, a pen plotter draws Mount Qomolangma from real elevation data with four pens, and writes its height last.",
+  "line_cn": "深夜台灯下，一台笔式绘图仪用四支笔按真实高程画出珠穆朗玛峰，最后一笔写下它的高度。",
   "uses": [
-   "Energy",
-   "Supply chains",
-   "Devices"
+   "Maps and terrain",
+   "Measurements and records",
+   "Generative and data drawings"
   ],
-  "dur": 60.0
+  "dur": 49.9
+ },
+ {
+  "slug": "assembly-line-diagram",
+  "num": "51",
+  "en": "Assembly-Line Diagram",
+  "cn": "流水线图解",
+  "cat": "线稿图解",
+  "cat_en": "Line Diagrams",
+  "film": "The Disassembly Line",
+  "film_cn": "拆解流水线",
+  "line": "A body cut open as a factory that runs backwards: a 12:30 sandwich is taken apart station by station, and six hours later it runs for the bus.",
+  "line_cn": "把人体剖成一座倒着开的工厂：12:30 的一份三明治被一站一站拆开，六小时后变成追公交车的力气。",
+  "uses": [
+   "How a process works",
+   "Biology and medicine",
+   "Supply chains and pipelines"
+  ],
+  "dur": 54.9
  },
  {
   "slug": "rubber-hose",
-  "num": "26",
+  "num": "52",
   "en": "1930s Rubber Hose Cartoon",
   "cn": "1930s 橡皮管卡通",
-  "cat": "卡通与动画",
-  "cat_en": "Cartoon & Anime",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
   "film": "Coffee Cup Chase",
+  "film_cn": "咖啡杯追方糖",
   "line": "A coffee cup chases a runaway sugar cube around the kitchen, 1930s-cartoon style.",
   "line_cn": "一只咖啡杯满厨房追一块逃跑的方糖。",
   "uses": [
@@ -851,12 +957,13 @@
  },
  {
   "slug": "cel-anime-80s",
-  "num": "27",
+  "num": "53",
   "en": "80s Cel Anime",
   "cn": "80 年代赛璐璐动画",
-  "cat": "卡通与动画",
-  "cat_en": "Cartoon & Anime",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
   "film": "City Lights, 1987",
+  "film_cn": "城市灯火，1987",
   "line": "A courier girl rides through a rain-soaked neon city to deliver a tape before the dawn launch.",
   "line_cn": "快递少女骑车穿过雨后霓虹都市，赶在黎明发射前送到一盘磁带。",
   "uses": [
@@ -868,12 +975,13 @@
  },
  {
   "slug": "scifi-toon",
-  "num": "28",
+  "num": "54",
   "en": "Sci-Fi Sitcom Toon",
   "cn": "科幻情景喜剧卡通",
-  "cat": "卡通与动画",
-  "cat_en": "Cartoon & Anime",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
   "film": "Coffee Run",
+  "film_cn": "跑腿买咖啡",
   "line": "A jaded genius opens a portal just to buy coffee and tumbles through ever-stranger universes.",
   "line_cn": "厌世天才开传送门只想买杯咖啡，却穿过越来越离谱的平行宇宙。",
   "uses": [
@@ -885,12 +993,13 @@
  },
  {
   "slug": "midcentury-toon",
-  "num": "48",
+  "num": "55",
   "en": "Mid-century Cartoon",
   "cn": "50s 扁平卡通",
-  "cat": "卡通与动画",
-  "cat_en": "Cartoon & Anime",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
   "film": "Meet Pip",
+  "film_cn": "认识一下 Pip",
   "line": "A robot vacuum set up in three steps, told like a 1950s classroom film.",
   "line_cn": "用 50 年代教育片的口吻，三步教你装好一台扫地机。",
   "uses": [
@@ -901,13 +1010,56 @@
   "dur": 40.0
  },
  {
+  "slug": "comic-history",
+  "num": "56",
+  "en": "Comic History Cartoon",
+  "cn": "搞笑历史卡通",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
+  "film": "One Piece of Paper",
+  "film_cn": "一块纸",
+  "line": "Alsace-Lorraine changed hands four times between 1871 and 1945: each time someone tore off the paper and pasted a new piece, and the woman living on it never moved.",
+  "line_cn": "阿尔萨斯-洛林在 1871 到 1945 年间四次换主人：每次都有人撕下那块纸、贴上新的，住在上面的她一步没挪。",
+  "uses": [
+   "Territorial changes in history",
+   "Light explainers on geopolitics",
+   "Market share and turf-war stories"
+  ],
+  "dur": 51.0,
+  "needs": [
+   "image-generation"
+  ]
+ },
+ {
+  "slug": "manga-panels",
+  "num": "57",
+  "en": "Manga Panels",
+  "cn": "黑白漫画分格",
+  "cat": "卡通动画",
+  "cat_en": "Cartoons",
+  "film": "KOMA ONE: Thirty Frames a Second",
+  "film_cn": "KOMA ONE · 一秒三十格",
+  "line": "A street photographer chases a running light to the moment the pigeons rise; her pocket camera splits that second into thirty panels.",
+  "line_cn": "街拍摄影师追着一束跑动的光，等到鸽群腾起的那一秒；她的口袋相机把这一秒拆成三十格。",
+  "uses": [
+   "Music videos",
+   "Product launches",
+   "Anime openings"
+  ],
+  "dur": 48.0,
+  "needs": [
+   "image-generation"
+  ]
+ },
+ {
   "slug": "pixel-rpg",
-  "num": "29",
+  "num": "58",
   "en": "16-bit Pixel RPG",
   "cn": "16-bit 像素 RPG",
-  "cat": "游戏",
+  "cat": "电子游戏",
   "cat_en": "Games",
   "film": "The Last Save Point",
+  "film_cn": "最后的存档点",
   "line": "At the final boss door a hero saves the game, and the save screen replays the whole journey.",
   "line_cn": "勇士在最终 Boss 门前存档，存档画面闪回一路冒险。",
   "uses": [
@@ -919,12 +1071,13 @@
  },
  {
   "slug": "hd-2d",
-  "num": "31",
-  "en": "HD-2D",
-  "cn": "HD-2D",
-  "cat": "游戏",
+  "num": "59",
+  "en": "2.5D Pixel Art",
+  "cn": "2.5D 像素",
+  "cat": "电子游戏",
   "cat_en": "Games",
   "film": "The Lampbearer",
+  "film_cn": "守灯人",
   "line": "The lighthouse goes dark; a girl carries the last flame through a night forest and up the storm cliffs.",
   "line_cn": "灯塔熄灭，孙女提着最后一簇火穿过夜林、爬上风暴悬崖。",
   "uses": [
@@ -932,16 +1085,20 @@
    "Fantasy",
    "Story films"
   ],
-  "dur": 76.5
+  "dur": 76.5,
+  "aka": [
+   "HD-2D"
+  ]
  },
  {
   "slug": "microgame",
-  "num": "32",
+  "num": "60",
   "en": "Microgame Frenzy",
   "cn": "微游戏快闪",
-  "cat": "游戏",
+  "cat": "电子游戏",
   "cat_en": "Games",
   "film": "Five-Second Astronaut",
+  "film_cn": "五秒宇航员",
   "line": "A clumsy cadet survives a five-second boot camp, faster and faster, until the boss: landing home.",
   "line_cn": "见习宇航员闯五秒训练营，越来越快，Boss 关亲手降落回地球。",
   "uses": [
@@ -953,12 +1110,13 @@
  },
  {
   "slug": "game-show",
-  "num": "33",
-  "en": "Game Show Flat",
-  "cn": "综艺节奏扁平",
-  "cat": "游戏",
+  "num": "61",
+  "en": "Rhythm Game Show",
+  "cn": "节奏综艺",
+  "cat": "电子游戏",
   "cat_en": "Games",
   "film": "Rhythm of AI, 1997 → 2026",
+  "film_cn": "AI 进化节拍",
   "line": "The history of AI as a rhythm game: models take the stage on the beat, and a report card closes the show.",
   "line_cn": "把 AI 发展史做成一局节奏游戏，模型踩着拍登场，最后发成绩单。",
   "uses": [
@@ -966,16 +1124,43 @@
    "Year in review",
    "Variety shows"
   ],
-  "dur": 148.8
+  "dur": 148.8,
+  "aka": [
+   "Game Show Flat",
+   "综艺节奏扁平"
+  ]
+ },
+ {
+  "slug": "ascii-crt",
+  "num": "62",
+  "en": "CRT ASCII Terminal",
+  "cn": "CRT 字符终端",
+  "cat": "胶片录像",
+  "cat_en": "Film & Tape",
+  "film": "Tranquility.log",
+  "film_cn": "静海日志",
+  "line": "A moon-base AI wakes after forty years to a signal from Earth, and replies by drawing “home” in characters.",
+  "line_cn": "月球基地的 AI 沉睡 40 年后被唤醒，用字符画出“家”来回复。",
+  "uses": [
+   "Developer tools",
+   "Sci-fi",
+   "Tech brands"
+  ],
+  "dur": 59.8,
+  "aka": [
+   "ASCII / CRT Terminal",
+   "ASCII / CRT 终端"
+  ]
  },
  {
   "slug": "silent-film",
-  "num": "34",
+  "num": "63",
   "en": "1920s Silent Film",
   "cn": "1920s 默片",
-  "cat": "电影与时代",
-  "cat_en": "Cinema & Eras",
+  "cat": "胶片录像",
+  "cat_en": "Film & Tape",
   "film": "The Runaway Loaf",
+  "film_cn": "逃跑的面包",
   "line": "A baker's boy chases a runaway loaf downhill, then breaks it in half for a hungry girl.",
   "line_cn": "面包店学徒追一个滚走的面包，最后掰成两半分给饿肚子的小女孩。",
   "uses": [
@@ -987,12 +1172,13 @@
  },
  {
   "slug": "backrooms",
-  "num": "36",
+  "num": "64",
   "en": "Liminal Found Footage",
-  "cn": "后室 / 新怪谈",
-  "cat": "电影与时代",
-  "cat_en": "Cinema & Eras",
+  "cn": "后室录像带",
+  "cat": "胶片录像",
+  "cat_en": "Film & Tape",
   "film": "Night Shift Orientation",
+  "film_cn": "夜班入职培训",
   "line": "A new night-shift hire films their first night in an endless yellow office, following the rules on the wall.",
   "line_cn": "新夜班员工拍下入职第一晚：无尽的黄色办公空间，和墙上的员工守则。",
   "uses": [
@@ -1000,16 +1186,262 @@
    "Mystery & ARG",
    "Game teasers"
   ],
-  "dur": 59.7
+  "dur": 59.7,
+  "aka": [
+   "后室 / 新怪谈"
+  ]
+ },
+ {
+  "slug": "scratch-film",
+  "num": "65",
+  "en": "Scratch Film",
+  "cn": "胶片直刻",
+  "cat": "胶片录像",
+  "cat_en": "Film & Tape",
+  "film": "The Night Climb",
+  "film_cn": "夜里往上游",
+  "line": "A finger-long lanternfish climbs half a kilometre in the dark, hides its shadow with its own lights, and turns out to be one of countless animals rising every night.",
+  "line_cn": "一条手指长的灯笼鱼摸黑往上游半公里，用自己的光藏起影子；镜头拉远，原来每晚有无数动物和它一起升起。",
+  "uses": [
+   "Things that happen in the dark",
+   "One mark to a whole system",
+   "Small adventures told in light and shadow"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "double-exposure",
+  "num": "66",
+  "en": "Double Exposure",
+  "cn": "双重曝光",
+  "cat": "胶片录像",
+  "cat_en": "Film & Tape",
+  "film": "Mountains and Seas",
+  "film_cn": "山海",
+  "line": "From the mountains to the sea as night falls: a stag, a wolf, an eagle, a salmon and a whale, each carrying its own place inside its silhouette, until the whale's harbour lands on the real shore.",
+  "line_cn": "天黑下来的这一路，从山到海：鹿、狼、鹰、鲑鱼、鲸，每只动物的剪影里装着它的那片天地；最后鲸身体里的港湾落在真的海岸上。",
+  "uses": [
+   "Brand and city films",
+   "Documentary and series openings",
+   "Music video intros"
+  ],
+  "dur": 50.5
+ },
+ {
+  "slug": "dark-keynote",
+  "num": "67",
+  "en": "Dark Tech Keynote",
+  "cn": "暗色科技发布",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "Room to Think",
+  "film_cn": "思考的空间",
+  "line": "Launch film for Tidy, a fictional app: one buried cursor snaps hundreds of windows back into place.",
+  "line_cn": "虚构 app Tidy 的发布片：被埋掉的光标一键把几百个窗口归位。",
+  "uses": [
+   "Product launches",
+   "SaaS",
+   "Keynotes"
+  ],
+  "dur": 42.0
+ },
+ {
+  "slug": "living-screencast",
+  "num": "68",
+  "en": "Mascot Screencast",
+  "cn": "像素小人录屏",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "Clawd Moves In",
+  "film_cn": "Clawd 搬进来了",
+  "line": "Clawd hops out of the terminal into the Claude app and acts out plan mode and self-checks in one take.",
+  "line_cn": "像素小人 Clawd 搬进 Claude 应用，一镜到底演示 Plan 模式和自检。",
+  "uses": [
+   "Product tutorials",
+   "Feature launches",
+   "Onboarding"
+  ],
+  "dur": 59.4,
+  "aka": [
+   "Living Screencast",
+   "活体实机录屏"
+  ]
+ },
+ {
+  "slug": "hologram-hud",
+  "num": "69",
+  "en": "Sci-fi Hologram HUD",
+  "cn": "科幻全息界面",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "Volt · Spec Scan",
+  "film_cn": "Volt 规格扫描",
+  "line": "An e-bike is scanned into a hologram; target boxes lock onto the battery, motor and brakes.",
+  "line_cn": "电助力车被扫描成全息线框，目标框依次锁定电池、电机、刹车。",
+  "uses": [
+   "Spec walkthroughs",
+   "Launch videos",
+   "Trade shows"
+  ],
+  "dur": 39.0
+ },
+ {
+  "slug": "desktop-flythrough",
+  "num": "70",
+  "en": "Tabletop App Flythrough",
+  "cn": "桌面卡片穿梭",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "Before the Ding",
+  "film_cn": "叮之前",
+  "line": "A cat photo hops across app cards on a sunlit desk, from one phone to a friend's.",
+  "line_cn": "一张猫照片跳过桌上的应用卡片，从一台手机飞到朋友手机里，一镜跟到底。",
+  "uses": [
+   "App explainers",
+   "Workflows",
+   "Products"
+  ],
+  "dur": 60.0,
+  "aka": [
+   "Desktop Flythrough",
+   "桌面穿梭"
+  ]
+ },
+ {
+  "slug": "spreadsheet",
+  "num": "71",
+  "en": "Spreadsheet Film",
+  "cn": "表格动画",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "The Hidden Column",
+  "film_cn": "藏起来的那一列",
+  "line": "The total says treatment B; unhide the stone-size columns and A wins every group. Simpson's paradox told in one sheet, 1 cell = 1 patient.",
+  "line_cn": "总数说 B 更好；把藏起来的结石大小列打开，A 在每一组都赢。一张表讲清辛普森悖论，一格就是一位病人。",
+  "uses": [
+   "Data literacy",
+   "Finance & costs",
+   "Analytics explainers"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "one-bit-dither",
+  "num": "72",
+  "en": "1-bit Dither",
+  "cn": "1-bit 点阵",
+  "cat": "屏幕界面",
+  "cat_en": "Screens & Interfaces",
+  "film": "The Moon's Fax",
+  "film_cn": "月亮的传真",
+  "line": "February 1966: the first close-up of the Moon arrives at an English radio telescope as a newspaper fax, printed one line at a time in two inks, a day early and stretched too tall.",
+  "line_cn": "1966 年 2 月，月面的第一张近照被英国一座射电望远镜当成报社传真收下，一行一行印出来：早了一天，比例却拉高了。",
+  "uses": [
+   "History told through a chain of media",
+   "Printing, scanning and signals",
+   "Night scenes and space"
+  ],
+  "dur": 50.0
+ },
+ {
+  "slug": "circuit-board",
+  "num": "73",
+  "en": "Circuit Board",
+  "cn": "电路板",
+  "cat": "发光线条",
+  "cat_en": "Light & Lines",
+  "film": "Seven Milliseconds",
+  "film_cn": "七毫秒",
+  "line": "Rivers become copper traces as current runs 2,080 km from a dam to a phone charger.",
+  "line_cn": "江河变成电路板上的走线，电流从水坝跑 2,080 公里进手机充电器。",
+  "uses": [
+   "Energy",
+   "Supply chains",
+   "Devices"
+  ],
+  "dur": 60.0
+ },
+ {
+  "slug": "firefly-pointillism",
+  "num": "74",
+  "en": "Firefly Pointillism",
+  "cn": "萤火光点",
+  "cat": "发光线条",
+  "cat_en": "Light & Lines",
+  "film": "Shine Back",
+  "film_cn": "你亮，我就亮",
+  "line": "A firefly's blink is a question: a girl gets her answer as a deer, loses every light in a storm, and asks the whole dark with the last one.",
+  "line_cn": "萤火虫闪一下就是在发问：女孩得到的回答是一只鹿，暴风雨吹灭了所有的光，她用最后一只问遍了整片黑夜。",
+  "uses": [
+   "Picture-book stories",
+   "Many becoming one",
+   "Night and nature lyric"
+  ],
+  "dur": 50.6
+ },
+ {
+  "slug": "flow-field",
+  "num": "75",
+  "en": "Flow-field Wind Lines",
+  "cn": "流场风线",
+  "cat": "发光线条",
+  "cat_en": "Light & Lines",
+  "film": "Typhoon Yagi over Qiongzhou",
+  "film_cn": "摩羯过琼州",
+  "line": "Thousands of ink wind lines, computed from the best track, draw Super Typhoon Yagi: the eye opening over the South China Sea, the landfall on Hainan, the spiral coming apart in Vietnam, and a whole week folded into one last line.",
+  "line_cn": "几千条从最佳路径算出来的墨色风线，画出超强台风摩羯的一生：在南海睁开风眼，在文昌登陆，在越南散开，一整周最后收成一条线。",
+  "uses": [
+   "Storms, monsoons and other weather",
+   "Ocean currents and river floods",
+   "Any flow measured against a threshold"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "oscilloscope-math",
+  "num": "76",
+  "en": "Oscilloscope Math",
+  "cn": "示波器数学",
+  "cat": "发光线条",
+  "cat_en": "Light & Lines",
+  "film": "The Gibbs Phenomenon",
+  "film_cn": "吉布斯现象",
+  "line": "How do you roll a square out of circles? Spinning circles stack into a square wave, until a dive into one corner finds the 9% spike that never goes away.",
+  "line_cn": "方方正正的波，怎么由圆滚出来？一个个圆叠成方波，直到镜头扎进一个角：那里有一个永远消不掉的 9% 尖角。",
+  "uses": [
+   "Maths and physics lessons",
+   "Signals and electronics",
+   "Science explainers"
+  ],
+  "dur": 51.1
+ },
+ {
+  "slug": "neon-tubes",
+  "num": "77",
+  "en": "Neon Tubes",
+  "cn": "霓虹灯管",
+  "cat": "发光线条",
+  "cat_en": "Light & Lines",
+  "film": "Midnight Snack",
+  "film_cn": "夜宵",
+  "line": "A neon cat goes out for the goldfish on the sign at the end of the street, cracks its bowl, and runs the fading fish home through the rain to the goblet on its own sign.",
+  "line_cn": "一只霓虹猫去街尾招牌上偷金鱼当夜宵，一爪子拍漏了鱼缸，又叼着快灭的鱼冒雨跑回家，放进自家招牌上的冰饮杯。",
+  "uses": [
+   "Shop openings and mascot stories",
+   "Nightlife and city-pop music videos",
+   "City and festival night idents"
+  ],
+  "dur": 48.0
  },
  {
   "slug": "brick-toy",
-  "num": "37",
+  "num": "78",
   "en": "Brick Toy",
   "cn": "积木玩具",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "Rocket from Spare Parts",
+  "film_cn": "零件拼出的火箭",
   "line": "A brick astronaut builds a rocket from spare parts and flies to a brick moon.",
   "line_cn": "积木宇航员用零件拼出火箭，飞向积木月亮。",
   "uses": [
@@ -1021,12 +1453,13 @@
  },
  {
   "slug": "paper-popup",
-  "num": "41",
+  "num": "79",
   "en": "Paper Pop-up Book",
   "cn": "纸片立体书",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "Pip's Paper Adventure",
+  "film_cn": "小精灵冒险记",
   "line": "A pop-up book opens on a desk; a sprite named Pip adventures through paper worlds and jumps out into ours.",
   "line_cn": "立体书在书桌上打开，小精灵 Pip 在纸片世界冒险，最后跳出书外。",
   "uses": [
@@ -1038,12 +1471,13 @@
  },
  {
   "slug": "tilt-shift",
-  "num": "42",
+  "num": "80",
   "en": "Tilt-Shift Miniature",
   "cn": "移轴微缩",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "Toy Town Rush Hour",
+  "film_cn": "玩具城早高峰",
   "line": "Morning rush hour in a town that looks like a model: traffic, trains and tiny people.",
   "line_cn": "玩具城的早高峰，一切都像模型。",
   "uses": [
@@ -1055,12 +1489,13 @@
  },
  {
   "slug": "lowpoly-island",
-  "num": "43",
+  "num": "81",
   "en": "Low-poly Isometric Island",
   "cn": "低多边形等距",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "The Island That Grew",
+  "film_cn": "长出来的岛",
   "line": "An island and its village grow tile by tile from an empty sea, each tile a note, into a starry night.",
   "line_cn": "空海里一格格长出小岛和村庄，每放一块响一个音符，直到星空。",
   "uses": [
@@ -1072,12 +1507,13 @@
  },
  {
   "slug": "glass-product",
-  "num": "44",
+  "num": "82",
   "en": "Glass Product Render",
   "cn": "玻璃质感产品",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "Aura — Hear the Light",
+  "film_cn": "Aura：听见光",
   "line": "Unboxing and close-ups of Aura, fictional glass earbuds, in strip-light sweeps and caustics.",
   "line_cn": "虚构玻璃耳机 Aura 的开箱与特写。",
   "uses": [
@@ -1089,12 +1525,13 @@
  },
  {
   "slug": "memphis-diorama",
-  "num": "71",
+  "num": "83",
   "en": "Memphis Diorama",
   "cn": "孟菲斯微缩景观",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
   "film": "Four Seasons in Pomelo Town",
+  "film_cn": "柚子城的四季",
   "line": "One river bend, four seasons, one take; each turns when the big tree squats and springs back.",
   "line_cn": "一个河湾一镜过完四季，大树一蹲一弹，就换一季。",
   "uses": [
@@ -1109,20 +1546,309 @@
   }
  },
  {
-  "slug": "desktop-flythrough",
-  "num": "77",
-  "en": "Desktop Flythrough",
-  "cn": "桌面穿梭",
-  "cat": "材质与 3D",
-  "cat_en": "Materials & 3D",
-  "film": "Before the Ding",
-  "line": "A cat photo hops across app cards on a sunlit desk, from one phone to a friend's.",
-  "line_cn": "一张猫照片跳过桌上的应用卡片，从一台手机飞到朋友手机里，一镜跟到底。",
+  "slug": "isometric-picture-book",
+  "num": "84",
+  "en": "Isometric People Scene",
+  "cn": "等距小人场景",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
+  "film": "Seventy-Two Seats",
+  "film_cn": "七十二个座位",
+  "line": "Travellers board an isometric plane, and the order shows why one way is nearly twice as fast.",
+  "line_cn": "等距的登机口和机舱里，小人按顺序登机，讲清哪种叫法快将近一半。",
   "uses": [
-   "App explainers",
-   "Workflows",
-   "Products"
+   "Everyday rules",
+   "Queues",
+   "Comparisons"
   ],
-  "dur": 60.0
+  "dur": 59.8,
+  "aka": [
+   "Isometric Picture Book",
+   "等距绘本"
+  ]
+ },
+ {
+  "slug": "crayon-world",
+  "num": "85",
+  "en": "Crayon World 3D",
+  "cn": "蜡笔立体世界",
+  "cat": "立体微缩",
+  "cat_en": "3D & Miniature",
+  "film": "The Butterfly",
+  "film_cn": "蝴蝶",
+  "line": "A first-person flight over a crayon village to one flower in an old man's garden; then his eyes, and what he says.",
+  "line_cn": "第一人称飞过蜡笔画的村子，落在老人花园里的一朵花上；最后换成他的眼睛，和他说的一句话。",
+  "uses": [
+   "Short stories",
+   "Tributes",
+   "Journeys"
+  ],
+  "dur": 64.5,
+  "by": {
+   "name": "2nd1st",
+   "url": "https://github.com/2nd1st"
+  }
+ },
+ {
+  "slug": "satellite-briefing",
+  "num": "86",
+  "en": "Satellite Briefing",
+  "cn": "卫星简报",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "The Map Still Says Sea",
+  "film_cn": "地图上还写着海",
+  "line": "A satellite follows the map to the Aral Sea and finds a desert; only the part someone dammed came back.",
+  "line_cn": "卫星照着地图去找咸海，找到的是沙漠；只有筑了坝的那一块回来了。",
+  "uses": [
+   "Climate",
+   "News explainers",
+   "Geography"
+  ],
+  "dur": 37.8
+ },
+ {
+  "slug": "briefing-board",
+  "num": "87",
+  "en": "Engineering Briefing Board",
+  "cn": "工程简报板",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "The Ship Decides",
+  "film_cn": "船说了算",
+  "line": "Four bridge types are tested on one briefing wall, and the ship that must pass under picks the winner.",
+  "line_cn": "一条河要架桥，四种桥型在一面简报墙上逐个受检，拍板的是桥下要过的船。",
+  "uses": [
+   "Engineering",
+   "Option comparisons",
+   "Briefings"
+  ],
+  "dur": 40.0
+ },
+ {
+  "slug": "lidar-survey",
+  "num": "88",
+  "en": "LiDAR Survey",
+  "cn": "点云测绘",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "The Fields Under the Forest",
+  "film_cn": "林下的田",
+  "line": "A laser survey strips the canopy off a Connecticut forest and finds 3.4 km of old farm walls.",
+  "line_cn": "激光点云剥掉一片森林的树冠，露出当年农田的石墙：3.4 公里。",
+  "uses": [
+   "Heritage",
+   "Environment",
+   "Site surveys"
+  ],
+  "dur": 40.0
+ },
+ {
+  "slug": "microscope",
+  "num": "89",
+  "en": "Under the Microscope",
+  "cn": "显微镜下",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "Measured Blue",
+  "film_cn": "量出来的蓝",
+  "line": "One continuous move from a liver slide to a single nucleus; two circles, counted pixel by pixel, differ 2.4 times in blue.",
+  "line_cn": "一镜从肝组织玻片推到单个细胞核，两个圆逐像素数出 2.4 倍的蓝。",
+  "uses": [
+   "Biomedicine",
+   "Materials science",
+   "Skincare science"
+  ],
+  "dur": 39.5,
+  "aka": [
+   "Microscope Story",
+   "显微叙事"
+  ]
+ },
+ {
+  "slug": "archive-lighttable",
+  "num": "90",
+  "en": "Archive Light Table",
+  "cn": "档案看片台",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "Two Seconds Short",
+  "film_cn": "差两秒",
+  "line": "The telegram said 57 seconds; under a loupe, the Wrights' glass negatives and the archive say 59.",
+  "line_cn": "电报说最长飞了 57 秒；放大镜下，莱特兄弟的底片和档案说是 59 秒。",
+  "uses": [
+   "Brand history",
+   "Archive stories",
+   "Museums"
+  ],
+  "dur": 40.0,
+  "aka": [
+   "档案灯台"
+  ]
+ },
+ {
+  "slug": "security-xray",
+  "num": "91",
+  "en": "Security X-ray",
+  "cn": "安检 X 光",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "Night Shift at Lane 3",
+  "film_cn": "安检口的夜班",
+  "line": "One night at an airport screening console: a power bank, a bottle of water, and six live crabs that move in the CT.",
+  "line_cn": "机场安检机屏幕上的一个夜班：一个充电宝、一瓶水，还有在 CT 里动了一下腿的六只活蟹。",
+  "uses": [
+   "Airport and customs screening",
+   "Parcel and cargo inspection",
+   "Product internals"
+  ],
+  "dur": 51.9
+ },
+ {
+  "slug": "dark-documentary",
+  "num": "92",
+  "en": "Radar Sweep Documentary",
+  "cn": "雷达扫描纪录片",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "Catching the Moon",
+  "film_cn": "狂风里接住登月直播",
+  "line": "A storm at Parkes, 21 July 1969: a 64-metre dish tipped to its limit holds on and catches the moonwalk for the world.",
+  "line_cn": "1969 年 7 月 21 日帕克斯的风暴里，一面放倒到极限的 64 米天线顶住了风，替全世界接住了登月直播。",
+  "uses": [
+   "History of science and engineering",
+   "Archaeology, sites and reconstructions",
+   "Astronomy, deep space and survey"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "thermal-camera",
+  "num": "93",
+  "en": "Thermal Camera",
+  "cn": "热成像",
+  "cat": "仪器实证",
+  "cat_en": "Instruments & Evidence",
+  "film": "A Building on a Winter Night",
+  "film_cn": "冬夜，一栋楼的体温",
+  "line": "A thermal camera circles an old apartment block on a snowy night: a leaking window, pipes inside the walls, a cat asleep on a warm bonnet, and the same block a year after its retrofit.",
+  "line_cn": "雪夜里，一台热像仪绕着一栋老居民楼转：漏风的窗、墙里的暖气管、睡在热车盖上的猫，还有一年后改造完的同一栋楼。",
+  "uses": [
+   "Building and energy inspection",
+   "Wildlife at night",
+   "Machines and electrics"
+  ],
+  "dur": 49.0
+ },
+ {
+  "slug": "dataviz",
+  "num": "94",
+  "en": "Data Storytelling",
+  "cn": "数据叙事",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "A Hundred Summers",
+  "film_cn": "一百个夏天",
+  "line": "A hundred years of summer temperatures, where the chart itself tells the story.",
+  "line_cn": "一百年的夏季气温，图表本身就是故事。",
+  "uses": [
+   "Data journalism",
+   "Reports",
+   "Climate & science"
+  ],
+  "dur": 50.0
+ },
+ {
+  "slug": "white-model",
+  "num": "95",
+  "en": "Projection-Mapped Model",
+  "cn": "白模投影",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "How a Flattened City Grew Back",
+  "film_cn": "被炸平的城市怎样长回来",
+  "line": "A projector paints Rotterdam's white model layer by layer, from the 1940 gap to today's towers.",
+  "line_cn": "投影机把数据一层层刷上鹿特丹白模：从 1940 年的空洞到今天的塔楼。",
+  "uses": [
+   "Urban planning",
+   "Exhibitions",
+   "City data"
+  ],
+  "dur": 40.0,
+  "aka": [
+   "Projection on White Model"
+  ]
+ },
+ {
+  "slug": "data-physical",
+  "num": "96",
+  "en": "Data Physicalization",
+  "cn": "数据实物化",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "Two Spirals",
+  "film_cn": "两条螺旋",
+  "line": "Twelve years of wind and solar stacked as real plates, spiralling round a walnut dial until solar overtakes.",
+  "line_cn": "十二年风电和太阳能装机叠成实物，绕表盘升成两条螺旋，2021 年太阳能反超。",
+  "uses": [
+   "Annual reports",
+   "Investor decks",
+   "Energy data"
+  ],
+  "dur": 39.4
+ },
+ {
+  "slug": "transit-map",
+  "num": "97",
+  "en": "Transit Map",
+  "cn": "地铁线路图",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "6 Kilometres",
+  "film_cn": "6 公里",
+  "line": "A printed metro map grows from one 6 km line in 1993 to 21 lines and 906 km.",
+  "line_cn": "一张纸上的线路图，从 1993 年的 6 公里长到 21 条线、906 公里。",
+  "uses": [
+   "Transport",
+   "Growth over time",
+   "Networks"
+  ],
+  "dur": 47.0
+ },
+ {
+  "slug": "map-explainer",
+  "num": "98",
+  "en": "3D Map Explainer",
+  "cn": "立体地图解说",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "Strait of Hormuz",
+  "film_cn": "霍尔木兹海峡",
+  "line": "From the globe down into the strait a fifth of the world's oil squeezes through: two lanes, a cut through the sea floor, and pipelines that can carry only a fraction of it around.",
+  "line_cn": "从地球一路落进这道海峡：世界约五分之一的石油挤过两条航道，剖开看水下有多深，再看绕行的管道只能分走多少。",
+  "uses": [
+   "News and geopolitics",
+   "Energy, trade and shipping",
+   "Rivers, borders and terrain"
+  ],
+  "dur": 52.0
+ },
+ {
+  "slug": "pip-simulation",
+  "num": "99",
+  "en": "Blob Simulation",
+  "cn": "小人模拟实验",
+  "cat": "数据地图",
+  "cat_en": "Data & Maps",
+  "film": "Is Faster Better?",
+  "film_cn": "跑得快，就更好吗？",
+  "line": "160 flocked Pips race for beans: the fast ones eat first and run dry first, and after 20 generations the board turns blue.",
+  "line_cn": "160 只植绒小人抢豆子：快的先抢到也先跑不动，跑完 20 代，整块台面都变蓝了。",
+  "uses": [
+   "Evolution and natural selection",
+   "Game theory and agent-based models",
+   "Epidemics, queues and markets"
+  ],
+  "dur": 52.0
  }
 ]

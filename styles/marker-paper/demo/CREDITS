@@ -1,0 +1,29 @@
+How Far Can You See? (你能看多远？) — Marker on Paper (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+IMAGES, FOOTAGE, MODELS
+- None. Paper, every stroke, the figure, ship, tower and plane, the peel and the subtitle slip are drawn in code
+  (pen.js, film.js). No photographs, no scans, no AI-generated images, no 3D models.
+
+FONTS (SIL Open Font License 1.1; licence texts in fonts/; the .ttf files are not in git, build.sh downloads them)
+- Kalam Bold / Regular — Indian Type Foundry — https://github.com/google/fonts/tree/main/ofl/kalam (fonts/Kalam-OFL.txt)
+- LXGW Marker Gothic 霞鹜漫黑 — LXGW — https://github.com/google/fonts/tree/main/ofl/lxgwmarkergothic
+  (fonts/LXGWMarkerGothic-OFL.txt); subset by tools/subset_film.py to the characters in tools/zh_chars.txt.
+- Handwriting order: glyph centre lines computed from these fonts by tools/skeleton.py (glyphs.json); outlines are the fonts' own.
+
+VOICE
+- English narration: Kokoro v1.0 (kokoro-onnx; model weights hexgrad/Kokoro-82M, Apache-2.0), voice bm_george, speed 0.84,
+  through the library's core/tts/tts.py; checked with core/tts/asr_check.py (faster-whisper, MIT; Whisper models, MIT).
+
+MUSIC SAMPLES (CC0 1.0), through the library's core/audio/sampler.py
+- contrabass pizzicato, clarinet, bassoon (sustained and staccato): VS Chamber Orchestra: Community Edition (Versilian Studios)
+- shaker, claves, woodblock, glockenspiel, harp: Versilian Community Sample Library (Versilian Studios)
+
+SOUND EFFECTS
+- Felt-marker strokes, touch-downs, hatch flicks, the peel and the push: synthesised in mix.py (filtered noise and envelopes).
+
+CODE
+- Stroke geometry adapted from styles/whiteboard/demo/engine/wb.js. Glyph-skeleton handwriting (thinning a rendered glyph to a
+  centre line and walking it as pen strokes) follows the library's sketch-style practice.
+
+NUMBERS ON SCREEN AND IN THE VOICE
+- See FACTS.md.

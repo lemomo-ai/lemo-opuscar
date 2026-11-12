@@ -1,0 +1,19 @@
+{
+ "slug": "map-explainer",
+ "num": "98",
+ "en": "3D Map Explainer",
+ "cn": "立体地图解说",
+ "category_en": "Data & Maps",
+ "category_cn": "数据地图",
+ "film": "Strait of Hormuz",
+ "film_cn": "霍尔木兹海峡",
+ "line": "From the globe down into the strait a fifth of the world's oil squeezes through: two lanes, a cut through the sea floor, and pipelines that can carry only a fraction of it around.",
+ "line_cn": "从地球一路落进这道海峡：世界约五分之一的石油挤过两条航道，剖开看水下有多深，再看绕行的管道只能分走多少。",
+ "uses": [
+  "News and geopolitics",
+  "Energy, trade and shipping",
+  "Rivers, borders and terrain"
+ ],
+ "frame_sec": 13.8,
+ "dur": 52.0
+}

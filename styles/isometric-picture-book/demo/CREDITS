@@ -1,9 +1,9 @@
-Seventy-Two Seats (七十二个座位) — Isometric Picture Book (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+Seventy-Two Seats (七十二个座位) — Isometric People Scene (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
 
 IMAGES, FOOTAGE, MODELS
 - None. The apron, terminal, jet bridge, aircraft, cabin, people and every mark are drawn in code (engine.js, kit.js,
   plane.js, places.js, film.js). No photographs, no scans, no AI-generated images, no 3D models.
-- engine.js is the iso engine of the library's Isometric Infographic demo (MIT License, Copyright (c) 2026 LemoLab).
+- engine.js is the iso engine of the library's Isometric Infographic demo (MIT License, Copyright (c) 2026 Lemomo (LemoLab)).
 
 FONTS (SIL Open Font License 1.1, licence texts in fonts/; not in git, build.sh downloads them from github.com/google/fonts)
 - Noto Serif SC (variable, NotoSerifSC[wght].ttf) — Google / Adobe (Chinese type and subtitles), subset by tools/subset.py

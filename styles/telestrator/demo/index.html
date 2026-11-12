@@ -832,7 +832,7 @@ async function shotMap(s, t) {
 
 // —— Main render ——
 const FZ = ['fz1', 'fz2', 'fz3', 'fz4', 'g1fz'];
-const LIVE = ['live', 'g1live', 'g1go'];   // g2go is slow motion + VAR review: counts as an analysis section (corner bug 「战术分析」, top-left timecode ▶ ½)
+const LIVE = ['live', 'g1live', 'g1go'];   // g2go is slow motion + VAR review: counts as an analysis section (corner bug 「战术分析」 (ANALYSIS), top-left timecode ▶ ½)
 async function render(t) {
   const s = segAt(t);
   X.setTransform(1, 0, 0, 1, 0, 0); X.globalAlpha = 1; X.filter = 'none';

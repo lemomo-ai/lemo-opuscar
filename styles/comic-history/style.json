@@ -1,0 +1,22 @@
+{
+ "slug": "comic-history",
+ "num": "56",
+ "en": "Comic History Cartoon",
+ "cn": "搞笑历史卡通",
+ "category_en": "Cartoons",
+ "category_cn": "卡通动画",
+ "film": "One Piece of Paper",
+ "film_cn": "一块纸",
+ "line": "Alsace-Lorraine changed hands four times between 1871 and 1945: each time someone tore off the paper and pasted a new piece, and the woman living on it never moved.",
+ "line_cn": "阿尔萨斯-洛林在 1871 到 1945 年间四次换主人：每次都有人撕下那块纸、贴上新的，住在上面的她一步没挪。",
+ "uses": [
+  "Territorial changes in history",
+  "Light explainers on geopolitics",
+  "Market share and turf-war stories"
+ ],
+ "needs": [
+  "image-generation"
+ ],
+ "frame_sec": 9.9,
+ "dur": 51.0
+}

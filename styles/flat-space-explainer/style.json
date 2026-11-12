@@ -1,0 +1,19 @@
+{
+ "slug": "flat-space-explainer",
+ "num": "41",
+ "en": "Scale Zoom Explainer",
+ "cn": "扁平尺度漫游",
+ "category_en": "Graphic & Type",
+ "category_cn": "平面排版",
+ "film": "The Long Way Down",
+ "film_cn": "一路往下缩",
+ "line": "A little probe whose eye is a zoom lens fires a dotted sight line at each next stop and takes us from the Milky Way down to a virus.",
+ "line_cn": "眼睛就是变焦镜头的小探测器，一站站打出点线，带我们从银河一路缩到病毒。",
+ "uses": [
+  "Science explainers",
+  "Scale and size",
+  "Classroom"
+ ],
+ "frame_sec": 8.9,
+ "dur": 52.0
+}

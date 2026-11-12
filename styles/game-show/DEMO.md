@@ -1,4 +1,4 @@
-# Game Show Flat — our demo
+# Rhythm Game Show — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 
@@ -85,7 +85,7 @@ The demo's last card carries **"LemoLab × Claude Opus 5.5"** (× is U+00D7). It
 - **Facts are sourced in `demo/FACTS.md`**: every claim on screen and in the shouts, with the source's own words and a verdict (checked 2026-11-07). Where the record is thin, the film says less: the chess shout is "Game over." (Game 6 of 1997 ended in resignation, not mate); the 9.11 desks are generic bots (no record says which models answered 9.11); the price tags are labelled as output prices per 1M tokens; the 2026 bar chart is Gemini 3.1 Pro's ARC-AGI-2 score from Google DeepMind's own model page; the WAIC disc is the fair's own "300+ world premieres".
 - **Facts date fast.** The 2026 remix (Sonnet 5 as default, WAIC 2026, DeepSeek V4-Pro, GPT-6 Astra, Gemini versions) states them as current news. Re-check every figure and name before reusing any of it.
 - **Real brands:** the contestants stand for real AI products (GPT, Claude, Gemini, DeepSeek, Kimi, Grok, Midjourney…): names only on name tags, original mascots, loose colour nods; never official logos, wordmarks or product UI (DeepSeek is a blue bean with a magnifier, not the company's whale). Real people (Kasparov, Lee Sedol, the KEN / BRAD podiums) appear only as generic cartoon stand-ins in factual banners; the quiz machine is a generic screen-faced bot, not IBM's Watson avatar. Ken Jennings's real 2011 line "I for one welcome our new computer overlords" (itself a *Simpsons* quote) is on his sign, in Chinese.
-- **Genre, not a game.** The film borrows the grammar of rhythm-action party games (call-and-response cues, "Perfect!" judgements, a remix level) and names no game: the G7 task note says "做一个节拍游戏风格的视频", and the report card's grade is "Encore!".
+- **Genre, not a game.** The film borrows the grammar of rhythm-action party games (call-and-response cues, "Perfect!" judgements, a remix level) and names no game: the G7 task note says "做一个节拍游戏风格的视频" ("make a video in a rhythm-game style"), and the report card's grade is "Encore!".
 
 ## Switching the text to English
 

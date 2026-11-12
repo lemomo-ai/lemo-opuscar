@@ -1,11 +1,12 @@
 {
  "slug": "dark-keynote",
- "num": "25",
+ "num": "67",
  "en": "Dark Tech Keynote",
  "cn": "暗色科技发布",
- "category_en": "Information & Keynote",
- "category_cn": "信息与发布",
+ "category_en": "Screens & Interfaces",
+ "category_cn": "屏幕界面",
  "film": "Room to Think",
+ "film_cn": "思考的空间",
  "line": "Launch film for Tidy, a fictional app: one buried cursor snaps hundreds of windows back into place.",
  "line_cn": "虚构 app Tidy 的发布片：被埋掉的光标一键把几百个窗口归位。",
  "uses": [

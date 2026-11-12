@@ -166,8 +166,8 @@ put('shamisen', sam('D5', .75, t60=.8, buzz=.5), 21.95, .9, .15, 'seal: shamisen
 for k, p in enumerate(['D3', 'A3', 'D4', 'Eb4', 'G4', 'A4', 'Bb4', 'D5']):
     put('shamisen', sam(p, .5 + k * .04, buzz=.6), 22.32 + k * .06, .8, -.3 + k * .08, 'kyū pan: fast rising arpeggio' if k == 0 else None)
 
-# ================= C5 kyū (急, rush) (44 s cut: rise → hang → fall → impact) =================
-# heartbeat: from 23.2 the interval starts at 0.9 and shrinks by × 0.84 (before 25.4 identical to the 42 s cut), keeps shrinking to 0.15 during the rise, hands over to the hang roll at 27.3
+# ================= C5 kyū (急, rush) (rise → hang → fall → impact) =================
+# heartbeat: from 23.2 the interval starts at 0.9 and shrinks by × 0.84, keeps shrinking to 0.15 during the rise, hands over to the hang roll at 27.3
 ts = []; t = 23.2; gap = .9
 while t < 27.3:
     ts.append(t); gap = max(.15, gap * .84); t += gap
@@ -294,7 +294,7 @@ def onset_err(t, win=.03):
 ons = {str(t): dict(zip(['err_ms', 'peak'], onset_err(t))) for t in [.35, 1.05, 1.70, 2.30, 32.2, 32.7, 33.2, 33.7, FALL, IMP]}
 report = dict(dur=len(mix) / SR, sr=SR, peak=round(float(np.abs(mix).max()), 3), ma_silent_30_46_to_32_2=silent, inhale_silent_28_42_to_28_498=bool(np.all(mix[int(28.42 * SR):int(IN1 * SR)] == 0)),
               impact=IMP, cues=table, voice_windows=vo, onsets=ons, events=EVENTS,
-              notes='miyako-bushi scale D Eb G A Bb; opening motif A4–Bb4–A4 (meri); C7 echo lands on D4. 44 s version: the great wave is stretched after 25.4 (wave rises / crest / inhale / fall / impact at 30.36), ma 30.4–32.2, everything after it +2 s. hyoshigi = synthesised hardwood resonance + claves + woodblock; taiko = synthesised drum head (120→58 Hz) + gran_cassa + toms low_mallet + frame_drum large; shakuhachi = recorder 62% + flute 38% samples → divided by a smoothed envelope to remove amplitude wobble, f0-tracked inverse varispeed to remove pitch wobble, varispeed slides / meri / kari, 1–4 kHz breath noise.')
+              notes='miyako-bushi scale D Eb G A Bb; opening motif A4–Bb4–A4 (meri); C7 echo lands on D4. The great wave is stretched after 25.4 (wave rises / crest / inhale / fall / impact at 30.36), ma 30.4–32.2, everything after it +2 s. hyoshigi = synthesised hardwood resonance + claves + woodblock; taiko = synthesised drum head (120→58 Hz) + gran_cassa + toms low_mallet + frame_drum large; shakuhachi = recorder 62% + flute 38% samples → divided by a smoothed envelope to remove amplitude wobble, f0-tracked inverse varispeed to remove pitch wobble, varispeed slides / meri / kari, 1–4 kHz breath noise.')
 json.dump(report, open(os.path.join(HERE, 'score.json'), 'w'), ensure_ascii=False, indent=1, default=float)
 print(json.dumps({k: report[k] for k in ['dur', 'peak', 'ma_silent_30_46_to_32_2', 'inhale_silent_28_42_to_28_498', 'onsets']}, ensure_ascii=False))
 for r in table: print(r)

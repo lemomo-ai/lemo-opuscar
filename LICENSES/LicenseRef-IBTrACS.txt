@@ -1,0 +1,23 @@
+IBTrACS best-track data
+
+The files that REUSE.toml marks with LicenseRef-IBTrACS hold, or show,
+records of the China Meteorological Administration (CMA) best track, as
+distributed by the National Oceanic and Atmospheric Administration (NOAA),
+National Centers for Environmental Information, in the International Best Track
+Archive for Climate Stewardship (IBTrACS), version v04r01:
+https://www.ncei.noaa.gov/products/international-best-track-archive
+
+These records are the CMA's data, not a work of the United States government,
+so they are not marked as public domain here. NOAA describes IBTrACS as a
+publicly available dataset whose usage policy follows the World Data Center for
+Meteorology, with the World Meteorological Organization's Resolution 40 as the
+guide for commercial use, and asks that it be cited:
+
+  Knapp et al. (2010), Bulletin of the American Meteorological Society 91,
+  363-376.
+  Gahtan et al. (2024), IBTrACS version v04r01, NOAA National Centers for
+  Environmental Information, https://doi.org/10.25921/82ty-9e16
+
+Lemomo (LemoLab) grants no licence for these records. Use them on the terms of
+their source. The demo's CREDITS and FACTS.md name the source and what was done
+to the records.

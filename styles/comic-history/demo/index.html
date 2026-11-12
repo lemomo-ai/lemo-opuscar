@@ -1,0 +1,1271 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'FellSC'; src: url(fonts/IMFeENsc28P.ttf); font-display: block; }
+@font-face { font-family: 'Fell'; src: url(fonts/IMFeENrm28P.ttf); font-display: block; }
+@font-face { font-family: 'FellIt'; src: url(fonts/IMFeENit28P.ttf); font-display: block; }
+@font-face { font-family: 'Lilita'; src: url(fonts/LilitaOne-Regular.ttf); font-display: block; }
+@font-face { font-family: 'KuaiLe'; src: url(fonts/ZCOOLKuaiLe-Regular.ttf); font-display: block; }
+/* every number in the film (years, the version in the credit, the scale bar): Old Standard TT, lining figures */
+@font-face { font-family: 'OldStd'; src: url(fonts/OldStandard-Regular.ttf); font-display: block; }
+@font-face { font-family: 'OldStdB'; src: url(fonts/OldStandard-Bold.ttf); font-display: block; }
+@font-face { font-family: 'OldStdIt'; src: url(fonts/OldStandard-Italic.ttf); font-display: block; }
+html, body { margin: 0; background: #1d1a17; }
+canvas { display: block; }
+</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// 《一块纸》 One Piece of Paper (Comic History Cartoon demo): the whole 51 s film on one timeline.
+// The film is a comic page of paper panels on a table; a page camera moves between the panels and pushes one up to full screen.
+// Each panel is a scene drawn by code: paper puppets keyed from part sheets (tools/extract.py) on a map printed on paper.
+const W = 1920, H = 1080, DUR = 51;   // the last shot holds 1 s longer for the credit (title card) at the end
+// any stretch of the one timeline renders with ?from=A&to=B (e.g. video.mjs --q 'from=0&to=10'); the picture is never re-made for a cut
+const QS = new URLSearchParams(location.search), FROM = +(QS.get('from') || 0), TO = +(QS.get('to') || DUR);
+const CREDIT = 'LemoLab \u00D7 Claude Opus 5.5', STYLE_EN = 'Comic History Cartoon', STYLE_ZH = '搞笑历史卡通';
+window.DUR = TO - FROM;
+const cv = document.getElementById('c'), MAIN = cv.getContext('2d');
+let ctx = MAIN;   // the context the scene functions draw into (a panel canvas while a panel renders)
+
+// ---------------------------------------------------------------- palette
+const C = {
+  paper: '#F1E8D2', ink: '#2B2219',
+  fr: '#6E93D6', de: '#5D6672',
+  grey: '#7A8390',       // a German patch: Prussian grey one step lighter than the printed country (new paper on old print)
+  blue: '#5A80CC',       // a French patch: France's blue one step deeper (it must read on the printed blue)
+  sea: '#A6CCD3', red: '#C8463A', brass: '#D9B158',
+  caption: '#F5E9C4',    // narration caption boxes (subtitles)
+  table: '#7B6A57',
+};
+
+// ---------------------------------------------------------------- small maths
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x)), lerp = (a, b, u) => a + (b - a) * u;
+const EASE = {
+  lin: u => u,
+  io: u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2,
+  o: u => 1 - Math.pow(1 - u, 3),
+  i: u => u * u * u,
+  back: u => { const c = 1.7; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); },
+  el: u => u >= 1 ? 1 : 1 - Math.exp(-5.5 * u) * Math.cos(u * Math.PI * 3.1),   // rivet spring: overshoot, settle
+};
+function K(t, keys) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    const [t1, v1, e] = keys[i];
+    if (t <= t1) {
+      const [t0, v0] = keys[i - 1], u = EASE[e || 'io'](clamp((t - t0) / Math.max(t1 - t0, 1e-6), 0, 1));
+      return Array.isArray(v0) ? v0.map((a, j) => lerp(a, v1[j], u)) : lerp(v0, v1, u);
+    }
+  }
+  return keys[keys.length - 1][1];
+}
+const wob = (t, t0, amp, f = 5, d = 7) => t < t0 ? 0 : amp * Math.exp(-(t - t0) * d) * Math.sin(2 * Math.PI * f * (t - t0));
+const hop = (t, t0, t1, h) => t > t0 && t < t1 ? -h * Math.sin(Math.PI * (t - t0) / (t1 - t0)) : 0;
+const popIn = (t, t0, d = 0.17) => t < t0 ? 0 : t - t0 < d ? EASE.el((t - t0) / d) : 1;
+function hash(n) { n = (n ^ 61) ^ (n >>> 16); n = (n + (n << 3)) | 0; n ^= n >>> 4; n = Math.imul(n, 0x27d4eb2d); n ^= n >>> 15; return (n >>> 0) / 4294967296; }
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const D2R = Math.PI / 180;
+const twos = t => Math.floor(t * 12 + 1e-6) / 12;          // puppets move on twos (12 drawings a second)
+function canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.ceil(w); c.height = Math.ceil(h); return c; }
+const len = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+const angOf = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]);
+
+// ---------------------------------------------------------------- the timeline (film seconds). VO starts match vo/dur.json; see DEMO.md, "Shots"
+const T = {
+  slap: 4.0,                               // 1871 the grey patch lands
+  p1out: 10.0, p2in: 11.0,                 // pull back from panel 1, slide into panel 2
+  stamp: 15.2,                             // DEUTSCH stamp on her card
+  p3out: 16.2, p3in: 16.8,                 // whip down to panel 3 (1918)
+  grab: 20.1, rip: 20.75, fling: 21.15, hit: 21.45, slap18: 22.6, bubble18: 22.9,
+  p4out: 26.2, p4in: 26.9,                 // slide right into panel 4 (1940, dark)
+  press40: 29.3, curl: 30.6,
+  p5out: 33.4, p5in: 34.1,                 // drop to panel 5 (1944–45)
+  pull: 35.0, letgo: 36.95, thunk: 37.7,
+  tilt0: 38.0, tilt1: 39.4,                // crane down: the stack seen from the side
+  gran: 39.6, kid: 39.95, hop0: 38.0, tap: 42.8, pin: 45.6,
+  back0: 46.2, back1: 46.9, title: 47.0,   // pull back to the page; the title card lands
+};
+const SUBS = [   // narration captions: one Chinese line, one English line (also written to demo-full.srt by tools/srt.mjs)
+  [0.15, 4.45, '1871 年，法国刚输掉一场战争。', '1871. France has just lost a war.'],
+  [4.55, 9.6, '阿尔萨斯-洛林，从此归了新成立的德意志帝国。', 'Alsace-Lorraine now belongs to the new German Empire.'],
+  [11.2, 16.1, '那里的人一步也没挪，变的是他们的证件。', 'The people there never moved an inch. Their papers did.'],
+  [16.9, 23.4, '1918 年，德国输了下一场战争，法国又把它撕了回来。', 'In 1918, Germany lost the next war, and France tore it right back off.'],
+  [27.0, 33.9, '1940 年，纳粹德国又把它夺走。没有条约，只靠武力。', 'In 1940, Nazi Germany took it again. No treaty this time. Just force.'],
+  [34.2, 38.2, '到 1945 年，它又回到了法国。', 'By 1945, it was French again.'],
+  [38.3, 41.28, '四层纸，一辈子。', 'Four layers. One lifetime.'],
+  [41.3, 46.16, '她一辈子没搬过家，家却换了四次国家。', 'She never moved house. Her home switched countries four times.'],
+  [46.18, 50.0, '今天，斯特拉斯堡是欧洲议会的所在地。', 'Today, Strasbourg hosts the European Parliament.'],
+];
+window.SUBS = SUBS;
+const VO = [['v1', 0.15], ['v2', 4.55], ['v3', 11.2], ['v4', 16.9], ['v5', 27.0], ['v6', 34.2], ['v7', 38.3], ['v8', 41.3], ['v9', 46.18]];
+
+// ---------------------------------------------------------------- projection (equirectangular, cos(lat0) aspect)
+const LON0 = 6.9, LAT0 = 48.7, CX = 960, CY = 600, KS = 128;
+const KX = KS * Math.cos(LAT0 * D2R);
+const P = (lon, lat) => [CX + (lon - LON0) * KX, CY - (lat - LAT0) * KS];
+function decode(topo) {
+  const [sx, sy] = topo.transform.scale, [tx, ty] = topo.transform.translate;
+  const arcs = topo.arcs.map(a => { let x = 0, y = 0; return a.map(([dx, dy]) => { x += dx; y += dy; return [x * sx + tx, y * sy + ty]; }); });
+  const ring = idx => { const pts = []; for (const i of idx) { const a = i < 0 ? arcs[~i].slice().reverse() : arcs[i]; pts.push(...(pts.length ? a.slice(1) : a)); } return pts; };
+  const out = {};
+  for (const g of topo.objects.countries.geometries) {
+    const polys = g.type === 'Polygon' ? [g.arcs] : g.type === 'MultiPolygon' ? g.arcs : [];
+    out[g.properties.name] = polys.map(p => p.map(ring));
+  }
+  return out;
+}
+function pathOf(polys, g) {
+  g.beginPath();
+  for (const poly of polys) for (const r of poly) {
+    let any = false; for (const [lo, la] of r) { const [x, y] = P(lo, la); if (x > -900 && x < W + 900 && y > -900 && y < H + 900) { any = true; break; } }
+    if (!any) continue;
+    r.forEach(([lo, la], i) => { const [x, y] = P(lo, la); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+    g.closePath();
+  }
+}
+// 1871 groups: modern borders stand in; inside this frame they match closely (the 1871 Alsace-Lorraine line is hand-traced, see CREDITS)
+const GROUPS = [
+  { fill: C.fr, members: ['France', 'Monaco'] },
+  { fill: C.de, members: ['Germany', 'Poland'] },
+  { fill: '#E2B85A', members: ['Austria', 'Hungary', 'Czechia', 'Slovakia', 'Slovenia', 'Croatia', 'Bosnia and Herz.'] },
+  { fill: '#8DB56F', members: ['Italy', 'San Marino', 'Vatican'] },
+  { fill: '#B9A27E', members: ['Lithuania', 'Belarus', 'Ukraine', 'Russia', 'Latvia', 'Moldova'] },
+  { fill: '#C98A86', members: ['United Kingdom', 'Ireland', 'Isle of Man', 'Jersey', 'Guernsey'] },
+  { fill: '#D99A5B', members: ['Spain', 'Andorra', 'Portugal'] },
+  { fill: '#D9705F', members: ['Switzerland', 'Liechtenstein'] },
+  { fill: '#E9CF83', members: ['Belgium'] },
+  { fill: '#EA9C5C', members: ['Netherlands'] },
+  { fill: '#AEBB8E', members: ['Luxembourg'] },
+  { fill: '#C7867A', members: ['Denmark'] },
+  { fill: '#D8C48E', members: ['Sweden', 'Norway'] },
+  { fill: '#C99A6E', members: ['Serbia', 'Romania', 'Montenegro', 'Kosovo', 'Albania', 'Macedonia', 'Bulgaria'] },
+];
+const AL_LINE = [[5.89, 49.55], [5.98, 49.33], [5.96, 49.12], [6.12, 48.98], [6.42, 48.86], [6.68, 48.72], [6.93, 48.58],
+  [7.08, 48.42], [7.12, 48.22], [7.02, 48.04], [6.93, 47.88], [7.05, 47.74], [7.13, 47.50]];
+const AL_POLY = [...AL_LINE, [9.5, 47.4], [9.5, 49.7], [5.6, 49.7]];
+
+let geo, idx, img = {}, paperTex, pagePat, tablePat;
+let MAP71, MAPDE, MAPZ, MAPTALL;              // printed map baked at 1.25x (1871 labels / later labels) and a 2.3x close-up for 1940
+const MS = 1.25, PR = 2.5;          // static map bake scale; patch bake scale (patches get close-ups)
+let PATCH_C, PATCH = {};             // the ceded land's centre (world) and its paper patches
+
+// ---------------------------------------------------------------- paper texture (generated)
+function makePaper(w, h, seed) {
+  const c = canvas(w, h), g = c.getContext('2d'), r = rng(seed);
+  g.fillStyle = '#808080'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 900 * w * h / (W * H); i++) {
+    const x = r() * w, y = r() * h, rad = 20 + r() * 150, v = r() < .5 ? 0 : 255;
+    const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+    gr.addColorStop(0, `rgba(${v},${v},${v},${0.03 + r() * 0.03})`); gr.addColorStop(1, `rgba(${v},${v},${v},0)`);
+    g.fillStyle = gr; g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
+  for (let i = 0; i < 6000 * w * h / (W * H); i++) {
+    const x = r() * w, y = r() * h, a = r() * Math.PI * 2, l = 4 + r() * 20, v = r() < .55 ? 40 : 230;
+    g.strokeStyle = `rgba(${v},${v},${v},${0.04 + r() * 0.07})`; g.lineWidth = 0.6 + r() * 0.9;
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a + 1) * l * .5, y + Math.sin(a + 1) * l * .5, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
+  }
+  const d = g.getImageData(0, 0, w, h), p = d.data;
+  for (let i = 0; i < p.length; i += 4) { const n = (r() - .5) * 22; p[i] += n; p[i + 1] += n; p[i + 2] += n; }
+  g.putImageData(d, 0, 0);
+  return c;
+}
+// Numbers rule: IM FELL only has old-style figures (its 1 reads as a small-cap I, its 7 drops below the line, its dash is a stub),
+// so every run of digits (with – . between them) is set in Old Standard TT with lining figures, in the weight that matches the text
+// around it: Bold beside KuaiLe and in the year tags, Italic beside FellIt, Regular beside Fell.
+const NUM_RE = /\d+(?:[.–]\d+)*/g;
+function numFont(base) {
+  const m = base.match(/(\d+(?:\.\d+)?)px\s+(\S+)/); if (!m) return base;
+  const size = +m[1], fam = m[2], face = /It/.test(fam) ? 'OldStdIt' : /KuaiLe|Lilita/.test(fam) ? 'OldStdB' : 'OldStd';
+  return `${Math.round(size * (face === 'OldStdB' ? 0.92 : 0.9))}px ${face}`;
+}
+function textRuns(text) { const out = []; let i = 0; for (const m of text.matchAll(NUM_RE)) { if (m.index > i) out.push([text.slice(i, m.index), 0]); out.push([m[0], 1]); i = m.index + m[0].length; } if (i < text.length) out.push([text.slice(i), 0]); return out; }
+function measureMixed(g, text, base) { const nf = numFont(base); let w = 0; for (const [t, n] of textRuns(text)) { g.font = n ? nf : base; w += g.measureText(t).width; } g.font = base; return w; }
+function fillMixed(g, text, x, y, base, align = 'left') {   // like fillText, with the numbers in Old Standard (same baseline)
+  const nf = numFont(base), w = measureMixed(g, text, base), a0 = g.textAlign;
+  let cx = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+  g.textAlign = 'left';
+  for (const [t, n] of textRuns(text)) { g.font = n ? nf : base; g.fillText(t, cx, y); cx += g.measureText(t).width; }
+  g.font = base; g.textAlign = a0; return w;
+}
+function spacedLeft(g, text, x, y, sp) { const a = g.textAlign; g.textAlign = 'left'; let cx = x; for (const c of text) { g.fillText(c, cx, y); cx += g.measureText(c).width + sp; } g.textAlign = a; }
+function spaced(g, text, x, y, sp) {   // letter-spaced text centred on x
+  const ch = [...text], w = ch.map(c => g.measureText(c).width), tot = w.reduce((a, b) => a + b, 0) + sp * (ch.length - 1);
+  let cx = x - tot / 2; ch.forEach((c, i) => { g.fillText(c, cx, y); cx += w[i] + sp; });
+  return tot;
+}
+
+// ---------------------------------------------------------------- the printed map (baked)
+// labels: 'empire' (1871), 'germany' (later), or null (close-up); g is already transformed world → canvas
+function drawMap(g, labels) {
+  g.fillStyle = C.sea; g.fillRect(-2000, -2000, W + 4000, H + 4000);
+  const all = [];
+  for (const G of GROUPS) for (const m of G.members) if (geo[m]) all.push(...geo[m]);
+  g.save(); g.lineJoin = 'round';
+  for (let i = 6; i >= 1; i--) { pathOf(all, g); g.lineWidth = i * 9; g.strokeStyle = i % 2 ? '#97BEC6' : '#AACED4'; g.stroke(); }
+  g.restore();
+  g.save(); g.strokeStyle = 'rgba(40,70,90,.20)'; g.lineWidth = 1; g.setLineDash([2, 5]);
+  for (let lon = -15; lon <= 30; lon += 5) { const [x0, y0] = P(lon, 60), [x1, y1] = P(lon, 40); g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); }
+  for (let lat = 40; lat <= 60; lat += 5) { const [x0, y0] = P(-15, lat), [x1, y1] = P(30, lat); g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); }
+  g.restore();
+  for (const G of GROUPS) { pathOf(G.members.flatMap(m => geo[m] || []), g); g.fillStyle = G.fill; g.fill('evenodd'); }
+  for (const G of GROUPS) {
+    const polys = G.members.flatMap(m => geo[m] || []);
+    g.save(); pathOf(polys, g); g.clip('evenodd'); pathOf(polys, g); g.lineWidth = 12; g.strokeStyle = 'rgba(255,248,230,.20)'; g.stroke(); g.restore();
+  }
+  g.save(); g.lineJoin = 'round';
+  for (const G of GROUPS) for (const m of G.members) { if (!geo[m]) continue; pathOf(geo[m], g); g.lineWidth = 1.3; g.strokeStyle = 'rgba(55,40,30,.5)'; g.stroke(); }
+  pathOf(all, g); g.lineWidth = 2.2; g.strokeStyle = 'rgba(40,55,70,.7)'; g.stroke();
+  g.restore();
+  if (!labels) return;
+  // engraved place names: small caps serif, ink only. Placed clear of the puppets, the bubbles and the caption band (y > 950).
+  g.fillStyle = 'rgba(43,34,25,.86)'; g.textBaseline = 'middle'; g.textAlign = 'left';
+  const L = (t, lon, lat, size, sp, rot = 0) => { const [x, y] = P(lon, lat); g.save(); g.translate(x, y); g.rotate(rot * D2R); g.font = `${size}px FellSC`; spaced(g, t, 0, 0, sp); g.restore(); };
+  L('france', 3.85, 47.15, 50, 13, -3);
+  L(labels === 'empire' ? 'german empire' : 'germany', 8.75, 50.9, 34, labels === 'empire' ? 8 : 12, -3);
+  L('austria-hungary', 15.6, 47.35, 26, 5, -6);
+  L('switzerland', 8.15, 46.72, 24, 3);
+  L('italy', 11.9, 46.3, 26, 7, 4);
+  L('belgium', 4.45, 50.45, 22, 4, -10);
+  L('netherlands', 5.6, 52.45, 20, 3);
+  L('lux.', 6.1, 49.75, 15, 1);
+  g.font = 'italic 24px FellIt'; g.fillStyle = 'rgba(30,60,75,.55)';
+  { const [x, y] = P(3.0, 52.75); g.save(); g.translate(x, y); g.rotate(-14 * D2R); spaced(g, 'North Sea', 0, 0, 3); g.restore(); }
+  { const cx = 1820, cy = 958; g.save(); g.translate(cx, cy); g.strokeStyle = C.ink; g.fillStyle = C.ink; g.lineWidth = 1.5;
+    g.beginPath(); g.arc(0, 0, 34, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.arc(0, 0, 29, 0, Math.PI * 2); g.lineWidth = .8; g.stroke(); g.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) { g.rotate(Math.PI / 2); g.beginPath(); g.moveTo(0, -48); g.lineTo(7, 0); g.lineTo(-7, 0); g.closePath(); i === 3 ? g.fill() : g.stroke(); }
+    g.font = '22px FellSC'; g.textAlign = 'center'; g.fillText('n', 0, -62); g.restore(); }
+  { const km = KS / 111.2, x0 = 1540, y0 = 1030, L100 = 100 * km; g.save(); g.fillStyle = C.ink; g.strokeStyle = C.ink; g.lineWidth = 1.2;
+    for (let i = 0; i < 4; i++) { const xa = x0 + i * L100 / 2; i % 2 ? g.strokeRect(xa, y0, L100 / 2, 7) : g.fillRect(xa, y0, L100 / 2, 7); }
+    g.font = '17px OldStd'; g.textAlign = 'center'; g.textBaseline = 'bottom';
+    [0, 100, 200].forEach((k, i) => g.fillText(String(k), x0 + i * L100, y0 - 5)); g.font = '18px Fell'; g.textAlign = 'left'; g.fillText('km', x0 + 2 * L100 + 14, y0 - 5); g.restore(); }
+}
+function bakeMap(labels) {
+  const c = canvas(W * MS, H * MS), g = c.getContext('2d');
+  g.scale(MS, MS); drawMap(g, labels);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalCompositeOperation = 'overlay'; g.globalAlpha = 0.55; g.drawImage(paperTex, 0, 0); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  return c;
+}
+const Z40 = 2.3;   // the 1940 close-up: world → scene is (p − PATCH_C)·Z40 + (960, 560)
+const TALL = { x0: -300, y0: -1600, w: 2520, h: 2900 };   // the crane shot sees far beyond the frame's map: a taller sheet, baked once
+function bakeMapTall() {
+  const c = canvas(TALL.w, TALL.h), g = c.getContext('2d');
+  g.translate(-TALL.x0, -TALL.y0); drawMap(g, 'germany');
+  g.setTransform(1, 0, 0, 1, 0, 0); const tex = makePaper(1200, 1200, 51);
+  g.globalCompositeOperation = 'overlay'; g.globalAlpha = 0.55; for (let y = 0; y < TALL.h; y += 1200) for (let x = 0; x < TALL.w; x += 1200) g.drawImage(tex, x, y); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  return c;
+}
+function bakeMapZoom() {
+  const c = canvas(W, H), g = c.getContext('2d');
+  g.translate(960, 560); g.scale(Z40, Z40); g.translate(-PATCH_C[0], -PATCH_C[1]); drawMap(g, null);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalCompositeOperation = 'overlay'; g.globalAlpha = 0.6; g.drawImage(paperTex, -300, -200); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  return c;
+}
+
+// ---------------------------------------------------------------- paper patches (baked at PR around the ceded land)
+let PB;   // patch bake window in world coords
+function alPath(g) {
+  pathOf(geo['France'], g); g.clip('evenodd');
+  g.beginPath(); AL_POLY.forEach(([lo, la], i) => { const [x, y] = P(lo, la); i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.closePath();
+}
+function bakePatch(col, seed, labels) {
+  const w = (PB.x1 - PB.x0) * PR, h = (PB.y1 - PB.y0) * PR, toW = g => g.setTransform(PR, 0, 0, PR, -PB.x0 * PR, -PB.y0 * PR);
+  const shape = canvas(w, h), k = shape.getContext('2d');
+  toW(k); k.save(); alPath(k); k.clip(); k.fillStyle = col; k.fillRect(PB.x0, PB.y0, PB.x1 - PB.x0, PB.y1 - PB.y0);
+  alPath(k); k.lineWidth = 14; k.strokeStyle = 'rgba(255,248,230,.16)'; k.stroke();
+  k.setLineDash([7, 6]); alPath(k); k.lineWidth = 4; k.strokeStyle = 'rgba(38,44,54,.5)'; k.stroke(); k.restore();
+  if (labels) {   // printed on: Lorraine on the north-west lobe, Alsace down the Rhine strip
+    k.save(); k.fillStyle = 'rgba(246,239,224,.95)'; k.textAlign = 'center'; k.textBaseline = 'middle'; k.font = '24px FellSC';
+    k.translate(PATCH_C[0] - 10, PATCH_C[1] - 76); k.rotate(-6 * D2R); spaced(k, 'lorraine', 0, 0, 2); k.restore();
+    k.save(); k.fillStyle = 'rgba(246,239,224,.95)'; k.textAlign = 'center'; k.textBaseline = 'middle'; k.font = '24px FellSC';
+    k.translate(PATCH_C[0] + 20, PATCH_C[1] + 46); k.rotate(-76 * D2R); spaced(k, 'alsace', 0, 0, 3); k.restore();
+  }
+  k.setTransform(1, 0, 0, 1, 0, 0);
+  const tex = makePaper(Math.ceil(w), Math.ceil(h), seed);
+  k.globalCompositeOperation = 'source-atop'; k.globalAlpha = 1;
+  const t2 = canvas(w, h), q2 = t2.getContext('2d'); q2.drawImage(shape, 0, 0); q2.globalCompositeOperation = 'overlay'; q2.globalAlpha = .6; q2.drawImage(tex, 0, 0);
+  k.drawImage(t2, 0, 0); k.globalCompositeOperation = 'source-over';
+  // cream card margin, stamped around the shape
+  const card = canvas(w, h), q = card.getContext('2d'), r = rng(seed + 3);
+  for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2, rr = 8 * PR * (0.92 + r() * 0.16); q.drawImage(shape, Math.cos(a) * rr, Math.sin(a) * rr); }
+  q.globalCompositeOperation = 'source-in'; q.fillStyle = C.paper; q.fillRect(0, 0, w, h);
+  q.globalCompositeOperation = 'source-over';
+  q.save(); q.shadowColor = 'rgba(40,28,15,.35)'; q.shadowBlur = 2.5 * PR / 1.25; q.drawImage(shape, 0, 0); q.restore();
+  return { cv: card, sil: silhouette(card, '#000') };
+}
+function silhouette(src, col) { const c = canvas(src.width, src.height), g = c.getContext('2d'); g.drawImage(src, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = col; g.fillRect(0, 0, c.width, c.height); return c; }
+// a piece of a patch, cut along a polygon given in patch-local coords (relative to PATCH_C); the torn edge gets cream fibres
+function cutPiece(Pc, poly, tornLine) {
+  const c = canvas(Pc.cv.width, Pc.cv.height), g = c.getContext('2d');
+  g.setTransform(PR, 0, 0, PR, -(PB.x0 - PATCH_C[0]) * PR, -(PB.y0 - PATCH_C[1]) * PR);
+  g.beginPath(); poly.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); g.save(); g.clip();
+  g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(Pc.cv, 0, 0);
+  if (tornLine) {
+    g.setTransform(PR, 0, 0, PR, -(PB.x0 - PATCH_C[0]) * PR, -(PB.y0 - PATCH_C[1]) * PR);
+    g.beginPath(); tornLine.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y));
+    g.globalCompositeOperation = 'source-atop'; g.strokeStyle = '#F6EFDF'; g.lineWidth = 7; g.lineJoin = 'round'; g.stroke();
+    g.strokeStyle = 'rgba(160,140,110,.5)'; g.lineWidth = 1.2; g.stroke();
+  }
+  g.restore();
+  return { cv: c, sil: silhouette(c, '#000') };
+}
+// draw a patch (or piece) with its centre at c, rotation rot (deg), lift h (0 = glued: thin shadow; 1 = held up: big soft shadow)
+function drawPatch(g, Pc, o = {}) {
+  const c = o.c || PATCH_C, h = o.h || 0, k = (o.k || 1) * (1 + 0.08 * h), z = o.z || 1;
+  g.save();
+  g.shadowColor = `rgba(30,20,10,${(o.shadowA || 0.5) - 0.18 * h})`; g.shadowBlur = (3 + 30 * h) * z; g.shadowOffsetX = (3 + 30 * h) * z; g.shadowOffsetY = (4 + 44 * h) * z;
+  g.translate(c[0], c[1]); g.rotate((o.rot || 0) * D2R); g.scale(k, k);
+  g.drawImage(Pc.cv, PB.x0 - PATCH_C[0], PB.y0 - PATCH_C[1], Pc.cv.width / PR, Pc.cv.height / PR);
+  g.restore();
+}
+// fold: a flap beyond the line A→B (patch-local) turned up by th degrees (0 flat, 180 folded right back)
+const FOLD = { A: [-140, 30], B: [30, -190] };
+function foldPieces(Pc) {
+  const [A, B] = [FOLD.A, FOLD.B], d = [B[0] - A[0], B[1] - A[1]], L = Math.hypot(...d), n = [d[1] / L, -d[0] / L];
+  const far = 900, flapPoly = [[A[0] - d[0] * 4, A[1] - d[1] * 4], [B[0] + d[0] * 4, B[1] + d[1] * 4], [B[0] + d[0] * 4 + n[0] * far, B[1] + d[1] * 4 + n[1] * far], [A[0] - d[0] * 4 + n[0] * far, A[1] - d[1] * 4 + n[1] * far]];
+  const restPoly = [[A[0] - d[0] * 4, A[1] - d[1] * 4], [B[0] + d[0] * 4, B[1] + d[1] * 4], [B[0] + d[0] * 4 - n[0] * far, B[1] + d[1] * 4 - n[1] * far], [A[0] - d[0] * 4 - n[0] * far, A[1] - d[1] * 4 - n[1] * far]];
+  const flap = cutPiece(Pc, flapPoly), rest = cutPiece(Pc, restPoly);
+  return { flap, rest, back: { cv: silhouette(flap.cv, '#E6DCC4') }, n, A };
+}
+function drawFolded(g, F, th, o = {}) {
+  const c = o.c || PATCH_C, s = 1 - Math.cos(th * D2R), [nx, ny] = F.n, An = F.A[0] * nx + F.A[1] * ny;
+  drawPatch(g, F.rest, o);
+  g.save(); g.translate(c[0], c[1]); g.rotate((o.rot || 0) * D2R);
+  g.transform(1 - s * nx * nx, -s * nx * ny, -s * nx * ny, 1 - s * ny * ny, s * An * nx, s * An * ny);
+  g.shadowColor = 'rgba(30,20,10,.35)'; g.shadowBlur = 12 * Math.sin(th * D2R) + 2; g.shadowOffsetX = 6; g.shadowOffsetY = 10 * Math.sin(th * D2R) + 2;
+  g.drawImage((th > 90 ? F.back : F.flap).cv, PB.x0 - PATCH_C[0], PB.y0 - PATCH_C[1], F.flap.cv.width / PR, F.flap.cv.height / PR);
+  g.restore();
+  // where the flap's tip is now (for a hand to hold it)
+  const tip = [F.A[0] + (FOLD.B[0] - F.A[0]) * .5 + nx * 70, F.A[1] + (FOLD.B[1] - F.A[1]) * .5 + ny * 70];
+  const v = (tip[0] - F.A[0]) * nx + (tip[1] - F.A[1]) * ny, tp = [tip[0] - v * s * nx, tip[1] - v * s * ny];
+  return [c[0] + tp[0], c[1] + tp[1]];
+}
+
+// ---------------------------------------------------------------- puppets
+const RIG = {
+  pr: {
+    s: 0.72, neck: [690, 362], sh: { L: [556, 396], R: [820, 394] }, hip: { L: [592, 600], R: [795, 600] },
+    uarm: { L: { id: 6, p: [391, 380], e: [203, 459] }, R: { id: 7, p: [975, 380], e: [1166, 459] } },
+    farm: { left: { id: 9, p: [369, 527], h: [150, 556] }, right: { id: 10, p: [1007, 527], h: [1226, 556] } },
+    leg: { L: { id: 11, p: [462, 625], f: [330, 890] }, R: { id: 12, p: [911, 625], f: [1040, 890] } },
+    torso: 5, heads: { n: [1, 185], angry: [3, 502], smug: [4, 820], wow: [2, 1137] }, headY: 331, headTop: 150,
+    hat: { id: 0, p: [1472, 300], k: 0.98, rot: -2 }, headOff: [2, 4],
+  },
+  fr: {
+    s: 0.72, neck: [657, 332], sh: { L: [566, 384], R: [751, 384] }, hip: { L: [612, 628], R: [700, 628] },
+    uarm: { L: { id: 6, p: [389, 355], e: [268, 475] }, R: { id: 7, p: [921, 357], e: [1053, 476] } },
+    farmLR: { L: { id: 8, p: [241, 527], h: [192, 690] }, R: { id: 9, p: [1078, 527], h: [1128, 690] } },
+    leg: { L: { id: 10, p: [455, 553], f: [360, 860] }, R: { id: 11, p: [869, 548], f: [960, 860] } },
+    torso: 5, heads: { n: [4, 163], angry: [2, 453], smug: [3, 739], wow: [0, 1019] }, headY: 283, headTop: 98,
+    hat: { id: 1, p: [1405, 272], k: 0.92, rot: 4 }, headOff: [4, 6],
+  },
+  al: {   // Alsace: the new sheet (src/sheet-al.png)
+    s: 0.6, neck: [690, 327], sh: { L: [583, 345], R: [797, 345] }, hip: { L: [560, 690], R: [820, 690] },
+    uarm: { L: { id: 8, p: [450, 340], e: [380, 442] }, R: { id: 9, p: [925, 342], e: [995, 442] } },
+    farmLR: { L: { id: 10, p: [343, 485], h: [275, 635] }, R: { id: 11, p: [1032, 485], h: [1105, 635] } },
+    leg: { L: { id: 12, p: [503, 715], f: [440, 875] }, R: { id: 13, p: [868, 715], f: [935, 875] } },
+    torso: 6, heads: { n: [2, 153, 268], worried: [3, 428, 270], smile: [4, 700, 270], old: [0, 968, 276], oldwow: [1, 1245, 276], child: [5, 1518, 278] },
+    headY: 270, headTop: -42, hat: { id: 7, p: [1370, 437], k: 0.5, rot: 0 }, headOff: [0, 2],
+  },
+};
+function put(g, sheet, id, pv, at, rotRad, s, flip = false) {
+  const m = idx[sheet].parts[id], im = img[`${sheet}_${id}`];
+  g.save(); g.translate(at[0], at[1]); g.rotate(rotRad); g.scale(s / 2 * (flip ? -1 : 1), s / 2);
+  g.drawImage(im, -(pv[0] * 2 - m.x), -(pv[1] * 2 - m.y));
+  g.restore();
+}
+function follow(pv, q, at, rotRad, s) {
+  const dx = (q[0] - pv[0]) * s, dy = (q[1] - pv[1]) * s, c = Math.cos(rotRad), sn = Math.sin(rotRad);
+  return [at[0] + dx * c - dy * sn, at[1] + dx * sn + dy * c];
+}
+function ik(S, Tg, L1, L2, bend) {
+  const d = clamp(len(S, Tg), Math.abs(L1 - L2) + 1, L1 + L2 - 0.5), a = angOf(S, Tg);
+  const th = a + bend * Math.acos(clamp((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), -1, 1));
+  const E = [S[0] + L1 * Math.cos(th), S[1] + L1 * Math.sin(th)], Hh = [S[0] + d * Math.cos(a), S[1] + d * Math.sin(a)];
+  return { E, H: Hh, ua: th, fa: angOf(E, Hh) };
+}
+function layerShadow(g, on) {
+  if (on) { g.shadowColor = 'rgba(35,22,8,0.40)'; g.shadowBlur = 6; g.shadowOffsetX = 3; g.shadowOffsetY = 4; }
+  else { g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetX = 0; g.shadowOffsetY = 0; }
+}
+// pose: { at:[x,y] neck, rot, head, headRot, pop, hat:[dx,dy,rot], leg:{L,R} (deg), hand:{L,R} world targets, bend:{L,R}, behind, under, s, noHat }
+function drawPuppet(g, key, pose, extra) {
+  const R = RIG[key], s = (pose.s || R.s) * (pose.k || 1), tr = pose.rot * D2R, at = pose.at;
+  const Tf = q => follow(R.neck, q, at, tr, s);
+  for (const side of ['L', 'R']) { const Lg = R.leg[side], hp = Tf(R.hip[side]); put(g, key, Lg.id, Lg.p, hp, pose.leg[side] * D2R - angOf(Lg.p, Lg.f), s); }
+  const arms = {};
+  for (const side of ['L', 'R']) {
+    const U = R.uarm[side], S = Tf(R.sh[side]), tgt = pose.hand[side];
+    let F;
+    if (key === 'pr') F = (tgt[0] < S[0] - 20 || (side === 'L' && tgt[0] < S[0] + 60)) ? R.farm.left : R.farm.right;
+    else F = R.farmLR[side];
+    if (pose.farm && pose.farm[side]) F = R.farm[pose.farm[side]];
+    arms[side] = { U, F, S, sol: ik(S, tgt, len(U.p, U.e) * s, len(F.p, F.h) * s, pose.bend[side]) };
+  }
+  const drawUpper = side => { const a = arms[side]; put(g, key, a.U.id, a.U.p, a.S, a.sol.ua - angOf(a.U.p, a.U.e), s); };
+  const drawFore = side => { const a = arms[side]; put(g, key, a.F.id, a.F.p, a.sol.E, a.sol.fa - angOf(a.F.p, a.F.h), s); };
+  for (const side of ['L', 'R']) if (pose.behind && pose.behind[side]) { drawUpper(side); drawFore(side); }
+  for (const side of ['L', 'R']) if (!(pose.behind && pose.behind[side])) drawUpper(side);
+  put(g, key, R.torso, R.neck, at, tr, s);
+  if (extra && extra.afterTorso) extra.afterTorso(Tf, tr);
+  for (const side of ['L', 'R']) if (pose.under && pose.under[side]) drawFore(side);
+  const hd = R.heads[pose.head], hid = hd[0], hx = hd[1], hy = hd[2] || R.headY, hr = (pose.rot + pose.headRot) * D2R, hs = s * pose.pop;
+  const ha = [at[0] + R.headOff[0] * s / R.s, at[1] + R.headOff[1] * s / R.s];
+  put(g, key, hid, [hx, hy], ha, hr, hs);
+  const top = follow([hx, hy], [hx, R.headTop + (pose.head.startsWith('old') ? -8 : 0)], ha, hr, hs);
+  if (!pose.noHat) put(g, key, R.hat.id, R.hat.p, [top[0] + pose.hat[0], top[1] + pose.hat[1]], hr + (R.hat.rot + pose.hat[2]) * D2R, s * R.hat.k * pose.pop);
+  if (extra && extra.beforeFore) extra.beforeFore(Tf, tr);
+  for (const side of ['L', 'R']) if (!(pose.behind && pose.behind[side]) && !(pose.under && pose.under[side])) drawFore(side);
+  return { hand: { L: arms.L.sol.H, R: arms.R.sol.H }, head: ha, top };
+}
+let LAYER;
+function drawLayer(dst, cam, fn) {   // a puppet is assembled on its own layer, then dropped onto the scene with one big shadow
+  const g = LAYER.getContext('2d');
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+  applyCam(g, cam); layerShadow(g, true);
+  fn(g);
+  dst.save(); dst.setTransform(1, 0, 0, 1, 0, 0);
+  dst.shadowColor = 'rgba(30,18,6,.42)'; dst.shadowBlur = 20 * cam.z; dst.shadowOffsetX = 13 * cam.z; dst.shadowOffsetY = 19 * cam.z;
+  dst.drawImage(LAYER, 0, 0); dst.restore();
+}
+// scene camera (inside a panel)
+function applyCam(g, cam) {
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.translate(960 + cam.sx, 540 + cam.sy); g.rotate(cam.sr * D2R); g.scale(cam.z, cam.z); g.translate(-cam.f[0], -cam.f[1]);
+}
+function shake(t, t0, amp, f = 15, d = 11) {
+  if (t < t0) return [0, 0, 0];
+  const u = t - t0, e = Math.exp(-u * d);
+  return [-amp * .45 * e * Math.sin(2 * Math.PI * (f - 4) * u + 1), amp * e * Math.sin(2 * Math.PI * f * u), amp * .022 * e * Math.sin(2 * Math.PI * 9 * u)];
+}
+
+// ---------------------------------------------------------------- props drawn in code
+function cardStroke(g, path, fill, w = 7) { g.lineJoin = 'round'; g.lineWidth = w; g.strokeStyle = C.paper; g.stroke(path); g.fillStyle = fill; g.fill(path); }
+function brass(g, x, y, r) {
+  const gr = g.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r);
+  gr.addColorStop(0, '#FFF1BF'); gr.addColorStop(.35, C.brass); gr.addColorStop(1, '#7A5A1E');
+  g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = 'rgba(60,40,10,.55)'; g.lineWidth = 1; g.stroke();
+}
+function scissors(g, x, y, ang, open) {
+  g.save(); g.translate(x, y); g.rotate(ang);
+  for (const sgn of [-1, 1]) {
+    g.save(); g.rotate(sgn * open / 2);
+    g.shadowColor = 'rgba(30,20,10,.45)'; g.shadowBlur = 10; g.shadowOffsetX = 8; g.shadowOffsetY = 12;
+    const blade = new Path2D(); blade.moveTo(-8, -9 * sgn); blade.quadraticCurveTo(70, -10 * sgn, 132, 0); blade.quadraticCurveTo(70, 4 * sgn, -8, 7 * sgn); blade.closePath();
+    cardStroke(g, blade, '#B8C0C7');
+    g.shadowColor = 'transparent';
+    g.strokeStyle = 'rgba(70,80,90,.55)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(4, 0); g.quadraticCurveTo(70, -3 * sgn, 126, 0); g.stroke();
+    const ring = new Path2D(); ring.ellipse(-46, 22 * sgn, 30, 20, -0.35 * sgn, 0, Math.PI * 2); ring.moveTo(-28, 22 * sgn); ring.ellipse(-46, 22 * sgn, 17, 10, -0.35 * sgn, 0, Math.PI * 2, true);
+    const arm = new Path2D(); arm.moveTo(-8, -8 * sgn); arm.lineTo(-30, 10 * sgn); arm.lineTo(-22, 18 * sgn); arm.lineTo(2, 4 * sgn); arm.closePath();
+    g.shadowColor = 'rgba(30,20,10,.45)'; g.shadowBlur = 10; g.shadowOffsetX = 8; g.shadowOffsetY = 12;
+    cardStroke(g, arm, C.red); cardStroke(g, ring, C.red);
+    g.restore();
+  }
+  brass(g, 0, 0, 8);
+  g.restore();
+}
+let CUT, CUTLEN;
+function along(s) {
+  let d = s * CUTLEN;
+  for (let i = 1; i < CUT.length; i++) {
+    const l = len(CUT[i - 1], CUT[i]);
+    if (d <= l || i === CUT.length - 1) { const u = clamp(d / l, 0, 1); return { p: [lerp(CUT[i - 1][0], CUT[i][0], u), lerp(CUT[i - 1][1], CUT[i][1], u)], a: angOf(CUT[i - 1], CUT[i]) }; }
+    d -= l;
+  }
+}
+function cutLine(g, printU, cutU) {
+  const P0 = []; for (let i = 0; i <= 120; i++) P0.push(along(i / 120).p);
+  const upto = (u, f) => { const n = Math.floor(u * 120); if (n < 1) return; g.beginPath(); for (let i = 0; i <= n; i++) i ? g.lineTo(...P0[i]) : g.moveTo(...P0[i]); f(); };
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  upto(printU, () => { g.setLineDash([13, 9]); g.strokeStyle = C.ink; g.lineWidth = 3; g.stroke(); });
+  upto(cutU, () => { g.setLineDash([]); g.strokeStyle = 'rgba(250,244,228,.95)'; g.lineWidth = 7; g.stroke(); g.strokeStyle = 'rgba(30,24,18,.85)'; g.lineWidth = 2.2; g.stroke(); });
+  g.restore();
+}
+function hatch(g, yCut) {
+  g.save(); alPath(g); g.clip(); g.beginPath(); g.rect(0, 0, W, yCut); g.clip();
+  g.fillStyle = '#C6CAD0'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(70,80,95,.42)'; g.lineWidth = 2;
+  for (let k = -H; k < W; k += 11) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k + H, H); g.stroke(); }
+  g.restore();
+}
+function ticks(g, t, t0, c, sc = 1) {   // ink strokes around a slap, three drawings on twos
+  const u = (twos(t) - t0) / 0.25; if (u < 0 || u > 1) return;
+  const r = rng(5);
+  g.save(); g.strokeStyle = C.ink; g.lineCap = 'round'; g.lineWidth = 6;
+  for (let i = 0; i < 9; i++) {
+    const a = -Math.PI * 0.95 + i / 8 * Math.PI * 1.9 + (r() - .5) * .2, l = 34 * (1 - u * .5), ex = 150 * sc * (1 + u * .35), ey = 185 * sc * (1 + u * .35);
+    g.beginPath(); g.moveTo(c[0] + Math.cos(a) * ex, c[1] + Math.sin(a) * ey); g.lineTo(c[0] + Math.cos(a) * (ex + l), c[1] + Math.sin(a) * (ey + l)); g.stroke();
+  }
+  g.restore();
+}
+function flecks(g, t, t0, c, cols, n = 14, sc = 1) {
+  const tt = t - t0; if (tt < 0 || tt > 0.75) return;
+  const r = rng(19 + Math.round(t0 * 10));
+  for (let i = 0; i < n; i++) {
+    const a = r() * Math.PI * 2, v = (260 + r() * 320) * sc, spin = (r() - .5) * 18, sz = (7 + r() * 9) * sc, col = cols[Math.floor(r() * cols.length)];
+    const x = c[0] + Math.cos(a) * (95 * sc + v * tt), y = c[1] + Math.sin(a) * (130 * sc + v * tt) + 700 * tt * tt;
+    const k = 1 - clamp((tt - 0.5) / 0.25, 0, 1);
+    g.save(); g.translate(x, y); g.rotate(spin * tt); g.scale(k, k);
+    g.fillStyle = col; g.shadowColor = 'rgba(30,20,10,.35)'; g.shadowBlur = 3; g.shadowOffsetX = 2; g.shadowOffsetY = 3;
+    g.beginPath(); g.moveTo(-sz, -sz * .4); g.lineTo(sz * .8, -sz * .6); g.lineTo(sz * .2, sz * .7); g.closePath(); g.fill(); g.restore();
+  }
+}
+function smearLines(g, c, dir = 1) {
+  g.save(); g.strokeStyle = C.ink; g.lineCap = 'round'; g.lineWidth = 5;
+  for (let i = -2; i <= 2; i++) { g.beginPath(); g.arc(c[0] + 230 * dir, c[1] + 120 + i * 40, 240 + i * 14, dir > 0 ? Math.PI * 1.05 : -Math.PI * .32, dir > 0 ? Math.PI * 1.32 : -Math.PI * .05); g.stroke(); }
+  g.restore();
+}
+let TXT = [];   // every text drawn this frame: scene coords + the canvas it is on (mapped to the screen by the page)
+function noteText(g, id, text, x0, y0, x1, y1) {
+  const m = g.getTransform(), pts = [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].map(([x, y]) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+  TXT.push({ id, text, x0: Math.min(...pts.map(p => p[0])), y0: Math.min(...pts.map(p => p[1])), x1: Math.max(...pts.map(p => p[0])), y1: Math.max(...pts.map(p => p[1])), cv: g.canvas });
+}
+// speech balloons: English in Lilita (the line), Chinese under it in red (the same line, short). Spiky = a shout.
+function bubble(g, id, lines, x, y, tail, k, spiky) {
+  if (k <= 0.001) return;
+  g.save();
+  g.font = '64px Lilita'; let tw = g.measureText(lines[0]).width;
+  if (lines[1]) { g.font = '40px KuaiLe'; tw = Math.max(tw, g.measureText(lines[1]).width); }
+  const w = tw + 84, h = lines[1] ? 150 : 108;
+  g.translate(x, y); g.rotate(-1.5 * D2R); g.scale(k, k);
+  const b = new Path2D(), tx = (tail[0] - x) / k, ty = (tail[1] - y) / k;
+  if (spiky) {
+    const n = 18, r = rng(3);
+    for (let i = 0; i <= n; i++) { const a = i / n * Math.PI * 2, rr = (i % 2 ? 1.0 : 1.18) + (r() - .5) * .04; const px = Math.cos(a) * w * .56 * rr, py = Math.sin(a) * h * .64 * rr; i ? b.lineTo(px, py) : b.moveTo(px, py); }
+    b.closePath();
+    const base = Math.atan2(ty, tx), bx = Math.cos(base) * w * .45, by = Math.sin(base) * h * .5;
+    const wd = new Path2D(); wd.moveTo(bx - 18 * Math.sin(base), by + 18 * Math.cos(base)); wd.lineTo(tx, ty); wd.lineTo(bx + 18 * Math.sin(base), by - 18 * Math.cos(base)); wd.closePath(); b.addPath(wd);
+  } else {
+    const rr = 50, side = tx > 0 ? 1 : -1, tx0 = side > 0 ? w / 2 - 130 : -w / 2 + 60, tx1 = tx0 + 70;
+    b.moveTo(-w / 2 + rr, -h / 2); b.lineTo(w / 2 - rr, -h / 2); b.quadraticCurveTo(w / 2, -h / 2, w / 2, 0); b.quadraticCurveTo(w / 2, h / 2, w / 2 - rr, h / 2);
+    b.lineTo(tx1, h / 2); b.lineTo(tx, ty); b.lineTo(tx0, h / 2);
+    b.lineTo(-w / 2 + rr, h / 2); b.quadraticCurveTo(-w / 2, h / 2, -w / 2, 0); b.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + rr, -h / 2); b.closePath();
+  }
+  g.shadowColor = 'rgba(30,20,10,.38)'; g.shadowBlur = 12; g.shadowOffsetX = 6; g.shadowOffsetY = 9;
+  g.fillStyle = '#FBF6EA'; g.fill(b); g.shadowColor = 'transparent';
+  g.lineWidth = 4; g.strokeStyle = C.ink; g.lineJoin = 'round'; g.stroke(b);
+  g.fillStyle = C.ink; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = '64px Lilita'; g.fillText(lines[0], 0, lines[1] ? -24 : 3);
+  if (lines[1]) { g.font = '40px KuaiLe'; g.fillStyle = C.red; g.fillText(lines[1], 0, 42); }
+  noteText(g, id, lines.join(' '), -w / 2, -h / 2, w / 2, h / 2);
+  g.restore();
+}
+function puff(g, x, y, k) {
+  if (k <= 0.001) return;
+  g.save(); g.translate(x, y); g.scale(k, k);
+  const b = new Path2D(); [[-18, 4, 16], [0, -8, 20], [20, 2, 15], [4, 10, 15]].forEach(([cx, cy, r]) => { b.moveTo(cx + r, cy); b.arc(cx, cy, r, 0, Math.PI * 2); });
+  g.shadowColor = 'rgba(30,20,10,.35)'; g.shadowBlur = 6; g.shadowOffsetX = 3; g.shadowOffsetY = 5;
+  g.fillStyle = '#FBF6EA'; g.fill(b); g.restore();
+}
+// the year tag: a printed slip pasted into the panel's top-left corner. Big year, one line of context under it.
+function yearTag(g, t, t0, x, y, year, line, id, strip) {
+  const u = clamp((t - t0) / 0.22, 0, 1); if (u <= 0) return;
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+  g.font = '62px OldStdB'; const yw = [...year].reduce((a, c) => a + g.measureText(c).width + 2, -2);
+  g.font = '26px FellIt'; const lw = g.measureText(line).width, w = Math.max(250, lw + 56, yw + 58);
+  g.translate(x, lerp(y - 220, y, EASE.back(u))); g.rotate(lerp(-9, -1.4, EASE.o(u)) * D2R);
+  g.shadowColor = 'rgba(30,20,10,.32)'; g.shadowBlur = 8; g.shadowOffsetX = 3; g.shadowOffsetY = 5;
+  g.fillStyle = '#F3EAD6'; g.fillRect(0, 0, w, 136); g.shadowColor = 'transparent';
+  g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(9, 9, w - 18, 118); g.lineWidth = 1; g.strokeRect(14, 14, w - 28, 108);
+  g.fillStyle = C.ink; g.textBaseline = 'alphabetic'; g.textAlign = 'left';
+  g.font = '62px OldStdB'; spacedLeft(g, year, 28, 80, 2); noteText(g, id, year, 28, 30, 28 + yw, 82);
+  g.strokeStyle = 'rgba(43,34,25,.55)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(30, 90); g.lineTo(28 + yw, 90); g.stroke();   // a printed rule under the year
+  g.font = '26px FellIt'; g.fillStyle = '#5A4A3A'; g.fillText(line, 30, 114); noteText(g, id + '-l', line, 30, 92, 30 + lw, 120);
+  g.restore();
+  if (!strip) return;
+  const v = clamp((t - strip[0]) / 0.25, 0, 1); if (v <= 0) return;
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+  const sw = measureMixed(g, strip[1], 'italic 28px FellIt') + 44;
+  g.translate(lerp(-480, x + 22, EASE.back(v)), y + 146); g.rotate(lerp(-4, 0.8, EASE.o(v)) * D2R);
+  g.shadowColor = 'rgba(30,20,10,.32)'; g.shadowBlur = 7; g.shadowOffsetX = 3; g.shadowOffsetY = 4;
+  g.fillStyle = '#F3EAD6'; g.fillRect(0, 0, sw, 52); g.shadowColor = 'transparent';
+  g.fillStyle = C.ink; g.textBaseline = 'middle'; fillMixed(g, strip[1], 22, 27, 'italic 28px FellIt');
+  noteText(g, id + '-s', strip[1], 22, 10, sw - 22, 44);
+  g.fillStyle = 'rgba(222,205,165,.96)';
+  [[-14, 4, -12], [sw - 20, 0, 10]].forEach(([tx, ty, ta]) => { g.save(); g.translate(tx + 17, ty + 10); g.rotate(ta * D2R); g.fillRect(-20, -11, 40, 22); g.restore(); });
+  g.restore();
+}
+function vignette(g, a = .24) {
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const v = g.createRadialGradient(W * .5, H * .46, H * .38, W * .5, H * .5, H * 1.05);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(40,25,10,${a})`);
+  g.fillStyle = v; g.fillRect(0, 0, W, H);
+}
+
+// ================================================================ PANEL 1 · 1871 (0–10 s)
+function prPose71(t) {
+  const hopT = [0, 0.5, 1.0, 1.5, 2.0], hopX = [2060, 1880, 1715, 1570, 1450], hopH = [52, 46, 38, 26];
+  let x, y = 488, rot = 0, legL = 100, legR = 80, headRot = 0, head = 'n';
+  if (t < 2.0) {
+    const i = Math.min(3, Math.floor(t / 0.5)), u = (t - hopT[i]) / 0.5;
+    const air = clamp((u - 0.2) / 0.8, 0, 1), ground = u < 0.2 ? Math.sin(u / 0.2 * Math.PI) : 0;
+    x = lerp(hopX[i], hopX[i + 1], EASE.io(air)); y = 488 - hopH[i] * Math.sin(Math.PI * air) + 10 * ground;
+    rot = -7 * Math.sin(Math.PI * air) + 3 * ground;
+    legL = lerp(100, 122, Math.sin(Math.PI * air)); legR = lerp(80, 100, Math.sin(Math.PI * air));
+    headRot = 4 * Math.sin(Math.PI * air * 2);
+  } else {
+    x = K(t, [[2.0, 1450], [3.0, 1450], [3.5, 1478, 'o'], [3.85, 1478], [4.0, 1300, 'lin'], [4.35, 1300], [5.0, 1300], [5.5, 1450, 'back']]);
+    y = K(t, [[2.0, 488], [3.0, 488], [3.5, 502, 'o'], [3.85, 502], [4.0, 528, 'lin'], [5.0, 528], [5.5, 488, 'back']]) + wob(t, 2.0, 8, 4, 9) + wob(t, 8.0, 3, 6, 10);
+    rot = K(t, [[2.0, 0], [3.0, 0], [3.5, 11, 'o'], [3.85, 11], [4.0, -22, 'lin'], [5.0, -22], [5.5, 0, 'back'], [6.4, 0], [6.75, 4, 'el']]) + wob(t, T.slap, 4, 4, 8);
+    legL = K(t, [[2.0, 100], [3.0, 100], [3.5, 108], [3.85, 108], [4.0, 130, 'lin'], [5.0, 130], [5.5, 100, 'back'], [6.4, 100], [6.75, 97]]);
+    legR = K(t, [[2.0, 80], [3.0, 80], [3.5, 66], [3.85, 66], [4.0, 60, 'lin'], [5.0, 60], [5.5, 80, 'back'], [6.4, 80], [6.75, 83]]);
+    if (t > 3.5 && t < 3.85) { x += (hash(Math.floor(t * 12)) - .5) * 3; rot += (hash(Math.floor(t * 12) + 7) - .5) * 1.4; }
+    if (t > 4.35 && t < 4.95) x += 13 * Math.sin(2 * Math.PI * 2 * (t - 4.35));
+    if (t > 8.5) rot += 1.4 * Math.sin(2 * Math.PI * 0.5 * (t - 8.5));
+    headRot = K(t, [[2.0, 0], [2.2, -6], [3.0, -6], [3.5, 4], [4.0, -8, 'lin'], [5.0, -8], [5.5, 0], [6.4, 0], [6.75, -7, 'el']]);
+    head = t < 2.1 ? 'n' : t < 3.0 ? 'smug' : t < 4.7 ? 'angry' : 'smug';
+  }
+  const pop = 1 + wob(t, 2.1, 0.07, 3, 10) + wob(t, 3.0, 0.07, 3, 10) + wob(t, 4.7, 0.06, 3, 10);
+  const rel = (dx, dy) => [x + dx, y + dy];
+  let hL, hR, bendL = -1, bendR = -1;
+  const p = patchPose71(t, [x, y]);
+  if (t < T.slap) hL = p.grip;
+  else if (t < 5.0) { hL = [PATCH_C[0] + 40 + (t > 4.35 && t < 4.95 ? 13 * Math.sin(2 * Math.PI * 2 * (t - 4.35)) : 0), PATCH_C[1] + 10]; bendL = 1; }
+  else { hL = rel(...K(t, [[5.0, [PATCH_C[0] + 40 - x, PATCH_C[1] + 10 - y]], [5.5, [-110, 168], 'back'], [6.4, [-110, 168]], [6.75, [62, 118], 'el']])); bendL = 1; }
+  if (t < 2.0) { const i = Math.min(3, Math.floor(t / 0.5)); hR = rel(120 + (i % 2 ? -30 : 30) * Math.sin(Math.PI * clamp((t - i * 0.5) / 0.5, 0, 1)), 150); }
+  else hR = rel(...K(t, [[2.0, [120, 150]], [2.3, [92, 158]], [3.0, [92, 158]], [3.5, [205, -60], 'o'], [3.85, [205, -60]], [4.0, [215, 70], 'lin'], [5.0, [215, 70]], [5.5, [112, 170], 'back'], [6.4, [112, 170]], [6.75, [-66, 126], 'el']]));
+  if (t >= 6.4) { bendR = -1; bendL = 1; }
+  if (t > 2.95 && t < 5.0) bendR = 1;
+  return { at: [x, y], rot, head, headRot, pop, hat: [0, 0, 0], leg: { L: legL, R: legR }, hand: { L: hL, R: hR }, bend: { L: bendL, R: bendR }, under: { L: t > 2.95 && t < 3.95 }, patch: p };
+}
+function patchPose71(t, at) {
+  const G = [92, -60];      // grip point on the patch, patch-local (its right edge, upper part)
+  if (t >= T.slap) return { c: PATCH_C, rot: 0, h: 0, grip: null };
+  const relK = [[0, [-212, 34]], [2.0, [-212, 34]], [2.3, [-204, 24]], [3.0, [-204, 24]], [3.5, [-40, -228], 'o'], [3.85, [-40, -228]]];
+  const rotK = [[0, -6], [2.0, -6], [3.0, -6], [3.5, 16, 'o'], [3.85, 16]];
+  let rel = K(t, relK), rot = K(t, rotK) + (t < 2.3 ? wob(t % 0.5, 0.1, 5, 3, 6) : 0), h = K(t, [[0, 0.7], [3.0, 0.7], [3.5, 1.0, 'o']]);
+  let c = [at[0] + rel[0], at[1] + rel[1]];
+  if (t >= 3.85) {   // the one in-between drawing
+    const u = (t - 3.85) / (T.slap - 3.85);
+    c = [lerp(c[0], PATCH_C[0], u), lerp(c[1], PATCH_C[1], u) - 60 * Math.sin(Math.PI * u)]; rot = lerp(rot, 0, u); h = lerp(h, 0, u);
+  }
+  const r = rot * D2R, gx = G[0] * Math.cos(r) - G[1] * Math.sin(r), gy = G[0] * Math.sin(r) + G[1] * Math.cos(r);
+  return { c, rot, h, grip: [c[0] + gx, c[1] + gy], smear: t >= 3.85 };
+}
+function frPose71(t) {
+  const x0 = 430, y0 = 490;
+  let y = y0 + wob(t, T.slap, 6, 6, 9) + K(t, [[7.5, 0], [7.85, -22, 'o'], [8.0, 6, 'i'], [8.15, 0, 'o']]);
+  const x = x0 + wob(t, T.slap, -5, 5, 9);
+  let rot = K(t, [[2.15, 3], [2.3, -5, 'el'], [4.5, -5], [4.75, 8, 'el'], [7.4, 8], [7.85, 2, 'o'], [8.0, 6, 'i']]);
+  if (t > 6.4 && t < 7.4) rot += 2.0 * Math.sin(2 * Math.PI * 4 * (twos(t) - 6.4));
+  const head = t < 2.15 ? 'n' : t < 4.5 ? 'wow' : 'angry';
+  const pop = 1 + wob(t, 2.15, 0.10, 3, 9) + wob(t, 4.5, 0.09, 3, 9);
+  let headRot = K(t, [[2.15, 0], [2.3, -4, 'el'], [4.5, -4], [4.7, 6, 'el']]);
+  if (t > 8.4) headRot += 3 * Math.sin(2 * Math.PI * 1.5 * (t - 8.4)) * Math.exp(-(t - 8.4) * 0.6);
+  const hatDy = K(t, [[2.15, 0], [2.27, -26, 'o'], [2.42, 0, 'i'], [T.slap, 0], [4.25, -118, 'o'], [4.55, 0, 'i'], [8.0, 0], [8.12, -40, 'o'], [8.3, 0, 'i']]) + wob(t, 4.55, -6, 6, 10);
+  const hatRot = K(t, [[T.slap, 0], [4.25, -28, 'o'], [4.55, 0, 'i'], [8.0, 0], [8.12, 10, 'o'], [8.3, 0, 'i']]) + wob(t, 4.55, 6, 5, 8);
+  const legR = K(t, [[7.5, 70], [7.85, 22, 'o'], [8.0, 72, 'i'], [8.15, 70]]);
+  const rel = (dx, dy) => [x + dx, y + dy];
+  const sh = follow(RIG.fr.neck, RIG.fr.sh.R, [x, y], rot * D2R, RIG.fr.s);
+  let hR;
+  if (t < 4.52) hR = rel(98, 170);
+  else if (t < 7.4) {
+    const a = K(t, [[4.52, 75], [4.85, -6, 'el']]) + (t > 6.4 ? 3 * Math.sin(2 * Math.PI * 4 * (twos(t) - 6.4)) : 0), reach = K(t, [[4.52, 150], [4.85, 300, 'o']]);
+    hR = [sh[0] + reach * Math.cos(a * D2R), sh[1] + reach * Math.sin(a * D2R)];
+  } else hR = K(t, [[7.4, [sh[0] + 300 * Math.cos(-6 * D2R) - x, sh[1] + 300 * Math.sin(-6 * D2R) - y]], [7.7, [98, 170], 'back']]).map((v, i) => v + (i ? y : x));
+  return { at: [x, y], rot, head, headRot, pop, hat: [0, hatDy, hatRot], leg: { L: 108 + wob(t, T.slap, 3, 6, 10), R: legR }, hand: { L: rel(-92, 172), R: hR }, bend: { L: 1, R: -1 }, behind: { L: true } };
+}
+function cam71(t) {
+  let z = K(t, [[0, 1.0], [3.5, 1.065, 'io'], [6.0, 1.065], [10, 1.035, 'io']]);
+  const f = K(t, [[0, [960, 540]], [3.5, [990, 556], 'io'], [6.0, [990, 556]], [10, [975, 548], 'io']]);
+  const s1 = shake(t, T.slap, 16), s2 = shake(t, 8.0, 6, 14, 13);
+  return { z, f, sx: s1[0] + s2[0], sy: s1[1] + s2[1], sr: s1[2] };
+}
+function scene1871(t) {
+  const g = ctx, tq = twos(t), cam = cam71(t);
+  applyCam(g, cam);
+  g.drawImage(MAP71, 0, 0, W, H);
+  const printU = clamp((t - 1.55) / 0.4, 0, 1);
+  const snip = k => clamp((tq - (2.0 + k * 0.25)) / 0.17, 0, 1);
+  const cutU = tq < 2.0 ? 0 : Math.min(1, [0, 1, 2, 3].reduce((a, k) => a + EASE.o(snip(k)), 0) / 4);
+  const sp = along(Math.max(cutU, 0.0001));
+  if (cutU > 0 && tq < T.slap) hatch(g, tq >= 3.0 ? H : sp.p[1]);
+  if (tq < T.slap) cutLine(g, printU, cutU);
+  if (tq >= T.slap) {
+    drawPatch(g, tq >= 5.0 ? PATCH.greyL : PATCH.grey, { z: cam.z });
+    if (tq >= 5.0 && tq < 5.17) {   // the place names print on with a little pop
+      const k = 1 + 0.25 * (1 - (tq - 5.0) / 0.17);
+      g.save(); g.translate(PATCH_C[0], PATCH_C[1]); g.scale(k, k); g.translate(-PATCH_C[0], -PATCH_C[1]); drawPatch(g, PATCH.greyL, { shadowA: 0 }); g.restore();
+    }
+    if (tq >= 5.0) { g.save(); noteText(g, 'lor', 'lorraine', PATCH_C[0] - 62, PATCH_C[1] - 88, PATCH_C[0] + 42, PATCH_C[1] - 64); noteText(g, 'als', 'alsace', PATCH_C[0] + 8, PATCH_C[1] + 4, PATCH_C[0] + 32, PATCH_C[1] + 88); g.restore(); }
+  }
+  if (t > 1.7 && t < 3.4) {
+    let p = sp.p; const a = sp.a;
+    if (tq < 2.0) { const u = EASE.o(clamp((t - 1.7) / 0.3, 0, 1)); p = [lerp(p[0] + 260, p[0], u), lerp(p[1] - 320, p[1], u)]; }
+    if (tq >= 3.0) { const u = EASE.i(clamp((t - 3.0) / 0.4, 0, 1)); p = [p[0] + 180 * u, p[1] + 520 * u]; }
+    const k = Math.min(3, Math.max(0, Math.floor((tq - 2.0) / 0.25))), local = tq - (2.0 + k * 0.25);
+    const open = tq < 2.0 || tq >= 3.0 ? 0.5 : local < 0.17 ? lerp(0.55, 0.02, EASE.i(local / 0.17)) : lerp(0.02, 0.55, (local - 0.17) / 0.08);
+    g.save(); g.translate(p[0] - Math.cos(a) * 120, p[1] - Math.sin(a) * 120); g.scale(1.3, 1.3); scissors(g, 0, 0, a, open); g.restore();
+  }
+  const fp = frPose71(tq);
+  drawLayer(g, cam, q => drawPuppet(q, 'fr', fp));
+  const pp = prPose71(tq);
+  if (tq < T.slap) { drawPatch(g, PATCH.grey, { c: pp.patch.c, rot: pp.patch.rot, h: pp.patch.h, z: cam.z }); if (pp.patch.smear) smearLines(g, pp.patch.c); }
+  drawLayer(g, cam, q => drawPuppet(q, 'pr', pp, { afterTorso: (Tf, tr) => put(q, 'pr', 8, [1430, 405], Tf([845, 548]), tr - 14 * D2R, RIG.pr.s * 0.85) }));
+  ticks(g, t, T.slap, PATCH_C); flecks(g, tq, T.slap, PATCH_C, [C.paper, C.grey, C.fr]);
+  // steam over the French general: to the right of his hat, clear of the year tag
+  [[8.55, 150, -250], [9.1, 205, -205]].forEach(([t0, dx, dy]) => {
+    const u = tq - t0; if (u < 0) return;
+    const k = u < 0.17 ? EASE.el(u / 0.17) : Math.max(0, 1 - (u - 0.6) / 0.25);
+    puff(g, fp.at[0] + dx + 14 * u, fp.at[1] + dy - 30 * u, k * 1.1);
+  });
+  const kIn = (t0, t1) => tq < t0 ? 0 : tq < t1 ? popIn(tq, t0) : Math.max(0, 1 - (tq - t1) / 0.12);
+  bubble(g, 'hey', ['HEY!'], 760, 270, [528, 418], kIn(4.55, 6.35), true);
+  bubble(g, 'mine', ['MINE NOW.', '归我了！'], 1150, 176, [1404, 398], kIn(6.4, 99), false);
+  yearTag(g, t, 0.2, 64, 46, '1871', 'Europe, after the Franco-Prussian War', 'y71', [6.8, 'Treaty of Frankfurt, May 1871']);
+  vignette(g);
+}
+// ================================================================ PANEL 2 · Meanwhile, in Alsace (the card gets stamped)
+function house(g) {
+  const r = rng(41);
+  g.fillStyle = '#CFE2E1'; g.fillRect(0, 0, W, H);                                 // sky, printed pale
+  g.save(); g.globalCompositeOperation = 'overlay'; g.globalAlpha = .5; g.drawImage(paperTex, 0, 0, W, H); g.restore();
+  const shadow = (on) => { if (on) { g.shadowColor = 'rgba(40,26,12,.38)'; g.shadowBlur = 10; g.shadowOffsetX = 6; g.shadowOffsetY = 9; } else g.shadowColor = 'transparent'; };
+  const card = (path, fill, w = 7) => { shadow(true); g.lineJoin = 'round'; g.lineWidth = w; g.strokeStyle = C.paper; g.stroke(path); g.fillStyle = fill; g.fill(path); shadow(false); };
+  // roof (steep, red-brown tiles) and wall
+  const roof = new Path2D(); roof.moveTo(560, 250); roof.lineTo(960, -260); roof.lineTo(1360, 250); roof.closePath(); card(roof, '#B55A43');
+  g.save(); g.clip(roof); g.strokeStyle = 'rgba(70,30,20,.35)'; g.lineWidth = 2; for (let y = -240; y < 260; y += 26) { g.beginPath(); g.moveTo(400, y); g.lineTo(1500, y); g.stroke(); } g.restore();
+  const wall = new Path2D(); wall.rect(620, 230, 680, 760); card(wall, '#EFE3C8');
+  g.save(); g.clip(wall); g.globalCompositeOperation = 'multiply'; g.globalAlpha = .25; g.drawImage(paperTex, -200, -100); g.restore();
+  // timber frame (colombage): posts, rails, braces
+  const beam = (x0, y0, x1, y1, w = 22) => { const a = Math.atan2(y1 - y0, x1 - x0), l = Math.hypot(x1 - x0, y1 - y0); g.save(); g.translate(x0, y0); g.rotate(a); const b = new Path2D(); b.rect(0, -w / 2, l, w); card(b, '#5A3B2B', 4); g.restore(); };
+  [[620, 230, 1300, 230], [620, 520, 1300, 520], [620, 980, 1300, 980]].forEach(b => beam(...b, 26));
+  [632, 790, 1130, 1288].forEach(x => beam(x, 230, x, 990, 24));
+  beam(632, 520, 790, 230); beam(790, 520, 632, 230); beam(1130, 520, 1288, 230); beam(1288, 520, 1130, 230);
+  beam(632, 980, 790, 700); beam(1288, 980, 1130, 700);
+  // two windows with shutters and geraniums
+  [[700, 600], [1210, 600]].forEach(([cx, cy]) => {
+    const fr = new Path2D(); fr.rect(cx - 52, cy - 70, 104, 140); card(fr, '#9CC3C9', 5);
+    g.strokeStyle = '#5A3B2B'; g.lineWidth = 5; g.beginPath(); g.moveTo(cx, cy - 70); g.lineTo(cx, cy + 70); g.moveTo(cx - 52, cy); g.lineTo(cx + 52, cy); g.stroke();
+    const box = new Path2D(); box.rect(cx - 62, cy + 70, 124, 30); card(box, '#7B5236', 4);
+    for (let i = 0; i < 9; i++) { const fx = cx - 54 + i * 13.5 + (r() - .5) * 4, fy = cy + 62 + (r() - .5) * 10; g.fillStyle = i % 3 === 1 ? '#7FA35F' : C.red; g.beginPath(); g.arc(fx, fy, 9, 0, Math.PI * 2); g.fill(); }
+  });
+  // a stork on the chimney: the local mascot
+  const ch = new Path2D(); ch.rect(1180, 40, 70, 150); card(ch, '#A9533F', 5);
+  g.save(); g.translate(1215, 30);
+  const nest = new Path2D(); nest.ellipse(0, 0, 70, 20, 0, 0, Math.PI * 2); card(nest, '#8A6A45', 4);
+  const body = new Path2D(); body.ellipse(-6, -46, 40, 22, -.25, 0, Math.PI * 2); card(body, '#FBF6EA', 5);
+  const wing = new Path2D(); wing.ellipse(10, -44, 30, 12, -.2, 0, Math.PI * 2); g.fillStyle = C.ink; g.fill(wing);
+  const neck = new Path2D(); neck.moveTo(-36, -54); neck.quadraticCurveTo(-52, -86, -40, -112); neck.lineTo(-30, -108); neck.quadraticCurveTo(-40, -84, -24, -58); neck.closePath(); card(neck, '#FBF6EA', 4);
+  const beak = new Path2D(); beak.moveTo(-42, -112); beak.lineTo(-92, -98); beak.lineTo(-40, -102); beak.closePath(); g.fillStyle = '#D9703F'; g.fill(beak);
+  g.fillStyle = C.ink; g.beginPath(); g.arc(-38, -108, 3, 0, Math.PI * 2); g.fill();
+  g.restore();
+  // cobbles
+  const ground = new Path2D(); ground.rect(560, 960, 800, 140); card(ground, '#B9A27E', 5);
+  g.save(); g.clip(ground); g.strokeStyle = 'rgba(70,50,30,.35)'; g.lineWidth = 2;
+  for (let y = 975; y < 1090; y += 26) for (let x = 560 + (y % 52 ? 0 : 20); x < 1360; x += 42) { g.beginPath(); g.ellipse(x, y, 18, 10, 0, 0, Math.PI * 2); g.stroke(); }
+  g.restore();
+}
+function idCard(g, c, rot, stamped, tStamp) {
+  g.save(); g.translate(c[0], c[1]); g.rotate(rot * D2R);
+  const w = 360, h = 224;
+  g.shadowColor = 'rgba(30,20,10,.4)'; g.shadowBlur = 10; g.shadowOffsetX = 5; g.shadowOffsetY = 8;
+  g.fillStyle = '#FBF6EA'; g.fillRect(-w / 2, -h / 2, w, h); g.shadowColor = 'transparent';
+  g.strokeStyle = C.ink; g.lineWidth = 2; g.strokeRect(-w / 2 + 8, -h / 2 + 8, w - 16, h - 16);
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = C.ink;
+  g.font = '23px FellSC'; spaced(g, "carte d'identité", 0, -h / 2 + 40, 2);
+  g.strokeStyle = 'rgba(43,34,25,.5)'; g.lineWidth = 1; g.beginPath(); g.moveTo(-w / 2 + 20, -h / 2 + 52); g.lineTo(w / 2 - 20, -h / 2 + 52); g.stroke();
+  // portrait box: a little bow silhouette
+  g.strokeStyle = C.ink; g.lineWidth = 1.5; g.strokeRect(-w / 2 + 22, -h / 2 + 66, 86, 110);
+  g.fillStyle = 'rgba(43,34,25,.75)'; g.beginPath(); g.arc(-w / 2 + 65, -h / 2 + 128, 22, 0, Math.PI * 2); g.fill();
+  g.beginPath(); g.ellipse(-w / 2 + 48, -h / 2 + 100, 22, 12, -.3, 0, Math.PI * 2); g.ellipse(-w / 2 + 82, -h / 2 + 100, 22, 12, .3, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#5A4A3A'; g.font = 'italic 22px FellIt'; g.fillText('Nationalité', -w / 2 + 126, -h / 2 + 96);
+  g.fillStyle = C.ink; g.font = '42px Fell'; g.fillText('Française', -w / 2 + 124, -h / 2 + 146);
+  noteText(g, 'card', "carte d'identité Nationalité Française", -w / 2 + 20, -h / 2 + 18, w / 2 - 20, -h / 2 + 156);
+  if (stamped) {   // the stamp: red ink, rough, crooked, right over the old word
+    const k = 1 + 0.12 * Math.max(0, 1 - (tStamp) / 0.12);
+    const sc = canvas(330, 120), s = sc.getContext('2d');
+    s.strokeStyle = '#B8322A'; s.lineWidth = 5; s.strokeRect(8, 10, 314, 100); s.fillStyle = '#B8322A'; s.font = '64px FellSC'; s.textAlign = 'center'; s.textBaseline = 'middle'; spaced(s, 'deutsch', 165, 62, 4);
+    s.globalCompositeOperation = 'destination-out'; const r = rng(77); for (let i = 0; i < 900; i++) { s.fillStyle = `rgba(0,0,0,${.3 + r() * .7})`; s.fillRect(r() * 330, r() * 120, 1 + r() * 3, 1 + r() * 2); }
+    g.save(); g.translate(40, 34); g.rotate(-13 * D2R); g.scale(k, k); g.globalAlpha = .92; g.drawImage(sc, -165, -60); g.restore();
+    g.save(); g.translate(40, 34); g.rotate(-13 * D2R); noteText(g, 'deutsch', 'DEUTSCH', -150, -40, 150, 40); g.restore();
+  }
+  g.restore();
+}
+function stampTool(g, x, y, sq) {
+  g.save(); g.translate(x, y); g.scale(1 + sq * .08, 1 - sq * .1);
+  g.shadowColor = 'rgba(30,20,10,.45)'; g.shadowBlur = 14; g.shadowOffsetX = 10; g.shadowOffsetY = 16;
+  const knob = new Path2D(); knob.ellipse(0, -230, 52, 40, 0, 0, Math.PI * 2); cardStroke(g, knob, '#9A6B45');
+  const neck = new Path2D(); neck.rect(-22, -200, 44, 110); cardStroke(g, neck, '#8A5C3A');
+  const base = new Path2D(); base.rect(-150, -96, 300, 70); cardStroke(g, base, '#3A2F28');
+  const rub = new Path2D(); rub.rect(-142, -26, 284, 22); cardStroke(g, rub, '#B8322A', 4);
+  g.restore();
+}
+function alPoseVillage(t) {
+  const x = 960, y = 520 + wob(t, T.stamp, 7, 5, 8);
+  const head = t < T.stamp + 0.12 ? 'smile' : 'worried';
+  const pop = 1 + wob(t, T.stamp + 0.12, 0.1, 3, 9);
+  const rot = K(t, [[12.0, 0], [12.6, -2], [13.4, 2], [14.2, -1], [15.0, 0]]) + wob(t, T.stamp, 3, 4, 8);
+  const cardC = [x + 6, y + 248 + wob(t, T.stamp, 10, 6, 10)];
+  return { pose: { at: [x, y], rot, head, headRot: K(t, [[12.0, 0], [13.0, 6], [14.4, 6], [T.stamp, 0]]) + wob(t, T.stamp + 0.12, -5, 4, 7), pop, hat: [0, wob(t, T.stamp, -10, 5, 8), wob(t, T.stamp, 6, 4, 7)], leg: { L: 98, R: 82 }, hand: { L: [cardC[0] - 168, cardC[1] - 10], R: [cardC[0] + 168, cardC[1] - 10] }, bend: { L: 1, R: -1 } }, cardC };
+}
+function sceneVillage(t) {
+  const g = ctx, tq = twos(t);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  house(g);
+  const a = alPoseVillage(tq);
+  const cam = { z: 1, f: [960, 540], sx: 0, sy: 0, sr: 0 };
+  drawLayer(g, cam, q => drawPuppet(q, 'al', a.pose, { beforeFore: () => idCard(q, a.cardC, -2, tq >= T.stamp, tq - T.stamp) }));
+  // the stamp comes down from above, right past her nose
+  const sy = K(tq, [[14.75, -400], [T.stamp, a.cardC[1] + 30, 'i'], [T.stamp + 0.25, a.cardC[1] + 30], [T.stamp + 0.75, -420, 'i']]);
+  const sq = tq >= T.stamp && tq < T.stamp + 0.12 ? 1 : 0;
+  if (tq > 14.75 && tq < T.stamp + 0.8) stampTool(g, a.cardC[0] + 46, sy, sq);
+  if (tq >= T.stamp) ticks(g, t, T.stamp, [a.cardC[0] + 40, a.cardC[1] + 30], 1.1);
+  yearTag(g, t, 11.0, 630, 44, '1871', 'Meanwhile, in Alsace', 'y71b');
+  vignette(g, .2);
+}
+
+// ================================================================ PANEL 3 · 1918 (France tears it back)
+function frPose18(t) {
+  let x = K(t, [[16.8, 430], [18.6, 430], [19.1, 570], [19.6, 690], [22.25, 690], [22.6, 735, 'lin'], [23.2, 735], [23.6, 700, 'back']]);
+  let y = 490 + hop(t, 18.6, 19.1, 46) + hop(t, 19.1, 19.6, 34) + wob(t, 19.6, 8, 4, 9) + K(t, [[22.25, 0], [22.6, 22, 'lin'], [23.2, 22], [23.6, 0, 'back']]);
+  let rot = K(t, [[18.6, 0], [18.85, 7], [19.1, 0], [19.35, 7], [19.6, 0], [T.grab, 4], [T.rip, 4], [T.rip + 0.2, -16, 'o'], [T.fling, -18], [T.fling + 0.18, 14, 'o'], [21.6, 0, 'back'], [22.25, -6], [22.6, 16, 'lin'], [23.2, 16], [23.6, 3, 'back']]);
+  const head = t < T.rip - 0.2 ? 'smug' : t < T.fling + 0.3 ? 'angry' : t < 22.2 ? 'smug' : t < 22.7 ? 'angry' : 'smug';
+  const pop = 1 + wob(t, T.rip - 0.2, 0.08, 3, 9) + wob(t, T.fling + 0.3, 0.07, 3, 9) + wob(t, 22.7, 0.07, 3, 9);
+  const rel = (dx, dy) => [x + dx, y + dy];
+  // right hand: grabs the grey patch's top, rips it up, flings it at the Prussian
+  const GRAB = [PATCH_C[0] - 52, PATCH_C[1] - 120];
+  let hR;
+  if (t < T.grab - 0.4) hR = rel(98, 170);
+  else if (t < T.rip) hR = K(t, [[T.grab - 0.4, rel(98, 170)], [T.grab, GRAB, 'el']]);
+  else if (t < T.fling) hR = K(t, [[T.rip, GRAB], [T.rip + 0.25, rel(40, -150), 'o']]);
+  else hR = K(t, [[T.fling, rel(40, -150)], [T.fling + 0.14, rel(250, -40), 'o'], [21.7, rel(98, 170), 'back']]);
+  // left hand: the blue patch, carried high, swung over and slapped down
+  const bp = bluePose18(t, [x, y]);
+  let hL = t < T.slap18 ? bp.grip : [PATCH_C[0] - 60 + (t > 22.8 && t < 23.2 ? 10 * Math.sin(2 * Math.PI * 3 * (t - 22.8)) : 0), PATCH_C[1] + 6];
+  if (t > 23.2) hL = K(t, [[23.2, [PATCH_C[0] - 60, PATCH_C[1] + 6]], [23.6, rel(-92, 172), 'back']]);
+  return { at: [x, y], rot, head, headRot: K(t, [[16.8, 0], [T.rip, 0], [T.rip + .2, -8], [T.fling + .2, 6], [21.7, 0]]), pop, hat: [0, wob(t, T.slap18, -14, 5, 8) + hop(t, T.rip + 0.15, T.rip + 0.4, 18), wob(t, T.slap18, 8, 4, 8)],
+    leg: { L: K(t, [[18.6, 108], [18.85, 120], [19.1, 108], [19.35, 120], [19.6, 108], [22.25, 108], [22.6, 116, 'lin'], [23.2, 116], [23.6, 108]]), R: K(t, [[18.6, 70], [18.85, 86], [19.1, 70], [19.35, 86], [19.6, 70], [T.rip, 70], [T.rip + .2, 58], [21.6, 70], [22.25, 70], [22.6, 44, 'lin'], [23.2, 44], [23.6, 70]]) },
+    hand: { L: hL, R: hR }, bend: { L: t < 23.4 ? -1 : 1, R: t > T.rip - 0.05 && t < 21.6 ? 1 : -1 }, behind: { L: t >= 23.4 }, blue: bp };
+}
+function bluePose18(t, at) {
+  const G = [-70, -70];   // grip: the blue patch's upper-left part
+  if (t >= T.slap18) return { c: [PATCH_C[0] + 5, PATCH_C[1] - 4], rot: 1.2, h: 0 };
+  let rel = K(t, [[16.8, [-170, -90]], [22.0, [-170, -90]], [22.35, [-60, -250], 'o']]), rot = K(t, [[16.8, -8], [22.0, -8], [22.35, -18, 'o']]), h = K(t, [[16.8, .7], [22.0, .7], [22.35, 1.0]]);
+  if (t < 19.6) rot += wob(t % 0.5, 0.1, 4, 3, 6);
+  let c = [at[0] + rel[0], at[1] + rel[1]];
+  if (t >= 22.42) { const u = (t - 22.42) / (T.slap18 - 22.42); c = [lerp(c[0], PATCH_C[0] + 5, u), lerp(c[1], PATCH_C[1] - 4, u) - 60 * Math.sin(Math.PI * u)]; rot = lerp(rot, 1.2, u); h = lerp(h, 0, u); }
+  const r = rot * D2R;
+  return { c, rot, h, grip: [c[0] + G[0] * Math.cos(r) - G[1] * Math.sin(r), c[1] + G[0] * Math.sin(r) + G[1] * Math.cos(r)], smear: t >= 22.42 };
+}
+function prPose18(t) {
+  const x = 1450 + K(t, [[T.hit, 0], [T.hit + 0.15, 40, 'o'], [22.2, 30], [22.6, 0, 'back']]), y = 488 + wob(t, T.hit, 8, 5, 8) + wob(t, T.slap18, 3, 6, 10);
+  const rot = K(t, [[T.hit, 4], [T.hit + 0.15, 16, 'o'], [22.2, 12], [22.6, 0, 'back']]) + (t > 23.0 ? 2 * Math.sin(2 * Math.PI * 4 * (twos(t) - 23)) * Math.exp(-(t - 23) * .8) : 0);
+  const head = t < T.hit ? 'smug' : t < 22.9 ? 'wow' : 'angry';
+  const pop = 1 + wob(t, T.hit, .1, 3, 9) + wob(t, 22.9, .08, 3, 9);
+  const rel = (dx, dy) => [x + dx, y + dy];
+  const hL = t < T.hit ? rel(62, 118) : K(t, [[T.hit, rel(62, 118)], [T.hit + .15, rel(-120, -150), 'el'], [22.6, rel(-120, -150)], [22.9, rel(-110, 168), 'back']]);
+  const hR = t < T.hit ? rel(-66, 126) : K(t, [[T.hit, rel(-66, 126)], [T.hit + .15, rel(150, -140), 'el'], [22.6, rel(150, -140)], [22.9, rel(112, 170), 'back']]);
+  // the helmet: knocked off, up, and down onto the map at his feet
+  const hd = K(t, [[T.hit, [0, 0, 0]], [T.hit + 0.35, [90, -170, 120], 'o'], [T.hit + 0.85, [170, 520, 196], 'i']]);
+  return { at: [x, y], rot, head, headRot: 0, pop, hat: [hd[0], hd[1] + (t > T.hit + 0.85 ? wob(t, T.hit + .85, -8, 5, 9) : 0), hd[2]], leg: { L: 100, R: 80 }, hand: { L: hL, R: hR }, bend: { L: t < T.hit ? 1 : -1, R: t < T.hit ? -1 : 1 } };
+}
+function scene1918(t) {
+  const g = ctx, tq = twos(t);
+  const s1 = shake(t, T.slap18, 14);
+  const cam = { z: K(t, [[16.8, 1.0], [19.6, 1.05], [21.0, 1.05], [21.5, 1.0], [26.2, 1.02]]), f: K(t, [[16.8, [960, 540]], [19.6, [930, 548]], [21.0, [930, 548]], [21.5, [1000, 540]], [26.2, [960, 540]]]), sx: s1[0], sy: s1[1], sr: s1[2] };
+  applyCam(g, cam);
+  g.drawImage(MAPDE, 0, 0, W, H);
+  // the grey patch: whole until the rip, then only its torn lower half stays on the map
+  if (tq < T.rip) drawPatch(g, PATCH.greyL, { z: cam.z });
+  else drawPatch(g, PATCH.greyLow, { z: cam.z });
+  const fp = frPose18(tq), pp = prPose18(tq);
+  if (tq >= T.slap18) drawPatch(g, PATCH.blue, { c: fp.blue.c, rot: fp.blue.rot, z: cam.z });
+  // the torn-off top half: in the hand, flung, smack on the Prussian's face, then down to the floor
+  let torn = null;
+  if (tq >= T.rip) {
+    const hand = drawPuppetDry('fr', fp).hand.R, GRAB = [-52, -120];
+    if (tq < T.fling + 0.14) torn = { c: [hand[0] - GRAB[0], hand[1] - GRAB[1]], rot: K(tq, [[T.rip, 0], [T.rip + .25, -14], [T.fling, -20], [T.fling + .14, 10]]), h: .6 };
+    else if (tq < T.hit) { const u = (tq - T.fling - 0.14) / (T.hit - T.fling - 0.14), a = [hand[0] + 52, hand[1] + 120]; torn = { c: [lerp(a[0], pp.at[0] - 10, u), lerp(a[1], pp.at[1] - 120, u) - 50 * Math.sin(Math.PI * u)], rot: lerp(10, 190, u), h: .8 }; }
+    else if (tq < T.hit + 0.4) torn = { c: [pp.at[0] - 12, pp.at[1] - 120 + 20 * (tq - T.hit)], rot: 190 + wob(tq, T.hit, 6, 4, 6), h: .3 };
+    else { const u = clamp((tq - T.hit - 0.4) / 0.45, 0, 1); torn = { c: [lerp(pp.at[0] - 12, pp.at[0] - 140, EASE.i(u)), lerp(pp.at[1] - 120, pp.at[1] + 380, EASE.i(u))], rot: lerp(190, 168, u), h: lerp(.3, 0, u) }; }
+  }
+  if (tq < T.slap18) { drawPatch(g, PATCH.blue, { c: fp.blue.c, rot: fp.blue.rot, h: fp.blue.h, z: cam.z }); if (fp.blue.smear) smearLines(g, fp.blue.c, -1); }
+  const onFloor = torn && tq >= T.hit + 0.85;
+  if (onFloor) drawPatch(g, PATCH.greyTop, { c: torn.c, rot: torn.rot, z: cam.z });
+  drawLayer(g, cam, q => drawPuppet(q, 'fr', fp));
+  drawLayer(g, cam, q => drawPuppet(q, 'pr', pp, { afterTorso: (Tf, tr) => put(q, 'pr', 8, [1430, 405], Tf([845, 548]), tr - 14 * D2R, RIG.pr.s * 0.85) }));
+  if (torn && !onFloor) drawPatch(g, PATCH.greyTop, { c: torn.c, rot: torn.rot, h: torn.h, z: cam.z });
+  if (tq >= T.rip && tq < T.rip + 0.5) flecks(g, tq, T.rip, [PATCH_C[0] - 30, PATCH_C[1] - 30], [C.paper, C.grey], 8, .7);
+  ticks(g, t, T.slap18, PATCH_C); flecks(g, tq, T.slap18, PATCH_C, [C.paper, C.blue, C.grey]);
+  ticks(g, t, T.hit, [pp.at[0], pp.at[1] - 110], .7);
+  bubble(g, 'again', ['MINE AGAIN.', '又归我了！'], 1130, 178, [775, 418], popIn(tq, T.bubble18), false);
+  yearTag(g, t, 17.0, 64, 46, '1918', 'The First World War ends', 'y18');
+  vignette(g);
+}
+// a pose's hands without drawing (for props that follow a hand)
+function drawPuppetDry(key, pose) {
+  const R = RIG[key], s = pose.s || R.s, tr = pose.rot * D2R, out = {};
+  for (const side of ['L', 'R']) {
+    const U = R.uarm[side], S = follow(R.neck, R.sh[side], pose.at, tr, s), F = key === 'pr' ? R.farm.left : R.farmLR[side];
+    out[side] = ik(S, pose.hand[side], len(U.p, U.e) * s, len(F.p, F.h) * s, pose.bend[side]).H;
+  }
+  return { hand: out };
+}
+
+// ================================================================ PANEL 4 · 1940 (dark, narrow: no gags)
+const zw = p => [(p[0] - PATCH_C[0]) * Z40 + 960, (p[1] - PATCH_C[1]) * Z40 + 560];   // world → 1940 close-up
+function bigHand(g, x, y, k) {   // a faceless hand of dark paper: no insignia, no uniform, just weight
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.shadowColor = 'rgba(10,10,15,.55)'; g.shadowBlur = 30; g.shadowOffsetX = 18; g.shadowOffsetY = 26;
+  const p = new Path2D();
+  p.moveTo(-150, -700); p.lineTo(150, -700); p.lineTo(150, -150);
+  [[115, 120], [45, 150], [-25, 145], [-95, 110]].forEach(([fx, fy], i) => { p.lineTo(fx + 28, -60); p.quadraticCurveTo(fx + 30, fy, fx, fy); p.quadraticCurveTo(fx - 30, fy, fx - 28, -60); });
+  p.lineTo(-150, -40); p.quadraticCurveTo(-250, -20, -260, 60); p.quadraticCurveTo(-230, 80, -190, 30); p.lineTo(-150, -150); p.closePath();
+  g.lineJoin = 'round'; g.lineWidth = 9; g.strokeStyle = '#D9CFB9'; g.stroke(p); g.fillStyle = '#454B54'; g.fill(p);
+  g.shadowColor = 'transparent';
+  g.strokeStyle = 'rgba(20,22,28,.5)'; g.lineWidth = 3; [[115, 0], [45, 10], [-25, 10], [-95, 0]].forEach(([fx]) => { g.beginPath(); g.moveTo(fx + 28, -60); g.lineTo(fx + 28, 20); g.stroke(); });
+  const cuff = new Path2D(); cuff.rect(-165, -300, 330, 60); g.fillStyle = '#3B4048'; g.fill(cuff);
+  g.restore();
+}
+function scene1940(t) {
+  const g = ctx, tq = twos(t);
+  const s1 = shake(t, T.press40, 9, 10, 9);
+  g.setTransform(1, 0, 0, 1, s1[0], s1[1]);
+  g.drawImage(MAPZ, 0, 0);
+  g.save(); g.translate(960, 560); g.scale(Z40, Z40); g.translate(-PATCH_C[0], -PATCH_C[1]);
+  drawPatch(g, PATCH.greyLow, { z: Z40 }); drawPatch(g, PATCH.blue, { c: [PATCH_C[0] + 5, PATCH_C[1] - 4], rot: 1.2, z: Z40 });
+  const pc = [PATCH_C[0] - 4, PATCH_C[1] + 3];
+  const down = K(tq, [[27.6, -520], [T.press40 - 0.1, 0, 'io'], [T.press40, 0]]), lift = K(tq, [[29.85, 0], [30.6, -560, 'i']]);
+  if (tq < T.press40) drawPatch(g, PATCH.grey40, { c: [pc[0], pc[1] + down / Z40 * .6], rot: -1.6, h: lerp(0, 1, -down / 520), z: Z40 });
+  else drawFolded(g, PATCH.fold40, K(tq, [[T.curl, 0], [T.curl + 0.8, 128, 'o']]) + wob(tq, T.curl + .8, 6, 2, 3), { c: pc, rot: -1.6, z: Z40 });
+  g.restore();
+  // the hand comes down from out of frame, presses, leaves
+  const hy = tq < T.press40 ? 560 + down : 560 + lift;
+  if (tq > 27.6 && tq < 30.6) bigHand(g, 960, hy, 1.0 + (tq < T.press40 ? -down / 3000 : 0));
+  // light: one cold lamp from above; the rest of the page dims
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = '#BAC2CD'; g.fillRect(0, 0, W, H); g.restore();
+  const v = g.createRadialGradient(960, 500, 220, 960, 560, 680); v.addColorStop(0, 'rgba(255,250,235,.0)'); v.addColorStop(1, 'rgba(10,14,22,.5)');
+  g.fillStyle = v; g.fillRect(0, 0, W, H);
+  yearTag(g, t, 27.2, 628, 44, '1940', 'The Second World War', 'y40');
+}
+
+// ================================================================ PANEL 5 · 1944–45, then the stack seen from the side
+function frPose45(t) {
+  // reaches for the curled corner, pulls, it won't come off, falls on his back; gets up and slams a blue patch on; hops out of shot
+  const strain = t > T.pull && t < T.letgo ? Math.sin(2 * Math.PI * 3 * (twos(t) - T.pull)) : 0;
+  let x = K(t, [[34.1, 640], [T.pull, 640], [T.letgo, 610], [T.letgo + .2, 560, 'o'], [37.25, 560], [37.45, 650, 'back'], [37.55, 650], [T.thunk, 700, 'lin'], [38.0, 690], [T.hop0 + .45, 470], [T.hop0 + .9, 160]]);
+  let y = 490 + K(t, [[T.letgo, 0], [T.letgo + .2, 70, 'o'], [37.25, 70], [37.45, 0, 'back'], [37.55, 0], [T.thunk, 24, 'lin'], [38.0, 0, 'back']]) + strain * 3 + hop(t, T.hop0, T.hop0 + .45, 60) + hop(t, T.hop0 + .45, T.hop0 + .9, 50);
+  let rot = K(t, [[34.1, 0], [T.pull, -14], [T.letgo, -20], [T.letgo + .2, -48, 'o'], [37.25, -48], [37.45, 0, 'back'], [37.55, -8], [T.thunk, 16, 'lin'], [38.1, 0, 'back']]) + strain * 4 - hop(t, T.hop0, T.hop0 + .45, 8) - hop(t, T.hop0 + .45, T.hop0 + .9, 8);
+  const head = t < T.letgo + .2 ? 'angry' : t < 37.4 ? 'wow' : t < 37.95 ? 'angry' : 'smug';
+  const pop = 1 + wob(t, T.letgo + .2, .1, 3, 9) + wob(t, 37.4, .08, 3, 9) + wob(t, 37.95, .08, 3, 9);
+  const rel = (dx, dy) => [x + dx, y + dy];
+  let hR = t < 34.6 ? rel(98, 170) : t < T.letgo ? FOLD_TIP(t) : K(t, [[T.letgo, FOLD_TIP(t)], [T.letgo + .2, rel(150, -160), 'o'], [37.3, rel(150, -160)], [37.6, rel(98, 170), 'back']]);
+  const bp = bluePose45(t, [x, y]);
+  let hL = t < T.thunk ? bp.grip : [PATCH_C[0] - 50, PATCH_C[1] + 8];
+  if (t > 38.0) hL = K(t, [[38.0, [PATCH_C[0] - 50, PATCH_C[1] + 8]], [38.3, rel(-92, 172), 'back']]);
+  if (t > 34.6 && t < T.letgo) hR = FOLD_TIP(t);
+  return { at: [x, y], rot, head, headRot: 0, pop, hat: [0, hop(t, T.letgo + .1, T.letgo + .45, 60) + wob(t, T.thunk, -12, 5, 8), (t > T.letgo && t < T.letgo + .45 ? -20 : 0)],
+    leg: { L: K(t, [[34.1, 108], [T.pull, 96], [T.letgo, 92], [T.letgo + .2, 40, 'o'], [37.25, 40], [37.45, 108, 'back'], [37.55, 108], [T.thunk, 114], [38.1, 108]]) + strain * 6 + (t > T.hop0 ? 14 * Math.sin(Math.PI * ((t - T.hop0) / .45 % 1)) : 0),
+           R: K(t, [[34.1, 70], [T.pull, 50], [T.letgo + .2, 10, 'o'], [37.25, 10], [37.45, 70, 'back'], [37.55, 70], [T.thunk, 44], [38.1, 70]]) - strain * 6 + (t > T.hop0 ? 14 * Math.sin(Math.PI * ((t - T.hop0) / .45 % 1)) : 0) },
+    hand: { L: hL, R: hR }, bend: { L: t < 38.2 ? -1 : 1, R: -1 }, behind: { L: t >= 38.3 }, blue: bp };
+}
+function bluePose45(t, at) {
+  const G = [-70, -70];
+  if (t >= T.thunk) return { c: [PATCH_C[0] - 3, PATCH_C[1] + 2], rot: -0.6, h: 0 };
+  let rel = K(t, [[34.1, [-170, -90]], [37.45, [-170, -90]], [37.6, [-60, -250], 'o']]), rot = K(t, [[34.1, -8], [37.45, -8], [37.6, -18]]), h = .7;
+  if (t > T.letgo && t < 37.45) { rel = [rel[0] - 40, rel[1] + 60]; rot -= 30; }
+  let c = [at[0] + rel[0], at[1] + rel[1]];
+  if (t >= 37.62) { const u = (t - 37.62) / (T.thunk - 37.62); c = [lerp(c[0], PATCH_C[0] - 3, u), lerp(c[1], PATCH_C[1] + 2, u) - 60 * Math.sin(Math.PI * u)]; rot = lerp(rot, -.6, u); h = lerp(h, 0, u); }
+  const r = rot * D2R;
+  return { c, rot, h, grip: [c[0] + G[0] * Math.cos(r) - G[1] * Math.sin(r), c[1] + G[0] * Math.sin(r) + G[1] * Math.cos(r)] };
+}
+function FOLD_TIP(t) { return foldTipWorld(foldAngle45(t)); }
+function foldAngle45(t) {   // pulled further, springs back when he lets go
+  if (t < T.pull) return 128;
+  if (t < T.letgo) return 128 + 30 * clamp((t - T.pull) / 0.8, 0, 1) + 6 * Math.sin(2 * Math.PI * 3 * (twos(t) - T.pull));
+  return 128 + wob(t, T.letgo, 26, 3, 5);
+}
+function foldTipWorld(th) {
+  const F = PATCH.fold40, s = 1 - Math.cos(th * D2R), [nx, ny] = F.n, pc = [PATCH_C[0] - 4, PATCH_C[1] + 3], r = -1.6 * D2R;
+  const tip = [F.A[0] + (FOLD.B[0] - F.A[0]) * .5 + nx * 70, F.A[1] + (FOLD.B[1] - F.A[1]) * .5 + ny * 70];
+  const v = (tip[0] - F.A[0]) * nx + (tip[1] - F.A[1]) * ny, tp = [tip[0] - v * s * nx, tip[1] - v * s * ny];
+  return [pc[0] + tp[0] * Math.cos(r) - tp[1] * Math.sin(r), pc[1] + tp[0] * Math.sin(r) + tp[1] * Math.cos(r)];
+}
+const STRAS = () => P(7.75, 48.58);   // Strasbourg, on the Rhine edge of the patch
+function pinFlag(g, x, y, k) {   // a map pin: brass head, paper flag, the city's name
+  if (k <= 0) return;
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.shadowColor = 'rgba(30,20,10,.4)'; g.shadowBlur = 8; g.shadowOffsetX = 5; g.shadowOffsetY = 7;
+  g.strokeStyle = '#8E969E'; g.lineWidth = 4; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -150); g.stroke();
+  g.font = '40px FellSC'; const w = [...'strasbourg'].reduce((a, ch) => a + g.measureText(ch).width + 3, -3) + 44;
+  const f = new Path2D(); f.moveTo(0, -150); f.lineTo(w, -150); f.lineTo(w - 18, -122); f.lineTo(w, -94); f.lineTo(0, -94); f.closePath();
+  cardStroke(g, f, '#FBF6EA', 6); g.shadowColor = 'transparent';
+  g.strokeStyle = C.ink; g.lineWidth = 2.5; g.stroke(f);
+  g.fillStyle = C.ink; g.textBaseline = 'middle'; g.textAlign = 'left'; g.font = '40px FellSC'; spaced(g, 'strasbourg', (w - 18) / 2 + 4, -121, 3);
+  noteText(g, 'pin', 'strasbourg', 0, -150, w, -94);
+  brass(g, 0, -150, 11);
+  g.restore();
+}
+function scene1945(t) {
+  const g = ctx, tq = twos(t);
+  const k = EASE.io(clamp((t - T.tilt0) / (T.tilt1 - T.tilt0), 0, 1));     // 0 = top-down, 1 = seen from low on the side
+  const SY = 1 - 0.62 * k, YP = PATCH_C[1], TH = 22 * k;                  // squash about the stack; each paper layer TH px thick
+  const s1 = shake(t, T.thunk, 24, 12, 8), s2 = shake(t, T.pin, 4, 14, 12);
+  // camera: top-down storytelling, then a crane down and push in until the stack fills the frame
+  const z = K(t, [[33.4, 1.0], [T.pull, 1.0], [T.letgo, 1.06], [T.thunk, 1.0], [T.tilt0, 1.0], [T.tilt1, 1.85], [DUR, 1.92, 'lin']]);
+  const goal = [960, 700], fK = [PATCH_C[0] - (goal[0] - 960) / 1.85, YP - 40 * 1 - (goal[1] - 540) / 1.85];
+  const f = t < T.tilt0 ? K(t, [[33.4, [960, 540]], [T.letgo, [900, 560]], [T.thunk, [960, 540]]]) : K(t, [[T.tilt0, [960, 540]], [T.tilt1, fK]]);
+  const cam = { z, f, sx: s1[0] + s2[0], sy: s1[1] + s2[1], sr: s1[2] };
+  applyCam(g, cam);
+  if (k > 0) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = tablePat; g.fillRect(0, 0, W, H); g.restore(); applyCam(g, cam); }
+  g.save(); g.translate(0, YP); g.scale(1, SY); g.translate(0, -YP);
+  if (k > 0) { g.shadowColor = 'rgba(20,12,4,.45)'; g.shadowBlur = 30; g.shadowOffsetY = 20; }
+  if (k > 0) g.drawImage(MAPTALL, TALL.x0, TALL.y0); else g.drawImage(MAPDE, 0, 0, W, H); g.shadowColor = 'transparent';
+  g.restore();
+  // the stack: grey 1871 (torn), blue 1918, grey 1940 (curled), blue 1945
+  const layers = [
+    { P: PATCH.greyLow, c: PATCH_C, rot: 0, side: '#3E444C' },
+    { P: PATCH.blue, c: [PATCH_C[0] + 5, PATCH_C[1] - 4], rot: 1.2, side: '#3D5A92' },
+    { P: PATCH.grey40, c: [PATCH_C[0] - 4, PATCH_C[1] + 3], rot: -1.6, side: '#3E444C', fold: true },
+  ];
+  if (tq >= T.thunk) layers.push({ P: PATCH.blue45, c: [PATCH_C[0] - 3, PATCH_C[1] + 2], rot: -.6, side: '#3D5A92' });
+  layers.forEach((L, i) => {
+    const lift = -(i + 1) * TH;
+    g.save(); g.translate(0, YP); g.scale(1, SY); g.translate(0, -YP);
+    if (k > 0) for (let d = TH; d > 0; d -= 1.2) { g.save(); g.translate(0, (lift + d) / SY); drawPatch(g, { cv: silCol(L.P, d > TH - 2.4 ? '#E9DFC8' : L.side) }, { c: L.c, rot: L.rot, shadowA: 0 }); g.restore(); }
+    g.translate(0, lift / SY);
+    if (L.fold && tq >= T.thunk) drawPatch(g, PATCH.grey40, { c: L.c, rot: L.rot, z: cam.z });
+    else if (L.fold) drawFolded(g, PATCH.fold40, foldAngle45(tq), { c: L.c, rot: L.rot, z: cam.z });
+    else drawPatch(g, L.P, { c: L.c, rot: L.rot, z: cam.z, shadowA: i ? .5 : .45 });
+    g.restore();
+  });
+  const fp = frPose45(tq);
+  if (tq < T.thunk) drawPatch(g, PATCH.blue45, { c: fp.blue.c, rot: fp.blue.rot, h: fp.blue.h, z: cam.z });
+  if (tq < T.hop0 + 1.0) drawLayer(g, cam, q => drawPuppet(q, 'fr', fp));
+  ticks(g, t, T.thunk, PATCH_C, 1.15); flecks(g, tq, T.thunk, PATCH_C, [C.paper, C.blue, C.grey, '#B9A27E'], 22, 1.2);
+  // world point on the stack's top face → screen (the puppets on top are drawn with a plain screen camera)
+  const S = (x, y) => [(x - f[0]) * z + 960 + cam.sx, (YP + (y - YP) * SY - 4 * TH - f[1]) * z + 540 + cam.sy];
+  const scr = { z: 1, f: [960, 540], sx: 0, sy: 0, sr: 0 };
+  if (tq >= T.gran) {
+    // grandmother and granddaughter pop up on the top layer, holding hands; she taps her foot twice (the 1871 stomp, gently)
+    const top = S(PATCH_C[0] - 28, PATCH_C[1] + 6), pk = popIn(tq, T.gran, .25), kk = popIn(tq, T.kid, .25);
+    const tap = (tq > T.tap && tq < T.tap + .9) ? Math.max(0, Math.sin(2 * Math.PI * (tq - T.tap) / .45)) : 0;
+    const gx = top[0] - 30, gy = top[1] - 268 * pk;
+    const kx = top[0] + 96, ky = top[1] - 196 * kk + hop(tq, T.pin + .1, T.pin + .45, 26);
+    const kidHand = [kx - 26, ky + 70];
+    const gran = { at: [gx, gy], s: .46, k: pk, rot: K(tq, [[T.gran, 0], [41.5, 3], [43.6, -2], [45, 0]]), head: tq > T.pin - .05 && tq < T.pin + .55 ? 'oldwow' : 'old', headRot: K(tq, [[T.gran, 0], [41.5, 6], [43.6, -5], [45.2, 3]]), pop: 1 + wob(tq, T.pin - .05, .1, 3, 9),
+      hat: [0, wob(tq, T.gran, -8, 4, 7) + wob(tq, T.tap, -4, 5, 7), 0], leg: { L: 96, R: 84 - 26 * tap }, hand: { L: [gx - 70, gy + 116], R: tq >= T.kid ? kidHand : [gx + 70, gy + 116] }, bend: { L: 1, R: -1 } };
+    drawLayer(g, scr, q => drawPuppet(q, 'al', gran));
+    if (tq >= T.kid) {
+      const wave = tq > T.pin + .2 ? Math.sin(2 * Math.PI * 2.2 * (tq - T.pin)) : 0;
+      const kid = { at: [kx, ky], s: .33, k: kk, rot: 0, head: 'child', headRot: 5 * wave, pop: 1, noHat: true, hat: [0, 0, 0], leg: { L: 98, R: 82 },
+        hand: { L: kidHand, R: tq > T.pin + .2 ? [kx + 52 + 12 * wave, ky - 46] : [kx + 48, ky + 72] }, bend: { L: 1, R: -1 } };
+      drawLayer(g, scr, q => drawPuppet(q, 'al', kid));
+    }
+  }
+  // the pin drops onto Strasbourg
+  if (tq >= T.pin - 0.35) {
+    const st = STRAS(), sp = S(st[0], st[1]), u = EASE.i(clamp((tq - (T.pin - .35)) / .35, 0, 1));
+    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); pinFlag(g, sp[0], lerp(sp[1] - 620, sp[1], u), 1); g.restore();
+    ticks(g, t, T.pin, [sp[0], sp[1] - 20], .25);
+  }
+  yearTag(g, t, 34.2, 64, 46, '1944–45', 'Liberation', 'y45');
+  vignette(g);
+}
+const SILC = new Map();
+function silCol(Pc, col) { const key = Pc.cv; if (!SILC.has(key)) SILC.set(key, {}); const m = SILC.get(key); if (!m[col]) m[col] = silhouette(Pc.cv, col); return m[col]; }
+
+// ================================================================ PANEL 6 · the title card (lands as the page is revealed)
+function sceneTitle(t) {
+  const g = ctx;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.fillStyle = '#E8DEC6'; g.fillRect(0, 0, W, H);
+  g.save(); g.globalCompositeOperation = 'multiply'; g.globalAlpha = .35; g.drawImage(paperTex, -400, -200); g.restore();
+  const u = clamp((t - T.title) / 0.16, 0, 1); if (u <= 0) return;
+  const s1 = shake(t, T.title + 0.16, 8, 14, 12);
+  g.save(); g.translate(960 + s1[0], 540 + s1[1] + lerp(-700, 0, EASE.i(u))); g.rotate(lerp(-10, -2, u) * D2R);
+  g.shadowColor = 'rgba(30,20,10,.4)'; g.shadowBlur = 16; g.shadowOffsetX = 8; g.shadowOffsetY = 12;
+  g.fillStyle = '#F6EEDB'; g.fillRect(-320, -420, 640, 856); g.shadowColor = 'transparent';
+  g.strokeStyle = C.ink; g.lineWidth = 3; g.strokeRect(-302, -402, 604, 820); g.lineWidth = 1.2; g.strokeRect(-294, -394, 588, 804);
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = C.ink;
+  g.font = '92px FellSC'; g.fillText('one piece', -252, -284); g.fillText('of paper', -252, -192);
+  noteText(g, 'title', 'one piece of paper', -252, -360, 250, -170);
+  g.fillStyle = C.red; g.font = '92px KuaiLe'; g.fillText('一块纸', -252, -74); noteText(g, 'title-zh', '一块纸', -252, -150, 30, -60);
+  // four little layers, grey and blue, the film's icon
+  [['#7A8390', 0], ['#5A80CC', 1], ['#7A8390', 2], ['#5A80CC', 3]].forEach(([c, i]) => { g.fillStyle = C.paper; g.fillRect(-254 + i * 8, 4 - i * 14, 200, 40); g.fillStyle = c; g.fillRect(-248 + i * 8, 8 - i * 14, 188, 32); });
+  g.fillStyle = '#5A4A3A'; g.font = '40px FellIt'; g.fillText('Alsace-Lorraine', -252, 110); noteText(g, 'title-s', 'Alsace-Lorraine', -252, 78, 48, 120);
+  g.font = '38px OldStd'; g.fillText('1871–1945', 70, 110); noteText(g, 'title-y', '1871–1945', 70, 80, 252, 120);
+  // the credit block, under a printed rule: style name (English, Chinese) and the signature
+  g.strokeStyle = 'rgba(43,34,25,.7)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(-252, 152); g.lineTo(252, 152); g.stroke();
+  g.fillStyle = '#5A4A3A'; g.font = 'italic 38px FellIt'; g.fillText(STYLE_EN, -252, 210); noteText(g, 'style-en', STYLE_EN, -252, 180, 200, 220);
+  g.fillStyle = C.ink; g.font = '54px KuaiLe'; g.fillText(STYLE_ZH, -252, 282); noteText(g, 'style-zh', STYLE_ZH, -252, 232, 80, 292);
+  fillMixed(g, CREDIT, -252, 362, '42px Fell'); noteText(g, 'credit', CREDIT, -252, 328, 252, 372);
+  g.restore();
+  flecks(g, t, T.title + 0.16, [960, 540], [C.paper, C.grey, C.blue], 10, 1.2);
+}
+
+// ================================================================ THE PAGE: panels on a sheet on the table, and the page camera
+const PANELS = [
+  { id: 'p1', x: 0, y: 0, w: 1920, h: 1080, sx: 0, scene: scene1871, tc: t => Math.min(t, 11.2) },
+  { id: 'p2', x: 1980, y: 0, w: 720, h: 1080, sx: 600, scene: sceneVillage, tc: t => clamp(t, 11.0, 16.9) },
+  { id: 'p3', x: 0, y: 1140, w: 1920, h: 1080, sx: 0, scene: scene1918, tc: t => clamp(t, 16.8, 26.9) },
+  { id: 'p4', x: 1980, y: 1140, w: 720, h: 1080, sx: 600, scene: scene1940, tc: t => clamp(t, 26.9, 34.1) },
+  { id: 'p5', x: 0, y: 2280, w: 1920, h: 1080, sx: 0, scene: scene1945, tc: t => clamp(t, 33.4, 50) },
+  { id: 'p6', x: 1980, y: 2280, w: 720, h: 1080, sx: 600, scene: sceneTitle, tc: t => t },
+];
+const PAGE = { x: -70, y: -70, w: 2840, h: 3500 };
+// Narrow panels are framed at the right of the screen, their right edge just inside the page edge: the left two thirds
+// show the panel that has just played (1871 next to the stamp, 1918 next to the hand), never an empty table.
+const NX = 1810;   // panel right edge (page x 2700) lands at screen x 1850; the page edge (2770) at 1920
+// page camera keys: [t, cx, cy, zoom, ease]; zoom interpolates in log space
+const PCAM = [
+  [0, 960, 540, 1], [T.p1out, 960, 540, 1],
+  [10.45, 1360, 600, 0.6, 'o'], [T.p2in, NX, 540, 1, 'io'],                   // pull back to show the page, then slide to the narrow panel
+  [T.p3out, NX, 540, 1], [T.p3in, 960, 1680, 1, 'io'],                      // whip down-left across the gutter
+  [T.p4out, 960, 1680, 1], [T.p4in, NX, 1680, 1, 'io'],                       // slide right to the dark panel
+  [T.p5out, NX, 1680, 1], [33.75, 1650, 2250, 0.66, 'i'], [T.p5in, 960, 2820, 1, 'o'],   // drop down the page
+  [T.back0, 960, 2820, 1], [T.back1, 1350, 2790, 0.7, 'io'], [DUR, 1350, 2786, 0.69, 'lin'],
+];
+function pageCam(t) {
+  let i = 1; while (i < PCAM.length - 1 && t > PCAM[i][0]) i++;
+  const a = PCAM[i - 1], b = PCAM[i], u = EASE[b[4] || 'io'](clamp((t - a[0]) / Math.max(b[0] - a[0], 1e-6), 0, 1));
+  return { cx: lerp(a[1], b[1], u), cy: lerp(a[2], b[2], u), z: Math.exp(lerp(Math.log(a[3]), Math.log(b[3]), u)), moving: a[1] !== b[1] || a[2] !== b[2] ? Math.sin(Math.PI * u) : 0, dir: [b[1] - a[1], b[2] - a[2]] };
+}
+const SCN = [];   // panel canvases, reused
+function renderFilm(t) {
+  TXT = [];
+  const pc = pageCam(t), g = MAIN;
+  g.setTransform(1, 0, 0, 1, 0, 0); g.shadowColor = 'transparent';
+  const view = { x0: pc.cx - 960 / pc.z, y0: pc.cy - 540 / pc.z, x1: pc.cx + 960 / pc.z, y1: pc.cy + 540 / pc.z };
+  const full = PANELS.find(p => pc.z === 1 && p.w === 1920 && Math.abs(pc.cx - (p.x + 960)) < .01 && Math.abs(pc.cy - (p.y + 540)) < .01);
+  const toS = (x, y) => [(x - pc.cx) * pc.z + 960, (y - pc.cy) * pc.z + 540];
+  const out = [];
+  if (!full) {   // the table and the page sheet
+    g.fillStyle = tablePat; g.fillRect(0, 0, W, H);
+    g.save(); g.translate(960, 540); g.scale(pc.z, pc.z); g.translate(-pc.cx, -pc.cy);
+    g.shadowColor = 'rgba(20,12,4,.5)'; g.shadowBlur = 40 * pc.z; g.shadowOffsetX = 18 * pc.z; g.shadowOffsetY = 26 * pc.z;
+    g.fillStyle = pagePat; g.fillRect(PAGE.x, PAGE.y, PAGE.w, PAGE.h); g.restore();
+  }
+  let n = 0;
+  for (const p of PANELS) {
+    if (full && p !== full) continue;
+    if (p.x + p.w < view.x0 || p.x > view.x1 || p.y + p.h < view.y0 || p.y > view.y1) continue;
+    if (!SCN[n]) SCN[n] = canvas(W, H);
+    const sc = SCN[n++], sg = sc.getContext('2d');
+    sg.setTransform(1, 0, 0, 1, 0, 0); sg.clearRect(0, 0, W, H); sg.shadowColor = 'transparent';
+    ctx = sg; const before = TXT.length; p.scene(p.tc(t)); ctx = MAIN;
+    // map this panel's texts to the screen
+    for (let i = before; i < TXT.length; i++) {
+      const e = TXT[i]; if (e.cv !== sc) continue;
+      if (e.x1 < p.sx || e.x0 > p.sx + p.w) continue;
+      const [a0, b0] = toS(p.x + (e.x0 - p.sx), p.y + e.y0), [a1, b1] = toS(p.x + (e.x1 - p.sx), p.y + e.y1);
+      out.push({ id: `${p.id}:${e.id}`, text: e.text, x0: a0, y0: b0, x1: a1, y1: b1 });
+    }
+    if (full) { g.drawImage(sc, 0, 0); continue; }
+    g.save(); g.translate(960, 540); g.scale(pc.z, pc.z); g.translate(-pc.cx, -pc.cy);
+    g.shadowColor = 'rgba(30,18,6,.35)'; g.shadowBlur = 10 * pc.z; g.shadowOffsetX = 5 * pc.z; g.shadowOffsetY = 7 * pc.z;
+    g.fillStyle = C.ink; g.fillRect(p.x - 6, p.y - 6, p.w + 12, p.h + 12); g.shadowColor = 'transparent';
+    g.drawImage(sc, p.sx, 0, p.w, p.h, p.x, p.y, p.w, p.h);
+    g.restore();
+  }
+  // comic speed lines while the camera whips across the page
+  if (pc.moving > 0.25 && t > T.p3out && t < T.p3in) {
+    const [dx, dy] = pc.dir, a = Math.atan2(dy, dx), r = rng(Math.floor(t * 24));
+    g.save(); g.translate(960, 540); g.rotate(a); g.strokeStyle = 'rgba(43,34,25,.55)'; g.lineCap = 'round';
+    for (let i = 0; i < 26; i++) { const y = (r() - .5) * 1500, x = (r() - .5) * 2200, l = 180 + r() * 420; g.lineWidth = 2 + r() * 4; g.beginPath(); g.moveTo(x, y); g.lineTo(x + l, y); g.stroke(); }
+    g.restore();
+  }
+  // 1940: the dark panel's shadow spills over its bright neighbour (on purpose: the weight of that panel)
+  const p4 = PANELS[3], dk = clamp((t - (T.p4out + 0.3)) / 0.5, 0, 1) * clamp((T.p5out + 0.2 - t) / 0.4, 0, 1);
+  if (dk > 0 && !full) {
+    const [ex] = toS(p4.x - 6, 0), gr = g.createLinearGradient(ex, 0, ex - 760 * pc.z, 0);
+    gr.addColorStop(0, `rgba(14,17,24,${.55 * dk})`); gr.addColorStop(1, 'rgba(14,17,24,0)');
+    g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = gr; g.fillRect(ex - 760 * pc.z, 0, 760 * pc.z, H); g.restore();
+  }
+  caption(t, out);
+  TXT = out;
+}
+// narration captions: a comic caption box at the bottom centre, Chinese over English, never over the speech balloons
+function caption(t, out) {
+  const i = SUBS.findIndex(([a, b]) => t >= a && t < b); if (i < 0) return;
+  const [a, b, zh, en] = SUBS[i], g = MAIN;
+  const u = EASE.o(clamp((t - a) / 0.14, 0, 1)), v = clamp((b - t) / 0.1, 0, 1);
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+  const wz = measureMixed(g, zh, '38px KuaiLe'), we = measureMixed(g, en, 'italic 29px FellIt');
+  const w = Math.max(wz, we) + 64, h = 108, x = 960 - w / 2, y = 1058 - h + (1 - u) * 18 + (1 - v) * 10;
+  g.globalAlpha = Math.min(u, v);
+  g.shadowColor = 'rgba(30,20,10,.35)'; g.shadowBlur = 10; g.shadowOffsetX = 4; g.shadowOffsetY = 6;
+  g.fillStyle = C.caption; g.fillRect(x, y, w, h); g.shadowColor = 'transparent';
+  g.strokeStyle = C.ink; g.lineWidth = 3; g.strokeRect(x + 1.5, y + 1.5, w - 3, h - 3);
+  g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.fillStyle = C.ink; fillMixed(g, zh, 960, y + 50, '38px KuaiLe', 'center');
+  g.fillStyle = '#4A3B2C'; fillMixed(g, en, 960, y + 90, 'italic 29px FellIt', 'center');
+  g.restore();
+  // (captions are subtitles: checked from demo-full.srt, not by readcheck)
+}
+window.TEXTS = t => { renderFilm(t + FROM); return TXT.filter(x => x.x1 > 0 && x.x0 < W && x.y1 > 0 && x.y0 < H); };
+
+// ---------------------------------------------------------------- sound events (exported by core/render/events.mjs)
+function buildEvents() {
+  const ev = [], pan = x => clamp((x - 960) / 960, -1, 1), E = (t, type, o = {}) => ev.push({ t: +t.toFixed(3), type, pan: 0, ...o });
+  // 1871
+  [0.5, 1.0, 1.5, 2.0].forEach((t, i) => E(t, 'hop', { i, pan: pan([1880, 1715, 1570, 1450][i]) }));
+  E(0.32, 'slip', { pan: -0.8 }); E(1.55, 'print', { d: 0.4 }); E(1.7, 'fly', { d: 0.3, pan: .2 });
+  [0, 1, 2, 3].forEach(k => E(2.15 + k * 0.25, 'snip'));
+  E(2.15, 'shock', { pan: -.55 }); E(2.15, 'hathop', { pan: -.55 }); E(3.0, 'windup', { d: .5, pan: .5 }); E(3.85, 'swish', { d: .15, pan: .2 });
+  E(T.slap, 'slap'); E(T.slap, 'hatoff', { pan: -.55 }); E(4.55, 'hatland', { pan: -.55 }); E(4.35, 'rub', { d: .6, pan: .1 });
+  E(4.5, 'angry', { pan: -.55 }); E(4.55, 'hey', { pan: -.4 }); E(5.0, 'stamp'); E(5.0, 'standup', { d: .5, pan: .5 });
+  E(6.4, 'mine', { pan: .3 }); E(6.4, 'cross', { pan: .5 }); E(6.8, 'strip', { pan: -.75 }); E(7.5, 'lift', { d: .35, pan: -.5 }); E(8.0, 'stomp', { pan: -.5 });
+  E(8.55, 'puff', { pan: -.4 }); E(9.1, 'puff', { pan: -.3 });
+  // page moves
+  E(T.p1out, 'pageout', { d: 1.0 }); E(T.p3out, 'whip', { d: .6 }); E(T.p4out, 'slide', { d: .7 }); E(T.p5out, 'drop', { d: .7 }); E(T.back0, 'pageout', { d: 1.0 });
+  // village
+  E(11.0, 'tag'); E(14.75, 'stampdown', { d: .45 }); E(T.stamp, 'idstamp'); E(T.stamp + .12, 'worried');
+  // 1918
+  E(17.0, 'tag', { pan: -.8 }); E(18.6 + .5, 'hop', { i: 0, pan: -.4 }); E(19.6, 'hop', { i: 1, pan: -.3 });
+  E(T.grab, 'grab', { pan: 0 }); E(T.rip, 'rip', { d: .35 }); E(T.fling, 'swish', { d: .15, pan: .2 }); E(T.hit, 'smack', { pan: .5 }); E(T.hit, 'helmet', { pan: .55 }); E(T.hit + .85, 'helmetland', { pan: .6 });
+  E(22.42, 'swish', { d: .15, pan: 0 }); E(T.slap18, 'slap', { pan: 0 }); E(T.bubble18, 'mine', { pan: -.2 });
+  // 1940 (no comic sounds)
+  E(27.2, 'tag', { pan: .5 }); E(27.6, 'handdown', { d: 1.6 }); E(T.press40, 'press'); E(T.curl, 'curl', { d: .8 });
+  // 1944–45
+  E(34.2, 'tag', { pan: -.8 }); E(34.6, 'grab', { pan: -.1 }); E(T.pull, 'strain', { d: T.letgo - T.pull }); E(T.letgo, 'snapback'); E(T.letgo + .2, 'fall', { pan: -.4 });
+  E(37.45, 'standup', { d: .3, pan: -.3 }); E(37.62, 'swish', { d: .1 }); E(T.thunk, 'thunk');
+  E(T.tilt0, 'tilt', { d: T.tilt1 - T.tilt0 }); E(T.gran, 'popup', { pan: -.05 }); E(T.kid, 'popup', { pan: .1 });
+  E(T.hop0 + .45, 'hop', { i: 2, pan: -.6 }); E(T.hop0 + .9, 'hop', { i: 3, pan: -.9 }); E(T.tap, 'tap', { pan: -.05 }); E(T.tap + .45, 'tap', { pan: -.05 }); E(T.pin - .35, 'fly', { d: .35, pan: .1 }); E(T.pin, 'pin', { pan: .1 }); E(T.title + .16, 'titleslap', { pan: .4 });
+  VO.forEach(([id, t]) => E(t, 'vo', { id }));
+  return ev.sort((a, b) => a.t - b.t);
+}
+window.EV = buildEvents().filter(e => e.t >= FROM && e.t < TO).map(e => ({ ...e, t: +(e.t - FROM).toFixed(4) }));
+
+async function boot() {
+  const [topo, index] = await Promise.all([fetch('europe.json').then(r => r.json()), fetch('parts/index.json').then(r => r.json())]);
+  geo = decode(topo); idx = index;
+  const names = [];
+  for (const sh of ['fr', 'pr', 'al']) idx[sh].parts.forEach(p => names.push(`${sh}_${p.id}`));
+  await Promise.all(names.map(n => new Promise((ok, no) => { const i = new Image(); i.onload = () => { img[n] = i; ok(); }; i.onerror = no; i.src = `parts/${n}.png`; })));
+  await Promise.all([document.fonts.load('52px FellSC', 'france'), document.fonts.load('64px Fell', '1871'), document.fonts.load('24px FellIt', 'Europe'),
+    document.fonts.load('64px Lilita', 'MINE NOW HEY AGAIN'), document.fonts.load('40px KuaiLe', SUBS.map(s => s[2]).join('') + '归我了！又一块纸搞笑历史卡通'),
+    document.fonts.load('62px OldStdB', '0123456789–'), document.fonts.load('30px OldStd', '0123456789.–'), document.fonts.load('italic 28px OldStdIt', '0123456789–')]);
+  paperTex = makePaper(W * MS, H * MS, 7);
+  { const pt = makePaper(1024, 1024, 21), pg = pt.getContext('2d'); pg.globalCompositeOperation = 'color'; pg.fillStyle = '#EAE0C8'; pg.fillRect(0, 0, 1024, 1024);
+    const tp = canvas(1024, 1024), tg = tp.getContext('2d'); tg.fillStyle = '#ECE2CA'; tg.fillRect(0, 0, 1024, 1024); tg.globalCompositeOperation = 'overlay'; tg.globalAlpha = .6; tg.drawImage(makePaper(1024, 1024, 21), 0, 0);
+    pagePat = MAIN.createPattern(tp, 'repeat');
+    const tb = canvas(1024, 1024), bg = tb.getContext('2d'); bg.fillStyle = C.table; bg.fillRect(0, 0, 1024, 1024); bg.globalCompositeOperation = 'overlay'; bg.globalAlpha = .7; bg.drawImage(makePaper(1024, 1024, 33), 0, 0);
+    tablePat = MAIN.createPattern(tb, 'repeat'); }
+  MAP71 = bakeMap('empire'); MAPDE = bakeMap('germany');
+  // the patch bake window and the patch centre
+  { const xs = [P(5.7, 48)[0], P(8.4, 48)[0]], ys = [P(7, 49.75)[1], P(7, 47.35)[1]]; PB = { x0: xs[0] - 24, x1: xs[1] + 24, y0: ys[0] - 24, y1: ys[1] + 24 }; }
+  PATCH_C = [0, 0];
+  const probe = bakePatch(C.grey, 11, false), d = probe.cv.getContext('2d').getImageData(0, 0, probe.cv.width, probe.cv.height).data;
+  let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+  for (let y = 0; y < probe.cv.height; y += 2) for (let x = 0; x < probe.cv.width; x += 2) if (d[(y * probe.cv.width + x) * 4 + 3] > 8) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  PATCH_C = [PB.x0 + (x0 + x1) / 2 / PR, PB.y0 + (y0 + y1) / 2 / PR];
+  PATCH.grey = bakePatch(C.grey, 11, false); PATCH.greyL = bakePatch(C.grey, 11, true);
+  PATCH.blue = bakePatch(C.blue, 12, false); PATCH.grey40 = bakePatch(C.grey, 13, false); PATCH.blue45 = bakePatch(C.blue, 14, false);
+  // the 1918 tear: a jagged line across the grey patch
+  { const r = rng(9), line = []; for (let x = -170; x <= 170; x += 13) line.push([x, -8 + (r() - .5) * 22 + (x % 26 ? 6 : -6)]);
+    PATCH.greyTop = cutPiece(PATCH.greyL, [...line, [170, -400], [-170, -400]], line);
+    PATCH.greyLow = cutPiece(PATCH.greyL, [...line, [170, 400], [-170, 400]], line); }
+  PATCH.fold40 = foldPieces(PATCH.grey40);
+  MAPZ = bakeMapZoom(); MAPTALL = bakeMapTall();
+  CUT = AL_LINE.map(([lo, la]) => P(lo, la));
+  CUTLEN = 0; for (let i = 1; i < CUT.length; i++) CUTLEN += len(CUT[i - 1], CUT[i]);
+  LAYER = canvas(W, H);
+  window.render = t => renderFilm(t + FROM);
+  window.READY = true;
+}
+boot();
+</script></body></html>

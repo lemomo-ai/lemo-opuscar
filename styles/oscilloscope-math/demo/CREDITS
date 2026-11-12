@@ -1,0 +1,29 @@
+Oscilloscope Math demo · 《吉布斯现象》 The Gibbs Phenomenon · third-party assets and sources
+
+## Voice
+- Kokoro-82M (hexgrad), voice am_michael, Apache License 2.0; run locally via kokoro-onnx (MIT) through the library's
+  core/tts/tts.py. Speech check: faster-whisper base.en (MIT; OpenAI Whisper weights, MIT). Script: demo/voice/lines.json.
+
+## Music samples (CC0; credit not required, given with thanks)
+- Versilian Community Sample Library (VCSL, Versilian Studios): vibraphone_bowed, glockenspiel (core/audio/sampler.py).
+  The Fourier plucks, the signal tone, the bass, the bells, relays, clicks, sweeps and the power-off are synthesised by
+  demo/mix.py and core/audio/sfx.py.
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- JetBrains Mono: The JetBrains Mono Project Authors, https://github.com/google/fonts/tree/main/ofl/jetbrainsmono
+- STIX Two Text (roman and italic): The STIX Fonts Project Authors, https://github.com/google/fonts/tree/main/ofl/stixtwotext
+- Noto Serif SC: Google / Adobe (Source Han Serif), https://github.com/google/fonts/tree/main/ofl/notoserifsc
+  Static instances (and the Chinese subset, renamed "OM Serif SC" inside the file) made by make_fonts.py from the
+  variable fonts that build.sh downloads into demo/fonts/src/.
+
+## Code
+- Manim Community v0.22.1 (MIT), Cairo renderer, installed into demo/.venv by build.sh.
+- MathJax 3.2.2 (npm mathjax-full, Apache License 2.0; its TeX fonts Apache 2.0 / OFL): typeset the formula once into
+  demo/tex/formulas.json (demo/tools/tex2svg.mjs); not needed to build.
+- OpenCV (Apache 2.0), NumPy (BSD), fontTools (MIT) for the phosphor pass and the fonts.
+
+## Images, models
+- None. Every line, circle and letter is drawn by code; no photographs, no external models, no AI-generated images.
+
+## Facts
+- The mathematics on screen and its sources: demo/FACTS.md.

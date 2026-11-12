@@ -1,0 +1,651 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>The Inverted Jenny</title>
+<style>html,body{margin:0;background:#ECDFC2;overflow:hidden}canvas{display:block}</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// Vintage Engraving Collage · the whole film 《The Inverted Jenny 倒置的珍妮》 (52 s, one timeline; the last 2.45 s are the end-card credits).
+// Parts live in parts/ (baked by src/bake.py + src/bake2.py); narration times and subtitles are in timeline.json (src/timeline.py).
+// This file only does what happens on the cutting table: slide in, settle, flip, hinge, cut, drop shadow, paper thickness, plus the camera and transitions between the seven scenes.
+// ?from=A&to=B cuts an excerpt: window.DUR = B − A, render(t) draws film time A + t.
+const W = 1920, H = 1080;
+const Q = new URLSearchParams(location.search);
+let FILM = 50, FROM = +(Q.get('from') ?? 0), TO = +(Q.get('to') ?? FILM);
+window.DUR = TO - FROM;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+ctx.imageSmoothingQuality = 'high';
+
+// ---------- Helpers ----------
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const seg = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const EASE = {
+  lin: p => p, out: p => 1 - Math.pow(1 - p, 3), in: p => p * p * p,
+  io: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  back: p => { const s = 1.9; p -= 1; return p * p * ((s + 1) * p + s) + 1; }, hold: p => 0,
+  expo: p => p <= 0 ? 0 : Math.pow(2, 10 * p - 10),
+};
+function hash(a, b = 0) { let h = Math.imul(a | 0, 374761393) ^ Math.imul(b | 0, 668265263); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+const STEP = 1 / 12;                                   // paper pieces move on twos; the camera is smooth every frame
+const stepT = t => Math.floor(t / STEP + 1e-6) * STEP;
+const D2R = Math.PI / 180;
+const PAL = { paper: '#ECDFC2', card: '#F6EEDB', ink: '#221C17', ochre: '#C65F3A', teal: '#2F7F7A', mustard: '#E1AB3B', red: '#C8463F', blue: '#2F5D8C' };
+const EDGE = '#B49D78', BACK = '#E9DFC8', SHADOW = 'rgb(62,40,22)';
+
+// ---------- Parts ----------
+let M, TL, SP = {}, B = 1.5;
+async function loadImg(src) { const im = new Image(); im.src = src; await im.decode(); return im; }
+function canvasOf(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; }
+function tinted(img, color, pad, blur) {
+  const c = canvasOf(img.width + 2 * pad, img.height + 2 * pad), g = c.getContext('2d');
+  const tmp = canvasOf(img.width, img.height), t = tmp.getContext('2d');
+  t.drawImage(img, 0, 0); t.globalCompositeOperation = 'source-in'; t.fillStyle = color; t.fillRect(0, 0, img.width, img.height);
+  if (blur) g.filter = `blur(${blur}px)`;
+  g.drawImage(tmp, pad, pad); return c;
+}
+function backside(img) { const c = tinted(img, BACK, 0, 0), g = c.getContext('2d'); g.globalAlpha = 0.10; g.globalCompositeOperation = 'source-atop'; g.drawImage(img, 0, 0); return c; }
+// one "paper": image + cut edge + two levels of shadow + paper back; k = pixels per world unit
+function sprite(img, k, back = false) {
+  const pad = Math.round(16 * k);
+  return { img, k, pad, edge: tinted(img, EDGE, 0, 0), sh1: tinted(img, SHADOW, pad, 2.5 * k), sh2: tinted(img, SHADOW, pad, 9 * k), back: back ? backside(img) : null };
+}
+async function loadParts() {
+  M = await (await fetch('parts/manifest.json')).json(); B = M._.B;
+  TL = await (await fetch('timeline.json')).json(); FILM = TL.dur;
+  if (!Q.get('to')) { TO = FILM; window.DUR = TO - FROM; }
+  const raw = {};
+  const names = Object.keys(M).filter(k => !k.startsWith('_') && k !== 'paper');
+  await Promise.all(names.map(async n => { raw[n] = await loadImg('parts/' + n + '.png'); }));
+  const plain = ['st_paper', 'st_red', 'st_blue', 'st_tint'];
+  for (const n of names) {
+    if (plain.includes(n) || n.startsWith('sub') || n.endsWith('_bg')) { SP[n] = { img: raw[n], k: M[n].k || B, m: M[n] }; continue; }
+    SP[n] = sprite(raw[n], M[n].k || B, n.startsWith('w_') || n.startsWith('t_')); SP[n].m = M[n];
+  }
+  for (const n of names) if (n.startsWith('sub') || n.endsWith('_bg')) { SP[n] = sprite(raw[n], B); SP[n].m = M[n]; }
+  SP.paper = { img: await loadImg('parts/paper.jpg'), m: M.paper };
+  buildStamps();
+}
+// ---------- Stamps: overprinted live from paper, red plate, blue plate ----------
+// oval frame (source-image coordinates): centre (610, 500), radii (420, 232)
+const OVAL_SRC = [610, 500, 420, 232];
+let STAMP = {};
+function stampCanvas(widthPx, parts) {
+  const P = M.st_paper, k = widthPx / P.w, c = canvasOf(widthPx, P.h * k), g = c.getContext('2d');
+  const [ox, oy] = [(OVAL_SRC[0] * 2 - P.crop[0]) * k, (OVAL_SRC[1] * 2 - P.crop[1]) * k];
+  for (const p of parts) {
+    if (p === 'paper') { g.drawImage(SP.st_paper.img, 0, 0, c.width, c.height); continue; }
+    const name = p.replace('_inv', ''), m = M[name], img = SP[name].img;
+    g.save();
+    if (p.endsWith('_inv')) { g.translate(ox, oy); g.rotate(Math.PI); g.translate(-ox, -oy); }
+    g.drawImage(img, m.off[0] * k, m.off[1] * k, m.w * k, m.h * k); g.restore();
+  }
+  return c;
+}
+function buildStamps() {
+  const P = M.st_paper;
+  // large stamp (opening): paper + red frame + sky line (the plane is a separate cut-out that drops in)
+  STAMP.big = sprite(stampCanvas(P.w, ['paper', 'st_red', 'st_tint']), P.w / 760);
+  STAMP.bigW = 760;
+  // small stamps: red and blue plates on the full sheet (transparent ground, printed onto the sheet paper)
+  for (const [n, w] of [['L', 720], ['S', 150]]) {
+    STAMP['red' + n] = stampCanvas(w, ['st_red']); STAMP['blue' + n] = stampCanvas(w, ['st_blue']); STAMP['blueInv' + n] = stampCanvas(w, ['st_blue_inv']);
+  }
+  STAMP.inv = sprite(stampCanvas(360, ['paper', 'st_red', 'st_blue_inv']), 360 / 92);    // a single Inverted Jenny, world width 92
+  STAMP.invHero = sprite(stampCanvas(900, ['paper', 'st_red', 'st_blue_inv']), 900 / 150);
+}
+
+// ---------- Drawing a paper piece: shadow → cut edge → front or paper back ----------
+function drawSprite(S, ax, ay, lx, ly, r, z, sx = 1, s = 1, alpha = 1) {
+  const img = S.img, w = img.width / S.k, h = img.height / S.k, pad = (S.pad || 0) / S.k;
+  const flipW = Math.abs(sx) < 0.04 ? 0.04 * Math.sign(sx || 1) : sx;
+  const place = (dx, dy) => { ctx.save(); ctx.translate(ax + dx, ay + dy); ctx.rotate(r * D2R); ctx.scale(flipW * s, s); };
+  if (S.sh1) {
+    const zz = Math.max(0, z), off = [3 + 4.2 * zz, 4 + 5.4 * zz], soft = clamp(zz / 2.2, 0, 1);
+    const sa = alpha * (0.30 - 0.035 * Math.min(zz, 4));
+    place(off[0], off[1]);
+    if (soft < 1) { ctx.globalAlpha = sa * (1 - soft); ctx.drawImage(S.sh1, -lx - pad, -ly - pad, w + 2 * pad, h + 2 * pad); }
+    if (soft > 0) { ctx.globalAlpha = sa * soft; ctx.drawImage(S.sh2, -lx - pad, -ly - pad, w + 2 * pad, h + 2 * pad); }
+    ctx.restore();
+    const side = Math.sqrt(Math.max(0, 1 - sx * sx));
+    place(0.9 + 2.4 * side * Math.sign(sx || 1), 1.2); ctx.globalAlpha = alpha; ctx.drawImage(S.edge, -lx, -ly, w, h); ctx.restore();
+  }
+  place(0, 0); ctx.globalAlpha = alpha;
+  ctx.drawImage(sx < 0 && S.back ? S.back : img, -lx, -ly, w, h);
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+const sz = S => [S.img.width / S.k, S.img.height / S.k];
+// anchored at the centre
+function put(name, x, y, r = 0, z = 0, sx = 1, s = 1, a = 1) { const S = typeof name === 'string' ? SP[name] : name; const [w, h] = sz(S); drawSprite(S, x, y, w / 2, h / 2, r, z, sx, s, a); }
+
+// ---------- Motion: keyframes + the bounce and jitter of settling ----------
+// keys: [t, x, y, rot, z, sx, ease, land, scale]
+function pose(keys, t, id = 1) {
+  if (t <= keys[0][0]) { const k = keys[0]; return { x: k[1], y: k[2], r: k[3], z: k[4], sx: k[5] ?? 1, s: k[8] ?? 1, pre: t < keys[0][0] }; }
+  let i = keys.length - 1; for (let j = 0; j < keys.length - 1; j++) if (t < keys[j + 1][0]) { i = j; break; }
+  const a = keys[i]; let p;
+  if (i === keys.length - 1) p = { x: a[1], y: a[2], r: a[3], z: a[4], sx: a[5] ?? 1, s: a[8] ?? 1 };
+  else {
+    const b = keys[i + 1], e = EASE[b[6] || 'out'](seg(t, a[0], b[0]));
+    p = { x: lerp(a[1], b[1], e), y: lerp(a[2], b[2], e), r: lerp(a[3], b[3], e), z: lerp(a[4], b[4], e), sx: lerp(a[5] ?? 1, b[5] ?? 1, e), s: lerp(a[8] ?? 1, b[8] ?? 1, e), moving: b[6] !== 'hold' };
+  }
+  for (let j = 0; j <= i; j++) {
+    const k = keys[j]; if (!k[7]) continue;
+    const s = t - k[0]; if (s < 0 || s > 0.34) continue;
+    const n = Math.round(s / STEP), dec = Math.pow(0.45, n);
+    p.r += k[7] * dec * (n % 2 ? -1 : 1); p.y += -2.2 * dec * (n % 2 ? 0 : 1) * Math.sign(k[7]);
+  }
+  if (p.moving) { const n = Math.round(t / STEP); p.x += (hash(id, n) - .5) * 1.4; p.y += (hash(id + 7, n) - .5) * 1.4; p.r += (hash(id + 3, n) - .5) * 0.5; }
+  return p;
+}
+function putK(name, keys, t, id) { if (t < keys[0][0]) return null; const p = pose(keys, t, id); put(name, p.x, p.y, p.r, p.z, p.sx, p.s); return p; }
+// slapped on: 0.17 s before, it is higher, slightly larger and tilted
+const slap = (t0, x, y, r, dx = -16, dy = -24) => [[t0 - 0.17, x + dx, y + dy, r - 5, 4.5, 1, null, 0, 1.12], [t0, x, y, r, 0, 1, 'in', 0.9, 1.0]];
+// slides in from off screen
+const slide = (t0, t1, x, y, r, fx, fy, fr = 0, land = 0.8) => [[t0, x + fx, y + fy, r + fr, 2.0, 1], [t1, x, y, r, 0, 1, 'back', land]];
+
+// ---------- Old-paper table top (tiles endlessly: mirrored tiling, no visible seams) ----------
+function drawPaper(x0, y0, x1, y1) {
+  const P = SP.paper, w = P.img.width / P.m.scale, h = P.img.height / P.m.scale, bx = P.m.x, by = P.m.y;
+  const i0 = Math.floor((x0 - bx) / w), i1 = Math.floor((x1 - bx) / w), j0 = Math.floor((y0 - by) / h), j1 = Math.floor((y1 - by) / h);
+  for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+    ctx.save(); ctx.translate(bx + i * w + (i & 1 ? w : 0), by + j * h + (j & 1 ? h : 0)); ctx.scale(i & 1 ? -1 : 1, j & 1 ? -1 : 1);
+    ctx.drawImage(P.img, 0, 0, w + 0.5, h + 0.5); ctx.restore();
+  }
+}
+// camera
+function camTrack(keys, t) {
+  let k = keys.length - 1; for (let i = 0; i < keys.length - 1; i++) if (t < keys[i + 1][0]) { k = i; break; }
+  if (k === keys.length - 1 || t <= keys[0][0]) { const a = t <= keys[0][0] ? keys[0] : keys[k]; return { cx: a[1], cy: a[2], z: a[3], r: a[5] || 0 }; }
+  const a = keys[k], b = keys[k + 1], p = EASE[b[4] || 'io'](seg(t, a[0], b[0]));
+  return { cx: lerp(a[1], b[1], p), cy: lerp(a[2], b[2], p), z: Math.exp(lerp(Math.log(a[3]), Math.log(b[3]), p)), r: lerp(a[5] || 0, b[5] || 0, p) };
+}
+let OFFX = 0;
+function applyCam(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.translate(W / 2 + OFFX, H / 2); ctx.rotate((c.r || 0) * D2R); ctx.scale(c.z, c.z); ctx.translate(-c.cx, -c.cy); }
+function view(c) { const hw = W / 2 / c.z * 1.25 + Math.abs(OFFX) / c.z, hh = H / 2 / c.z * 1.25 + Math.abs(OFFX) / c.z; return [c.cx - hw, c.cy - hh, c.cx + hw, c.cy + hh]; }
+const shake = (t, t0, a = 8) => { const s = t - t0; if (s < 0 || s > 0.5) return [0, 0]; const d = Math.exp(-s * 9); return [a * d * Math.sin(s * 70), a * 1.2 * d * Math.sin(s * 55 + 1)]; };
+
+// ---------- Sound events ----------
+const EVS = [];
+const ev = (t, type, x = 960, extra = {}) => EVS.push(Object.assign({ t: +t.toFixed(3), type, pan: +clamp((x - 960) / 960, -1, 1).toFixed(2) }, extra));
+
+// =====================================================================================
+// Scene A (0–10.9): sky collage → the engraved plane flies in → the stamp assembles around it
+// =====================================================================================
+const A = {};
+A.flats = {
+  teal: [[0.0, 980, -40, 4, 2.2, 1], [0.5, 0, 0, 0, 0, 1, 'back', 0.6]],
+  ochre: [[0.15, -760, 260, -24, 2.2, 1], [0.75, 0, 0, 0, 0, 1, 'back', -0.8]],
+  strip: [[0.45, 620, -340, 6, 2.0, 1], [1.0, 0, 0, 0, 0, 1, 'back', 0.5]],
+  sun: [[0.75, 60, 520, 18, 2.0, 1], [1.25, 0, 0, 0, 0, 1, 'back', 1.2]],
+  cloud1: [[1.1, -560, 30, -8, 1.8, 1], [1.5, 0, 0, 0, 0, 1, 'back', 1.0]],
+  cloud3: [[1.2, 520, -40, 8, 1.8, 1], [1.6, 0, 0, 0, 0, 1, 'back', -1.0]],
+  cloud2: [[1.4, 80, 360, 6, 1.8, 1], [1.85, 0, 0, 0, 0, 1, 'back', 1.0]],
+};
+for (const [n, k] of Object.entries(A.flats)) { ev(k[0][0], 'slide', 960 + k[0][1] * 0.5, { d: k[1][0] - k[0][0], size: ['teal', 'strip', 'ochre'].includes(n) ? 1 : 0.6 }); ev(k[1][0], 'land', 960 + k[0][1] * 0.3, { w: ['teal', 'ochre'].includes(n) ? 0.9 : 0.6 }); }
+function drawFlat(n, p) { const m = SP[n].m, [w, h] = sz(SP[n]); drawSprite(SP[n], m.x + w / 2 + p.x, m.y + h / 2 + p.y, w / 2, h / 2, p.r, p.z, p.sx, p.s); }
+A.photo = [[1.55, 380, 640, -3.5, 4.5, 1, null, 0, 1.12], [1.75, 380, 640, -3.5, 0, 1, 'in', 1.0]];
+ev(1.75, 'slap', 380);
+// AIR MAIL: ransom-note letters pasted on one by one (eighth notes)
+A.letters = M => { const out = []; let x = 120; M._ransom.airmail.forEach((n, i) => { if (!n) { x += 46; return; } const w = SP[n].img.width / B; out.push({ n, x: x + w / 2, y: 175 + (i % 2 ? 10 : -6), r: [-6, 4, -3, 0, 7, -4, 3, -5][i], t: 2.0 + i * 0.125 }); x += w - 6; }); return out; };
+for (let i = 0; i < 8; i++) if (i !== 3) ev(2.0 + i * 0.125, 'slap', 150 + i * 90);
+// where it is printed on the stamp: the plane lands where the stamp's own plane was
+const ST_C = [1300, 470], ST_R = -2.0;            // centre and angle of the large stamp (world)
+function planeHome() {
+  const P = M.st_paper, pl = M.plane, kst = P.w / STAMP.bigW;   // st pixels / world
+  const [pw, ph] = [pl.w / pl.srck * P.srck / kst, pl.h / pl.srck * P.srck / kst];
+  const lx = (pl.src[0] * P.srck - P.crop[0]) / kst, ly = (pl.src[1] * P.srck - P.crop[1]) / kst;   // top left of the plane inside the stamp (world)
+  const sw = P.w / kst, sh = P.h / kst;
+  const cx = lx + pw / 2 - sw / 2, cy = ly + ph / 2 - sh / 2;          // plane centre relative to the stamp centre
+  const c = Math.cos(ST_R * D2R), s = Math.sin(ST_R * D2R);
+  return { x: ST_C[0] + cx * c - cy * s, y: ST_C[1] + cx * s + cy * c, scale: (pw) / (pl.w / B) };
+}
+function planeFlight(t) {   // 2.35–5.9 flies in; then rests on the stamp; flies off from 10.0
+  const H_ = planeHome();
+  const keys = [[2.35, -380, 640, 8, 2.6, 1], [3.6, 520, 520, -4, 2.8, 1, 'lin'], [4.9, 1060, 430, -10, 2.4, 1, 'lin'], [5.9, H_.x, H_.y, ST_R, 0.4, 1, 'out', 1.2],
+    [10.0, H_.x, H_.y, ST_R, 0.4, 1, 'hold'], [10.45, H_.x + 760, H_.y - 520, -24, 3.0, 1, 'in']];
+  const p = pose(keys, t, 501);
+  if (t > 2.35 && t < 5.9) { const n = Math.round(t / STEP); p.y += 7 * Math.sin(t * 7.5); p.r += 2.0 * Math.sin(t * 7.5 + 1); }   // bobs up and down as it flies
+  if (t >= 5.9 && t < 10.0) p.y += 1.5 * Math.sin((t - 5.9) * 3);
+  p.s = H_.scale; return p;
+}
+ev(2.35, 'fly_plane', 200, { d: 3.5 }); ev(5.9, 'land', 1300, { w: 0.7 }); ev(10.0, 'fly_plane', 1500, { d: 0.5, out: 1 });
+A.stamp = [[5.25, ST_C[0] + 120, ST_C[1] + 820, ST_R + 9, 3.0, 1], [5.85, ST_C[0], ST_C[1], ST_R, 0, 1, 'back', 0.8]];
+ev(5.25, 'slide', 1300, { d: 0.6, size: 1 }); ev(5.85, 'land', 1300, { w: 1.0 });
+A.tags = [['t_bluetag', 6.75, 1560, 250, 3, null], ['t_redtag', 7.8, 1660, 820, -2, [1590, 760]]];
+for (const tg of A.tags) ev(tg[1], 'slap', tg[2]);
+A.cam = [[0, 960, 540, 1.0, 'io'], [4.7, 960, 540, 1.0, 'io'], [6.3, 1200, 500, 1.08, 'io'], [9.95, 1240, 490, 1.14, 'io']];
+function sceneA(t, tp, camOverride) {
+  const c = camOverride || camTrack(A.cam, t); applyCam(c);
+  drawPaper(...view(c));
+  for (const n of ['teal', 'strip', 'ochre', 'sun', 'cloud1', 'cloud3']) { const k = A.flats[n]; if (tp >= k[0][0]) drawFlat(n, pose(k, tp, n.length * 13)); }
+  if (tp >= A.flats.cloud2[0][0]) drawFlat('cloud2', pose(A.flats.cloud2, tp, 77));
+  putK('photo', A.photo, tp, 11);
+  for (const L of A.letters(M)) putK(L.n, slap(L.t, L.x, L.y, L.r), tp, L.t * 100);
+  // flight dashes (a printed route): appear segment by segment behind the plane
+  if (tp > 2.4 && tp < 6.4) {
+    ctx.save(); ctx.strokeStyle = PAL.ink; ctx.globalAlpha = 0.55 * (1 - seg(tp, 5.9, 6.4)); ctx.lineWidth = 3; ctx.setLineDash([14, 12]); ctx.beginPath();
+    for (let u = 2.4; u <= Math.min(tp, 5.6); u += 1 / 24) { const p = planeFlight(u); const x = p.x - 220, y = p.y + 40; u === 2.4 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.stroke(); ctx.restore();
+  }
+  if (tp >= A.stamp[0][0]) { const p = pose(A.stamp, tp, 21); put(STAMP.big, p.x, p.y, p.r, p.z); }
+  for (let [n, t0, x, y, r, to] of A.tags) {
+    if (!to) { const h_ = planeHome(); to = [h_.x + 120, h_.y - 40]; }
+    if (tp < t0 - 0.17 || tp > 10.0) continue;
+    const p = pose(slap(t0, x, y, r), tp, t0 * 10);
+    if (tp >= t0) { ctx.save(); ctx.strokeStyle = n === 't_redtag' ? PAL.red : PAL.blue; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(x - 40, y + (y < to[1] ? 18 : -18)); ctx.lineTo(to[0], to[1]); ctx.stroke();
+      ctx.beginPath(); ctx.arc(to[0], to[1], 5, 0, 7); ctx.fillStyle = ctx.strokeStyle; ctx.fill(); ctx.restore(); }
+    put(n, p.x, p.y, p.r, p.z, 1, p.s);
+  }
+  if (tp >= 2.35 && tp < 10.45) { const p = planeFlight(tp); put('plane', p.x, p.y, p.r, p.z, 1, p.s); }
+  return c;
+}
+// the stamp oval's position in the world (for the through-the-oval transition)
+function stampOval() {
+  const P = M.st_paper, kst = P.w / STAMP.bigW, sw = P.w / kst, sh = P.h / kst;
+  const ox = (OVAL_SRC[0] * 2 - P.crop[0]) / kst - sw / 2, oy = (OVAL_SRC[1] * 2 - P.crop[1]) / kst - sh / 2;
+  const c = Math.cos(ST_R * D2R), s = Math.sin(ST_R * D2R);
+  return { x: ST_C[0] + ox * c - oy * s, y: ST_C[1] + ox * s + oy * c, rx: OVAL_SRC[2] * 2 / kst, ry: OVAL_SRC[3] * 2 / kst, r: ST_R };
+}
+
+// =====================================================================================
+// Scene B (10.2–21.8): printing press, two passes; the second sheet is turned 180° before the blue
+// =====================================================================================
+const SB = { c: [1250, 520] };         // centre of the full sheet
+SB.sheet1 = [[10.0, 1250, 520, 0, 0, 1], [14.45, 1250, 520, 0, 0, 1, 'hold'], [14.9, 2500, 470, 6, 2.0, 1, 'in']];
+SB.sheet2 = [[14.85, -700, 560, -8, 2.0, 1], [15.4, 1250, 520, 0, 0, 1, 'back', 0.8],
+  [16.75, 1250, 520, 0, 0, 1, 'hold'], [17.08, 1250, 520, 196, 0.8, 1, 'out'], [17.25, 1250, 520, 180, 0, 1, 'out', 1.0],
+  [18.1, 1250, 520, 180, 0, 1, 'hold'], [18.4, 1250, 520, 364, 0.8, 1, 'out'], [18.55, 1250, 520, 360, 0, 1, 'out', -1.0]];
+ev(14.45, 'slide', 1600, { d: 0.45, size: 1 }); ev(14.85, 'slide', 300, { d: 0.55, size: 1 }); ev(15.4, 'land', 1250, { w: 1.0 });
+ev(16.75, 'spin', 1250, { d: 0.5 }); ev(17.25, 'thunk', 1250); ev(18.1, 'spin', 1250, { d: 0.45 }); ev(18.55, 'thunk', 1250);
+// roller: x it has swept across the sheet (world), left to right
+SB.passes = [{ t0: 11.8, t1: 12.8, ink: 'red', sheet: 1 }, { t0: 13.3, t1: 14.3, ink: 'blue', sheet: 1 }, { t0: 17.3, t1: 18.05, ink: 'blue', sheet: 2 }];
+for (const p of SB.passes) ev(p.t0, 'roll', 1250, { d: p.t1 - p.t0 });
+SB.labels = [['t_pass1', 11.8, 1000, 82, -1.5], ['t_pass2', 13.3, 1390, 86, 1.2]];
+for (const l of SB.labels) ev(l[1], 'slap', l[2]);
+SB.press = [[10.0, 420, 560, -3, 0, 1]];
+SB.cam = [[10.2, 470, 470, 4.2, 'io'], [10.95, 520, 500, 2.6, 'out'], [11.9, 1060, 540, 1.0, 'io'], [16.6, 1060, 540, 1.0, 'io'], [17.3, 1150, 530, 1.06, 'io'],
+  [18.7, 1150, 530, 1.06, 'io'], [19.5, 0, 0, 5.2, 'io'], [21.8, 0, 0, 5.5, 'lin']];
+function cellXY(r, c, sheetPose) {      // centre of the cell at row r, column c of the sheet (world)
+  const g = M.sheet.grid, [w, h] = [M.sheet.w / B, M.sheet.h / B];
+  const lx = g[0] + (c + 0.5) * g[2] - w / 2, ly = g[1] + (r + 0.5) * g[3] - h / 2;
+  const a = sheetPose.r * D2R; return [sheetPose.x + lx * Math.cos(a) - ly * Math.sin(a), sheetPose.y + lx * Math.sin(a) + ly * Math.cos(a)];
+}
+// draw a whole sheet: paper + each cell's red / blue (revealed as far as the roller has gone)
+function drawSheet(sp, state) {
+  const S = SP.sheet, [w, h] = sz(S), g = M.sheet.grid;
+  drawSprite(S, sp.x, sp.y, w / 2, h / 2, sp.r, sp.z, 1, sp.s || 1);
+  ctx.save(); ctx.translate(sp.x, sp.y); ctx.rotate(sp.r * D2R); ctx.scale(sp.s || 1, sp.s || 1); ctx.translate(-w / 2, -h / 2);
+  const zoomBig = state.big;
+  for (let r = 0; r < 10; r++) for (let c = 0; c < 10; c++) {
+    const x = g[0] + c * g[2] + 3, y = g[1] + r * g[3] + 3, cw = g[2] - 6, ch = cw * (M.st_paper.h / M.st_paper.w);
+    const red = state.red(r, c), blue = state.blue(r, c);
+    if (red) ctx.drawImage(zoomBig ? STAMP.redL : STAMP.redS, x, y, cw, ch);
+    if (blue) ctx.drawImage(blue === 'inv' ? (zoomBig ? STAMP.blueInvL : STAMP.blueInvS) : (zoomBig ? STAMP.blueL : STAMP.blueS), x, y, cw, ch);
+  }
+  if (state.perf) {         // perforations: a row of small round holes on the grid lines, showing the table
+    ctx.fillStyle = 'rgba(70,52,30,0.55)';
+    for (let i = 1; i < 10; i++) for (let j = 0; j <= 10 * 9; j++) {
+      const u = j / 9; ctx.beginPath(); ctx.arc(g[0] + i * g[2], g[1] + u * 10 * g[3] / 10 * 1.0 * (10 / 10), 1.3, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(g[0] + u * 10 * g[2] / 10, g[1] + i * g[3], 1.3, 0, 7); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+function rollerX(p) { const g = M.sheet.grid, w = M.sheet.w / B; return lerp(-w / 2 - 50, w / 2 + 50, p); }   // relative to the sheet centre
+function sceneBCam(t) {
+  if (t < 18.7) return camTrack(SB.cam, t);
+  const sp2 = pose(SB.sheet2, 18.7, 31); const [x, y] = cellXY(3, 5, sp2);      // push in to one Inverted Jenny (row 4, column 6)
+  const a = camTrack(SB.cam, 18.7), p = EASE.io(seg(t, 18.7, 19.5)), z = Math.exp(lerp(Math.log(1.06), Math.log(9.4 + 0.5 * seg(t, 19.5, 21.8)), p));
+  return { cx: lerp(a.cx, x, p), cy: lerp(a.cy, y + 4, p), z, r: 0 };
+}
+function sceneB(t, tp, camOverride) {
+  const c = camOverride || sceneBCam(t);
+  applyCam(c); drawPaper(...view(c));
+  // background coloured paper: a large mustard block behind the press, a teal strip below
+  drawSprite(SP.sun, 360, 520, sz(SP.sun)[0] / 2, sz(SP.sun)[1] / 2, 0, 0, 1, 2.1);
+  drawSprite(SP.strip, 900, 1100, sz(SP.strip)[0] / 2, sz(SP.strip)[1] / 2, -14, 0);
+  putK('press', SB.press, tp, 41);
+  for (const [n, t0, x, y, r] of SB.labels) putK(n, slap(t0, x, y, r), tp, t0 * 10);
+  const sheets = [];
+  if (tp < 14.95) sheets.push({ keys: SB.sheet1, id: 1 });
+  if (tp >= 14.85) sheets.push({ keys: SB.sheet2, id: 2 });
+  for (const s of sheets) {
+    const sp = pose(s.keys, tp, 30 + s.id);
+    const rel = (r, c) => { const g = M.sheet.grid, w = M.sheet.w / B; return g[0] + (c + 0.5) * g[2] - w / 2; };
+    const done = (pass, r, c) => { if (!pass) return false; if (tp >= pass.t1) return true; if (tp < pass.t0) return false; return rel(r, c) < rollerX(EASE.lin(seg(tp, pass.t0, pass.t1))); };
+    const P = SB.passes;
+    const state = s.id === 1 ? { red: (r, c) => done(P[0], r, c), blue: (r, c) => done(P[1], r, c) ? 'up' : null }
+      : { red: () => true, blue: (r, c) => { if (!done(P[2], r, c)) return null; return 'inv'; } };
+    // the second sheet goes in turned 180°: in the sheet's coordinates the blue plate is upside down; the roller runs left to right on screen, so flip it while the sheet is turned
+    if (s.id === 2) { const st = state.blue; state.blue = (r, c) => (tp < P[2].t0 ? null : (tp >= P[2].t1 || rel(9 - r, 9 - c) < rollerX(seg(tp, P[2].t0, P[2].t1))) ? 'inv' : null); }
+    state.big = c.z > 2;
+    drawSheet(sp, state);
+  }
+  // roller
+  for (const p of SB.passes) {
+    if (tp < p.t0 - 0.25 || tp > p.t1 + 0.3) continue;
+    const u = seg(tp, p.t0, p.t1), x = SB.c[0] + rollerX(u), lift = tp < p.t0 ? 1 - seg(tp, p.t0 - 0.25, p.t0) : tp > p.t1 ? seg(tp, p.t1, p.t1 + 0.3) : 0;
+    put('roller', x, SB.c[1] - 20 * lift, 0, 0.6 + 2.5 * lift, 1, 1, 1 - lift * 0.0);
+    // ink on the roller: a thin coloured edge
+    ctx.fillStyle = p.ink === 'red' ? PAL.red : PAL.blue; ctx.globalAlpha = 0.9 * (1 - lift);
+    ctx.fillRect(x + 22, SB.c[1] - 400, 6, 800); ctx.globalAlpha = 1;
+  }
+  return c;
+}
+
+// =====================================================================================
+// Scene C (21.4–31.0): the collector Robey buys the sheet; a week later, $15,000
+// =====================================================================================
+const SC = {};
+SC.robey = slide(21.45, 21.95, 380, 690, 0, -620, 60, -6, 0.6);
+SC.labels = [['t_robey', 22.55, 830, 300, -1.5], ['t_collector', 22.8, 846, 352, 1.0]];
+SC.sheet = [[23.0, 2400, 380, -10, 2.4, 1, null, 0, 0.6], [23.6, 1250, 440, 3, 0, 1, 'back', 0.8, 0.6]];
+SC.receipt = { x: 1270, y: 820, r: -1.2, t0: 24.35, t1: 25.5 };
+SC.week = slap(27.95, 690, 236, 4);
+SC.strike = [28.55, 28.8];
+SC.cam = [[21.4, 700, 560, 1.12, 'io'], [22.9, 760, 540, 1.1, 'io'], [23.9, 1080, 540, 1.0, 'io'], [27.8, 1090, 540, 1.0, 'io'], [29.9, 1240, 560, 1.16, 'io'], [31.0, 1250, 560, 1.18, 'lin']];
+ev(21.45, 'slide', 300, { d: 0.5, size: 1 }); ev(21.95, 'land', 380, { w: 1.0 });
+for (const l of SC.labels) ev(l[1], 'slap', l[2]);
+ev(23.0, 'slide', 1700, { d: 0.6, size: 1 }); ev(23.6, 'land', 1250, { w: 0.9 }); ev(27.95, 'slap', 690);
+ev(SC.strike[0], 'strike', 1300, { d: 0.25 });
+SC.price = M => { const out = []; let x = 860; M._ransom.price.forEach((n, i) => { const w = SP[n].img.width / B; out.push({ n, x: x + w / 2, y: 470 + [0, -14, 8, -6, 12, -10, 4][i], r: [-7, 5, -3, 6, -5, 3, -6][i], t: 28.95 + i * 0.125 }); x += w - 8; }); return out; };
+function typed(name, x, y, r, t0, t1, tp, z = 0) {      // typewriter: lay a blank slip first, then the letters appear one cell at a time
+  const S = SP[name], bg = SP[name + '_bg'], m = S.m, [w, h] = sz(S);
+  drawSprite(bg, x, y, w / 2, h / 2, r, z);
+  const n = Math.floor(clamp((tp - t0) / (t1 - t0), 0, 1) * m.n + 1e-6); if (n <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(r * D2R); ctx.beginPath(); ctx.rect(-w / 2, -h / 2, m.tx + n * m.adv + 1, h); ctx.clip();
+  ctx.drawImage(S.img, -w / 2, -h / 2, w, h); ctx.restore();
+}
+function sceneC(t, tp, camOverride) {
+  const c = camOverride || camTrack(SC.cam, t); applyCam(c); drawPaper(...view(c));
+  drawSprite(SP.teal, 1500, 330, sz(SP.teal)[0] / 2, sz(SP.teal)[1] / 2, 180, 0, 1, 0.75);
+  drawSprite(SP.ochre, 260, 880, sz(SP.ochre)[0] / 2, sz(SP.ochre)[1] / 2, 0, 0, 1, 0.95);
+  putK('t_po', slap(21.95, 1560, 120, -2), tp, 61);
+  putK('robey', SC.robey, tp, 62);
+  for (const [n, t0, x, y, r] of SC.labels) putK(n, slap(t0, x, y, r), tp, t0 * 10);
+  if (tp >= SC.sheet[0][0]) {
+    const sp = pose(SC.sheet, tp, 63);
+    drawSheet(sp, { red: () => true, blue: () => 'inv', perf: true, big: false });
+  }
+  if (tp >= SC.receipt.t0) {
+    const R = SC.receipt; typed('t_receipt', R.x, R.y, R.r, R.t0, R.t1, tp);
+    if (tp >= SC.strike[0]) {     // a stroke of red ink strikes out $24.00
+      const u = seg(tp, SC.strike[0], SC.strike[1]); ctx.save(); ctx.translate(R.x, R.y); ctx.rotate((R.r - 2) * D2R);
+      ctx.strokeStyle = PAL.red; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(40, 4); ctx.lineTo(40 + 210 * u, -2); ctx.stroke(); ctx.restore();
+    }
+  }
+  putK('t_week', SC.week, tp, 64);
+  for (const L of SC.price(M)) putK(L.n, slap(L.t, L.x, L.y, L.r), tp, L.t * 100);
+  return c;
+}
+for (let i = 0; i < 18; i++) ev(24.35 + i * (1.15 / 18), 'key', 1270);
+ev(25.5, 'bell', 1500);
+for (let i = 0; i < 7; i++) ev(28.95 + i * 0.125, 'slap', 900 + i * 110);
+
+// =====================================================================================
+// Scene D (31.0–35.0): cut apart, a hundred planes scatter
+// =====================================================================================
+const SD = { c: [1000, 500] };
+SD.cutV = [31.45, 32.25]; SD.cutH = [32.35, 32.85]; SD.burst = 33.0;
+SD.cam = [[31.0, 1000, 515, 1.02, 'io'], [32.95, 1000, 505, 1.08, 'io'], [34.2, 960, 500, 0.62, 'out'], [34.55, 1050, 300, 0.7, 'io'], [35.0, 1250, -200, 0.9, 'in']];
+for (let i = 0; i < 6; i++) ev(SD.cutV[0] + i * (SD.cutV[1] - SD.cutV[0]) / 6, 'snip', 960);
+for (let i = 0; i < 4; i++) ev(SD.cutH[0] + i * (SD.cutH[1] - SD.cutH[0]) / 4, 'snip', 960);
+ev(SD.burst, 'burst', 960);
+function burstTarget(i) {
+  const a = hash(i, 91) * 6.283, d = 520 + 900 * Math.sqrt(hash(i, 92));
+  return [SD.c[0] + Math.cos(a) * d * 1.3, SD.c[1] + Math.sin(a) * d * 0.85, (hash(i, 93) - .5) * 160];
+}
+function sceneD(t, tp, camOverride) {
+  const c = camOverride || camTrack(SD.cam, t); applyCam(c); drawPaper(...view(c));
+  drawSprite(SP.teal, 380, 60, sz(SP.teal)[0] / 2, sz(SP.teal)[1] / 2, 0, 0, 1, 0.8);
+  drawSprite(SP.sun, 1640, 860, sz(SP.sun)[0] / 2, sz(SP.sun)[1] / 2, 0, 0, 1, 1.3);
+  const g = M.sheet.grid, [w, h] = sz(SP.sheet);
+  const gx = (x) => SD.c[0] - w / 2 + x, gy = (y) => SD.c[1] - h / 2 + y;
+  const midX = g[0] + 5 * g[2], midY = g[1] + 5 * g[3];
+  if (tp < SD.burst) {
+    const gapV = 14 * seg(tp, SD.cutV[1] - 0.1, SD.cutV[1] + 0.2), gapH = 12 * seg(tp, SD.cutH[1] - 0.1, SD.cutH[1] + 0.2);
+    for (const [qx, qy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {      // four pieces (first cut vertically in half, then across)
+      ctx.save(); ctx.beginPath();
+      const x0 = qx ? midX : -50, x1 = qx ? w + 50 : midX, y0 = qy ? midY : -50, y1 = qy ? h + 50 : midY;
+      const vCut = (y) => tp >= SD.cutV[0] && gy(y) <= gy(-50) + (h + 100) * seg(tp, SD.cutV[0], SD.cutV[1]);
+      ctx.rect(gx(x0) + (qx ? 1 : -1) * gapV / 2, gy(y0) + (qy ? 1 : -1) * gapH / 2, x1 - x0, y1 - y0);
+      ctx.clip();
+      ctx.translate((qx ? 1 : -1) * gapV / 2, (qy ? 1 : -1) * gapH / 2);
+      drawSheet({ x: SD.c[0], y: SD.c[1], r: 0, z: 0 }, { red: () => true, blue: () => 'inv', perf: true, big: c.z > 1.6 });
+      ctx.restore();
+    }
+    // scissors: cut down the middle line, opening and closing (the engraved scissors are a single image: they move by angle and step forward)
+    let sx = null;
+    if (tp >= SD.cutV[0] - 0.2 && tp < SD.cutV[1] + 0.1) { const u = seg(tp, SD.cutV[0], SD.cutV[1]); sx = { x: gx(midX), y: gy(-20) + (h + 40) * u, r: (Math.round(tp / STEP) % 2 ? 4 : -4), z: 1.2 }; }
+    else if (tp >= SD.cutH[0] - 0.1 && tp < SD.cutH[1] + 0.15) { const u = seg(tp, SD.cutH[0], SD.cutH[1]); sx = { x: gx(-20) + (w + 40) * u, y: gy(midY), r: -90 + (Math.round(tp / STEP) % 2 ? 4 : -4), z: 1.2 }; }
+    ctx.strokeStyle = 'rgba(60,40,22,0.7)'; ctx.lineWidth = 2;          // where it has been cut: a thin slit
+    if (tp >= SD.cutV[0] && tp < SD.cutV[1] + 0.2) { const u = seg(tp, SD.cutV[0], SD.cutV[1]); ctx.beginPath(); ctx.moveTo(gx(midX), gy(-20)); ctx.lineTo(gx(midX), gy(-20) + (h + 40) * u); ctx.stroke(); }
+    if (tp >= SD.cutH[0] && tp < SD.cutH[1] + 0.2) { const u = seg(tp, SD.cutH[0], SD.cutH[1]); ctx.beginPath(); ctx.moveTo(gx(-20), gy(midY)); ctx.lineTo(gx(-20) + (w + 40) * u, gy(midY)); ctx.stroke(); }
+    if (sx) { const S = SP.scissors, [sw, sh] = sz(S); drawSprite(S, sx.x, sx.y, sw / 2, sh * 0.98, sx.r, sx.z); }
+  } else {
+    // scatter: each stamp flies out of its own cell, flipping as it goes
+    const u = seg(tp, SD.burst, SD.burst + 1.0), e = EASE.out(u);
+    for (let i = 0; i < 100; i++) {
+      const r = Math.floor(i / 10), cc = i % 10;
+      const x0 = gx(g[0] + (cc + 0.5) * g[2]), y0 = gy(g[1] + (r + 0.5) * g[3]);
+      if (i === 47 && tp >= 34.3) continue;
+      const [tx, ty, tr] = burstTarget(i), dl = hash(i, 94) * 0.15, uu = EASE.out(seg(tp, SD.burst + dl, SD.burst + dl + 0.95));
+      const flip = Math.cos(Math.PI * 2 * uu * (hash(i, 95) > .5 ? 1 : 0));
+      put(STAMP.inv, lerp(x0, tx, uu), lerp(y0, ty, uu) - 160 * Math.sin(Math.PI * uu), lerp(0, tr, uu), 0.4 + 2.5 * Math.sin(Math.PI * uu), flip);
+    }
+    if (tp >= 34.3) {     // number 47 flies up out of frame (into the next scene)
+      const i = 47, [tx, ty, tr] = burstTarget(i), u2 = EASE.in(seg(tp, 34.3, 35.0));
+      put(STAMP.inv, lerp(tx, 1250, u2), lerp(ty, -1200, u2), lerp(tr, 10, u2), 3);
+    }
+  }
+  return c;
+}
+ev(34.3, 'fly_stamp', 1100, { d: 0.7 });
+
+// =====================================================================================
+// Scene E (35.0–40.5): data engraving: 24 cents and $2,006,000
+// =====================================================================================
+const SE = { base: 760, towerX: 1800, small: [300, 760] };
+SE.grow = [35.45, 37.15];
+const towerTop = () => SE.base - M.tower.h / M.tower.k;
+SE.cam = [[35.0, 560, 600, 1.3, 'io'], [35.45, 640, 560, 1.22, 'io'], [37.15, 1700, -560, 0.95, 'io'], [37.5, 1700, -600, 0.95, 'io'], [38.0, 1330, -60, 0.42, 'io'], [40.5, 1330, -60, 0.415, 'lin']];
+ev(35.15, 'land', 400, { w: 0.6 }); ev(35.1, 'slap', 400); ev(35.45, 'grow', 1600, { d: 1.7 }); ev(37.2, 'slap', 1100); ev(37.45, 'slap', 1500); ev(37.75, 'slap', 1800); 
+function sceneECam(t) {
+  if (t < SE.grow[0] || t >= 37.5) return camTrack(SE.cam, t);
+  const top = SE.base - (M.tower.h / M.tower.k) * EASE.io(seg(t, SE.grow[0], SE.grow[1])), a = camTrack(SE.cam, SE.grow[0]), u = EASE.io(seg(t, SE.grow[0], SE.grow[0] + 0.5));
+  return { cx: lerp(a.cx, 1700, u), cy: Math.min(a.cy, top + 300), z: Math.exp(lerp(Math.log(a.z), Math.log(0.95), u)), r: 0 };
+}
+function sceneE(t, tp, camOverride) {
+  const c = camOverride || sceneECam(t); applyCam(c); drawPaper(...view(c));
+  drawSprite(SP.teal, 820, -620, sz(SP.teal)[0] / 2, sz(SP.teal)[1] / 2, 90, 0, 1, 0.9);
+  drawSprite(SP.ochre, 2700, 120, sz(SP.ochre)[0] / 2, sz(SP.ochre)[1] / 2, 0, 0, 1, 1.0);
+  drawSprite(SP.cloud1, 2400, -900, sz(SP.cloud1)[0] / 2, sz(SP.cloud1)[1] / 2, 0, 0, 1, 1.6);
+  // double-line axes
+  ctx.strokeStyle = PAL.ink; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-120, SE.base); ctx.lineTo(2900, SE.base); ctx.stroke();
+  ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(-120, SE.base + 9); ctx.lineTo(2900, SE.base + 9); ctx.stroke();
+  // 1918: a stamp drops onto an engraved line with almost no height
+  ctx.fillStyle = PAL.ink; ctx.fillRect(SE.small[0] - 100, SE.base - 3, 200, 3);
+  const st = pose([[34.95, 420, 300, 20, 3, 1], [35.15, SE.small[0], SE.base - 56, -4, 0.3, 1, 'in', 1.2]], tp, 71);
+  put(STAMP.inv, st.x, st.y, st.r, st.z, 1, 1.15);
+  putK('t_1918', slap(35.1, SE.small[0] + 40, SE.base - 200, -2), tp, 72);
+  // tower: the engraving grows from the bottom up
+  const S = SP.tower, [tw, th] = sz(S), u = EASE.io(seg(tp, SE.grow[0], SE.grow[1])), hh = th * u;
+  if (hh > 0) {
+    ctx.save(); ctx.beginPath(); ctx.rect(SE.towerX - tw, SE.base - hh, tw * 2, hh); ctx.clip();
+    drawSprite(S, SE.towerX, SE.base - th / 2, tw / 2, th / 2, 0, 0.3); ctx.restore();
+  }
+  // the stamp at the top: climbs with the tower
+  const top = SE.base - hh;
+  if (tp >= SE.grow[0]) {
+    const lp = tp >= SE.grow[1] ? pose([[SE.grow[1], 0, 0, 0, 0.6, 1], [SE.grow[1] + 0.2, 0, 0, 6, 0.2, 1, 'out', 1.4]], tp, 73) : { r: 0, z: 0.8, y: 0 };
+    put(STAMP.invHero, SE.towerX, top - 92 + lp.y, lp.r, lp.z, 1, 1.0);
+  }
+  putK('t_2023', slap(37.2, SE.towerX - 680, towerTop() + 60, -2), tp, 74);
+  putK('t_price', slap(37.45, SE.towerX + 60, towerTop() - 300, 1.5), tp, 75);
+  putK('t_times', slap(37.75, SE.towerX + 760, SE.base - 560, -3), tp, 76);
+  return c;
+}
+
+// =====================================================================================
+// Scene F (40.5–47.4): the album: 99 stamps in place, number 66 empty
+// =====================================================================================
+const SF = { c: [1100, 500], rot: -2.5 };
+function slotXY(r, c) { const g = M.album.grid, [w, h] = sz(SP.album); const lx = g[0] + (c + 0.5) * g[2] - w / 2, ly = g[1] + (r + 0.5) * g[3] - h / 2; const a = SF.rot * D2R; return [SF.c[0] + lx * Math.cos(a) - ly * Math.sin(a), SF.c[1] + lx * Math.sin(a) + ly * Math.cos(a)]; }
+const dropT = i => 40.62 + (i / 99) * 1.75 + (hash(i, 7) - .5) * 0.08;
+SF.cam = [[40.5, 1080, 520, 0.9, 'io', 1.5], [42.9, 1090, 520, 0.92, 'io', 0.5], [45.0, 0, 0, 3.1, 'io', 0]];
+for (let b = 0; b < 8; b++) ev(40.62 + b * 0.25, 'drops', 1100, { n: 12 });
+ev(41.05, 'slap', 1550); ev(42.2, 'slap', 1620); ev(45.45, 'slap', 1300);
+function sceneF(t, tp, camOverride) {
+  let c = camOverride || camTrack(SF.cam, t);
+  const [sx66, sy66] = slotXY(6, 5);
+  if (!camOverride && t >= 42.9) {
+    const a = camTrack(SF.cam, 42.9), p = EASE.io(seg(t, 42.9, 45.0)), p2 = EASE.expo(seg(t, 46.3, 47.1));
+    const zEnd = 3.1 * Math.exp(Math.log(40) * p2);
+    c = { cx: lerp(a.cx, sx66 + 40 * (1 - p2) * p, p), cy: lerp(a.cy, sy66 + 8 * (1 - p2), p), z: p2 > 0 ? zEnd : Math.exp(lerp(Math.log(a.z), Math.log(3.1), p)), r: lerp(a.r, SF.rot, p) };
+  }
+  applyCam(c); drawPaper(...view(c));
+  drawSprite(SP.strip, 400, 980, sz(SP.strip)[0] / 2, sz(SP.strip)[1] / 2, 12, 0);
+  drawSprite(SP.sun, 1800, 120, sz(SP.sun)[0] / 2, sz(SP.sun)[1] / 2, 0, 0, 1, 1.4);
+  put('album', SF.c[0], SF.c[1], SF.rot, 0.2);
+  let k = 0;
+  for (let r = 0; r < 10; r++) for (let cc = 0; cc < 10; cc++) {
+    if (r === 6 && cc === 5) continue;
+    const i = k++, t0 = dropT(i); if (tp < t0 - 0.17) continue;
+    const [x, y] = slotXY(r, cc);
+    const p = pose([[t0 - 0.17, x - 10, y - 60, SF.rot - 8, 3.5, 1], [t0, x, y, SF.rot + (hash(i, 3) - .5) * 3, 0.15, 1, 'in', 0.8]], tp, 900 + i);
+    put(STAMP.inv, p.x, p.y, p.r, p.z, 1, 0.82);
+  }
+  putK('t_lost', slap(41.05, 1380, 70, -4), tp, 81);
+  putK('t_lost2', slap(41.3, 1530, 92, 3), tp, 82);
+  putK('t_stolen', slap(42.2, 1700, 66, -2), tp, 83);
+  if (tp >= 45.0) typed('t_1955', sx66 + 10, sy66 + 64, -3, 45.3, 45.9, tp, 0.2);
+  return { c, slot: [sx66, sy66] };
+}
+for (let i = 0; i < 11; i++) ev(45.3 + i * 0.055, 'key', 1200);
+
+// =====================================================================================
+// Scene G (46.3–50): through the empty space of number 66, back to the sky: the inverted Jenny flies away
+// =====================================================================================
+const SG = {};
+SG.cam = [[46.3, 960, 540, 1.0, 'io'], [50.0, 1000, 530, 1.04, 'lin'], [52.0, 1010, 528, 1.05, 'lin']];
+SG.title = [['title_en2', 47.15, 560, 150, -2], ['title_zh2', 47.35, 330, 262, 1.5]];
+for (const l of SG.title) ev(l[1], 'slap', l[2]);
+// End-card credits: three more slips on the last collage (style name English / Chinese, sign-off), held to the end
+SG.sign = [['sig_style_en', 49.55, 1345, 852, -1.5], ['sig_style_zh', 49.7, 1745, 858, 2.0], ['sig_line', 49.85, 1560, 928, -0.8]];
+for (const l of SG.sign) ev(l[1], 'slap', l[2]);
+function sceneG(t, tp, camOverride) {
+  const c = camOverride || camTrack(SG.cam, t); applyCam(c); drawPaper(...view(c));
+  const drift = (n, x, y, r, v, s = 1) => drawSprite(SP[n], x + v * (tp - 46.3), y, sz(SP[n])[0] / 2, sz(SP[n])[1] / 2, r, 0, 1, s);
+  drawFlat('teal', { x: 0, y: 0, r: 0, z: 0, sx: 1, s: 1 });
+  drawFlat('strip', { x: 0, y: 0, r: 0, z: 0, sx: 1, s: 1 });
+  drawSprite(SP.sun, 1250, 640, sz(SP.sun)[0] / 2, sz(SP.sun)[1] / 2, 0, 0, 1, 1.45);
+  drift('cloud3', 1650, 520, 0, -14, 1.2);
+  // the inverted plane: nose to the left, belly up, flying right to left past the sun
+  const pk = [[46.3, 2500, 560, 180, 2.4, 1], [50.0, 760, 600, 184, 2.4, 1, 'lin'], [52.0, -180, 620, 186, 2.4, 1, 'lin']];
+  const p = pose(pk, tp, 99); p.y += 8 * Math.sin(tp * 6); p.r += 2 * Math.sin(tp * 6 + 1);
+  // an upside-down dashed flight path
+  ctx.save(); ctx.strokeStyle = PAL.ink; ctx.globalAlpha = 0.5; ctx.lineWidth = 3; ctx.setLineDash([14, 12]); ctx.beginPath();
+  for (let u = 46.3; u <= tp; u += 1 / 24) { const q = pose(pk, u, 99); const x = q.x + 380, y = q.y + 8 * Math.sin(u * 6) - 60; u === 46.3 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+  ctx.stroke(); ctx.restore();
+  put('plane', p.x, p.y, p.r, p.z, 1, planeHome().scale * 1.55);
+  drift('cloud1', 200, 860, 0, 22, 1.3);
+  drift('cloud2', 1500, 940, 0, 30, 1.1);
+  for (const [n, t0, x, y, r] of SG.title) putK(n, slap(t0, x, y, r), tp, t0 * 10);
+  for (const [n, t0, x, y, r] of SG.sign) putK(n, slap(t0, x, y, r), tp, t0 * 10);
+  return c;
+}
+
+// =====================================================================================
+// Subtitles: typewriter slip (English, typed one cell at a time) + black ransom-note slip (Chinese), stacked at bottom left
+// =====================================================================================
+function subtitles(T) {
+  const cues = TL.cues; const i = cues.findIndex(c => T >= c.t0 && T < c.t1); if (i < 0) return;
+  const q = cues[i], tp = stepT(T), id = String(i).padStart(2, '0');
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const zh = SP['sub' + id + '_zh'], en = 'sub' + id + '_en', [zw, zh_] = sz(zh), [ew, eh] = sz(SP[en]);
+  const p = pose(slap(q.t0 + 0.08, 96 + zw / 2, 948, -0.6, -6, -10), tp, 300 + i);
+  drawSprite(zh, p.x, p.y, zw / 2, zh_ / 2, p.r, p.z * 0.4, 1, p.s);
+  const nEn = SP[en].m.n, tEnd = q.t0 + 0.08 + Math.min(1.0, nEn / 55);
+  typed(en, 110 + ew / 2, 1008, 0.4, q.t0 + 0.08, tEnd, tp, 0.1);
+}
+
+// =====================================================================================
+// Scenes and transitions on the timeline
+// =====================================================================================
+function clipEllipse(cam, o) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.beginPath();
+  // world oval → screen
+  const sx = W / 2 + (o.x - cam.cx) * cam.z, sy = H / 2 + (o.y - cam.cy) * cam.z;
+  ctx.ellipse(sx, sy, o.rx * cam.z, o.ry * cam.z, o.r * D2R, 0, 7); ctx.clip();
+}
+function renderFilm(T) {
+  const tp = stepT(T);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = PAL.paper; ctx.fillRect(0, 0, W, H);
+  if (T < 10.2) sceneA(T, tp);
+  else if (T < 10.95) {                                  // through the stamp's oval
+    const o = stampOval(), p = EASE.in(seg(T, 10.2, 10.95));
+    const a = camTrack(A.cam, 9.95), cam = { cx: lerp(a.cx, o.x, EASE.out(seg(T, 10.2, 10.6))), cy: lerp(a.cy, o.y, EASE.out(seg(T, 10.2, 10.6))), z: Math.exp(lerp(Math.log(a.z), Math.log(14), p)), r: 0 };
+    sceneA(T, tp, cam); ctx.save(); clipEllipse(cam, o); sceneB(T, tp); ctx.restore();
+    // a ring of red-plate inner line on the oval edge (so it reads as passing through the stamp's frame)
+  }
+  else if (T < 21.45) sceneB(T, tp);
+  else if (T < 21.85) {                                  // whip pan: B whips out to the left, C comes in from the right, a paper seam between them
+    const u = EASE.io(seg(T, 21.45, 21.85)), off = -u * W * 1.08, seam = W + off + W * 0.04;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, Math.max(0, seam), H); ctx.clip(); OFFX = off; sceneB(T, Math.min(tp, 21.4), sceneBCam(21.45)); ctx.restore();
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.beginPath(); ctx.rect(seam, 0, W - seam + 2, H); ctx.clip(); OFFX = off + W * 1.08; sceneC(T, tp, camTrack(SC.cam, 21.45)); ctx.restore();
+    OFFX = 0;
+  }
+  else if (T < 31.0) sceneC(T, tp);
+  else if (T < 35.0) sceneD(T, tp);
+  else if (T < 40.5) sceneE(T, tp);
+  else if (T < 46.3) sceneF(T, tp);
+  else if (T < 47.1) {                                  // through the empty space of number 66
+    const r = sceneF(T, tp); const c = r.c, [x, y] = r.slot, g = M.album.grid;
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.translate(W / 2, H / 2); ctx.rotate((c.r || 0) * D2R); ctx.scale(c.z, c.z); ctx.translate(-c.cx, -c.cy);
+    ctx.translate(x, y); ctx.rotate(SF.rot * D2R); ctx.beginPath(); ctx.rect(-g[2] / 2 + 6, -g[3] / 2 + 6, g[2] - 12, g[3] - 12); ctx.restore();
+    ctx.save(); ctx.clip(); sceneG(T, tp); ctx.restore();
+  }
+  else sceneG(T, tp);
+  subtitles(T);
+  // vignette
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 1.05);
+  g.addColorStop(0, 'rgba(60,40,20,0)'); g.addColorStop(1, 'rgba(60,40,20,0.16)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+// ---------- Page contract ----------
+// text on screen (for readcheck): world coordinates → the current scene's camera → screen box
+function camAt(T) {
+  if (T < 10.2) return camTrack(A.cam, T); if (T < 21.45) return sceneBCam(T); if (T < 31) return camTrack(SC.cam, T);
+  if (T < 35) return camTrack(SD.cam, T); if (T < 40.5) return sceneECam(T); if (T < 46.3) return T < 42.9 ? camTrack(SF.cam, T) : null; return camTrack(SG.cam, T);
+}
+function textItems() {
+  const L = [];
+  const add = (name, t0, t1, x, y) => L.push({ name, t0, t1, x, y });
+  A.letters(M).forEach(l => add(l.n, 2.9, 5.0, l.x, l.y));
+  for (const tg of A.tags) add(tg[0], tg[1], 10.0, tg[2], tg[3]);
+  for (const l of SB.labels) add(l[0], l[1], 18.7, l[2], l[3]);
+  for (const l of SC.labels) add(l[0], l[1], 31.0, l[2], l[3]);
+  add('t_receipt', SC.receipt.t1, 29.6, SC.receipt.x, SC.receipt.y);
+  add('t_1918', 38.0, 40.5, SE.small[0] + 40, SE.base - 200); add('t_2023', 38.0, 40.5, SE.towerX - 680, towerTop() + 60);
+  add('t_price', 38.0, 40.5, SE.towerX + 60, towerTop() - 300); add('t_times', 38.0, 40.5, SE.towerX + 760, SE.base - 560);
+  for (const l of SG.title) add(l[0], l[1], 52.0, l[2], l[3]);
+  for (const l of SG.sign) add(l[0], l[1], 52.0, l[2], l[3]);
+  return L;
+}
+window.TEXTS = t => {
+  const T = FROM + t, out = []; const c = camAt(T); if (!c) return out;
+  for (const it of textItems()) {
+    if (T < it.t0 || T >= it.t1) continue;
+    const S = SP[it.name], [w, h] = sz(S), sc = (x, y) => [W / 2 + (x - c.cx) * c.z, H / 2 + (y - c.cy) * c.z];
+    const [x0, y0] = sc(it.x - w / 2, it.y - h / 2), [x1, y1] = sc(it.x + w / 2, it.y + h / 2);
+    out.push({ id: it.name, text: S.m.text || it.name, x0, y0, x1, y1 });
+  }
+  return out;
+};
+window.render = t => renderFilm(FROM + t);
+(async () => {
+  await loadParts();
+  window.EV = EVS.filter(e => e.t >= FROM - 1e-6 && e.t < TO).map(e => Object.assign({}, e, { t: +(e.t - FROM).toFixed(3) }));
+  window.READY = true;
+})();
+</script>
+</body></html>

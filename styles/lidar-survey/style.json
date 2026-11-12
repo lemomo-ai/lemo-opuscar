@@ -1,11 +1,12 @@
 {
  "slug": "lidar-survey",
- "num": "57",
+ "num": "88",
  "en": "LiDAR Survey",
  "cn": "点云测绘",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
  "film": "The Fields Under the Forest",
+ "film_cn": "林下的田",
  "line": "A laser survey strips the canopy off a Connecticut forest and finds 3.4 km of old farm walls.",
  "line_cn": "激光点云剥掉一片森林的树冠，露出当年农田的石墙：3.4 公里。",
  "uses": [
@@ -13,6 +14,6 @@
   "Environment",
   "Site surveys"
  ],
- "frame_sec": 18.6,
+ "frame_sec": 10.9,
  "dur": 40.0
 }

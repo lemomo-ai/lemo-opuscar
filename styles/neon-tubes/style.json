@@ -1,0 +1,19 @@
+{
+ "slug": "neon-tubes",
+ "num": "77",
+ "en": "Neon Tubes",
+ "cn": "霓虹灯管",
+ "category_en": "Light & Lines",
+ "category_cn": "发光线条",
+ "film": "Midnight Snack",
+ "film_cn": "夜宵",
+ "line": "A neon cat goes out for the goldfish on the sign at the end of the street, cracks its bowl, and runs the fading fish home through the rain to the goblet on its own sign.",
+ "line_cn": "一只霓虹猫去街尾招牌上偷金鱼当夜宵，一爪子拍漏了鱼缸，又叼着快灭的鱼冒雨跑回家，放进自家招牌上的冰饮杯。",
+ "uses": [
+  "Shop openings and mascot stories",
+  "Nightlife and city-pop music videos",
+  "City and festival night idents"
+ ],
+ "frame_sec": 16.75,
+ "dur": 48.0
+}

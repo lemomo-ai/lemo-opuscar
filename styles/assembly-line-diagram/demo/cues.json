@@ -1,0 +1,133 @@
+{
+ "_note": "Action times for the whole film (seconds). The picture (film.js) and the sound (tools/mix.py) both read this file; narration and subtitle times are in timeline.json. All times are story time; stretch slows down the title section (the story seconds of story time from at take add more seconds in the finished film), tail is how many seconds the end holds longer; the conversion is in tools/warp.py and in STORY() in film.js.",
+ "drops": [
+  0.3,
+  0.95,
+  1.55,
+  2.15,
+  2.7
+ ],
+ "ticket": 3.2,
+ "sign": 4.55,
+ "signZh": 5.35,
+ "scope": 6.2,
+ "doorOpen": 7.9,
+ "enter": [
+  8.1,
+  9.2
+ ],
+ "cut3": 9.0,
+ "chomps": [
+  10.0,
+  10.5,
+  11.0
+ ],
+ "tongue": [
+  11.25,
+  12.05
+ ],
+ "tilt": [
+  12.35,
+  13.3
+ ],
+ "drumIn": 13.35,
+ "n1": 10.0,
+ "n2": 13.55,
+ "panGate": [
+  15.9,
+  17.0
+ ],
+ "n3": 16.9,
+ "stops": [
+  [
+   16.95,
+   17.85
+  ],
+  [
+   18.25,
+   19.4
+  ],
+  [
+   19.75,
+   20.5
+  ]
+ ],
+ "spoons": [
+  18.0,
+  19.5
+ ],
+ "cut5": 20.9,
+ "n4": 21.45,
+ "lines": [
+  25.8,
+  27.68,
+  29.64
+ ],
+ "hold": [
+  30.4,
+  33.0
+ ],
+ "follow": [
+  33.0,
+  34.6
+ ],
+ "n5": 34.7,
+ "clockFF": [
+  36.15,
+  37.55
+ ],
+ "alarm": 37.7,
+ "cutCtrl": 38.05,
+ "iris": [
+  38.4,
+  38.8,
+  40.1,
+  40.5
+ ],
+ "cutWh": 40.5,
+ "whip": [
+  41.15,
+  41.95
+ ],
+ "ignite": [
+  42.5,
+  43.0,
+  43.5
+ ],
+ "n6": 42.5,
+ "pull": [
+  44.75,
+  46.4
+ ],
+ "light": [
+  46.65,
+  48.55
+ ],
+ "busDoor": 48.6,
+ "card": 49.4,
+ "run": [
+  22.2,
+  22.9,
+  23.6
+ ],
+ "dissolve": [
+  45.95,
+  46.45
+ ],
+ "settle": 47.3,
+ "stations": [
+  46.85,
+  47.2,
+  47.5,
+  47.8,
+  48.15,
+  48.55
+ ],
+ "storyDur": 52.0,
+ "stretch": {
+  "at": 5.6,
+  "story": 2.6,
+  "add": 2.5
+ },
+ "tail": 0.4
+}

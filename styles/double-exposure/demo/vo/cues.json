@@ -1,0 +1,32 @@
+[
+ {
+  "t0": 0.7,
+  "t1": 4.4,
+  "text": "每只动物，身体里都装着一个地方。\nEvery animal carries a place inside it."
+ },
+ {
+  "t0": 9.5,
+  "t1": 13.2,
+  "text": "狼装着一片森林，林里的灯都亮着。\nThe wolf, a forest with its lamps lit."
+ },
+ {
+  "t0": 15.9,
+  "t1": 19.5,
+  "text": "鹰装着云层之上的雪。\nThe eagle, the snow above the clouds."
+ },
+ {
+  "t0": 23.5,
+  "t1": 27.2,
+  "text": "鲑鱼装着一条流向大海的河。\nThe salmon, the river that runs to the sea."
+ },
+ {
+  "t0": 34.1,
+  "t1": 37.3,
+  "text": "鲸装着一座灯火通明的港湾。\nThe whale, a harbour full of light."
+ },
+ {
+  "t0": 41.9,
+  "t1": 45.6,
+  "text": "海的尽头，那个地方就是家。\nAnd where the sea ends, that place is home."
+ }
+]

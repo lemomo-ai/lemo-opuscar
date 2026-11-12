@@ -1,0 +1,74 @@
+[
+ {
+  "id": "v01",
+  "text": "In twenty ten, a new phone had a strange problem.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb",
+  "asr": "In 2010, a new phone had a strange problem."
+ },
+ {
+  "id": "v02",
+  "text": "Hold it by the bottom corner, and the signal dropped.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v03",
+  "text": "Why? The metal edge in your hand is the antenna.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v04",
+  "text": "From the chip, a thin cable carries the signal to the frame.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v05",
+  "text": "The ring is cut: each plastic slit splits off a separate antenna.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v06",
+  "text": "Each piece is sized to its band.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v07",
+  "text": "Seven hundred megahertz needs about eleven centimetres. Three point five gigahertz, just two.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb",
+  "asr": "700 megahertz needs about 11 centimetres, 3.5 gigahertz just 2."
+ },
+ {
+  "id": "v08",
+  "text": "Now grip the corner. Your hand bridges the slit, and the signal fades.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v09",
+  "text": "So phones learned to switch to the antenna your hand isn't covering.",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v10",
+  "text": "You're not holding it wrong. You are holding the antenna.",
+  "voice": "bm_george",
+  "speed": 0.88,
+  "lang": "en-gb"
+ }
+]

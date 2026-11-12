@@ -1,0 +1,135 @@
+{
+ "_": "The whole film (51.1 s) on one timeline. film.py (picture), post.py (look) and mix.py (sound) all read it. Seconds of the film.",
+ "fps": 24,
+ "dur": 51.1,
+ "bpm": 96,
+ "vo": {
+  "v01": 0.9,
+  "v02": 5.6,
+  "v03": 9.95,
+  "v04": 12.65,
+  "v05": 18.95,
+  "v06": 25.1,
+  "v07": 31.0,
+  "v08": 33.5,
+  "v09": 38.25,
+  "v10": 42.8
+ },
+ "shots": [
+  {
+   "id": 1,
+   "t0": 0.0,
+   "t1": 9.6,
+   "done": true,
+   "name": "cold open: the square, the question"
+  },
+  {
+   "id": 2,
+   "t0": 9.6,
+   "t1": 16.6,
+   "done": true,
+   "name": "one circle; follow the tip; match cut to the wave"
+  },
+  {
+   "id": 3,
+   "t0": 16.6,
+   "t1": 30.45,
+   "done": true,
+   "name": "title becomes the axis; circles stack up"
+  },
+  {
+   "id": 4,
+   "t0": 30.45,
+   "t1": 42.0,
+   "done": true,
+   "name": "STOP, dive into a corner, the spike that won't shrink"
+  },
+  {
+   "id": 5,
+   "t0": 42.0,
+   "t1": 51.1,
+   "done": true,
+   "name": "infinity, pull back, the Gibbs phenomenon, end card with credit, power off"
+  }
+ ],
+ "beam": [
+  0.1,
+  5.5
+ ],
+ "title1": {
+  "write": [
+   4.5,
+   5.7
+  ],
+  "morph": [
+   8.3,
+   9.5
+  ]
+ },
+ "arm": [
+  9.6,
+  9.9
+ ],
+ "run": 10.15,
+ "follow": [
+  10.6,
+  13.4
+ ],
+ "matchcut": 13.4,
+ "title2": {
+  "write": [
+   14.6,
+   15.6
+  ],
+  "morph": [
+   18.4,
+   19.2
+  ]
+ },
+ "births": {
+  "n3": 20.1,
+  "n5": 25.35,
+  "n7": 26.0,
+  "rush": [
+   26.9,
+   28.8
+  ],
+  "burst1": [
+   35.05,
+   35.65
+  ],
+  "burst2": [
+   36.55,
+   37.15
+  ]
+ },
+ "grow": 0.45,
+ "stop": 30.45,
+ "dive": [
+  30.6,
+  32.8
+ ],
+ "cursors": 33.75,
+ "infinity": 43.15,
+ "mathmode": 42.0,
+ "pullback": [
+  43.0,
+  45.6
+ ],
+ "title3": {
+  "write": [
+   45.2,
+   46.4
+  ]
+ },
+ "poweroff": [
+  50.3,
+  50.9
+ ],
+ "poster": 48.4,
+ "sign": [
+  46.6,
+  47.4
+ ],
+ "verdict": 37.3
+}

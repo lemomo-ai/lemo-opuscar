@@ -1,4 +1,4 @@
-# Microscope Story — our demo
+# Under the Microscope — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 

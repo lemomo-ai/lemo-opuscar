@@ -1,0 +1,19 @@
+{
+ "slug": "pen-plotter",
+ "num": "50",
+ "en": "Pen Plotter",
+ "cn": "笔式绘图仪",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
+ "film": "8848.86",
+ "film_cn": "8848.86",
+ "line": "At night under a desk lamp, a pen plotter draws Mount Qomolangma from real elevation data with four pens, and writes its height last.",
+ "line_cn": "深夜台灯下，一台笔式绘图仪用四支笔按真实高程画出珠穆朗玛峰，最后一笔写下它的高度。",
+ "uses": [
+  "Maps and terrain",
+  "Measurements and records",
+  "Generative and data drawings"
+ ],
+ "frame_sec": 18.4,
+ "dur": 49.9
+}

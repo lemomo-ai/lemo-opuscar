@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: 《被炸平的城市怎样长回来》 How a Flattened City Grew Back (Projection on White Model demo)
+# One command: 《被炸平的城市怎样长回来》 How a Flattened City Grew Back (Projection-Mapped Model demo)
 #   sh demo/build.sh            data (if missing) -> voice -> checks -> events -> picture -> score + mix -> master -> .srt -> checks -> poster
 #   FETCH=1 sh demo/build.sh    first re-download 3DBAG LOD1.3 + BGT water and bridge decks (~55 MB into assets/raw/)
 set -e

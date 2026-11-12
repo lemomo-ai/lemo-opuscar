@@ -1,0 +1,37 @@
+1-bit Dither demo · 《月亮的传真》 The Moon's Fax · third-party assets and sources
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
+  Instruments: clarinet, contrabass, contrabass_pizz, cellos, violas, violins, upright, glockenspiel, vibraphone_bowed,
+  hihat, snare2, bass_drum, sus_cymbal, woodblock (core/audio/sampler.py). Fetched with
+  sh tools/fetch.sh instruments vsco2ce / vcsl. Foley and the facsimile signal are procedural (core/audio/sfx.py and
+  demo/audio.py).
+
+## Fonts (subset to the characters the film uses by demo/tools/subset.py; sources downloaded by build.sh into demo/fonts/src/)
+- Noto Serif SC (variable): Google / Adobe, SIL OFL 1.1, https://github.com/google/fonts/tree/main/ofl/notoserifsc
+  (demo/fonts/OFL-notoserifsc.txt)
+- Noto Sans SC (variable): Google / Adobe, SIL OFL 1.1, https://github.com/google/fonts/tree/main/ofl/notosanssc
+  (demo/fonts/OFL-NotoSansSC.txt)
+- LXGW WenKai 霞鹜文楷 Regular v1.522: LXGW, SIL OFL 1.1, https://github.com/lxgw/LxgwWenKai/releases/tag/v1.522
+  (demo/fonts/OFL-LXGWWenKai.txt)
+- Architects Daughter: Kimberly Geswein, SIL OFL 1.1, https://github.com/google/fonts/tree/main/ofl/architectsdaughter
+  (demo/fonts/OFL-ArchitectsDaughter.txt)
+- Newsreader (variable): Production Type, SIL OFL 1.1, https://github.com/google/fonts/tree/main/ofl/newsreader
+  (demo/fonts/newsreader_OFL.txt)
+- Anton: Vernon Adams, SIL OFL 1.1, https://github.com/google/fonts/tree/main/ofl/anton (demo/fonts/OFL-Anton.txt)
+- Special Elite: Astigmatic, Apache License 2.0, https://github.com/google/fonts/tree/main/apache/specialelite
+  (demo/fonts/LICENSE-SpecialElite.txt)
+
+## Code
+- three.js r170 (MIT): loaded from the library's node_modules
+
+## Images, models
+- None. The Moon, the station, the telescope, the control room, the newspaper and the town are built in code. The
+  photographs on paper are rendered at load from the film's own 3D Moon; no Luna 9 photograph, no external model or
+  texture, no AI-generated image.
+
+## Facts
+- The dates, times, sizes and the story of the guessed ratio are sourced in demo/FACTS.md (NASA NSSDCA, Jodrell Bank,
+  Science Museum Group, RussianSpaceWeb, Air & Space, NASA GSFC), with URLs and quoted wording.
+- Invented for the film: the control room and its furniture, the log and card wording, the front page and its body
+  copy, the kiosk and the town. The newspaper is not named and its masthead is not shown.

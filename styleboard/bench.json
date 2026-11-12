@@ -1,0 +1,98 @@
+{
+ "_doc": "The styles whose props stand on the bench at each station of the long take (rendered for the site; the station modules of its scene name them), in the order the scene first names them. home.py shows these cards first, the first with \"On the bench\". Changes only when the long take is re-rendered.",
+ "01": [
+  "caption-news",
+  "city-symphony",
+  "countdown",
+  "kino-montage",
+  "newsreel",
+  "visual-investigation"
+ ],
+ "02": [
+  "impasto",
+  "watercolor"
+ ],
+ "03": [
+  "chalkboard",
+  "sketchnote",
+  "marker-paper",
+  "whiteboard",
+  "one-line",
+  "ipad-sketch"
+ ],
+ "04": [
+  "ink-wash",
+  "shadow-puppet",
+  "paper-lantern"
+ ],
+ "05": [
+  "woodcut",
+  "risograph",
+  "silkscreen-poster",
+  "engraving"
+ ],
+ "06": [
+  "swiss-motion",
+  "art-deco",
+  "bauhaus-shapes"
+ ],
+ "07": [
+  "pen-plotter",
+  "blueprint"
+ ],
+ "08": [
+  "cel-anime-80s",
+  "rubber-hose"
+ ],
+ "09": [
+  "pixel-rpg",
+  "microgame",
+  "game-show",
+  "hd-2d"
+ ],
+ "10": [
+  "scratch-film",
+  "silent-film",
+  "double-exposure",
+  "backrooms"
+ ],
+ "11": [
+  "one-bit-dither",
+  "living-screencast",
+  "dark-keynote",
+  "hologram-hud",
+  "desktop-flythrough",
+  "spreadsheet"
+ ],
+ "12": [
+  "oscilloscope-math",
+  "circuit-board",
+  "flow-field",
+  "firefly-pointillism"
+ ],
+ "13": [
+  "lowpoly-island",
+  "paper-popup",
+  "memphis-diorama",
+  "tilt-shift",
+  "isometric-picture-book",
+  "crayon-world"
+ ],
+ "14": [
+  "security-xray",
+  "thermal-camera",
+  "microscope",
+  "lidar-survey",
+  "dark-documentary",
+  "briefing-board",
+  "archive-lighttable",
+  "satellite-briefing"
+ ],
+ "15": [
+  "transit-map",
+  "data-physical",
+  "white-model",
+  "dataviz",
+  "map-explainer"
+ ]
+}

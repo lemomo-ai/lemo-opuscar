@@ -1,4 +1,4 @@
-// 叮之前 / Before the Ding — the Lemo-Opuscar library demo of Desktop Flythrough. One take over a dotted paper mat on a light oak desk.
+// 叮之前 / Before the Ding — the Lemo-Opuscar library demo of Tabletop App Flythrough. One take over a dotted paper mat on a light oak desk.
 // You send a friend a cat photo. It doesn't fly straight there: it is shrunk (step 1), parked on the chat app's server (stop 2),
 // the server sends a notification (step 3), and only then does the friend's phone fetch it (blurry first on a slow connection).
 // The voice-over clock is in vo.js; every action below is cued to its words.

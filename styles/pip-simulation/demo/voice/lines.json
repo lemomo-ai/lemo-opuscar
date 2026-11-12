@@ -1,0 +1,64 @@
+[
+ {
+  "id": "v01",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "One hundred and sixty Pips. Each one is born with its own speed."
+ },
+ {
+  "id": "v02",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "One bean keeps you alive. Two beans make a copy."
+ },
+ {
+  "id": "v03",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "The fast ones get there first.",
+  "asr": "The fast ones get their first."
+ },
+ {
+  "id": "v04",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "But speed burns energy, and they run dry."
+ },
+ {
+  "id": "v05",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "The slow ones just keep going."
+ },
+ {
+  "id": "v06",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "By nightfall, the slow ones have left three times as many children."
+ },
+ {
+  "id": "v07",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "Now run it again. Twenty generations."
+ },
+ {
+  "id": "v08",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "Every morning, there is a little more blue on the board."
+ },
+ {
+  "id": "v09",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "The average speed falls from one point two five, to zero point seven three.",
+  "asr": "The average speed falls from 1.25 to 0.73."
+ },
+ {
+  "id": "v10",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "Faster wasn't better. Under these rules, the slow ones win."
+ }
+]

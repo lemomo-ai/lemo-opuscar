@@ -1,0 +1,171 @@
+/* The Workbench projector: the player for every film on the site (assets/player.js). Rules: styleboard/DESIGN.md §5 "Player".
+   Hairlines, a monospaced timecode, the progress bar drawn as a ruler (ticks, numbered majors; the played part of the ruler
+   lights up); no rounded corners, no shadows on buttons, no glow. The lamp colour is used once: the playhead.
+   Sizes are in --pu, which follows the page's --u (one px of the 1280 x 720 frame), so controls grow with the picture. */
+
+.player { --pu: max(1px, var(--u, 1px)); --ar: 16 / 9; --arn: 1.77778; --bar: calc(var(--pu) * 46);
+  position: relative; display: block; aspect-ratio: var(--ar); background: #000; color: var(--paper);
+  container-type: size; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+.player > video { width: 100%; height: 100%; background: #000; }                 /* before JS (or without it): the native player */
+.player:not(.pl-on) > .pl-poster, .player:not(.pl-on) > .pl-slot { display: none; }
+
+/* the picture: the film's own rectangle inside the player (letterboxed when the player isn't 16:9, e.g. a whole screen) */
+.pl-box { position: absolute; inset: 0; margin: auto; width: min(100cqw, 100cqh * var(--arn)); height: min(100cqh, 100cqw / var(--arn)); }
+.pl-box > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.pl-poster { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: opacity .6s var(--ease); }
+.pl-poster img { width: 100%; height: 100%; object-fit: cover; }
+.player.started .pl-poster { opacity: 0; }
+.pl-slot { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.pl-shade { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; height: calc(var(--pu) * 150); pointer-events: none;
+  background: linear-gradient(0deg, rgba(12,10,9,.78) 0%, rgba(12,10,9,.42) 38%, rgba(12,10,9,0) 100%); transition: opacity .5s var(--ease); }
+.player.idle .pl-shade { opacity: 0; }
+.player.started.idle { cursor: none; }
+
+/* the big mark on a film nobody has started: a viewfinder's corners round the play triangle */
+.pl-big { position: absolute; z-index: 4; left: 50%; top: 50%; width: calc(var(--pu) * 76); height: calc(var(--pu) * 76);
+  margin: calc(var(--pu) * -38) 0 0 calc(var(--pu) * -38); color: var(--paper); opacity: .9; transition: opacity .3s var(--ease), transform .35s var(--ease); }
+.pl-big svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: square; }
+.pl-big svg .f { fill: currentColor; stroke: none; }
+.pl-big:hover { opacity: 1; transform: scale(1.04); }
+.pl-big:focus-visible { outline-offset: 6px; }
+.player[data-state="playing"] .pl-big { opacity: 0; pointer-events: none; transform: scale(.94); }
+.player[data-state="paused"] .pl-big { opacity: .55; }
+.player.wait .pl-big { opacity: 0; }
+
+/* ---------------------------------------------------------------- the bar */
+.pl-bar { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: var(--bar); display: flex; align-items: center;
+  gap: calc(var(--pu) * 10); padding: 0 var(--pl-pad, calc(var(--pu) * 14)) calc(var(--pu) * 2);
+  transition: opacity .4s var(--ease), transform .5s var(--ease); }
+.player.idle .pl-bar { opacity: 0; transform: translateY(calc(var(--pu) * 6)); }
+.player.idle .pl-bar, .player.idle .pl-loupe { pointer-events: none; }
+.pl-btn { flex: none; display: grid; place-items: center; width: calc(var(--pu) * 30); height: calc(var(--pu) * 34); color: var(--paper-2);
+  transition: color .16s var(--ease); }
+.pl-btn:hover, .pl-btn:focus-visible { color: var(--paper); }
+.pl-btn svg { width: calc(var(--pu) * 19); height: calc(var(--pu) * 19); fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: square; stroke-linejoin: miter; }
+.pl-btn svg .f { fill: currentColor; stroke: none; }
+.pl-play { color: var(--paper); margin-left: calc(var(--pu) * -7); }
+.pl-play svg { width: calc(var(--pu) * 21); height: calc(var(--pu) * 21); }
+.pl-prev svg, .pl-next svg { width: calc(var(--pu) * 16); height: calc(var(--pu) * 16); }
+.pl-mute .x, .muted .pl-mute .w1, .muted .pl-mute .w2, .quiet .pl-mute .w2 { display: none; }
+.muted .pl-mute .x { display: inline; }
+.pl-fs .i, .player.fs .pl-fs .o { display: none; }
+.player.fs .pl-fs .i { display: inline; }
+
+.pl-time { flex: none; display: flex; align-items: baseline; gap: calc(var(--pu) * 5); min-width: calc(var(--pu) * 74);
+  font-family: var(--mono); font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--paper-3); white-space: nowrap; }
+.pl-time b { font-weight: 400; color: var(--paper); }
+.pl-time i { font-style: normal; color: var(--hair-2); }
+
+/* the ruler: a hairline, a tick every few seconds (or at every chapter), numbered majors; the played part lights up */
+.pl-rule { position: relative; flex: 1; min-width: calc(var(--pu) * 60); height: calc(var(--pu) * 34); cursor: pointer; touch-action: none; outline-offset: 2px; --p: 0; }
+.pl-rule > span { position: absolute; left: 0; pointer-events: none; }
+.pl-base { right: 0; top: 50%; height: 1px; background: var(--hair-2); }
+.pl-buf { inset: 0; }
+.pl-buf i { position: absolute; top: 50%; height: 1px; background: var(--paper-3); }
+.pl-done { right: 0; top: 50%; height: 1px; background: var(--paper); transform-origin: 0 0; transform: scaleX(0); }
+.pl-ticks { inset: 0; }
+.pl-ticks i { position: absolute; bottom: 50%; width: 1px; height: calc(var(--pu) * 4); background: var(--hair-2); }
+.pl-ticks i.M { height: calc(var(--pu) * 9); background: var(--paper-3); }
+.pl-ticks i.x { height: calc(var(--pu) * 6); }
+.pl-ticks b { position: absolute; left: calc(var(--pu) * 3); bottom: calc(var(--pu) * 4.5); font-family: var(--mono); font-weight: 400; font-size: max(12px, calc(var(--pu) * 12));
+  line-height: 1; letter-spacing: .06em; color: var(--paper-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pl-ticks.lit i { background: var(--paper-2); }
+.pl-ticks.lit i.M { background: var(--paper); }
+.pl-ticks.lit b { color: var(--paper-2); }
+.pl-seg { top: 50%; height: calc(var(--pu) * 5); margin-top: calc(var(--pu) * -2); background: var(--hair); opacity: 0; }
+.pl-hover { top: 50%; width: 1px; height: calc(var(--pu) * 14); margin-top: calc(var(--pu) * -7); background: var(--paper-2); opacity: 0; }
+.pl-rule.hov .pl-hover, .pl-rule.hov .pl-seg { opacity: 1; }
+.pl-head { top: 50%; width: 2px; height: calc(var(--pu) * 17); margin: calc(var(--pu) * -8.5) 0 0 -1px; background: var(--lamp); }
+.player.wait .pl-head { animation: pl-wait 1s ease-in-out infinite alternate; }
+@keyframes pl-wait { from { opacity: 1; } to { opacity: .25; } }
+.pl-rule:focus-visible { outline: 1px solid var(--lamp-2); }
+
+.pl-status { flex: none; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .16em; text-transform: uppercase; color: var(--paper-2); white-space: nowrap; }
+.pl-status:empty { display: none; }
+:lang(zh) .pl-status { font-family: var(--sans); letter-spacing: .12em; font-size: max(12px, calc(var(--pu) * 12)); }
+.player.err .pl-status { color: var(--paper); }
+
+/* volume: a short ruler of its own, five ticks */
+.pl-vol { position: relative; flex: none; width: calc(var(--pu) * 54); height: calc(var(--pu) * 34); cursor: pointer; touch-action: none; margin-left: calc(var(--pu) * -4); --v: 1; }
+.pl-vol > * { position: absolute; top: 50%; pointer-events: none; }
+.pl-vbase { left: 0; right: 0; height: 1px; background: var(--hair-2); }
+.pl-vol i { width: 1px; height: calc(var(--pu) * 4); margin-top: calc(var(--pu) * -4); background: var(--hair-2); }
+.pl-vfill { left: 0; right: 0; height: 1px; background: var(--paper-2); transform-origin: 0 0; transform: scaleX(var(--v)); }
+.pl-vhead { left: calc(var(--v) * 100%); width: 1px; height: calc(var(--pu) * 10); margin: calc(var(--pu) * -5) 0 0 -.5px; background: var(--paper); }
+.pl-vol:focus-visible { outline: 1px solid var(--lamp-2); outline-offset: 2px; }
+
+.pl-dl { flex: none; display: inline-flex; align-items: baseline; gap: .45em; margin-left: calc(var(--pu) * 4); padding: calc(var(--pu) * 3) 0;
+  font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .08em; color: var(--paper-2); white-space: nowrap;
+  border-bottom: 1px solid var(--hair-2); transition: color .16s var(--ease), border-color .16s var(--ease); }
+:lang(zh) .pl-dl { font-family: var(--sans); letter-spacing: .06em; font-size: max(12px, calc(var(--pu) * 12)); }
+.pl-dl i { font-style: normal; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.pl-dl:hover, .pl-dl:focus-visible { color: var(--paper); border-color: var(--paper-2); }
+
+/* ---------------------------------------------------------------- the frame you'd land on (hover over the ruler) */
+.pl-loupe { position: absolute; z-index: 6; left: 0; bottom: calc(var(--bar) + var(--pu) * 2); width: var(--tw, auto); min-width: calc(var(--pu) * 64);
+  opacity: 0; pointer-events: none; transition: opacity .14s linear; }
+.pl-loupe.on { opacity: 1; }
+.pl-thumb { display: none; width: var(--tw); height: var(--th); background: #000 no-repeat 0 0; box-shadow: 0 0 0 1px var(--hair-2), 0 calc(var(--pu) * 10) calc(var(--pu) * 30) rgba(0,0,0,.55); }
+.pl-loupe.pic .pl-thumb { display: block; }
+.pl-lt { display: block; padding: calc(var(--pu) * 6) 0 0; font-size: max(12px, calc(var(--pu) * 12)); line-height: 1.35; color: var(--paper-2); text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+.pl-lt b { display: flex; justify-content: space-between; gap: 1em; font-family: var(--mono); font-weight: 400; font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .06em; color: var(--paper); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-lt b i { font-style: normal; color: var(--paper-3); }
+.pl-lt span { display: block; margin-top: calc(var(--pu) * 2); font-family: var(--serif); font-style: italic; font-size: max(13px, calc(var(--pu) * 13)); color: var(--paper-2); }
+:lang(zh) .pl-lt span { font-family: var(--sans); font-style: normal; font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .04em; }
+
+/* chapters: which film of the reel is on the screen, top left while the controls are up */
+.pl-now { position: absolute; z-index: 5; left: var(--pl-pad, calc(var(--pu) * 16)); top: calc(var(--pu) * 14); right: 30%; margin: 0; pointer-events: none;
+  font-size: max(13px, calc(var(--pu) * 13)); line-height: 1.4; color: var(--paper-2); text-shadow: 0 1px 8px rgba(0,0,0,.85); opacity: 0; transition: opacity .4s var(--ease); }
+.player.started .pl-now { opacity: 1; }
+.player.idle .pl-now { opacity: 0; }
+.pl-now b { display: block; font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 400; font-size: max(12px, calc(var(--pu) * 12)); letter-spacing: .1em; color: var(--paper); }
+.pl-now span { font-family: var(--serif); font-style: italic; font-size: max(14px, calc(var(--pu) * 14)); }
+:lang(zh) .pl-now span { font-family: var(--sans); font-style: normal; font-size: max(13px, calc(var(--pu) * 13)); letter-spacing: .04em; }
+
+/* ---------------------------------------------------------------- below: the controls under the picture (films with burned-in captions:
+   OPUSCAR 98's titles, the thank-you films' lines). The bar never covers the film, so it stays up; the loupe hangs under the ruler. */
+.player.below { aspect-ratio: auto; container-type: inline-size; overflow: visible; background: none; --bar: calc(var(--pu) * 44); }
+.player.below > video { aspect-ratio: var(--ar); height: auto; }
+.player.below .pl-box { position: relative; inset: auto; margin: 0; width: 100%; height: auto; aspect-ratio: var(--ar); background: #000; overflow: hidden; }
+.player.below .pl-shade { display: none; }
+.player.below .pl-bar, .player.below.idle .pl-bar { position: relative; left: auto; right: auto; bottom: auto; opacity: 1; transform: none; pointer-events: auto;
+  padding: 0 var(--pl-pad, 0px); border-bottom: 1px solid var(--hair); }
+.player.below .pl-play { margin-left: calc(var(--pu) * -8); }
+.player.below .pl-loupe, .player.below.idle .pl-loupe { bottom: auto; top: calc(100% + var(--pu) * 6); pointer-events: none; }
+.player.below .pl-lt { text-shadow: none; }
+/* under the bar the loupe hangs over the page's own text: one strip on the ink, the frame at its left, its words beside it */
+.player.below:not(.fs):not(:fullscreen) .pl-loupe { display: flex; align-items: stretch; width: max-content; max-width: calc(var(--pu) * 520);
+  background: var(--ink); box-shadow: 0 0 0 1px var(--hair-2), 0 calc(var(--pu) * 10) calc(var(--pu) * 30) rgba(0,0,0,.55); }
+.player.below:not(.fs):not(:fullscreen) .pl-thumb { flex: none; box-shadow: none; }
+.player.below:not(.fs):not(:fullscreen) .pl-lt { flex: 1 1 auto; min-width: 0; padding: calc(var(--pu) * 7) calc(var(--pu) * 12) calc(var(--pu) * 8); }
+.player.below.started.idle { cursor: auto; }
+.player.below.started.idle .pl-box { cursor: none; }
+.player.looping .pl-head { box-shadow: 0 0 0 0 transparent; }
+
+/* ---------------------------------------------------------------- full screen: the whole screen is the player */
+.player:fullscreen { aspect-ratio: auto; width: 100vw; height: 100vh; --pu: max(1px, min(100vw / 1280, 100vh / 720)); }
+.player:-webkit-full-screen { aspect-ratio: auto; width: 100vw; height: 100vh; --pu: max(1px, min(100vw / 1280, 100vh / 720)); }
+.player.fs .pl-bar { --pl-pad: calc(var(--pu) * 48); bottom: calc(var(--pu) * 8); }
+.player.below:fullscreen, .player.below.fs { display: flex; flex-direction: column; background: #000; }
+.player.below.fs .pl-box { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; }
+.player.below.fs .pl-poster img { object-fit: contain; }
+.player.below.fs .pl-bar { flex: none; bottom: auto; border: 0; }
+.player.below.fs .pl-loupe { top: auto; bottom: calc(100% + var(--pu) * 8); }   /* nothing below the screen: above the bar, only while hovering */
+
+/* ---------------------------------------------------------------- small players and touch screens */
+@container (max-width: 760px) {
+  .pl-ticks b { display: none; }
+  .pl-vol { display: none; }
+}
+@container (max-width: 560px) {
+  .pl-bar { gap: calc(var(--pu) * 4); }
+  .pl-time { min-width: 0; font-size: 12px; }
+  .pl-time i, .pl-time span { display: none; }
+  .pl-dl { display: none; }
+  .pl-ticks i:not(.M) { height: 3px; }
+}
+@media (pointer: coarse) {
+  .pl-btn { width: 40px; height: 44px; }
+  .pl-rule { height: 44px; }
+  .pl-big { width: 84px; height: 84px; margin: -42px 0 0 -42px; }
+}

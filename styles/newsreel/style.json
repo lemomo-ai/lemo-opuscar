@@ -1,11 +1,12 @@
 {
  "slug": "newsreel",
- "num": "64",
+ "num": "02",
  "en": "1920s Newsreel",
  "cn": "1920s 新闻影片",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "Knock-Knee Alert",
+ "film_cn": "膝盖警报",
  "line": "1926: the papers say the Charleston will ruin America's knees; at Ford's own picnic the kids dance it anyway.",
  "line_cn": "1926 年报纸说查尔斯顿会跳坏膝盖，福特工人野餐会上的孩子照跳不误。",
  "uses": [
@@ -13,6 +14,6 @@
   "Fads & eras",
   "Anniversaries"
  ],
- "frame_sec": 30.2,
+ "frame_sec": 8.19,
  "dur": 54.6
 }

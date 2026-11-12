@@ -1,0 +1,43 @@
+3D Map Explainer demo · 《霍尔木兹海峡》 Strait of Hormuz · third-party data, assets and sources
+
+## Map data and imagery (downloaded by build.sh into demo/raw/ and processed into demo/assets/; not in git)
+- Elevation and bathymetry: AWS Terrain Tiles (Mapzen / Tilezen "terrarium" PNG), https://registry.opendata.aws/terrain-tiles/
+  zoom 10 for the strait (tools/fetch.py), zoom 8 for the region from the Red Sea to the Gulf of Oman (tools/fetch_wide.py).
+  Sources include SRTM (public domain), GMTED, ETOPO1 and GEBCO; attribution as required by the terrain-tiles documentation.
+- Imagery: Sentinel-2 cloudless 2016 - https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data
+  2016 & 2017), CC BY 4.0. Layer s2cloudless_3857: zoom 11 (strait), zoom 9 (region; also laid over the globe), zoom 4 (whole
+  globe, tools/fetch_world.py). Later Sentinel-2 cloudless releases are CC BY-NC-SA and are not used.
+- Traffic separation scheme: © OpenStreetMap contributors, Open Database License (ODbL) 1.0, via the Overpass API
+  (ways 220138792, 220138754 and their boundaries; raw/tss.json, raw/seamark_strait.json). The coordinates used are written
+  into index.html (the IN array); the approximation between the OSM segments is described in FACTS.md.
+- Oil terminal and pipeline end-point positions: public coordinates. Routes and pipeline paths are schematic.
+- The film carries a credit line in the bottom-right corner throughout: data EIA · IEA, elevation AWS Terrain Tiles,
+  imagery Sentinel-2 cloudless 2016 by EOX (CC BY 4.0), lanes © OpenStreetMap contributors (ODbL), routes schematic,
+  vertical ×3.2.
+- Every download URL and date is logged in demo/raw/manifest.jsonl (kept with the local data).
+
+## Facts
+- Every number on screen and in the narration is sourced in demo/FACTS.md (EIA Today in Energy, 16 June 2025; IEA
+  "Strait of Hormuz", February 2026), with URLs and quoted wording; the section depths are a measurement on the tiles above.
+
+## Voice
+- Kokoro-82M (hexgrad), voice bm_george, Apache License 2.0; run locally via kokoro-onnx (MIT) through the library's
+  core/tts/tts.py. Speech check: faster-whisper base.en (MIT; OpenAI Whisper weights, MIT). Script: demo/voice/lines.json.
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios): contrabass (arco, pizzicato), cellos (arco, spiccato),
+  violins (pizzicato), horn, timpani.
+- Versilian Community Sample Library (Versilian Studios): hand chimes, bowed vibraphone, glockenspiel, harp, frame drum.
+- Ambience, foley and the sine pedal are procedural (core/audio/sfx.py and demo/mix.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/; downloaded by tools/fonts.py, not in git)
+- Barlow Condensed Regular / Medium / SemiBold: The Barlow Project Authors, https://github.com/google/fonts/tree/main/ofl/barlowcondensed
+- Noto Sans SC 500 / 700: Google / Adobe, https://github.com/google/fonts/tree/main/ofl/notosanssc, subset through the
+  Google Fonts CSS API to the characters in voice/subs.json, the title and the end card.
+
+## Code
+- three.js r170 (MIT): loaded from the library's node_modules. demo/post.js is a copy of the library's core/three/post.js.
+
+## Images, models
+- No photographs other than the satellite mosaics above, no 3D models, no AI-generated images. Ships, pillars, the
+  cross-section, routes and type are drawn in code.

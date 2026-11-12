@@ -114,13 +114,13 @@ demo/
   index.html, main.js     the page; SCENES and WIPES tables; EV for the mix; CUES for the .srt
   mix.py                  score (sampled), foley from events.json, voice, ducking
   vo/lines.json           narration: text (screen/subtitles), say (spoken), speech_rate, asr
-  data/                   KOSPI daily closes (CSV + raw API responses)
+  prompts/                the plate prompts (<name>.txt + common.txt), run by tools/gen_plates.sh
   assets/plates/          the two illustrative plates (AI-generated JPEGs, committed; the build stops if one is missing)
   tools/prep.py           plate grade (duotone) → assets/plate_*.jpg + Natural Earth → Europe projection (EU members as shapes, all other land merged, no borders)
   tools/tts_doubao.py     optional Doubao TTS client (reads DOUBAO_API_KEY from the environment; caches takes)
   tools/fonts.sh          OFL subsets for every character in main.js
   tools/subs.py           CUES → ../news-package.srt
-  tools/gen_plates.sh, gen_image.py   make new plates with the Codex CLI (optional; see STYLE.md §10)
+  tools/gen_plates.sh   make new plates with the Codex CLI through core/image/gen_image.py (optional; see STYLE.md §10)
   tools/footage.py        footage finder with licence logging (not needed here)
   FACTS.md, SOURCES.md, CREDITS
 ```

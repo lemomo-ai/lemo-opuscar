@@ -1,0 +1,18 @@
+Public domain
+
+The files that REUSE.toml marks with LicenseRef-PublicDomain hold, or show,
+third-party material that is in the public domain: works of the United States
+federal government (Library of Congress catalogue records, NASA data, USGS and
+NASA imagery, and the like), works whose copyright has expired (for example
+films and prints published in the United States before 1931), works published
+in the United States before 1978 without a copyright notice, works their authors
+placed in the public domain, and map data that its makers placed in the public
+domain (Natural Earth). Data files are kept as they were received, or cut,
+converted or reprojected without adding anything original. No licence is needed
+to use this material; its sources ask to be credited, as each demo's CREDITS
+does. Works that are in the public domain in the United States may be protected
+in other countries.
+
+Where a file mixes such material with work of ours, or with material under
+another licence, its licence expression in REUSE.toml names each, for example
+"MIT AND LicenseRef-PublicDomain".

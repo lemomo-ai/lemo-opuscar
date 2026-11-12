@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>安检口的夜班</title>
+<style>
+@font-face{font-family:'Plex';src:url(fonts/IBMPlexMono-Regular.ttf);font-weight:400}
+@font-face{font-family:'Plex';src:url(fonts/IBMPlexMono-Medium.ttf);font-weight:500}
+@font-face{font-family:'SC';src:url(fonts/NotoSansSC-500.ttf);font-weight:500}
+@font-face{font-family:'SC';src:url(fonts/NotoSansSC-700.ttf);font-weight:700}
+html,body{margin:0;background:#000;overflow:hidden}
+#out{position:absolute;left:0;top:0;width:100vw;height:100vh;display:block}
+#gl{display:none}
+</style>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<canvas id="gl"></canvas><canvas id="out"></canvas>
+<script type="module" src="film.js"></script>
+</body></html>

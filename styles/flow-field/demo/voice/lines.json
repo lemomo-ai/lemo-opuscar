@@ -1,0 +1,75 @@
+[
+ {
+  "id": "v01",
+  "text": "Every line on this chart is wind.",
+  "zh": "这张海图上的每一条线，都是风。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v02",
+  "text": "Then, over the Philippines, they began to turn.",
+  "zh": "后来，在菲律宾上空，它们开始打转。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v03",
+  "text": "A calm eye opened.",
+  "zh": "一只平静的风眼，睁开了。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v04",
+  "text": "Its name was Yagi. Each point is one record of its path.",
+  "zh": "它叫“摩羯”。每个点，是它路径上的一条记录。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v04b",
+  "text": "It headed west, toward Hainan.",
+  "zh": "它一路向西，扑向海南。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v05",
+  "text": "Sixty-two metres per second. The top grade: super typhoon.",
+  "sub": "62 metres per second. The top grade: super typhoon.",
+  "zh": "每秒62米。最高一级：超强台风。",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "asr": "62 meters per second. The top grade, super typhoon."
+ },
+ {
+  "id": "v06",
+  "text": "It came ashore at Wenchang, and the land bent the lines.",
+  "zh": "它在文昌登陆，陆地把风线拧弯了。",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "asr": "It came ashore at Wenqiang and the land bent the lines."
+ },
+ {
+  "id": "v07",
+  "text": "It crossed the strait, and struck the mainland again.",
+  "zh": "它穿过海峡，再一次登上陆地。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v08",
+  "text": "Into Vietnam, the spiral came apart, and the lines went back to ink.",
+  "zh": "进入越南，螺旋散开，风线又变回墨色。",
+  "voice": "bm_george",
+  "speed": 0.9
+ },
+ {
+  "id": "v09",
+  "text": "Its whole week fits in one last line.",
+  "zh": "它的整整一周，装进了最后这一条线。",
+  "voice": "bm_george",
+  "speed": 0.9
+ }
+]

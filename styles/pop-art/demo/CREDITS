@@ -1,0 +1,31 @@
+Pop Art demo · 《同一根香蕉》 The Same Banana · third-party assets and sources
+
+## Voice
+- Kokoro-82M (hexgrad), voice am_michael, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: faster-whisper base.en (MIT; OpenAI Whisper weights, MIT).
+  Script: demo/voice/lines.json (15 phrases, rendered to demo/out/voice/).
+
+## Music samples (CC0; credit not required, given with thanks)
+- Karoryfer Samples (sfzinstruments): jazz_bass ("Sneakybass")
+- VS Chamber Orchestra: Community Edition (Versilian Studios / Sam Gossner): contrabass, trumpet_mute, trumpet_stac
+- Versilian Community Sample Library (Versilian Studios): vibraphone, vibraphone_bowed, marimba, glockenspiel, shaker, conga, claps
+  Played by core/audio/sampler.py from the score in demo/mix.py. Foley (squeegee, stamps, paper, flips, the rot bed) is
+  procedural (core/audio/sfx.py and demo/mix.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- Anton, Vernon Adams: https://github.com/google/fonts/tree/main/ofl/anton
+- Archivo Black, Omnibus-Type: https://github.com/google/fonts/tree/main/ofl/archivoblack
+- Noto Sans SC Black, Google / Adobe: https://fonts.google.com/noto/specimen/Noto+Sans+SC
+  Subset to the characters in main.js and timeline.py by demo/tools/font_subset.py (Google Fonts CSS API, text= parameter).
+  Anton and Archivo Black are downloaded by build.sh.
+
+## Code
+- demo/engine/pop.js: the library's pop print engine (three colour plates and a black key, Ben-Day dots in page space,
+  misregistration), with a plate mask for printing plate by plate and a register of readable text boxes.
+
+## Images, models
+- None. Every banana, plant, slice, poster and label is drawn in code; no photographs, no external images, no AI-generated images.
+
+## Facts
+- Every factual line is sourced in demo/FACTS.md (Wikipedia, FAO, FreshFruitPortal, Portal Frutícola), with URLs and wording.
+- The bananas in the last wall are illustrative colourways, not named cultivars. No brand, label or company appears.

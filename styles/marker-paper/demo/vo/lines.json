@@ -1,0 +1,75 @@
+[
+ {
+  "id": "v01",
+  "text": "Stand on a beach, and look out to sea.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v02",
+  "text": "How far away is the horizon?",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v03",
+  "text": "Blue is what we know. Red is what we want.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v05",
+  "text": "Your line of sight just grazes the Earth, at a right angle.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v07",
+  "text": "Aitch squared is tiny, so we drop it.",
+  "asr": "H squared is tiny, so we drop it.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v08",
+  "text": "From one point six metres up: about four and a half kilometres.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb",
+  "asr": "From 1.6 meters up, about 4.5 kilometers."
+ },
+ {
+  "id": "v09",
+  "text": "Now, climb a hundred times higher.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v10",
+  "text": "You see only ten times farther.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ },
+ {
+  "id": "v11",
+  "text": "From a plane, ten kilometres up: about three hundred and fifty-seven kilometres.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb",
+  "asr": "From a plane, 10 kilometers up, about 357 kilometers."
+ },
+ {
+  "id": "v12",
+  "text": "The view grows only with the square root of your height.",
+  "voice": "bm_george",
+  "speed": 0.84,
+  "lang": "en-gb"
+ }
+]

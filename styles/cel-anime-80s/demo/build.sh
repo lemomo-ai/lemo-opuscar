@@ -13,6 +13,7 @@ LIB=${LIB:-$(cd "$HERE/../../.." && pwd)}            # styles/<slug>/demo -> lib
 export LIB
 [ -f "$LIB/core/render/video.mjs" ] || { echo "set LIB to the library folder"; exit 1; }
 PY="$LIB/.venv/bin/python"
+"$PY" -c 'import numba' 2>/dev/null || { echo "cel-anime-80s: the demo needs the music tier (numba, for music/score.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
 NAME=cel-anime-80s
 FPS=24
 POSTER=16.2                                          # side-on ride past the neon shopfronts (no subtitles)

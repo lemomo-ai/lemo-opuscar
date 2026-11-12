@@ -1,0 +1,19 @@
+{
+ "slug": "dark-documentary",
+ "num": "92",
+ "en": "Radar Sweep Documentary",
+ "cn": "雷达扫描纪录片",
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
+ "film": "Catching the Moon",
+ "film_cn": "狂风里接住登月直播",
+ "line": "A storm at Parkes, 21 July 1969: a 64-metre dish tipped to its limit holds on and catches the moonwalk for the world.",
+ "line_cn": "1969 年 7 月 21 日帕克斯的风暴里，一面放倒到极限的 64 米天线顶住了风，替全世界接住了登月直播。",
+ "uses": [
+  "History of science and engineering",
+  "Archaeology, sites and reconstructions",
+  "Astronomy, deep space and survey"
+ ],
+ "frame_sec": 16.0,
+ "dur": 52.0
+}

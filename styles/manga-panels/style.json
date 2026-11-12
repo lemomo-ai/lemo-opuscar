@@ -1,0 +1,22 @@
+{
+ "slug": "manga-panels",
+ "num": "57",
+ "en": "Manga Panels",
+ "cn": "黑白漫画分格",
+ "category_en": "Cartoons",
+ "category_cn": "卡通动画",
+ "film": "KOMA ONE: Thirty Frames a Second",
+ "film_cn": "KOMA ONE · 一秒三十格",
+ "line": "A street photographer chases a running light to the moment the pigeons rise; her pocket camera splits that second into thirty panels.",
+ "line_cn": "街拍摄影师追着一束跑动的光，等到鸽群腾起的那一秒；她的口袋相机把这一秒拆成三十格。",
+ "uses": [
+  "Music videos",
+  "Product launches",
+  "Anime openings"
+ ],
+ "needs": [
+  "image-generation"
+ ],
+ "frame_sec": 40.2,
+ "dur": 48.0
+}

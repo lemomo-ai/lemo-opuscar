@@ -1,0 +1,65 @@
+1
+00:00:00,500 --> 00:00:02,930
+治肾结石的两种手术。
+Two treatments for kidney stones.
+
+2
+00:00:03,050 --> 00:00:08,280
+B 的成功率更高：83% 对 78%。
+Treatment B worked more often: 83% against 78%.
+
+3
+00:00:08,400 --> 00:00:10,230
+你会选哪一个？
+Which would you choose?
+
+4
+00:00:10,350 --> 00:00:15,181
+每一格是一位真实的病人，一共 700 位。
+Every cell is one real patient. 700 in all.
+
+5
+00:00:15,400 --> 00:00:18,167
+可是这张表藏起了几列。
+But some columns are hidden.
+
+6
+00:00:18,900 --> 00:00:20,930
+藏起来的，是结石的大小。
+They hold stone size.
+
+7
+00:00:21,050 --> 00:00:25,380
+大结石更难治，而大多数大结石分给了 A。
+Big stones are harder to treat, and most of them went to A.
+
+8
+00:00:25,500 --> 00:00:29,066
+现在按结石大小，把病人分开。
+Now split the patients by stone size.
+
+9
+00:00:29,800 --> 00:00:34,330
+小结石：A 赢，93% 对 87%。
+Small stones: A wins, 93 to 87.
+
+10
+00:00:34,450 --> 00:00:39,130
+大结石：还是 A，73% 对 69%。
+Large stones: A again, 73 to 69.
+
+11
+00:00:39,250 --> 00:00:42,530
+每一组都更好，合起来却更差。
+Better in every group, worse in total.
+
+12
+00:00:42,650 --> 00:00:44,780
+这就是辛普森悖论。
+That's Simpson's paradox.
+
+13
+00:00:44,900 --> 00:00:48,550
+相信一个总数之前，先把藏起来的列打开。
+Before you trust a total, unhide the columns.
+

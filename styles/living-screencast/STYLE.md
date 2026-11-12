@@ -1,4 +1,4 @@
-# Living Screencast — Style Prompt
+# Mascot Screencast — Style Prompt
 
 > A product walkthrough that looks like a real screen recording, where a low-resolution mascot lives inside a high-resolution interface and acts out what the software is doing.
 > References (grammar only):

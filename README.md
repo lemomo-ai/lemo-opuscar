@@ -1,78 +1,59 @@
 <div align="center">
 
+<a href="https://lemomo-ai.github.io/lemo-opuscar/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cover-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cover-en-light.webp"><img src="docs/cover.jpg" width="100%" alt="Lemo-Opuscar: the long workbench at night, OPUSCAR set in wood type"></picture></a>
+
 # Lemo-Opuscar
 
-**A toolbox of film styles made in code: <!--n-->66<!--/n--> ready to use, and your own.**<br>
-Pick a style or make one from scratch, bring your story, and let your coding agent direct.<br>
-<sub><!--n-->66<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片 · 🇨🇳 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></sub>
+**<!--n-->99<!--/n--> film styles for your coding agent. Pick one, bring your story, and the agent makes the film, entirely in code.**
 
-<a href="https://lemomo-ai.github.io/lemo-opuscar/"><img alt="Watch the gallery" src="https://img.shields.io/badge/-%E2%96%B6%20Watch%20the%20gallery-E8553A?style=for-the-badge"></a> <a href="README.zh-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/README-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-555?style=for-the-badge"></a> <a href="https://github.com/lemomo-ai/lemo-opuscar/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/lemomo-ai/lemo-opuscar?style=for-the-badge&color=F5B700&label=stars"></a> <a href="#licence"><img alt="MIT · CC BY 4.0" src="https://img.shields.io/badge/licence-MIT%20%C2%B7%20CC%20BY%204.0-2EA44F?style=for-the-badge"></a>
+<p><!--n-->99<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片 · 🇨🇳 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></p>
+
+[**▶ Open the gallery**](https://lemomo-ai.github.io/lemo-opuscar/) · [中文画廊](https://lemomo-ai.github.io/lemo-opuscar/zh/)
 
 <a href="https://trendshift.io/repositories/262645?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-262645" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/262645/daily?language=JavaScript" alt="lemomo-ai%2Flemo-opuscar | Trendshift" width="250" height="55"/></a>
-
-⚠️ **Built for Claude.** The styles are tuned for Claude Opus 5.5;<br>
-other models may not reproduce them well, so use them with care.
-
-🆕 **2026-10-29 · [7 new styles](https://lemomo-ai.github.io/lemo-opuscar/)**: a Memphis diorama by [@EianLu](https://x.com/EianLu), a metro map, a chalkboard and more. [See them ↓](#the-styles)<br>
-🆕 **2026-10-22 · [Edit & Documentary](https://lemomo-ai.github.io/lemo-opuscar/#edit-documentary)**: 8 styles cut from real footage, documents and data. [See them ↓](#edit--documentary)<br>
-🆕 **2026-10-22 · [Make a style your own](#make-a-style-your-own)**: change a style or start blank, and keep it. [See how ↓](#make-a-style-your-own)<br>
-🆕 **2026-10-16 · [Evidence Films](https://lemomo-ai.github.io/lemo-opuscar/#evidence-films)**: 8 styles that film real material, every number sourced. [See them ↓](#evidence-films)
 
 <sub>Official repo: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) · by Lemomo ([@lemomo_ai](https://x.com/lemomo_ai))</sub>
 
 </div>
 
-## 🎬 Feature presentation: OPUSCAR 98
+> [!IMPORTANT]
+> **This release was audited and improved with Claude Fable 5.2.**
+>
+> **Built for Claude.** Claude Fable, Opus and Sonnet all work; set effort to **high** (in Claude Code, type `/effort high`). Other models may not reproduce the styles well, so use them with care.
 
-<table><tr>
-<td width="50%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/"><img src="docs/opuscar98.jpg" alt="OPUSCAR 98 — 98 Years of Best Picture"></a><br><b>▶ The film</b> · 1927 – 2025 · 6:31<br><sub>One Clawd walks through all 98 Best Picture winners, each one redrawn in a style that fits the film.</sub></td>
-<td width="50%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles"><img src="docs/opuscar98-styles.jpg" alt="OPUSCAR 98 — all 98 styles open"></a><br><b>All 98 styles, open</b> · 77 in 2D · 4 in 2.5D · 17 in 3D<br><sub>Each film's style, a frame and a style prompt to reuse on your own topic.</sub></td>
-</tr></table>
+## 🆕 New
 
-<div align="center">
+- **2026-11-12** · **33 new styles**: <!--n-->99<!--/n--> now, in 15 categories sorted by what the picture looks like, and the gallery in [English](https://lemomo-ai.github.io/lemo-opuscar/) and [Chinese](https://lemomo-ai.github.io/lemo-opuscar/zh/), with a page for every style. Some demo films remade, bugs fixed, style prompts improved. [See the styles ↓](#the-styles)
+- **2026-10-22** · Make a style your own: change a style or start blank, and keep it. [See how ↓](#make-a-style-your-own)
 
-Every frame, every note and every cut was written in code by Claude Opus 5.5.<br>
-[**▶ Watch**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**All 98 styles**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles) · [**Download 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
+## How it works
 
-</div>
+1. **Pick a style.** Browse the [gallery](https://lemomo-ai.github.io/lemo-opuscar/) by what the picture looks like, or search for what you are making: explainers, launches, news, music videos.
+2. **Watch its demo.** Every style has a short film made in code, and a page with stills, what it suits and the `STYLE.md` your agent follows.
+3. **Ask your agent.** [Install the skill](#install) once, then say it in one sentence:
 
-## 👋 About me
+```text
+Make a film in the Neon Tubes style about the coffee farm my family runs.
+```
 
-I'm **Lemomo** ([@lemomo-ai](https://github.com/lemomo-ai)). More about me on my profile.
+Name the style in English or Chinese, or by its folder; the [style index](styles/README.md) lists them all. Add a length, a narrator, your own photos or music if you like:
 
-> **Not an awesome list.** Every film here was made by me, with Claude Opus 5.5.<br>
-> The styles are tuned for Opus 5.5; other models may not reproduce them.
+> Make a 45-second film in the **watercolor** style about the coffee farm my family runs. Warm female narrator.
 
-![All styles](docs/cover.jpg)
+> Make a 40-second **LiDAR Survey** film about the old quarry in the hills behind our town, from public laser-scan data.
 
-Every film was directed, drawn, scored and mixed by an AI agent writing code:
+### Install
 
-- 🎨 **Picture**: canvas and WebGL pages, rendered frame by frame
-- 🎵 **Music**: original scores from free sample libraries
-- 🎙️ **Voice**: text-to-speech narration
-
-No video generation, no stock footage.
-
-## How to use
-
-Two ways in; the skill is the easiest.
-
-### Option 1: install the skill (recommended)
-
-In your terminal:
+**The skill (recommended).** In your terminal:
 
 ```sh
 claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
-Then use it from any folder.
+Then use it from any folder. On first use it downloads the guides, tools and style prompts to `~/lemo-opuscar`, shared by all your films; each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
 
-- On first use it downloads the guides, tools and style prompts to `~/lemo-opuscar`, shared by all your films.
-- Each film's project, from source to finished video, goes in the folder you started from.
-- For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
-
-### Option 2: clone the repo
+**Or clone the repo.** Films go into `films/<name>/` inside it.
 
 ```sh
 git clone https://github.com/lemomo-ai/lemo-opuscar.git
@@ -80,25 +61,13 @@ cd lemo-opuscar
 claude
 ```
 
-Films go into `films/<name>/` inside the repo.
-
-### Then just say what you want
-
-> Make a 45-second film in the **watercolor** style about the coffee farm my family runs. Warm female narrator.
-
-> Make a 40-second **LiDAR Survey** film about the old quarry in the hills behind our town, from public laser-scan data.
-
-Name the style in English or Chinese; the [style index](styles/README.md) lists them all.
+### What happens next
 
 Not sure yet? With the skill installed, type `/lemo-opuscar:lemo-opuscar` and nothing else. It asks which language to use, then what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
 
-It asks you once, up front:
+It asks you once, up front: anything it can't decide about your topic; whether you have your own **voice, music or other material**; whether you want to see a **storyboard** first (say yes and it stops once to show you the key shots in the real style; otherwise it goes straight to the finished film).
 
-- anything it can't decide about your topic;
-- whether you have your own **voice, music or other material**;
-- whether you want to see a **storyboard** first. Say yes and it stops once to show you the key shots in the real style; otherwise it goes straight to the finished film.
-
-The agent reads three guides and works like a small studio:
+Then the agent reads three guides and works like a small studio:
 
 | File | What it gives the agent |
 |---|---|
@@ -106,257 +75,220 @@ The agent reads three guides and works like a small studio:
 | [`TECHNIQUE.md`](TECHNIQUE.md) | how to build: frame-by-frame rendering, voice, music, mixing |
 | `styles/<style>/STYLE.md` | what the style looks and sounds like; the story is yours |
 
-### Make a style your own
+Every film is directed, drawn, scored and mixed by the agent writing code: 🎨 canvas and WebGL pages rendered frame by frame, 🎵 original scores from free sample libraries, 🎙️ text-to-speech narration. No video generation, no stock footage.
 
-Everyone wants something different: their own brand colours, logo, characters, the tone of their channel. Now you can change a library style into one that's only yours, or make one from a blank page that the library doesn't have. It's the same process I use to add a new style to the library.
+### Before you start
+
+- A film takes an agent about 30–60 minutes and a fair amount of tokens.
+- You need Node 20+, ffmpeg 7+ and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. Ubuntu 24.04 ships ffmpeg 6.1, which is too old: use a [static build](https://johnvansickle.com/ffmpeg/).
+- Three styles draw their characters with an image generator you bring (Manga Panels, Text Flash Cuts, Comic History Cartoon; marked ✦ in [the style list](styles/README.md)): the [Codex CLI](https://github.com/openai/codex) signed in to an account that can generate images, or another image tool you have. Without one, those three can't start; every other style works without it.
+- Default output 1920×1080 at 24 fps (some styles set their own frame rate, such as 30 fps); other sizes on request.
+
+## Make a style your own
+
+Your own brand colours, logo, characters, the tone of your channel: change a library style into one that's only yours, or make one from a blank page that the library doesn't have. It's the same process I use to add a new style to the library.
 
 <table><tr>
 <td width="50%" valign="top"><a href="https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/swiss-motion.mp4"><img src="docs/my-style-before.jpg" alt="A library style: Swiss Motion Graphics"></a><br><b>A library style</b> · Swiss Motion Graphics<br><sub>A flat grid, one signal colour, every move on the beat.</sub></td>
 <td width="50%" valign="top"><a href="https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/my-style-material-grid.mp4"><img src="docs/my-style-after.jpg" alt="My style: Material Grid"></a><br><b>My style</b> · Material Grid · ▶ 31 s demo film<br><sub>The Swiss grid, beat and type kept, the shapes made of clay, plastic, felt, glass and chrome: from above it reads as a poster, one tilt and it's a table of objects.</sub></td>
 </tr></table>
 
-**Two ways in.** Pick one after starting the skill, or say it in one line:
+Pick it after starting the skill, or say it in one line:
 
 > I want to change the **Ukiyo-e** style into my own version.
 
 > Start from a blank page: a chalk-on-blackboard style, warm and slow.
 
-- **Change a library style**: it lists every style with the gallery link, and you type the one to change.
-- **Start from a blank page**: describe the look in your own words, or share a picture or a film you like. Claude picks the closest library style as the technique base, tells you why, and you agree or pick another.
+To change a library style, it lists every style with the gallery link and you type the one to change. From a blank page, describe the look in your own words, or share a picture or a film you like; Claude picks the closest library style as the technique base, tells you why, and you agree or pick another. Then five steps:
 
-**Then five steps:**
+1. **Plan it one question at a time.** What it's for (kinds of film; the platform, as vertical feeds want 1080×1920 or 1080×1440; brand colours, logo, fonts or recurring characters), what to change and which way, and last, a name. A library style is first sorted into **safe to change** (palette, type, pace, sound, signature moves), **changes its character** (materials and rendering, the colour logic, camera grammar) and **can't change** (the style's essence: change that and it's a different style). Each question has a few options, the recommended one first with the reason. Vague is fine: "more premium" or "livelier" becomes concrete changes to pick from. Choose "free conversation" to just talk it through, or say "you decide" at any point. At most five changes a round when changing a library style; everything is drawn in code, no image generation.
+2. **Review the summary**: each part before, after and what it costs. Nothing is written until you agree.
+3. **See one style frame first**, drawn with the real code; when you changed a library style, the original is rendered too, side by side: original left, yours right. If it still isn't right after two rounds, it says so and suggests a closer base.
+4. **A 15–30 second demo film**, every change on screen, with music and sound effects. It checks the film and fixes it once before handing it over.
+5. **Keep it when you're happy**: keep it as my style, another round, or not now. Until you say yes, everything stays in that project's folder.
 
-1. **Plan it one question at a time.** Each question has a few options, the recommended one first, with the reason. Roughly:
-   - what it's for: what kind of films, which platform (vertical feeds want 1080×1920 or 1080×1440), any brand colours, logo, fonts or recurring characters;
-   - what to change: for a library style it first sorts the style into three groups, **safe to change** (palette, type, pace, sound, signature moves), **changes its character** (materials and rendering, the colour logic, camera grammar) and **can't change** (the style's essence: change that and it's a different style);
-   - which way to take each part, and last, a name.
-
-   Vague is fine: say "more premium" or "livelier" and it turns that into concrete changes to pick from. Too slow? Choose "free conversation", the last option on every question, and just talk it through; say "you decide" at any point and it fills in the rest with its recommendations. At most five changes a round when changing a library style; everything is drawn in code, no image generation.
-2. **Review the summary.** Each part before, after, and what it costs. Nothing is written until you agree.
-3. **See one style frame first**, drawn with the real code. When you changed a library style, the same frame is rendered in the original too, side by side: original left, yours right. Say what's off; if it still isn't right after two rounds, it says so and suggests a closer base.
-4. **A 15–30 second demo film.** Every change is on screen, with music and sound effects. It checks the film and fixes it once before handing it over.
-5. **Keep it when you're happy.** It asks: keep it as my style, another round, or not now. Until you say yes, everything stays in that project's folder.
-
-Once kept, the style lives in `~/lemo-my-styles/<name>/`, shaped like a library style: the style prompt, what changed, the demo film and its source, so later films can reuse the techniques. Then name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*. When you pick a style, your own are listed first.
-
-Library updates and reinstalling never touch them. When the base style is updated later, Claude mentions it once and asks whether to bring the useful fixes into your copy. The steps Claude follows are in [`MY-STYLES.md`](MY-STYLES.md).
-
-### Before you start
-
-- A film takes an agent about 30–60 minutes and a fair amount of tokens.
-- You need Node 20+, ffmpeg 7+ and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. Ubuntu 24.04 ships ffmpeg 6.1, which is too old: use a [static build](https://johnvansickle.com/ffmpeg/).
-- Default output 1920×1080, 24 fps; other sizes on request.
-
-### Update or uninstall
-
-Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
-
-```sh
-claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
-```
-
-After an update, ask for a film as usual; to make a style your own, see [above](#make-a-style-your-own).
-
-Uninstall, then delete `~/lemo-opuscar`:
-
-```sh
-claude plugin uninstall lemo-opuscar@lemolab
-```
-
-Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them.
-
-If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
+A kept style lives in `~/lemo-my-styles/<name>/`, shaped like a library style (the style prompt, what changed, the demo film and its source), so later films can reuse the techniques. Name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*; when you pick a style, your own are listed first. Library updates and reinstalling never touch them; when the base style is updated later, Claude mentions it once and asks whether to bring the useful fixes into your copy. The steps Claude follows are in [`MY-STYLES.md`](MY-STYLES.md).
 
 ## The styles
 
-Click a frame for its `STYLE.md`.
+<!--n-->99<!--/n--> styles in 15 categories, sorted by what the picture looks like. A station opens it on the site's workbench; a card or a name opens the style's page, with its film, stills and the sentence to copy.
 
 <!-- styles:start -->
 
-### 🆕 New · 2026-10-29
+**01** [Edit & Documentary](#01--edit--documentary) · **02** [Painting & Illustration](#02--painting--illustration) · **03** [Sketch & Board](#03--sketch--board) · **04** [Traditional Crafts](#04--traditional-crafts) · **05** [Print & Printmaking](#05--print--printmaking) · **06** [Graphic & Type](#06--graphic--type) · **07** [Line Diagrams](#07--line-diagrams) · **08** [Cartoons](#08--cartoons) · **09** [Games](#09--games) · **10** [Film & Tape](#10--film--tape) · **11** [Screens & Interfaces](#11--screens--interfaces) · **12** [Light & Lines](#12--light--lines) · **13** [3D & Miniature](#13--3d--miniature) · **14** [Instruments & Evidence](#14--instruments--evidence) · **15** [Data & Maps](#15--data--maps)
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/memphis-diorama/STYLE.md"><img src="docs/frames/memphis-diorama.jpg" alt="Memphis Diorama"></a><br><b>Memphis Diorama</b><br><i>Four Seasons in Pomelo Town</i><br><sub>One river bend, four seasons, one take; each turns when the big tree squats and springs back.</sub><br><sub>Contributed by <a href="https://x.com/EianLu">@EianLu</a></sub></td>
-<td width="33%" valign="top"><a href="styles/transit-map/STYLE.md"><img src="docs/frames/transit-map.jpg" alt="Transit Map"></a><br><b>Transit Map</b><br><i>6 Kilometres</i><br><sub>A printed metro map grows from one 6 km line in 1993 to 21 lines and 906 km.</sub></td>
-<td width="33%" valign="top"><a href="styles/chalkboard/STYLE.md"><img src="docs/frames/chalkboard.jpg" alt="Chalkboard"></a><br><b>Chalkboard</b><br><i>The Story of Chinese Characters</i><br><sub>Chalk writes a popular claim about two characters, wipes it, and traces 射 back three thousand years.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/isometric-picture-book/STYLE.md"><img src="docs/frames/isometric-picture-book.jpg" alt="Isometric Picture Book"></a><br><b>Isometric Picture Book</b><br><i>Seventy-Two Seats</i><br><sub>Travellers board an isometric plane, and the order shows why one way is nearly twice as fast.</sub></td>
-<td width="33%" valign="top"><a href="styles/printed-long-take/STYLE.md"><img src="docs/frames/printed-long-take.jpg" alt="Printed Long Take"></a><br><b>Printed Long Take</b><br><i>Thirty-Three Cranes</i><br><sub>Red-crowned cranes in a Hokkaido valley, one scratchboard take, counted back from 33 to 1,927.</sub></td>
-<td width="33%" valign="top"><a href="styles/circuit-board/STYLE.md"><img src="docs/frames/circuit-board.jpg" alt="Circuit Board"></a><br><b>Circuit Board</b><br><i>Seven Milliseconds</i><br><sub>Rivers become copper traces as current runs 2,080 km from a dam to a phone charger.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/desktop-flythrough/STYLE.md"><img src="docs/frames/desktop-flythrough.jpg" alt="Desktop Flythrough"></a><br><b>Desktop Flythrough</b><br><i>Before the Ding</i><br><sub>A cat photo hops across app cards on a sunlit desk, from one phone to a friend&#x27;s.</sub></td>
-</tr>
-</table>
+###### <a name="edit--documentary"></a>01 · Edit & Documentary
 
-### Edit & Documentary
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s01"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-01-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-01-en-light.webp"><img src="docs/readme/station-01-en-light.webp" width="100%" alt="Station 01 / 15: Edit &amp; Documentary, 8 styles. Opens this station on the site."></picture></a>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/caption-news/STYLE.md"><img src="docs/frames/caption-news.jpg" alt="Caption News"></a><br><b>Caption News</b><br><i>The Bee Ledger</i><br><sub>America lost 1.3 million bee colonies, yet the count rose 6 %: a news short that works with the sound off.</sub></td>
-<td width="33%" valign="top"><a href="styles/newsreel/STYLE.md"><img src="docs/frames/newsreel.jpg" alt="1920s Newsreel"></a><br><b>1920s Newsreel</b><br><i>Knock-Knee Alert</i><br><sub>1926: the papers say the Charleston will ruin America&#x27;s knees; at Ford&#x27;s own picnic the kids dance it anyway.</sub></td>
-<td width="33%" valign="top"><a href="styles/countdown/STYLE.md"><img src="docs/frames/countdown.jpg" alt="Live Countdown Split-screen"></a><br><b>Live Countdown Split-screen</b><br><i>Counting Itself Down</i><br><sub>The last minute of the Artemis II launch, uncut: one cell opens to nine, and they merge into one at ignition.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/city-symphony/STYLE.md"><img src="docs/frames/city-symphony.jpg" alt="Time-lapse Symphony"></a><br><b>Time-lapse Symphony</b><br><i>One Day in New York</i><br><sub>One day in New York in time-lapse: rivers of light, a grid on the sixteenths, 1899 beside today.</sub></td>
-<td width="33%" valign="top"><a href="styles/visual-investigation/STYLE.md"><img src="docs/frames/visual-investigation.jpg" alt="Visual Investigation"></a><br><b>Visual Investigation</b><br><i>The Hindenburg: Four Minutes, 32 Seconds</i><br><sub>Newsreel, photos, testimony and the 1937 inquiry on one clock: five sources point to the same spot.</sub></td>
-<td width="33%" valign="top"><a href="styles/kino-montage/STYLE.md"><img src="docs/frames/kino-montage.jpg" alt="Constructivist Montage"></a><br><b>Constructivist Montage</b><br><i>410 Days</i><br><sub>The Empire State&#x27;s 1931 brochure credits its builders; the site film and Hine&#x27;s photos answer: 2,500 a day.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/telestrator/STYLE.md"><img src="docs/frames/telestrator.jpg" alt="Sports Telestrator"></a><br><b>Sports Telestrator</b><br><i>Freeze Frame</i><br><sub>Down 3–0 at half-time, Fenerbahçe scored three in 12 minutes: freeze, draw, split screen, shot map.</sub></td>
-<td width="33%" valign="top"><a href="styles/news-package/STYLE.md"><img src="docs/frames/news-package.jpg" alt="Broadcast News Package"></a><br><b>Broadcast News Package</b><br><i>The Week in AI</i><br><sub>Four AI stories from one week in a full on-air package: rundown, headline strap, price board, spec card.</sub></td>
-</tr>
-</table>
+Cut from real footage, documents and data: captions, newsreels, montage, broadcast graphics.
 
-### Evidence Films
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/caption-news/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/caption-news-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/caption-news-en-light.webp"><img src="docs/readme/cards/caption-news-en-light.webp" width="33.33%" alt="Caption News: The Bee Ledger (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/newsreel/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/newsreel-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/newsreel-en-light.webp"><img src="docs/readme/cards/newsreel-en-light.webp" width="33.33%" alt="1920s Newsreel: Knock-Knee Alert (0:55)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/countdown/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/countdown-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/countdown-en-light.webp"><img src="docs/readme/cards/countdown-en-light.webp" width="33.33%" alt="Live Countdown Split-screen: Counting Itself Down (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/city-symphony/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/city-symphony-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/city-symphony-en-light.webp"><img src="docs/readme/cards/city-symphony-en-light.webp" width="33.33%" alt="City Symphony: One Day in New York (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/visual-investigation/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/visual-investigation-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/visual-investigation-en-light.webp"><img src="docs/readme/cards/visual-investigation-en-light.webp" width="33.33%" alt="Visual Investigation: The Hindenburg: Four Minutes, 32 Seconds (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/kino-montage/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/kino-montage-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/kino-montage-en-light.webp"><img src="docs/readme/cards/kino-montage-en-light.webp" width="33.33%" alt="Constructivist Montage: 410 Days (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/telestrator/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/telestrator-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/telestrator-en-light.webp"><img src="docs/readme/cards/telestrator-en-light.webp" width="33.33%" alt="Sports Telestrator: Freeze Frame (0:54)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/news-package/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/news-package-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/news-package-en-light.webp"><img src="docs/readme/cards/news-package-en-light.webp" width="33.33%" alt="Broadcast News Package: The Week in AI (0:54)"></picture></a>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/satellite-briefing/STYLE.md"><img src="docs/frames/satellite-briefing.jpg" alt="Satellite Briefing"></a><br><b>Satellite Briefing</b><br><i>The Map Still Says Sea</i><br><sub>A satellite follows the map to the Aral Sea and finds a desert; only the part someone dammed came back.</sub></td>
-<td width="33%" valign="top"><a href="styles/briefing-board/STYLE.md"><img src="docs/frames/briefing-board.jpg" alt="Engineering Briefing Board"></a><br><b>Engineering Briefing Board</b><br><i>The Ship Decides</i><br><sub>Four bridge types are tested on one briefing wall, and the ship that must pass under picks the winner.</sub></td>
-<td width="33%" valign="top"><a href="styles/lidar-survey/STYLE.md"><img src="docs/frames/lidar-survey.jpg" alt="LiDAR Survey"></a><br><b>LiDAR Survey</b><br><i>The Fields Under the Forest</i><br><sub>A laser survey strips the canopy off a Connecticut forest and finds 3.4 km of old farm walls.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/white-model/STYLE.md"><img src="docs/frames/white-model.jpg" alt="Projection on White Model"></a><br><b>Projection on White Model</b><br><i>How a Flattened City Grew Back</i><br><sub>A projector paints Rotterdam&#x27;s white model layer by layer, from the 1940 gap to today&#x27;s towers.</sub></td>
-<td width="33%" valign="top"><a href="styles/data-physical/STYLE.md"><img src="docs/frames/data-physical.jpg" alt="Data Physicalization"></a><br><b>Data Physicalization</b><br><i>Two Spirals</i><br><sub>Twelve years of wind and solar stacked as real plates, spiralling round a walnut dial until solar overtakes.</sub></td>
-<td width="33%" valign="top"><a href="styles/teardown/STYLE.md"><img src="docs/frames/teardown.jpg" alt="Exploded Teardown"></a><br><b>Exploded Teardown</b><br><i>21 Keys, Opened</i><br><sub>Half an open-source keyboard comes apart in one orbit, down to the chip, then closes with its real dimensions.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/microscope/STYLE.md"><img src="docs/frames/microscope.jpg" alt="Microscope Story"></a><br><b>Microscope Story</b><br><i>Measured Blue</i><br><sub>One continuous move from a liver slide to a single nucleus; two circles, counted pixel by pixel, differ 2.4 times in blue.</sub></td>
-<td width="33%" valign="top"><a href="styles/archive-lighttable/STYLE.md"><img src="docs/frames/archive-lighttable.jpg" alt="Archive Light Table"></a><br><b>Archive Light Table</b><br><i>Two Seconds Short</i><br><sub>The telegram said 57 seconds; under a loupe, the Wrights&#x27; glass negatives and the archive say 59.</sub></td>
-</tr>
-</table>
+<sub>[Caption News](https://lemomo-ai.github.io/lemo-opuscar/styles/caption-news/) · [1920s Newsreel](https://lemomo-ai.github.io/lemo-opuscar/styles/newsreel/) · [Live Countdown Split-screen](https://lemomo-ai.github.io/lemo-opuscar/styles/countdown/) · [City Symphony](https://lemomo-ai.github.io/lemo-opuscar/styles/city-symphony/) · [Visual Investigation](https://lemomo-ai.github.io/lemo-opuscar/styles/visual-investigation/) · [Constructivist Montage](https://lemomo-ai.github.io/lemo-opuscar/styles/kino-montage/) · [Sports Telestrator](https://lemomo-ai.github.io/lemo-opuscar/styles/telestrator/) · [Broadcast News Package](https://lemomo-ai.github.io/lemo-opuscar/styles/news-package/)</sub>
 
-### Hand-drawn & Painting
+###### <a name="painting--illustration"></a>02 · Painting & Illustration
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/crayon-book/STYLE.md"><img src="docs/frames/crayon-book.jpg" alt="Crayon Picture Book"></a><br><b>Crayon Picture Book</b><br><i>The Moon Can&#x27;t Sleep</i><br><sub>The moon can&#x27;t sleep, so a little girl climbs onto the roof to sing it a lullaby.</sub></td>
-<td width="33%" valign="top"><a href="styles/watercolor/STYLE.md"><img src="docs/frames/watercolor.jpg" alt="Watercolor Brush"></a><br><b>Watercolor Brush</b><br><i>Follow the Rain</i><br><sub>Follow the rain from Australia&#x27;s red desert heart to its green coast in one unbroken painted walk.</sub></td>
-<td width="33%" valign="top"><a href="styles/ink-wash/STYLE.md"><img src="docs/frames/ink-wash.jpg" alt="Chinese Ink Wash"></a><br><b>Chinese Ink Wash</b><br><i>The Swordsman and the River</i><br><sub>A swordsman crosses the river on the water and splits the current with a single stroke.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/impasto/STYLE.md"><img src="docs/frames/impasto.jpg" alt="Impasto Oil Painting"></a><br><b>Impasto Oil Painting</b><br><i>The Colour of Rain</i><br><sub>In a grey, rainy square one red umbrella opens, and a waltz paints the whole plaza in colour.</sub></td>
-<td width="33%" valign="top"><a href="styles/one-line/STYLE.md"><img src="docs/frames/one-line.jpg" alt="One-line Drawing"></a><br><b>One-line Drawing</b><br><i>The Line That Never Lifted</i><br><sub>One unbroken line draws a whole life, then the pen passes to a child.</sub></td>
-<td width="33%" valign="top"><a href="styles/whiteboard/STYLE.md"><img src="docs/frames/whiteboard.jpg" alt="Whiteboard Explainer"></a><br><b>Whiteboard Explainer</b><br><i>Einstein in Your Pocket</i><br><sub>How your phone knows where you are: GPS, atomic clocks, and the 38 microseconds relativity adds every day.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/urban-sketch/STYLE.md"><img src="docs/frames/urban-sketch.jpg" alt="Urban Sketch · Pen &amp; Wash"></a><br><b>Urban Sketch · Pen &amp; Wash</b><br><i>Where the Wind Went</i><br><sub>A park that is only a pen sketch; wherever the wind carries her straw hat, colour follows.</sub></td>
-</tr>
-</table>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s02"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-02-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-02-en-light.webp"><img src="docs/readme/station-02-en-light.webp" width="100%" alt="Station 02 / 15: Painting &amp; Illustration, 5 styles. Opens this station on the site."></picture></a>
 
-### East Asian Traditions
+Pictures painted stroke by stroke: crayon, watercolour, oil, pen and wash, coloured pencil.
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/shadow-puppet/STYLE.md"><img src="docs/frames/shadow-puppet.jpg" alt="Shadow Puppetry"></a><br><b>Shadow Puppetry</b><br><i>Hou Yi Shoots the Suns</i><br><sub>Ten suns scorch the earth until the archer Hou Yi draws his bow, told with leather puppets on a lit screen.</sub></td>
-<td width="33%" valign="top"><a href="styles/ukiyoe/STYLE.md"><img src="docs/frames/ukiyoe.jpg" alt="Ukiyo-e"></a><br><b>Ukiyo-e</b><br><i>Toward the Mountain</i><br><sub>A traveller walks toward a distant mountain; every shot is a woodblock print, a great wave at the climax, the mountain and the whole scroll at the end.</sub></td>
-<td width="33%" valign="top"><a href="styles/papercut-red/STYLE.md"><img src="docs/frames/papercut-red.jpg" alt="Red Paper-cut"></a><br><b>Red Paper-cut</b><br><i>Nian Comes to Town</i><br><sub>On New Year&#x27;s Eve the beast Nian comes to town, and one girl&#x27;s giant paper-cut lights up the village to scare it off.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/paper-lantern/STYLE.md"><img src="docs/frames/paper-lantern.jpg" alt="Paper-cut Lightbox"></a><br><b>Paper-cut Lightbox</b><br><i>The Last Night Train</i><br><sub>An old night train makes its last run, from a snowy mountain halt through a long tunnel to the sea, its lit windows going out one by one at the end of the line.</sub></td>
-</tr>
-</table>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/crayon-book/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/crayon-book-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/crayon-book-en-light.webp"><img src="docs/readme/cards/crayon-book-en-light.webp" width="33.33%" alt="Crayon Picture Book: The Moon Can't Sleep (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/watercolor/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/watercolor-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/watercolor-en-light.webp"><img src="docs/readme/cards/watercolor-en-light.webp" width="33.33%" alt="Watercolor Brush: Follow the Rain (1:54)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/impasto/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/impasto-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/impasto-en-light.webp"><img src="docs/readme/cards/impasto-en-light.webp" width="33.33%" alt="Impasto Oil Painting: The Colour of Rain (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/urban-sketch/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/urban-sketch-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/urban-sketch-en-light.webp"><img src="docs/readme/cards/urban-sketch-en-light.webp" width="33.33%" alt="Urban Sketch · Pen &amp; Wash: Where the Wind Went (0:33)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/colored-pencil/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/colored-pencil-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/colored-pencil-en-light.webp"><img src="docs/readme/cards/colored-pencil-en-light.webp" width="33.33%" alt="Colored-Pencil Science Illustration: The Other Half (0:51)"></picture></a>
 
-### Print & Printmaking
+<sub>[Crayon Picture Book](https://lemomo-ai.github.io/lemo-opuscar/styles/crayon-book/) · [Watercolor Brush](https://lemomo-ai.github.io/lemo-opuscar/styles/watercolor/) · [Impasto Oil Painting](https://lemomo-ai.github.io/lemo-opuscar/styles/impasto/) · [Urban Sketch · Pen & Wash](https://lemomo-ai.github.io/lemo-opuscar/styles/urban-sketch/) · [Colored-Pencil Science Illustration](https://lemomo-ai.github.io/lemo-opuscar/styles/colored-pencil/)</sub>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/risograph/STYLE.md"><img src="docs/frames/risograph.jpg" alt="Risograph Print"></a><br><b>Risograph Print</b><br><i>Sunday Ride</i><br><sub>A Sunday-morning bike ride through the city — bakery, park, riverside — each stop adding an ink until three misregistered plates overprint.</sub></td>
-<td width="33%" valign="top"><a href="styles/halftone-dossier/STYLE.md"><img src="docs/frames/halftone-dossier.jpg" alt="Halftone Dossier"></a><br><b>Halftone Dossier</b><br><i>Case File: Chubby</i><br><sub>A chubby orange cat stands trial for testing gravity and 4 a.m. parkour, and walks free.</sub></td>
-<td width="33%" valign="top"><a href="styles/woodcut/STYLE.md"><img src="docs/frames/woodcut.jpg" alt="Woodcut Print"></a><br><b>Woodcut Print</b><br><i>The Bell Founder</i><br><sub>A village spends a whole winter casting one bell; the first time it rings, the snow stops.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/engraving/STYLE.md"><img src="docs/frames/engraving.jpg" alt="Copperplate Engraving"></a><br><b>Copperplate Engraving</b><br><i>The Honeybee, Plate VII</i><br><sub>A natural-history plate engraves itself: the burin cuts the copper, the bee builds up line by line, and a watercolour wash brings it to life.</sub></td>
-<td width="33%" valign="top"><a href="styles/silkscreen-poster/STYLE.md"><img src="docs/frames/silkscreen-poster.jpg" alt="Silkscreen Travel Poster"></a><br><b>Silkscreen Travel Poster</b><br><i>The Long Way Home</i><br><sub>A traveller crosses the world one full-bleed screen print at a time, a ticket stub counting the distance from home, until the far side turns into the way back.</sub></td>
-</tr>
-</table>
+###### <a name="sketch--board"></a>03 · Sketch & Board
 
-### Graphic & Type
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s03"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-03-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-03-en-light.webp"><img src="docs/readme/station-03-en-light.webp" width="100%" alt="Station 03 / 15: Sketch &amp; Board, 7 styles. Opens this station on the site."></picture></a>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/swiss-motion/STYLE.md"><img src="docs/frames/swiss-motion.jpg" alt="Swiss Motion Graphics"></a><br><b>Swiss Motion Graphics</b><br><i>Five Rules for a Poster</i><br><sub>A concert poster lays itself out by five Swiss design rules; the fifth is to break just one.</sub></td>
-<td width="33%" valign="top"><a href="styles/spy-titles/STYLE.md"><img src="docs/frames/spy-titles.jpg" alt="60s Spy Title Sequence"></a><br><b>60s Spy Title Sequence</b><br><i>The Velvet Cipher</i><br><sub>Opening titles for an imaginary 1964 spy film: a chase for a stolen key until the shapes lock into the title.</sub></td>
-<td width="33%" valign="top"><a href="styles/art-deco/STYLE.md"><img src="docs/frames/art-deco.jpg" alt="Art Deco"></a><br><b>Art Deco</b><br><i>Midnight at the Starlight Hotel</i><br><sub>A grand hotel, 1930: a bellboy races lifts and revolving doors to deliver one letter before midnight.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/blueprint/STYLE.md"><img src="docs/frames/blueprint.jpg" alt="Blueprint"></a><br><b>Blueprint</b><br><i>Patent Pending: The Cloud Catcher</i><br><sub>An inventor&#x27;s blueprint draws, explodes and assembles a cloud-catching machine, and its revision cloud starts to rain.</sub></td>
-<td width="33%" valign="top"><a href="styles/stained-glass/STYLE.md"><img src="docs/frames/stained-glass.jpg" alt="Stained Glass"></a><br><b>Stained Glass</b><br><i>The Dragon of the East Window</i><br><sub>Sunlight crosses a cathedral window from dawn to dusk, waking each pane of a knight-and-dragon tale.</sub></td>
-<td width="33%" valign="top"><a href="styles/pictogram-motion/STYLE.md"><img src="docs/frames/pictogram-motion.jpg" alt="Pictogram Motion"></a><br><b>Pictogram Motion</b><br><i>Left Behind</i><br><sub>A yellow umbrella left on a bus waits out a sunny day on the lost-property shelf, then opens with 312 others when the storm comes back: objects, vehicles, weather and signs as beat-locked geometric pictograms.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/ascii-crt/STYLE.md"><img src="docs/frames/ascii-crt.jpg" alt="ASCII / CRT Terminal"></a><br><b>ASCII / CRT Terminal</b><br><i>Tranquility.log</i><br><sub>A moon-base AI wakes after forty years to a signal from Earth, and replies by drawing “home” in characters.</sub></td>
-</tr>
-</table>
+Drawn while it is explained: whiteboard, chalk, marker, sketch notes and stick figures.
 
-### Information & Keynote
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/one-line/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/one-line-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/one-line-en-light.webp"><img src="docs/readme/cards/one-line-en-light.webp" width="33.33%" alt="One-line Drawing: The Line That Never Lifted (0:48)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/whiteboard/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/whiteboard-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/whiteboard-en-light.webp"><img src="docs/readme/cards/whiteboard-en-light.webp" width="33.33%" alt="Whiteboard Explainer: Einstein in Your Pocket (1:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/chalkboard/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/chalkboard-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/chalkboard-en-light.webp"><img src="docs/readme/cards/chalkboard-en-light.webp" width="33.33%" alt="Chalkboard: The Story of Chinese Characters (0:49)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/sketchnote/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/sketchnote-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/sketchnote-en-light.webp"><img src="docs/readme/cards/sketchnote-en-light.webp" width="33.33%" alt="Sketchnote: How Bees Make Honey (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/stick-explainer/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/stick-explainer-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/stick-explainer-en-light.webp"><img src="docs/readme/cards/stick-explainer-en-light.webp" width="33.33%" alt="Stick-figure Explainer: Six Hands Away (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/ipad-sketch/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/ipad-sketch-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/ipad-sketch-en-light.webp"><img src="docs/readme/cards/ipad-sketch-en-light.webp" width="33.33%" alt="Tablet Sketch Explainer: From Cherry to Cup (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/marker-paper/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/marker-paper-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/marker-paper-en-light.webp"><img src="docs/readme/cards/marker-paper-en-light.webp" width="33.33%" alt="Marker on Paper: How Far Can You See? (0:52)"></picture></a>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/dataviz/STYLE.md"><img src="docs/frames/dataviz.jpg" alt="Data Storytelling"></a><br><b>Data Storytelling</b><br><i>A Hundred Summers</i><br><sub>A hundred years of summer temperatures, where the chart itself tells the story.</sub></td>
-<td width="33%" valign="top"><a href="styles/iso-infographic/STYLE.md"><img src="docs/frames/iso-infographic.jpg" alt="Isometric Infographic"></a><br><b>Isometric Infographic</b><br><i>From Bean to Cup</i><br><sub>A coffee&#x27;s journey from the plantation to your hands, across one isometric world.</sub></td>
-<td width="33%" valign="top"><a href="styles/dark-keynote/STYLE.md"><img src="docs/frames/dark-keynote.jpg" alt="Dark Tech Keynote"></a><br><b>Dark Tech Keynote</b><br><i>Room to Think</i><br><sub>Launch film for Tidy, a fictional app: one buried cursor snaps hundreds of windows back into place.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/living-screencast/STYLE.md"><img src="docs/frames/living-screencast.jpg" alt="Living Screencast"></a><br><b>Living Screencast</b><br><i>Clawd Moves In</i><br><sub>Clawd hops out of the terminal into the Claude app and acts out plan mode and self-checks in one take.</sub></td>
-<td width="33%" valign="top"><a href="styles/hologram-hud/STYLE.md"><img src="docs/frames/hologram-hud.jpg" alt="Sci-fi Hologram HUD"></a><br><b>Sci-fi Hologram HUD</b><br><i>Volt · Spec Scan</i><br><sub>An e-bike is scanned into a hologram; target boxes lock onto the battery, motor and brakes.</sub></td>
-</tr>
-</table>
+<sub>[One-line Drawing](https://lemomo-ai.github.io/lemo-opuscar/styles/one-line/) · [Whiteboard Explainer](https://lemomo-ai.github.io/lemo-opuscar/styles/whiteboard/) · [Chalkboard](https://lemomo-ai.github.io/lemo-opuscar/styles/chalkboard/) · [Sketchnote](https://lemomo-ai.github.io/lemo-opuscar/styles/sketchnote/) · [Stick-figure Explainer](https://lemomo-ai.github.io/lemo-opuscar/styles/stick-explainer/) · [Tablet Sketch Explainer](https://lemomo-ai.github.io/lemo-opuscar/styles/ipad-sketch/) · [Marker on Paper](https://lemomo-ai.github.io/lemo-opuscar/styles/marker-paper/)</sub>
 
-### Cartoon & Anime
+###### <a name="traditional-crafts"></a>04 · Traditional Crafts
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/rubber-hose/STYLE.md"><img src="docs/frames/rubber-hose.jpg" alt="1930s Rubber Hose Cartoon"></a><br><b>1930s Rubber Hose Cartoon</b><br><i>Coffee Cup Chase</i><br><sub>A coffee cup chases a runaway sugar cube around the kitchen, 1930s-cartoon style.</sub></td>
-<td width="33%" valign="top"><a href="styles/cel-anime-80s/STYLE.md"><img src="docs/frames/cel-anime-80s.jpg" alt="80s Cel Anime"></a><br><b>80s Cel Anime</b><br><i>City Lights, 1987</i><br><sub>A courier girl rides through a rain-soaked neon city to deliver a tape before the dawn launch.</sub></td>
-<td width="33%" valign="top"><a href="styles/scifi-toon/STYLE.md"><img src="docs/frames/scifi-toon.jpg" alt="Sci-Fi Sitcom Toon"></a><br><b>Sci-Fi Sitcom Toon</b><br><i>Coffee Run</i><br><sub>A jaded genius opens a portal just to buy coffee and tumbles through ever-stranger universes.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/midcentury-toon/STYLE.md"><img src="docs/frames/midcentury-toon.jpg" alt="Mid-century Cartoon"></a><br><b>Mid-century Cartoon</b><br><i>Meet Pip</i><br><sub>A robot vacuum set up in three steps, told like a 1950s classroom film.</sub></td>
-</tr>
-</table>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s04"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-04-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-04-en-light.webp"><img src="docs/readme/station-04-en-light.webp" width="100%" alt="Station 04 / 15: Traditional Crafts, 7 styles. Opens this station on the site."></picture></a>
 
-### Games
+Old crafts, their look and their pace: ink wash, shadow puppets, woodblocks, paper-cuts, stained glass, gold leaf.
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/pixel-rpg/STYLE.md"><img src="docs/frames/pixel-rpg.jpg" alt="16-bit Pixel RPG"></a><br><b>16-bit Pixel RPG</b><br><i>The Last Save Point</i><br><sub>At the final boss door a hero saves the game, and the save screen replays the whole journey.</sub></td>
-<td width="33%" valign="top"><a href="styles/hd-2d/STYLE.md"><img src="docs/frames/hd-2d.jpg" alt="HD-2D"></a><br><b>HD-2D</b><br><i>The Lampbearer</i><br><sub>The lighthouse goes dark; a girl carries the last flame through a night forest and up the storm cliffs.</sub></td>
-<td width="33%" valign="top"><a href="styles/microgame/STYLE.md"><img src="docs/frames/microgame.jpg" alt="Microgame Frenzy"></a><br><b>Microgame Frenzy</b><br><i>Five-Second Astronaut</i><br><sub>A clumsy cadet survives a five-second boot camp, faster and faster, until the boss: landing home.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/game-show/STYLE.md"><img src="docs/frames/game-show.jpg" alt="Game Show Flat"></a><br><b>Game Show Flat</b><br><i>Rhythm of AI, 1997 → 2026</i><br><sub>The history of AI as a rhythm game: models take the stage on the beat, and a report card closes the show.</sub></td>
-</tr>
-</table>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/ink-wash/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/ink-wash-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/ink-wash-en-light.webp"><img src="docs/readme/cards/ink-wash-en-light.webp" width="33.33%" alt="Chinese Ink Wash: The Swordsman and the River (0:48)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/shadow-puppet/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/shadow-puppet-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/shadow-puppet-en-light.webp"><img src="docs/readme/cards/shadow-puppet-en-light.webp" width="33.33%" alt="Shadow Puppetry: Hou Yi Shoots the Suns (0:54)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/ukiyoe/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/ukiyoe-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/ukiyoe-en-light.webp"><img src="docs/readme/cards/ukiyoe-en-light.webp" width="33.33%" alt="Ukiyo-e: Toward the Mountain (0:44)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/papercut-red/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/papercut-red-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/papercut-red-en-light.webp"><img src="docs/readme/cards/papercut-red-en-light.webp" width="33.33%" alt="Red Paper-cut: Nian Comes to Town (0:49)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/paper-lantern/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/paper-lantern-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/paper-lantern-en-light.webp"><img src="docs/readme/cards/paper-lantern-en-light.webp" width="33.33%" alt="Paper-cut Lightbox: The Last Night Train (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/stained-glass/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/stained-glass-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/stained-glass-en-light.webp"><img src="docs/readme/cards/stained-glass-en-light.webp" width="33.33%" alt="Stained Glass: The Dragon of the East Window (0:57)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/gilded-illumination/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/gilded-illumination-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/gilded-illumination-en-light.webp"><img src="docs/readme/cards/gilded-illumination-en-light.webp" width="33.33%" alt="Gilded Illumination: Borrowed Light (0:47)"></picture></a>
 
-### Cinema & Eras
+<sub>[Chinese Ink Wash](https://lemomo-ai.github.io/lemo-opuscar/styles/ink-wash/) · [Shadow Puppetry](https://lemomo-ai.github.io/lemo-opuscar/styles/shadow-puppet/) · [Ukiyo-e](https://lemomo-ai.github.io/lemo-opuscar/styles/ukiyoe/) · [Red Paper-cut](https://lemomo-ai.github.io/lemo-opuscar/styles/papercut-red/) · [Paper-cut Lightbox](https://lemomo-ai.github.io/lemo-opuscar/styles/paper-lantern/) · [Stained Glass](https://lemomo-ai.github.io/lemo-opuscar/styles/stained-glass/) · [Gilded Illumination](https://lemomo-ai.github.io/lemo-opuscar/styles/gilded-illumination/)</sub>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/silent-film/STYLE.md"><img src="docs/frames/silent-film.jpg" alt="1920s Silent Film"></a><br><b>1920s Silent Film</b><br><i>The Runaway Loaf</i><br><sub>A baker&#x27;s boy chases a runaway loaf downhill, then breaks it in half for a hungry girl.</sub></td>
-<td width="33%" valign="top"><a href="styles/backrooms/STYLE.md"><img src="docs/frames/backrooms.jpg" alt="Liminal Found Footage"></a><br><b>Liminal Found Footage</b><br><i>Night Shift Orientation</i><br><sub>A new night-shift hire films their first night in an endless yellow office, following the rules on the wall.</sub></td>
-</tr>
-</table>
+###### <a name="print--printmaking"></a>05 · Print & Printmaking
 
-### Materials & 3D
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s05"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-05-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-05-en-light.webp"><img src="docs/readme/station-05-en-light.webp" width="100%" alt="Station 05 / 15: Print &amp; Printmaking, 8 styles. Opens this station on the site."></picture></a>
 
-<table>
-<tr>
-<td width="33%" valign="top"><a href="styles/brick-toy/STYLE.md"><img src="docs/frames/brick-toy.jpg" alt="Brick Toy"></a><br><b>Brick Toy</b><br><i>Rocket from Spare Parts</i><br><sub>A brick astronaut builds a rocket from spare parts and flies to a brick moon.</sub></td>
-<td width="33%" valign="top"><a href="styles/paper-popup/STYLE.md"><img src="docs/frames/paper-popup.jpg" alt="Paper Pop-up Book"></a><br><b>Paper Pop-up Book</b><br><i>Pip&#x27;s Paper Adventure</i><br><sub>A pop-up book opens on a desk; a sprite named Pip adventures through paper worlds and jumps out into ours.</sub></td>
-<td width="33%" valign="top"><a href="styles/tilt-shift/STYLE.md"><img src="docs/frames/tilt-shift.jpg" alt="Tilt-Shift Miniature"></a><br><b>Tilt-Shift Miniature</b><br><i>Toy Town Rush Hour</i><br><sub>Morning rush hour in a town that looks like a model: traffic, trains and tiny people.</sub></td>
-</tr>
-<tr>
-<td width="33%" valign="top"><a href="styles/lowpoly-island/STYLE.md"><img src="docs/frames/lowpoly-island.jpg" alt="Low-poly Isometric Island"></a><br><b>Low-poly Isometric Island</b><br><i>The Island That Grew</i><br><sub>An island and its village grow tile by tile from an empty sea, each tile a note, into a starry night.</sub></td>
-<td width="33%" valign="top"><a href="styles/glass-product/STYLE.md"><img src="docs/frames/glass-product.jpg" alt="Glass Product Render"></a><br><b>Glass Product Render</b><br><i>Aura — Hear the Light</i><br><sub>Unboxing and close-ups of Aura, fictional glass earbuds, in strip-light sweeps and caustics.</sub></td>
-</tr>
-</table>
+Ink pressed into paper: risograph, halftone, woodcut, engraving, screen print, collage.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/risograph/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/risograph-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/risograph-en-light.webp"><img src="docs/readme/cards/risograph-en-light.webp" width="33.33%" alt="Risograph Print: Sunday Ride (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/halftone-dossier/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/halftone-dossier-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/halftone-dossier-en-light.webp"><img src="docs/readme/cards/halftone-dossier-en-light.webp" width="33.33%" alt="Halftone Dossier: Case File: Chubby (0:30)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/woodcut/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/woodcut-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/woodcut-en-light.webp"><img src="docs/readme/cards/woodcut-en-light.webp" width="33.33%" alt="Woodcut Print: The Bell Founder (0:59)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/engraving/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/engraving-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/engraving-en-light.webp"><img src="docs/readme/cards/engraving-en-light.webp" width="33.33%" alt="Copperplate Engraving: The Honeybee, Plate VII (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/silkscreen-poster/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/silkscreen-poster-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/silkscreen-poster-en-light.webp"><img src="docs/readme/cards/silkscreen-poster-en-light.webp" width="33.33%" alt="Silkscreen Travel Poster: The Long Way Home (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/printed-long-take/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/printed-long-take-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/printed-long-take-en-light.webp"><img src="docs/readme/cards/printed-long-take-en-light.webp" width="33.33%" alt="Scratchboard Long Take: Thirty-Three Cranes (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/pop-art/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/pop-art-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/pop-art-en-light.webp"><img src="docs/readme/cards/pop-art-en-light.webp" width="33.33%" alt="Pop Art: The Same Banana (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/vintage-collage/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/vintage-collage-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/vintage-collage-en-light.webp"><img src="docs/readme/cards/vintage-collage-en-light.webp" width="33.33%" alt="Vintage Engraving Collage: The Inverted Jenny (0:52)"></picture></a>
+
+<sub>[Risograph Print](https://lemomo-ai.github.io/lemo-opuscar/styles/risograph/) · [Halftone Dossier](https://lemomo-ai.github.io/lemo-opuscar/styles/halftone-dossier/) · [Woodcut Print](https://lemomo-ai.github.io/lemo-opuscar/styles/woodcut/) · [Copperplate Engraving](https://lemomo-ai.github.io/lemo-opuscar/styles/engraving/) · [Silkscreen Travel Poster](https://lemomo-ai.github.io/lemo-opuscar/styles/silkscreen-poster/) · [Scratchboard Long Take](https://lemomo-ai.github.io/lemo-opuscar/styles/printed-long-take/) · [Pop Art](https://lemomo-ai.github.io/lemo-opuscar/styles/pop-art/) · [Vintage Engraving Collage](https://lemomo-ai.github.io/lemo-opuscar/styles/vintage-collage/)</sub>
+
+###### <a name="graphic--type"></a>06 · Graphic & Type
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s06"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-06-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-06-en-light.webp"><img src="docs/readme/station-06-en-light.webp" width="100%" alt="Station 06 / 15: Graphic &amp; Type, 8 styles. Opens this station on the site."></picture></a>
+
+Flat shapes and type take the lead: Swiss grids, title sequences, pictograms, silhouettes.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/swiss-motion/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/swiss-motion-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/swiss-motion-en-light.webp"><img src="docs/readme/cards/swiss-motion-en-light.webp" width="33.33%" alt="Swiss Motion Graphics: Five Rules for a Poster (0:44)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/spy-titles/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/spy-titles-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/spy-titles-en-light.webp"><img src="docs/readme/cards/spy-titles-en-light.webp" width="33.33%" alt="60s Spy Title Sequence: The Velvet Cipher (0:44)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/art-deco/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/art-deco-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/art-deco-en-light.webp"><img src="docs/readme/cards/art-deco-en-light.webp" width="33.33%" alt="Art Deco: Midnight at the Starlight Hotel (0:58)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/pictogram-motion/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/pictogram-motion-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/pictogram-motion-en-light.webp"><img src="docs/readme/cards/pictogram-motion-en-light.webp" width="33.33%" alt="Pictogram Motion: Left Behind (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/bauhaus-shapes/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/bauhaus-shapes-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/bauhaus-shapes-en-light.webp"><img src="docs/readme/cards/bauhaus-shapes-en-light.webp" width="33.33%" alt="Bauhaus Shapes: COMPOUND (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/flat-space-explainer/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/flat-space-explainer-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/flat-space-explainer-en-light.webp"><img src="docs/readme/cards/flat-space-explainer-en-light.webp" width="33.33%" alt="Scale Zoom Explainer: The Long Way Down (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/text-flash-cuts/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/text-flash-cuts-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/text-flash-cuts-en-light.webp"><img src="docs/readme/cards/text-flash-cuts-en-light.webp" width="33.33%" alt="Text Flash Cuts: Behind You (0:46)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/silhouette-rhythm/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/silhouette-rhythm-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/silhouette-rhythm-en-light.webp"><img src="docs/readme/cards/silhouette-rhythm-en-light.webp" width="33.33%" alt="Silhouette Rhythm: Half a Beat (0:49)"></picture></a>
+
+<sub>[Swiss Motion Graphics](https://lemomo-ai.github.io/lemo-opuscar/styles/swiss-motion/) · [60s Spy Title Sequence](https://lemomo-ai.github.io/lemo-opuscar/styles/spy-titles/) · [Art Deco](https://lemomo-ai.github.io/lemo-opuscar/styles/art-deco/) · [Pictogram Motion](https://lemomo-ai.github.io/lemo-opuscar/styles/pictogram-motion/) · [Bauhaus Shapes](https://lemomo-ai.github.io/lemo-opuscar/styles/bauhaus-shapes/) · [Scale Zoom Explainer](https://lemomo-ai.github.io/lemo-opuscar/styles/flat-space-explainer/) · [Text Flash Cuts](https://lemomo-ai.github.io/lemo-opuscar/styles/text-flash-cuts/) · [Silhouette Rhythm](https://lemomo-ai.github.io/lemo-opuscar/styles/silhouette-rhythm/)</sub>
+
+###### <a name="line-diagrams"></a>07 · Line Diagrams
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s07"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-07-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-07-en-light.webp"><img src="docs/readme/station-07-en-light.webp" width="100%" alt="Station 07 / 15: Line Diagrams, 8 styles. Opens this station on the site."></picture></a>
+
+Clean line drawings that show how things work: blueprints, cutaways, manuals, exploded views.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/blueprint/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/blueprint-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/blueprint-en-light.webp"><img src="docs/readme/cards/blueprint-en-light.webp" width="33.33%" alt="Blueprint: Patent Pending: The Cloud Catcher (0:47)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/iso-infographic/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/iso-infographic-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/iso-infographic-en-light.webp"><img src="docs/readme/cards/iso-infographic-en-light.webp" width="33.33%" alt="Isometric Infographic: From Bean to Cup (0:59)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/teardown/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/teardown-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/teardown-en-light.webp"><img src="docs/readme/cards/teardown-en-light.webp" width="33.33%" alt="Exploded Teardown: 21 Keys, Opened (0:39)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/hardcore-info/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/hardcore-info-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/hardcore-info-en-light.webp"><img src="docs/readme/cards/hardcore-info-en-light.webp" width="33.33%" alt="Line-Art Cutaway: Where Is Your Phone's Antenna? (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/precise-mechanism/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/precise-mechanism-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/precise-mechanism-en-light.webp"><img src="docs/readme/cards/precise-mechanism-en-light.webp" width="33.33%" alt="Color-Coded Mechanism: Three Systems Keep the Time (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/instruction-manual/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/instruction-manual-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/instruction-manual-en-light.webp"><img src="docs/readme/cards/instruction-manual-en-light.webp" width="33.33%" alt="Instruction Manual Art: Step Ten (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/pen-plotter/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/pen-plotter-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/pen-plotter-en-light.webp"><img src="docs/readme/cards/pen-plotter-en-light.webp" width="33.33%" alt="Pen Plotter: 8848.86 (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/assembly-line-diagram/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/assembly-line-diagram-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/assembly-line-diagram-en-light.webp"><img src="docs/readme/cards/assembly-line-diagram-en-light.webp" width="33.33%" alt="Assembly-Line Diagram: The Disassembly Line (0:55)"></picture></a>
+
+<sub>[Blueprint](https://lemomo-ai.github.io/lemo-opuscar/styles/blueprint/) · [Isometric Infographic](https://lemomo-ai.github.io/lemo-opuscar/styles/iso-infographic/) · [Exploded Teardown](https://lemomo-ai.github.io/lemo-opuscar/styles/teardown/) · [Line-Art Cutaway](https://lemomo-ai.github.io/lemo-opuscar/styles/hardcore-info/) · [Color-Coded Mechanism](https://lemomo-ai.github.io/lemo-opuscar/styles/precise-mechanism/) · [Instruction Manual Art](https://lemomo-ai.github.io/lemo-opuscar/styles/instruction-manual/) · [Pen Plotter](https://lemomo-ai.github.io/lemo-opuscar/styles/pen-plotter/) · [Assembly-Line Diagram](https://lemomo-ai.github.io/lemo-opuscar/styles/assembly-line-diagram/)</sub>
+
+###### <a name="cartoons"></a>08 · Cartoons
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s08"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-08-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-08-en-light.webp"><img src="docs/readme/station-08-en-light.webp" width="100%" alt="Station 08 / 15: Cartoons, 6 styles. Opens this station on the site."></picture></a>
+
+Characters in classic cartoon looks: 1930s rubber hose, 80s cel anime, sitcom toons, manga panels.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/rubber-hose/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/rubber-hose-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/rubber-hose-en-light.webp"><img src="docs/readme/cards/rubber-hose-en-light.webp" width="33.33%" alt="1930s Rubber Hose Cartoon: Coffee Cup Chase (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/cel-anime-80s/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/cel-anime-80s-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/cel-anime-80s-en-light.webp"><img src="docs/readme/cards/cel-anime-80s-en-light.webp" width="33.33%" alt="80s Cel Anime: City Lights, 1987 (0:59)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/scifi-toon/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/scifi-toon-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/scifi-toon-en-light.webp"><img src="docs/readme/cards/scifi-toon-en-light.webp" width="33.33%" alt="Sci-Fi Sitcom Toon: Coffee Run (0:58)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/midcentury-toon/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/midcentury-toon-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/midcentury-toon-en-light.webp"><img src="docs/readme/cards/midcentury-toon-en-light.webp" width="33.33%" alt="Mid-century Cartoon: Meet Pip (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/comic-history/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/comic-history-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/comic-history-en-light.webp"><img src="docs/readme/cards/comic-history-en-light.webp" width="33.33%" alt="Comic History Cartoon: One Piece of Paper (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/manga-panels/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/manga-panels-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/manga-panels-en-light.webp"><img src="docs/readme/cards/manga-panels-en-light.webp" width="33.33%" alt="Manga Panels: KOMA ONE: Thirty Frames a Second (0:48)"></picture></a>
+
+<sub>[1930s Rubber Hose Cartoon](https://lemomo-ai.github.io/lemo-opuscar/styles/rubber-hose/) · [80s Cel Anime](https://lemomo-ai.github.io/lemo-opuscar/styles/cel-anime-80s/) · [Sci-Fi Sitcom Toon](https://lemomo-ai.github.io/lemo-opuscar/styles/scifi-toon/) · [Mid-century Cartoon](https://lemomo-ai.github.io/lemo-opuscar/styles/midcentury-toon/) · [Comic History Cartoon](https://lemomo-ai.github.io/lemo-opuscar/styles/comic-history/) · [Manga Panels](https://lemomo-ai.github.io/lemo-opuscar/styles/manga-panels/)</sub>
+
+###### <a name="games"></a>09 · Games
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s09"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-09-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-09-en-light.webp"><img src="docs/readme/station-09-en-light.webp" width="100%" alt="Station 09 / 15: Games, 4 styles. Opens this station on the site."></picture></a>
+
+The look and rhythm of games: pixel RPGs, 2.5D pixel art, microgames, game shows.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/pixel-rpg/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/pixel-rpg-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/pixel-rpg-en-light.webp"><img src="docs/readme/cards/pixel-rpg-en-light.webp" width="25.00%" alt="16-bit Pixel RPG: The Last Save Point (0:55)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/hd-2d/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/hd-2d-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/hd-2d-en-light.webp"><img src="docs/readme/cards/hd-2d-en-light.webp" width="25.00%" alt="2.5D Pixel Art: The Lampbearer (1:17)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/microgame/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/microgame-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/microgame-en-light.webp"><img src="docs/readme/cards/microgame-en-light.webp" width="25.00%" alt="Microgame Frenzy: Five-Second Astronaut (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/game-show/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/game-show-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/game-show-en-light.webp"><img src="docs/readme/cards/game-show-en-light.webp" width="25.00%" alt="Rhythm Game Show: Rhythm of AI, 1997 → 2026 (2:29)"></picture></a>
+
+<sub>[16-bit Pixel RPG](https://lemomo-ai.github.io/lemo-opuscar/styles/pixel-rpg/) · [2.5D Pixel Art](https://lemomo-ai.github.io/lemo-opuscar/styles/hd-2d/) · [Microgame Frenzy](https://lemomo-ai.github.io/lemo-opuscar/styles/microgame/) · [Rhythm Game Show](https://lemomo-ai.github.io/lemo-opuscar/styles/game-show/)</sub>
+
+###### <a name="film--tape"></a>10 · Film & Tape
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s10"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-10-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-10-en-light.webp"><img src="docs/readme/station-10-en-light.webp" width="100%" alt="Station 10 / 15: Film &amp; Tape, 5 styles. Opens this station on the site."></picture></a>
+
+The texture of a medium: silent film, VHS found footage, CRT terminals, scratched film, double exposure.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/ascii-crt/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/ascii-crt-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/ascii-crt-en-light.webp"><img src="docs/readme/cards/ascii-crt-en-light.webp" width="33.33%" alt="CRT ASCII Terminal: Tranquility.log (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/silent-film/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/silent-film-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/silent-film-en-light.webp"><img src="docs/readme/cards/silent-film-en-light.webp" width="33.33%" alt="1920s Silent Film: The Runaway Loaf (0:54)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/backrooms/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/backrooms-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/backrooms-en-light.webp"><img src="docs/readme/cards/backrooms-en-light.webp" width="33.33%" alt="Liminal Found Footage: Night Shift Orientation (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/scratch-film/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/scratch-film-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/scratch-film-en-light.webp"><img src="docs/readme/cards/scratch-film-en-light.webp" width="33.33%" alt="Scratch Film: The Night Climb (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/double-exposure/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/double-exposure-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/double-exposure-en-light.webp"><img src="docs/readme/cards/double-exposure-en-light.webp" width="33.33%" alt="Double Exposure: Mountains and Seas (0:51)"></picture></a>
+
+<sub>[CRT ASCII Terminal](https://lemomo-ai.github.io/lemo-opuscar/styles/ascii-crt/) · [1920s Silent Film](https://lemomo-ai.github.io/lemo-opuscar/styles/silent-film/) · [Liminal Found Footage](https://lemomo-ai.github.io/lemo-opuscar/styles/backrooms/) · [Scratch Film](https://lemomo-ai.github.io/lemo-opuscar/styles/scratch-film/) · [Double Exposure](https://lemomo-ai.github.io/lemo-opuscar/styles/double-exposure/)</sub>
+
+###### <a name="screens--interfaces"></a>11 · Screens & Interfaces
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s11"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-11-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-11-en-light.webp"><img src="docs/readme/station-11-en-light.webp" width="100%" alt="Station 11 / 15: Screens &amp; Interfaces, 6 styles. Opens this station on the site."></picture></a>
+
+Told on screens: keynotes, live apps, HUDs, spreadsheets, app cards on a tabletop.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/dark-keynote/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/dark-keynote-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/dark-keynote-en-light.webp"><img src="docs/readme/cards/dark-keynote-en-light.webp" width="33.33%" alt="Dark Tech Keynote: Room to Think (0:42)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/living-screencast/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/living-screencast-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/living-screencast-en-light.webp"><img src="docs/readme/cards/living-screencast-en-light.webp" width="33.33%" alt="Mascot Screencast: Clawd Moves In (0:59)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/hologram-hud/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/hologram-hud-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/hologram-hud-en-light.webp"><img src="docs/readme/cards/hologram-hud-en-light.webp" width="33.33%" alt="Sci-fi Hologram HUD: Volt · Spec Scan (0:39)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/desktop-flythrough/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/desktop-flythrough-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/desktop-flythrough-en-light.webp"><img src="docs/readme/cards/desktop-flythrough-en-light.webp" width="33.33%" alt="Tabletop App Flythrough: Before the Ding (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/spreadsheet/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/spreadsheet-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/spreadsheet-en-light.webp"><img src="docs/readme/cards/spreadsheet-en-light.webp" width="33.33%" alt="Spreadsheet Film: The Hidden Column (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/one-bit-dither/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/one-bit-dither-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/one-bit-dither-en-light.webp"><img src="docs/readme/cards/one-bit-dither-en-light.webp" width="33.33%" alt="1-bit Dither: The Moon's Fax (0:50)"></picture></a>
+
+<sub>[Dark Tech Keynote](https://lemomo-ai.github.io/lemo-opuscar/styles/dark-keynote/) · [Mascot Screencast](https://lemomo-ai.github.io/lemo-opuscar/styles/living-screencast/) · [Sci-fi Hologram HUD](https://lemomo-ai.github.io/lemo-opuscar/styles/hologram-hud/) · [Tabletop App Flythrough](https://lemomo-ai.github.io/lemo-opuscar/styles/desktop-flythrough/) · [Spreadsheet Film](https://lemomo-ai.github.io/lemo-opuscar/styles/spreadsheet/) · [1-bit Dither](https://lemomo-ai.github.io/lemo-opuscar/styles/one-bit-dither/)</sub>
+
+###### <a name="light--lines"></a>12 · Light & Lines
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s12"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-12-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-12-en-light.webp"><img src="docs/readme/station-12-en-light.webp" width="100%" alt="Station 12 / 15: Light &amp; Lines, 5 styles. Opens this station on the site."></picture></a>
+
+Pictures drawn in light: neon tubes, circuit traces, fireflies, flow lines, an oscilloscope beam.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/circuit-board/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/circuit-board-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/circuit-board-en-light.webp"><img src="docs/readme/cards/circuit-board-en-light.webp" width="33.33%" alt="Circuit Board: Seven Milliseconds (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/firefly-pointillism/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/firefly-pointillism-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/firefly-pointillism-en-light.webp"><img src="docs/readme/cards/firefly-pointillism-en-light.webp" width="33.33%" alt="Firefly Pointillism: Shine Back (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/flow-field/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/flow-field-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/flow-field-en-light.webp"><img src="docs/readme/cards/flow-field-en-light.webp" width="33.33%" alt="Flow-field Wind Lines: Typhoon Yagi over Qiongzhou (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/oscilloscope-math/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/oscilloscope-math-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/oscilloscope-math-en-light.webp"><img src="docs/readme/cards/oscilloscope-math-en-light.webp" width="33.33%" alt="Oscilloscope Math: The Gibbs Phenomenon (0:51)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/neon-tubes/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/neon-tubes-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/neon-tubes-en-light.webp"><img src="docs/readme/cards/neon-tubes-en-light.webp" width="33.33%" alt="Neon Tubes: Midnight Snack (0:48)"></picture></a>
+
+<sub>[Circuit Board](https://lemomo-ai.github.io/lemo-opuscar/styles/circuit-board/) · [Firefly Pointillism](https://lemomo-ai.github.io/lemo-opuscar/styles/firefly-pointillism/) · [Flow-field Wind Lines](https://lemomo-ai.github.io/lemo-opuscar/styles/flow-field/) · [Oscilloscope Math](https://lemomo-ai.github.io/lemo-opuscar/styles/oscilloscope-math/) · [Neon Tubes](https://lemomo-ai.github.io/lemo-opuscar/styles/neon-tubes/)</sub>
+
+###### <a name="3d--miniature"></a>13 · 3D & Miniature
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s13"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-13-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-13-en-light.webp"><img src="docs/readme/station-13-en-light.webp" width="100%" alt="Station 13 / 15: 3D &amp; Miniature, 8 styles. Opens this station on the site."></picture></a>
+
+Real 3D scenes and small worlds: bricks, pop-up books, tilt-shift towns, glass, dioramas.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/brick-toy/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/brick-toy-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/brick-toy-en-light.webp"><img src="docs/readme/cards/brick-toy-en-light.webp" width="33.33%" alt="Brick Toy: Rocket from Spare Parts (0:54)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/paper-popup/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/paper-popup-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/paper-popup-en-light.webp"><img src="docs/readme/cards/paper-popup-en-light.webp" width="33.33%" alt="Paper Pop-up Book: Pip's Paper Adventure (2:13)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/tilt-shift/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/tilt-shift-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/tilt-shift-en-light.webp"><img src="docs/readme/cards/tilt-shift-en-light.webp" width="33.33%" alt="Tilt-Shift Miniature: Toy Town Rush Hour (0:38)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/lowpoly-island/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/lowpoly-island-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/lowpoly-island-en-light.webp"><img src="docs/readme/cards/lowpoly-island-en-light.webp" width="33.33%" alt="Low-poly Isometric Island: The Island That Grew (0:53)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/glass-product/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/glass-product-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/glass-product-en-light.webp"><img src="docs/readme/cards/glass-product-en-light.webp" width="33.33%" alt="Glass Product Render: Aura — Hear the Light (0:32)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/memphis-diorama/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/memphis-diorama-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/memphis-diorama-en-light.webp"><img src="docs/readme/cards/memphis-diorama-en-light.webp" width="33.33%" alt="Memphis Diorama: Four Seasons in Pomelo Town (0:45), by @EianLu"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/isometric-picture-book/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/isometric-picture-book-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/isometric-picture-book-en-light.webp"><img src="docs/readme/cards/isometric-picture-book-en-light.webp" width="33.33%" alt="Isometric People Scene: Seventy-Two Seats (1:00)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/crayon-world/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/crayon-world-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/crayon-world-en-light.webp"><img src="docs/readme/cards/crayon-world-en-light.webp" width="33.33%" alt="Crayon World 3D: The Butterfly (1:05), by @2nd1st"></picture></a>
+
+<sub>[Brick Toy](https://lemomo-ai.github.io/lemo-opuscar/styles/brick-toy/) · [Paper Pop-up Book](https://lemomo-ai.github.io/lemo-opuscar/styles/paper-popup/) · [Tilt-Shift Miniature](https://lemomo-ai.github.io/lemo-opuscar/styles/tilt-shift/) · [Low-poly Isometric Island](https://lemomo-ai.github.io/lemo-opuscar/styles/lowpoly-island/) · [Glass Product Render](https://lemomo-ai.github.io/lemo-opuscar/styles/glass-product/) · [Memphis Diorama](https://lemomo-ai.github.io/lemo-opuscar/styles/memphis-diorama/) (by [@EianLu](https://x.com/EianLu)) · [Isometric People Scene](https://lemomo-ai.github.io/lemo-opuscar/styles/isometric-picture-book/) · [Crayon World 3D](https://lemomo-ai.github.io/lemo-opuscar/styles/crayon-world/) (by [@2nd1st](https://github.com/2nd1st))</sub>
+
+###### <a name="instruments--evidence"></a>14 · Instruments & Evidence
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s14"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-14-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-14-en-light.webp"><img src="docs/readme/station-14-en-light.webp" width="100%" alt="Station 14 / 15: Instruments &amp; Evidence, 8 styles. Opens this station on the site."></picture></a>
+
+Seen through instruments: satellite, LiDAR, microscope, X-ray, thermal camera; every number sourced.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/satellite-briefing/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/satellite-briefing-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/satellite-briefing-en-light.webp"><img src="docs/readme/cards/satellite-briefing-en-light.webp" width="33.33%" alt="Satellite Briefing: The Map Still Says Sea (0:38)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/briefing-board/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/briefing-board-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/briefing-board-en-light.webp"><img src="docs/readme/cards/briefing-board-en-light.webp" width="33.33%" alt="Engineering Briefing Board: The Ship Decides (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/lidar-survey/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/lidar-survey-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/lidar-survey-en-light.webp"><img src="docs/readme/cards/lidar-survey-en-light.webp" width="33.33%" alt="LiDAR Survey: The Fields Under the Forest (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/microscope/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/microscope-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/microscope-en-light.webp"><img src="docs/readme/cards/microscope-en-light.webp" width="33.33%" alt="Under the Microscope: Measured Blue (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/archive-lighttable/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/archive-lighttable-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/archive-lighttable-en-light.webp"><img src="docs/readme/cards/archive-lighttable-en-light.webp" width="33.33%" alt="Archive Light Table: Two Seconds Short (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/security-xray/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/security-xray-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/security-xray-en-light.webp"><img src="docs/readme/cards/security-xray-en-light.webp" width="33.33%" alt="Security X-ray: Night Shift at Lane 3 (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/dark-documentary/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/dark-documentary-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/dark-documentary-en-light.webp"><img src="docs/readme/cards/dark-documentary-en-light.webp" width="33.33%" alt="Radar Sweep Documentary: Catching the Moon (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/thermal-camera/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/thermal-camera-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/thermal-camera-en-light.webp"><img src="docs/readme/cards/thermal-camera-en-light.webp" width="33.33%" alt="Thermal Camera: A Building on a Winter Night (0:49)"></picture></a>
+
+<sub>[Satellite Briefing](https://lemomo-ai.github.io/lemo-opuscar/styles/satellite-briefing/) · [Engineering Briefing Board](https://lemomo-ai.github.io/lemo-opuscar/styles/briefing-board/) · [LiDAR Survey](https://lemomo-ai.github.io/lemo-opuscar/styles/lidar-survey/) · [Under the Microscope](https://lemomo-ai.github.io/lemo-opuscar/styles/microscope/) · [Archive Light Table](https://lemomo-ai.github.io/lemo-opuscar/styles/archive-lighttable/) · [Security X-ray](https://lemomo-ai.github.io/lemo-opuscar/styles/security-xray/) · [Radar Sweep Documentary](https://lemomo-ai.github.io/lemo-opuscar/styles/dark-documentary/) · [Thermal Camera](https://lemomo-ai.github.io/lemo-opuscar/styles/thermal-camera/)</sub>
+
+###### <a name="data--maps"></a>15 · Data & Maps
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/#s15"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/station-15-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/station-15-en-light.webp"><img src="docs/readme/station-15-en-light.webp" width="100%" alt="Station 15 / 15: Data &amp; Maps, 6 styles. Opens this station on the site."></picture></a>
+
+Numbers and places made visible: charts, maps, physical data, models, simulations.
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/styles/dataviz/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/dataviz-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/dataviz-en-light.webp"><img src="docs/readme/cards/dataviz-en-light.webp" width="33.33%" alt="Data Storytelling: A Hundred Summers (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/white-model/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/white-model-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/white-model-en-light.webp"><img src="docs/readme/cards/white-model-en-light.webp" width="33.33%" alt="Projection-Mapped Model: How a Flattened City Grew Back (0:40)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/data-physical/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/data-physical-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/data-physical-en-light.webp"><img src="docs/readme/cards/data-physical-en-light.webp" width="33.33%" alt="Data Physicalization: Two Spirals (0:39)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/transit-map/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/transit-map-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/transit-map-en-light.webp"><img src="docs/readme/cards/transit-map-en-light.webp" width="33.33%" alt="Transit Map: 6 Kilometres (0:47)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/map-explainer/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/map-explainer-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/map-explainer-en-light.webp"><img src="docs/readme/cards/map-explainer-en-light.webp" width="33.33%" alt="3D Map Explainer: Strait of Hormuz (0:52)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/styles/pip-simulation/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cards/pip-simulation-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cards/pip-simulation-en-light.webp"><img src="docs/readme/cards/pip-simulation-en-light.webp" width="33.33%" alt="Blob Simulation: Is Faster Better? (0:52)"></picture></a>
+
+<sub>[Data Storytelling](https://lemomo-ai.github.io/lemo-opuscar/styles/dataviz/) · [Projection-Mapped Model](https://lemomo-ai.github.io/lemo-opuscar/styles/white-model/) · [Data Physicalization](https://lemomo-ai.github.io/lemo-opuscar/styles/data-physical/) · [Transit Map](https://lemomo-ai.github.io/lemo-opuscar/styles/transit-map/) · [3D Map Explainer](https://lemomo-ai.github.io/lemo-opuscar/styles/map-explainer/) · [Blob Simulation](https://lemomo-ai.github.io/lemo-opuscar/styles/pip-simulation/)</sub>
 <!-- styles:end -->
 
-## Star history
+## More films
+
+### 🎬 Feature presentation: OPUSCAR 98
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/opuscar98-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/opuscar98-en-light.webp"><img src="docs/readme/opuscar98-en-light.webp" width="100%" alt="OPUSCAR 98: the projector at the end of the bench, 98 Best Pictures on the wall"></picture></a>
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/"><b>▶ The film</b></a> · 1927 – 2025 · 6:31<br>
+<sub>One Clawd walks through all 98 Best Picture winners, each one redrawn in a style that fits the film.</sub>
+
+<a href="https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles"><b>All 98 styles, open</b></a> · 77 in 2D · 4 in 2.5D · 17 in 3D<br>
+<sub>Each film's style, a frame and a style prompt to reuse on your own topic.</sub>
+
+Every frame, every note and every cut was written in code by Claude Opus 5.5. [**▶ Watch**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/) · [**All 98 styles**](https://lemomo-ai.github.io/lemo-opuscar/opuscar98/#styles) · [**Download 1080p**](https://github.com/lemomo-ai/lemo-opuscar/releases/download/films/opuscar98.mp4)
+
+### Thank you for every star
+
+A thank-you film at each milestone, made in code like everything here. Click a poster to watch on the [thank-you page](https://lemomo-ai.github.io/lemo-opuscar/thanks/).
+
+<!-- thanks:start -->
+<a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars6000"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/thanks/stars6000-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/thanks/stars6000-en-light.webp"><img src="docs/readme/thanks/stars6000-en-light.webp" width="20%" alt="6,000 stars · The Quilt (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars3000"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/thanks/stars3000-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/thanks/stars3000-en-light.webp"><img src="docs/readme/thanks/stars3000-en-light.webp" width="20%" alt="3,000 stars · Class Photo (0:48)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars2000"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/thanks/stars2000-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/thanks/stars2000-en-light.webp"><img src="docs/readme/thanks/stars2000-en-light.webp" width="20%" alt="2,000 stars · Refresh (0:50)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars800"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/thanks/stars800-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/thanks/stars800-en-light.webp"><img src="docs/readme/thanks/stars800-en-light.webp" width="20%" alt="800 stars · Reverse Shot (0:39)"></picture></a><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars300"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/thanks/stars300-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/thanks/stars300-en-light.webp"><img src="docs/readme/thanks/stars300-en-light.webp" width="20%" alt="300 stars · The Lamplighter (0:18)"></picture></a>
+<!-- thanks:end -->
 
 <a href="https://www.star-history.com/#lemomo-ai/lemo-opuscar&Date">
  <picture>
@@ -366,28 +298,52 @@ Click a frame for its `STYLE.md`.
  </picture>
 </a>
 
-### Thank you for every star
+## Update or uninstall
 
-A thank-you film at each milestone, made in code like everything here.<br>
-Click a poster to watch on the <a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/">thank-you page</a>.
+Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
 
-<table><tr>
-<td width="20%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars6000"><img src="docs/thanks/thanks-6000.jpg" alt="6,000 stars · The Quilt (50 s)"></a><br><sub>6,000 stars · The Quilt (50 s)</sub></td>
-<td width="20%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars3000"><img src="docs/thanks/thanks-3000.jpg" alt="3,000 stars · Class Photo (48 s)"></a><br><sub>3,000 stars · Class Photo (48 s)</sub></td>
-<td width="20%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars2000"><img src="docs/thanks/thanks-2000.jpg" alt="2000 stars · Refresh (50 s)"></a><br><sub>2,000 stars · Refresh (50 s)</sub></td>
-<td width="20%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars800"><img src="docs/thanks/thanks-800.jpg" alt="800 stars · Reverse Shot (39 s)"></a><br><sub>800 stars · Reverse Shot (39 s)</sub></td>
-<td width="20%" valign="top"><a href="https://lemomo-ai.github.io/lemo-opuscar/thanks/#stars300"><img src="docs/thanks/thanks-300.jpg" alt="300 stars · The Lamplighter (18 s)"></a><br><sub>300 stars · The Lamplighter (18 s)</sub></td>
-</tr></table>
+```sh
+claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
+```
+
+To have it update by itself: in Claude Code, type `/plugin`, open **Marketplaces**, pick **lemolab** and choose **Enable auto-update** (third-party marketplaces such as lemolab don't update automatically until you turn this on).
+
+From a clone: `git pull`, then run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` once (it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
+
+After an update, ask for a film as usual; to make a style your own, see [above](#make-a-style-your-own).
+
+Uninstall, then delete `~/lemo-opuscar`:
+
+```sh
+claude plugin uninstall lemo-opuscar@lemolab
+```
+
+Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
+
+## About
+
+I'm **Lemomo** ([@lemomo-ai](https://github.com/lemomo-ai)). More about me on my profile.
+
+**Not an awesome list.** Every film here was made by me, with Claude Opus 5.5, apart from two styles contributed from outside: Memphis Diorama by [@EianLu](https://x.com/EianLu) and Crayon World 3D by [@2nd1st](https://github.com/2nd1st). The styles were tuned with Opus 5.5 and work with Claude Fable, Opus and Sonnet; other models may not reproduce them.
 
 ## Licence
 
 Made by **LemoLab × Claude Opus 5.5**.
 
-- **Code and docs**: MIT.
-- **Demo films and their stills** (in `styles/`, the gallery and the Releases): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may share, adapt and use them commercially; credit **LemoLab** with a link to this repository, and say if you changed them.
-- **Films you make with the library**: yours, no credit needed.
-- **Third-party assets in the demos**: they keep their own licences (see each demo's `CREDITS`).
-- **Six voice tracks are not CC BY 4.0**: the narration in Chalkboard, Circuit Board, Desktop Flythrough, Isometric Picture Book and Printed Long Take (Microsoft Edge TTS, an online service) and in Broadcast News Package (Doubao TTS, under Volcengine's terms). They are excluded from the licence above. Don't reuse them; in your own films use Kokoro (the default) or a voice you have the right to use.
+[`LICENSE`](LICENSE) says which licence applies to which file; the full texts are in [`LICENSES/`](LICENSES), and [`REUSE.toml`](REUSE.toml) gives the same rules file by file. In short:
+
+- **Code**: [MIT](LICENSES/MIT.txt). The code in `core/`, `tools/`, `styleboard/`, the scripts in `plugin/` and each demo's code, with the data, configuration and `CREDITS` that go with it (Clawd and the Claude app interface that Mascot Screencast's code draws are not covered: see [`LICENSE`](LICENSE)).
+- **Docs**: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Every Markdown file (each style's `STYLE.md` and `DEMO.md`, the guides `AGENTS.md`, `DIRECTOR.md`, `TECHNIQUE.md`, `MY-STYLES.md` …) and the image-generation prompts. You may share and adapt them for non-commercial purposes; credit **Lemo-Opuscar by Lemomo (LemoLab)** with a link to this repository and to the licence, and say if you changed them. On top of that licence, we give you and the people working with you on a film (staff, contractors, the client) a worldwide, royalty-free, non-exclusive, irrevocable permission to read, follow, copy and adapt them to make your own films, commercial and client films included, and to include them, or versions you adapted, in the project files you deliver for that film; a style you change and keep as your own counts ([Make a style your own](#make-a-style-your-own)). That extra permission doesn't cover sharing them or adapted versions with anyone beyond those people and those project files, or selling them. Any other commercial use (for example selling them, or putting them, whole, in part or adapted, into a product or service run for commercial advantage, paid or not) needs a commercial licence: email [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com).
+- **Demo films, their posters, stills and subtitles, and the pictures made from them** (in `styles/`, `docs/`, the gallery and the Releases): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may share, adapt and use them commercially; credit **Lemo-Opuscar by Lemomo (LemoLab)** with a link to this repository and to the licence, and say if you changed them. Third-party footage, photographs, satellite imagery, music and maps in them keep their own licences (see the film's `CREDITS`); Clawd, Anthropic's character in OPUSCAR 98, the thank-you films and Mascot Screencast, is not covered, nor are third-party product interfaces, names and logos, such as Anthropic's Claude app interface in Mascot Screencast (see [`LICENSE`](LICENSE)).
+- **The two contributed styles**: the same terms; credit their author too: *Memphis Diorama by EianLu, in Lemo-Opuscar by Lemomo (LemoLab)* and *Crayon World 3D by 2nd1st, in Lemo-Opuscar by Lemomo (LemoLab)*.
+- **Films you make with the library**: yours, commercial films included, no credit needed (a "Made with Lemo-Opuscar" is always welcome); third-party material you use in them (for example samples under CC BY) keeps its own terms.
+- **Third-party assets**: they keep their own licences: the fonts in `core/fonts/` (OFL), the Poly Haven models and textures in `core/assets/polyhaven/` (CC0), the sample libraries the toolkit downloads ([`core/audio/INSTRUMENTS.md`](core/audio/INSTRUMENTS.md)), and the footage, photographs, data, maps and music in each demo (its `CREDITS`). `REUSE.toml` names each such file kept in this repository.
+- **Six voice tracks are not CC BY 4.0**: the narration in Chalkboard, Circuit Board, Tabletop App Flythrough, Isometric People Scene and Scratchboard Long Take (Microsoft Edge TTS, an online service) and in Broadcast News Package (Doubao TTS, under Volcengine's terms). They are excluded from the licence above: don't extract them or reuse them in other work. You may still share those six films whole, as published, under CC BY 4.0 for everything but the narration. In your own films use Kokoro (the default) or a voice you have the right to use.
+
+> [!NOTE]
+> **What changed in 2.0.0.** In 2.0.0 we updated the whole style library with Claude Fable 5.2, and the updated docs (the style prompts and the guides) are under CC BY-NC 4.0: share and adapt them for non-commercial purposes, and use them to make your own films, commercial films included; any other commercial use needs a commercial licence. The code stays MIT, and films you make with the library are yours, commercial films included. Versions published before 2.0.0, and the forks made from them, keep the licence they were published under.
+>
+> Why: the style library has been repackaged and sold inside paid products. The new licence keeps it free for everyone: use it, change any style into your own, or build your own project on it, as long as it isn't commercial and you credit it. The code, earlier versions and the films you make are not affected.
 
 You are responsible for the materials you use in your films.
 
@@ -397,15 +353,6 @@ You are responsible for the materials you use in your films.
 - 🍋 **[lemo-mod](https://github.com/lemomo-ai/lemo-mod)**: re-skin Claude Code with 21 styles, in the terminal and the desktop app.
 - 🟥 **[Stampy](https://github.com/lemomo-ai/lemo-stampy)**: a tiny Mac menu bar stamp that marks your copies "For XX use only".
 
----
+<a href="https://github.com/lemomo-ai/lemo-opuscar/stargazers"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/end-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/end-en-light.webp"><img src="docs/readme/end-en-light.webp" width="100%" alt="Star Lemo-Opuscar on GitHub: the end of the workbench at night, its lamps still on"></picture></a>
 
-<div align="center">
-
-⭐ **Star this repo**<br>
-👀 **Watch → Custom → Releases** to hear about new versions<br>
-𝕏 Follow [@lemomo_ai](https://x.com/lemomo_ai)<br>
-✉️ Business enquiries: [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)
-
-<sub>LemoLab · by Lemomo</sub>
-
-</div>
+**Watch → Custom → Releases** to hear about new versions · Follow [@lemomo_ai](https://x.com/lemomo_ai) on 𝕏 · Business enquiries: [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)

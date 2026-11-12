@@ -1,0 +1,29 @@
+1
+00:00:00,700 --> 00:00:04,400
+每只动物，身体里都装着一个地方。
+Every animal carries a place inside it.
+
+2
+00:00:09,500 --> 00:00:13,200
+狼装着一片森林，林里的灯都亮着。
+The wolf, a forest with its lamps lit.
+
+3
+00:00:15,900 --> 00:00:19,500
+鹰装着云层之上的雪。
+The eagle, the snow above the clouds.
+
+4
+00:00:23,500 --> 00:00:27,200
+鲑鱼装着一条流向大海的河。
+The salmon, the river that runs to the sea.
+
+5
+00:00:34,100 --> 00:00:37,300
+鲸装着一座灯火通明的港湾。
+The whale, a harbour full of light.
+
+6
+00:00:41,900 --> 00:00:45,600
+海的尽头，那个地方就是家。
+And where the sea ends, that place is home.

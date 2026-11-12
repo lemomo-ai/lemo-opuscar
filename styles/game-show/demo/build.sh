@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: "AI 进化节拍 · Rhythm of AI" (Game Show Flat demo)
+# One command: "AI 进化节拍 · Rhythm of AI" (Rhythm Game Show demo)
 #   sh styles/game-show/demo/build.sh                     rebuild the film and subtitles in place
 #   OUT=<dir> sh styles/game-show/demo/build.sh           write the film and .srt to <dir> instead
 #   STOP_BEFORE_VIDEO=1 sh styles/game-show/demo/build.sh  stop after the sound and the subtitles (no frame render)

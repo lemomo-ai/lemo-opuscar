@@ -1,4 +1,6 @@
-The Butterfly (蝴蝶) — Crayon World 3D (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+The Butterfly (蝴蝶) — Crayon World 3D (Lemo-Opuscar)
+Style and demo by 2nd1st (LEOYUN, https://github.com/2nd1st), contributed to Lemo-Opuscar in pull request #17.
+Sign-off in the film: 2nd1st × LemoLab × Claude Opus 5.5.
 
 IMAGES, FOOTAGE, MODELS
 - None. The world is built from three.js primitives in film.js and redrawn in crayon by code (engine/npr.js, engine/crayon.js,
@@ -10,7 +12,7 @@ LIBRARIES
 
 FONTS (SIL Open Font License 1.1; subset by tools/fonts.py from Google Fonts, not in git; licence texts in fonts/)
 - Long Cang (© The Long Cang Project Authors, github.com/googlefonts/longcang): the Chinese line. fonts/OFL-longcang.txt
-- Patrick Hand (© Patrick Wagesreiter): the English line. fonts/OFL-patrickhand.txt
+- Patrick Hand (© Patrick Wagesreiter): the English line and the sign-off. fonts/OFL-patrickhand.txt
 
 SOUND
 - Sampled instruments through the library's core/audio/sampler.py, all CC0:

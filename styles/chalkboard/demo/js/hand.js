@@ -13,7 +13,7 @@ export function parseStroke(str) {
   return { type, pts: ps.map(p => p.split(',').map(Number)) };
 }
 
-// width along the stroke for the teacher's hand: 起笔顿, 折处顿, 撇出锋, 捺有脚, 钩快提
+// width along the stroke for the teacher's hand: a pressed start (起笔顿), pressed turns (折处顿), 撇 ending in a point (撇出锋), 捺 with a foot (捺有脚), hooks lifted quickly (钩快提)
 function profile(type, anchors, wu) {
   const cum = [0]; for (let i = 1; i < anchors.length; i++) cum.push(cum[i - 1] + Math.hypot(anchors[i][0] - anchors[i - 1][0], anchors[i][1] - anchors[i - 1][1]));
   const tot = cum[cum.length - 1] || 1, corners = [];

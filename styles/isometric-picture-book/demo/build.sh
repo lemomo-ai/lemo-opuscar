@@ -1,5 +1,5 @@
 #!/bin/sh
-# One command: 《七十二个座位》 Seventy-Two Seats (Isometric Picture Book demo)
+# One command: 《七十二个座位》 Seventy-Two Seats (Isometric People Scene demo)
 #   sh styles/isometric-picture-book/demo/build.sh        Chinese narration (the library film): isometric-picture-book.mp4
 #   sh styles/isometric-picture-book/demo/build.sh en     English narration over the same picture and subtitles: isometric-picture-book-en.mp4
 # Steps: fonts, sample packs, narration (edge-tts, online) + speech check, events, score + mix, picture, master,

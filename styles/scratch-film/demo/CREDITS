@@ -1,0 +1,26 @@
+Scratch Film demo · 《夜里往上游》 The Night Climb · third-party assets and sources
+
+## Voice
+- Kokoro-82M v1.0 (hexgrad), voice bf_emma, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: faster-whisper base.en (MIT; OpenAI Whisper weights, MIT).
+  Script: demo/vo/lines.json.
+
+## Music samples (CC0; credit not required, given with thanks)
+- Versilian Community Sample Library (Versilian Studios): vibraphone, vibraphone (bowed), vibraphone (hard mallets),
+  snare (snares off).
+- VS Chamber Orchestra: Community Edition (Versilian Studios): glockenspiel, log drum, double bass (pizzicato and arco).
+  (core/audio/sampler.py). The needle sounds, the sea, the whooshes and the drawn tones are synthesised in demo/mix.py
+  with core/audio/sfx.py.
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- LXGW Marker Gothic 霞鹜漫黑: The LXGW Marker Gothic Project Authors, https://github.com/google/fonts/tree/main/ofl/lxgwmarkergothic
+- Jost: Owen Earl (indestructible type*), https://github.com/google/fonts/tree/main/ofl/jost
+- IBM Plex Mono SemiBold: IBM, https://github.com/google/fonts/tree/main/ofl/ibmplexmono
+  make_fonts.py downloads them into demo/fonts/src/ and subsets them to the characters used (woff2).
+
+## Images, models
+- None. Every picture is drawn by the code in demo/js/: no photographs, no footage, no external models, no AI-generated images.
+
+## Facts
+- Every factual line of the narration is sourced in demo/FACTS.md (Wikipedia "Lanternfish"; Woods Hole Oceanographic
+  Institution; Scientific American), with URLs and the wording it rests on.

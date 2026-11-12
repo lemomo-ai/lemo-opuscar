@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Color-Coded Mechanism · Three systems keep the time</title>
+<style>
+  @font-face{font-family:"Inter";src:url(fonts/Inter-VF.ttf) format("truetype");font-weight:100 900;font-display:block}
+  @font-face{font-family:"Noto Sans SC";src:url(fonts/NotoSansSC-VF.ttf) format("truetype");font-weight:100 900;font-display:block}
+  @font-face{font-family:"Plex Mono";src:url(fonts/IBMPlexMono-Medium.ttf) format("truetype");font-weight:500;font-display:block}
+  html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#F3F0EA}
+  #stage,#ov{position:absolute;left:0;top:0;width:1920px;height:1080px}
+  #stage canvas{display:block;width:1920px!important;height:1080px!important}
+  #ov{pointer-events:none;font-family:"Inter","Noto Sans SC",sans-serif;color:#25282D;-webkit-font-smoothing:antialiased}
+</style>
+<link rel="stylesheet" href="overlay.css">
+<link rel="stylesheet" href="film.css">
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head><body><div id="stage"></div><div id="ov"><svg id="lines" width="1920" height="1080" style="position:absolute;left:0;top:0;overflow:visible"></svg></div>
+<!-- ?f=1|2|3: the three style frames (main.js, render_png.mjs) · otherwise the demo film (film.js, window.render(t) on the 52 s timeline) -->
+<script type="module">
+  const f = new URLSearchParams(location.search).get('f');
+  await import(f ? './main.js' : './film.js');
+</script></body></html>

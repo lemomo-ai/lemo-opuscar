@@ -1,0 +1,4 @@
+manim==0.22.1
+numpy
+opencv-python-headless==5.0.0.93
+fonttools==4.68.0

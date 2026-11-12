@@ -1,11 +1,11 @@
 {
   "name": "lemo-opuscar",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "description": "Film styles for coding agents: each style ships a prompt and a demo film made entirely in code, on a shared toolkit.",
   "engines": { "node": ">=20" },
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "playwright-core": "^1.63.0",
     "three": "^0.170.0"

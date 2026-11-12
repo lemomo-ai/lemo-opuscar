@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Oscilloscope Math · texts</title></head>
+<body style="margin:0;background:#000">
+<script>
+// Bridge for core/render/readcheck.mjs: the film is drawn by Manim, not by a page, so build.sh exports every reading text
+// with its screen box (film.py texts) and copies this page next to texts.json in out/readcheck/.
+fetch('texts.json').then(r => r.json()).then(d => {
+  window.DUR = d.dur;
+  window.render = () => {};
+  window.TEXTS = t => d.frames[Math.min(d.frames.length - 1, Math.round(t / d.step))] || [];
+  window.READY = true;
+});
+</script>
+</body></html>

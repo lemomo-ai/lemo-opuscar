@@ -1,0 +1,26 @@
+From Cherry to Cup (一杯咖啡，从一颗果子开始) — Tablet Sketch Explainer (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+No AI-generated images, no stock footage, no outside pictures: paper, pencil lines, colour blocks, stylus and every object
+are drawn by the code in this folder.
+
+FONTS (SIL Open Font License 1.1; licence texts in fonts/, the .ttf files are local and fetched by tools/fonts.sh)
+- Caveat — The Caveat Project Authors — https://github.com/googlefonts/caveat
+  (file: https://github.com/google/fonts/tree/main/ofl/caveat), Bold (700) and Medium (500) static instances cut from the
+  variable font with fontTools → fonts/Caveat-Bold.ttf, fonts/Caveat-Medium.ttf
+- Long Cang — The Long Cang Project Authors — https://github.com/google/fonts/tree/main/ofl/longcang
+  subset to tools/zh-longcang.txt → fonts/LongCang-subset.ttf (the Chinese written on the page)
+- LXGW WenKai 霞鹜文楷 — LXGW — https://github.com/lxgw/LxgwWenKai (Regular v1.245.1)
+  subset to tools/zh-subs.txt → fonts/LXGWWenKai-subset.ttf (the Chinese subtitle line)
+
+VOICE
+- Kokoro TTS (kokoro-onnx, Apache-2.0; model weights Apache-2.0, hexgrad/Kokoro-82M), voice af_heart, generated locally by
+  core/tts/tts.py from voice/lines.json (deterministic; the .wav files are local).
+
+MUSIC SAMPLES (played by core/audio/sampler.py)
+- guitar_nylon (Spanish guitar), world_perc (egg shaker): FreePats project (freepats.zenvoid.org), CC0 1.0
+- jazz_bass (Sneakybass): Karoryfer Samples / sfzinstruments, CC0 1.0
+- vibraphone: Versilian Community Sample Library (Versilian Studios), CC0 1.0
+Pencil, colouring, canvas-gesture, crack, grounds and pour sounds are synthesised by mix.py with core/audio/sfx.py.
+
+FACTS
+- See FACTS.md (a source for every claim in the narration and on the page).

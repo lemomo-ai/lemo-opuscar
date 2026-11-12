@@ -1,4 +1,4 @@
-# Printed Long Take — our demo
+# Scratchboard Long Take — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 

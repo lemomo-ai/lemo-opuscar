@@ -1,0 +1,83 @@
+[
+ {
+  "id": "v01",
+  "text": "In the painted world, everything that shines is gold.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 0.6,
+  "zh": "在这个画出来的世界里，会发光的都是金子。"
+ },
+ {
+  "id": "v02",
+  "text": "But gold has no light of its own.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 5.5,
+  "zh": "可金子自己不会发光。"
+ },
+ {
+  "id": "v03",
+  "text": "One night, even the sun went out.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 8.85,
+  "zh": "有一天夜里，连太阳也熄了。"
+ },
+ {
+  "id": "v04",
+  "text": "So a girl took the last lamp, and began to climb.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 12.15,
+  "zh": "于是一个女孩提起最后一盏灯，开始往山上走。"
+ },
+ {
+  "id": "v05",
+  "text": "Wherever she passed, the gold remembered how to shine.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 16.6,
+  "zh": "她走到哪里，哪里的金子就想起了怎么发光。"
+ },
+ {
+  "id": "v06",
+  "text": "Behind her, it fell asleep again.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 20.9,
+  "zh": "她一走过，金子又睡着了。"
+ },
+ {
+  "id": "v07",
+  "text": "At the top, the sun was only a cold disc of leaf.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 24.5,
+  "zh": "到了山顶，太阳只是一片冰冷的金箔。",
+  "asr": "At the top, the sun was only a cold disk of leaf."
+ },
+ {
+  "id": "v08",
+  "text": "And she lifted her lamp.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 28.75,
+  "zh": "她举起了灯。"
+ },
+ {
+  "id": "v09",
+  "text": "Gold keeps no light of its own.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 34.0,
+  "zh": "金子不留自己的光。"
+ },
+ {
+  "id": "v10",
+  "text": "It only gives back what it is given.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "t": 37.3,
+  "zh": "它只把得到的，还回去。"
+ }
+]

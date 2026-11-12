@@ -1,0 +1,54 @@
+[
+ {
+  "id": "v1",
+  "text": "For three days, the dish at Parkes had tracked Apollo eleven to the Moon, under clear skies.",
+  "voice": "bm_lewis",
+  "speed": 0.82,
+  "asr": "For three days, the dish at parks had tracked Apollo 11 to the moon under clear skies."
+ },
+ {
+  "id": "v2",
+  "text": "Then, on the day of the moonwalk, a storm came in.",
+  "voice": "bm_lewis",
+  "speed": 0.82
+ },
+ {
+  "id": "v3",
+  "text": "The dish lay tipped to its limit, waiting for the Moon to rise.",
+  "voice": "bm_lewis",
+  "speed": 0.82
+ },
+ {
+  "id": "v4",
+  "text": "Two gusts, over a hundred and ten kilometres an hour, slammed it against its gears.",
+  "voice": "bm_lewis",
+  "speed": 0.82,
+  "asr": "Two gusts, over 110 km an hour, slammed it against its gears."
+ },
+ {
+  "id": "v6",
+  "text": "At twelve fifty-four, the camera on the Moon switched on.",
+  "voice": "bm_lewis",
+  "speed": 0.82,
+  "asr": "At 1254, the camera on the moon switched on."
+ },
+ {
+  "id": "v7",
+  "text": "The first step reached the world through Honeysuckle Creek, near Canberra.",
+  "voice": "bm_lewis",
+  "speed": 0.82
+ },
+ {
+  "id": "v8",
+  "text": "Minutes later, the Moon rose into the main beam, and Houston switched to Parkes.",
+  "voice": "bm_lewis",
+  "speed": 0.82,
+  "asr": "Minutes later the moon rose into the main beam and Houston switched to parks."
+ },
+ {
+  "id": "v10",
+  "text": "For the rest of the walk, the dish held on, outside its safety limits.",
+  "voice": "bm_lewis",
+  "speed": 0.82
+ }
+]

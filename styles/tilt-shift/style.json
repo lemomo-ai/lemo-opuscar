@@ -1,11 +1,12 @@
 {
  "slug": "tilt-shift",
- "num": "42",
+ "num": "80",
  "en": "Tilt-Shift Miniature",
  "cn": "移轴微缩",
- "category_en": "Materials & 3D",
- "category_cn": "材质与 3D",
+ "category_en": "3D & Miniature",
+ "category_cn": "立体微缩",
  "film": "Toy Town Rush Hour",
+ "film_cn": "玩具城早高峰",
  "line": "Morning rush hour in a town that looks like a model: traffic, trains and tiny people.",
  "line_cn": "玩具城的早高峰，一切都像模型。",
  "uses": [

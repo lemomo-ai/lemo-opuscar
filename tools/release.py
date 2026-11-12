@@ -1,7 +1,8 @@
 """Maintainer tool: keep git small, put films and large assets on GitHub Releases.
 
   python3 tools/release.py check [--strict] [slug ...]
-                                what git would commit: fails on big files, local paths, secrets and incomplete styles.
+                                what git would commit: fails on big files, local paths, secrets and incomplete styles, and on README
+                                pictures that are missing, named by no README, or heavier than 4 MB to open (docs/readme/).
                                 Warnings (missing web cut, broken still links, images nothing names, demo files nothing
                                 leads to, process wording such as PRODUCTION_LOG) fail only with --strict, which also checks
                                 the style format (style.json, STYLE.md, DEMO.md, no sign-off in STYLE.md). Slugs limit
@@ -172,8 +173,8 @@ PROCESS_WORDS = ('PRODUCTION_LOG', '返修', '定稿版', '定稿片', '审片',
                  'LemoOpuscarTrial', r'lemomo\.studio')
 PROCESS = re.compile('|'.join(PROCESS_WORDS))
 PROCESS_EXEMPT = re.compile(r'(?:^|/)\.gitignore$|^MAINTAINING\.md$|^tools/release\.py$')   # files that state the rules
-CONTACT = re.compile(r'\blemomo\.studio@gmail\.com\b')   # the business address the two READMEs publish on purpose
-CONTACT_OK = re.compile(r'^README(?:\.zh-CN)?\.md$')
+CONTACT = re.compile(r'\blemomo\.studio@gmail\.com\b')   # the business address the READMEs and LICENSE publish on purpose
+CONTACT_OK = re.compile(r'^(?:README(?:\.zh-CN)?\.md|LICENSE|tools/directory/README\.md)$')
 
 
 def text_index(t):
@@ -241,6 +242,41 @@ def hygiene(files, slugs, warn):
             if m: warn.append(f'{f}:{i}: process wording "{m.group(0)}" (internal notes stay local)')
 
 
+# The README's pictures (styleboard/art/readme.mjs draws them into docs/readme/): every picture a README names is there,
+# docs/readme/ holds nothing no README names, and opening a README stays light. GitHub loads every picture of a README at once.
+README_BUDGET = 4_000_000     # bytes a reader downloads to open README.md or README.zh-CN.md, in GitHub's light or dark theme
+README_OUTSIDE = 100_000      # the badges, Trendshift and star-history pictures, counted as a fixed amount (≈ 70 KB on 2026-11-07)
+PICTURE = re.compile(r'<picture>(.*?)</picture>', re.S)
+THEMED = re.compile(r'<source media="\(prefers-color-scheme: (dark|light)\)" srcset="([^"]+)"')
+IMG_SRC = re.compile(r'<img\s[^>]*?\bsrc="([^"]+)"')
+
+
+def readme_pictures(bad):
+    named, notes = set(), []
+    for fn in ('README.md', 'README.zh-CN.md'):
+        p = os.path.join(ROOT, fn)
+        if not os.path.exists(p): continue
+        t = open(p, encoding='utf-8').read()
+        local = lambda u: not re.match(r'[a-z]+:', u)
+        named |= {u for u in IMG_SRC.findall(t) + [u for _, u in THEMED.findall(t)] if local(u)}
+        for theme in ('light', 'dark'):
+            got = []   # what a reader in this theme downloads: the source a <picture> picks, else its <img>; and every plain <img>
+            rest = PICTURE.sub(lambda m: got.append(next((u for th, u in THEMED.findall(m.group(1)) if th == theme), None)
+                                                    or IMG_SRC.search(m.group(1)).group(1)) or '', t)
+            got += IMG_SRC.findall(rest)
+            size = README_OUTSIDE + sum(os.path.getsize(os.path.join(ROOT, u)) for u in got if local(u) and os.path.isfile(os.path.join(ROOT, u)))
+            notes.append(f'{fn} {theme} {size / 1e6:.2f} MB')
+            if size > README_BUDGET: bad.append(f'{fn} weighs {size / 1e6:.2f} MB to open in the {theme} theme (budget {README_BUDGET / 1e6:.0f} MB): lighter pictures in styleboard/art/readme.mjs')
+    for u in sorted(named):
+        if not os.path.isfile(os.path.join(ROOT, u)): bad.append(f'README names {u}, which is not there (node styleboard/art/readme.mjs)')
+    pics = os.path.join(ROOT, 'docs', 'readme')
+    for d, _, fs in os.walk(pics):
+        for f in fs:
+            rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
+            if rel != 'docs/readme/manifest.json' and rel not in named: bad.append(f'{rel}: no README names this picture (a full run of styleboard/art/readme.mjs clears them)')
+    return notes
+
+
 def check():
     args = [a for a in sys.argv[2:] if not a.startswith('--')]
     strict = '--strict' in sys.argv
@@ -259,6 +295,7 @@ def check():
             if SECRET.search(b): bad.append(f'possible secret: {f}')
     print(f'git would hold {len(files)} files, {size / 1e6:.0f} MB')
     completeness(have, bad, warn, [s for s in style_slugs() if not args or s in args])
+    print('README pictures: ' + ', '.join(readme_pictures(bad)))
     hygiene(files, [s for s in style_slugs() if not args or s in args], warn)
     if strict:
         style_format([s for s in style_slugs() if not args or s in args], bad)

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>The Disassembly Line</title>
+<style>
+@font-face{font-family:'XSans';font-weight:900;src:url(fonts/sanssc900.woff2) format('woff2');font-display:block}
+@font-face{font-family:'XSans';font-weight:700;src:url(fonts/sanssc700.woff2) format('woff2');font-display:block}
+@font-face{font-family:'XSans';font-weight:500;src:url(fonts/sanssc500.woff2) format('woff2');font-display:block}
+@font-face{font-family:'BSD';font-weight:900;src:url(fonts/bsd900.woff2) format('woff2');font-display:block}
+@font-face{font-family:'BSD';font-weight:800;src:url(fonts/bsd800.woff2) format('woff2');font-display:block}
+@font-face{font-family:'BSD';font-weight:700;src:url(fonts/bsd700.woff2) format('woff2');font-display:block}
+@font-face{font-family:'ARC';font-weight:800;src:url(fonts/arc800.woff2) format('woff2');font-display:block}
+@font-face{font-family:'ARC';font-weight:600;src:url(fonts/arc600.woff2) format('woff2');font-display:block}
+html,body{margin:0;background:#F2ECE0;overflow:hidden}
+#stage{width:1920px;height:1080px;display:block;position:absolute;left:0;top:0}
+#grain{position:absolute;left:0;top:0;width:1920px;height:1080px;mix-blend-mode:multiply;opacity:.55;pointer-events:none}
+</style></head>
+<body><div id="stage"></div>
+<script src="lib.js"></script>
+<script src="body.js"></script>
+<script src="paper.js"></script>
+<script src="overlays.js"></script>
+<script src="runner.js"></script>
+<script src="film.js"></script>
+</body></html>

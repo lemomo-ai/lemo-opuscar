@@ -1,11 +1,12 @@
 {
  "slug": "swiss-motion",
- "num": "16",
+ "num": "36",
  "en": "Swiss Motion Graphics",
  "cn": "瑞士动态排版",
  "category_en": "Graphic & Type",
- "category_cn": "图形与排版",
+ "category_cn": "平面排版",
  "film": "Five Rules for a Poster",
+ "film_cn": "海报的五条规则",
  "line": "A concert poster lays itself out by five Swiss design rules; the fifth is to break just one.",
  "line_cn": "一张音乐会海报按瑞士设计的五条规则自己排版，第五条是只打破一条。",
  "uses": [

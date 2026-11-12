@@ -1,0 +1,19 @@
+{
+ "slug": "instruction-manual",
+ "num": "49",
+ "en": "Instruction Manual Art",
+ "cn": "说明书插画",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
+ "film": "Step Ten",
+ "film_cn": "第十步",
+ "line": "Two first-timers build a crib from a flat-pack manual, ten steps on one 45° page; step ten was never in the manual.",
+ "line_cn": "两个从没装过家具的新手照说明书装婴儿床，十步排在同一张 45° 说明书上；第十步，说明书里没有。",
+ "uses": [
+  "Assembly and set-up guides",
+  "Safety instructions",
+  "Product onboarding"
+ ],
+ "frame_sec": 6.1,
+ "dur": 50.6
+}

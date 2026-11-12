@@ -1,4 +1,4 @@
-// Thirty-Three Cranes — Printed Long Take. A three-dimensional winter valley rendered as a scratchboard print:
+// Thirty-Three Cranes — Scratchboard Long Take. A three-dimensional winter valley rendered as a scratchboard print:
 // one unbroken camera move from the steaming river to the air, then the feeding field and the board that keeps the count.
 import * as THREE from 'three';
 import { mulberry, clamp, lerp, ss, eio, seg, track, hash } from '/core/lib.js';

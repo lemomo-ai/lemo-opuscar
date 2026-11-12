@@ -1,0 +1,29 @@
+/* Film text layer (on top of overlay.css). Primary / secondary / tertiary only; see STYLE.md §4 "Three levels only". */
+.fk { position: absolute; white-space: nowrap; }
+.head { position: absolute; transform-origin: 0 0; white-space: nowrap; }
+.head.t1 { font: 650 64px/1.04 "Inter", sans-serif; letter-spacing: -.028em; }
+.head.ratio .big { font: 640 132px/1 "Inter", sans-serif; letter-spacing: -.04em; }
+.head.ratio .big span { font-weight: 400; font-size: 96px; margin-left: 4px; color: #8C867D; }
+.head.ratio .rl { font: 400 22px/1.3 "Inter", sans-serif; color: #5E5A54; margin-top: 14px; }
+.head.ratio .rm { font: 500 15px/1 "Plex Mono", monospace; letter-spacing: .08em; color: #8C867D; margin-top: 12px; }
+.co { position: absolute; white-space: nowrap; line-height: 1; }
+.co .nm { font: 600 30px/1 "Inter", sans-serif; letter-spacing: -.012em; color: #25282D; }
+.co .d { font: 400 18px/1.3 "Inter", sans-serif; color: #5E5A54; margin-top: 8px; }
+.co .d .was { color: #8C867D; }
+.co.left, .co.above { text-align: right; }
+.dot { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; box-shadow: inset 0 0 0 1.4px rgba(37,40,45,.5); }
+.stag { position: absolute; font: 500 19px/1 "Plex Mono", monospace; color: #3E3B37; letter-spacing: .01em; white-space: nowrap; }
+.subs { position: absolute; left: 112px; bottom: 64px; white-space: nowrap; }
+.subs .zh { font: 500 34px/1.25 "Noto Sans SC", sans-serif; color: #25282D; letter-spacing: .03em; }
+.subs .en { font: 400 22px/1.3 "Inter", sans-serif; color: #6F6A62; margin-top: 4px; }
+/* the credit: a drawing title block (ink rules, mono field names) */
+.tb { position: absolute; left: 112px; bottom: 64px; width: 660px; }
+.tb .row { position: relative; display: flex; align-items: center; min-height: 58px; padding: 6px 0; }
+.tb .rule { position: absolute; left: 0; right: 0; top: 0; height: 1.3px; background: #25282D; transform-origin: 0 0; display: block; }
+.tb .rule.end { position: relative; }
+.tb .k { width: 132px; flex: none; font: 500 13px/1 "Plex Mono", monospace; letter-spacing: .16em; text-transform: uppercase; color: #8C867D; }
+.tb .v { white-space: nowrap; color: #25282D; }
+.tb .v1 { font: 600 26px/1 "Inter", sans-serif; letter-spacing: -.01em; }
+.tb .v2 { font: 400 24px/1 "Inter", sans-serif; color: #5E5A54; }
+.tb .v2z { font: 400 34px/1 "Noto Sans SC", sans-serif; color: #5E5A54; margin-left: 16px; letter-spacing: .04em; }
+.tb .v3 { font: 600 28px/1 "Inter", sans-serif; letter-spacing: -.005em; }

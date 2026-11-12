@@ -1,0 +1,32 @@
+Blob Simulation demo · Is faster better? 跑得快，就更好吗？ · third-party assets and sources
+
+## Voice
+- Kokoro-82M (hexgrad), voice bm_george, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: faster-whisper base.en (MIT; OpenAI Whisper weights, MIT).
+  Script: demo/voice/lines.json; clip lengths: demo/voice/dur.json.
+
+## Music samples (CC0 1.0; credit not required, given with thanks)
+- FreePats project (freepats.zenvoid.org): hang, kalimba
+- VS Chamber Orchestra: Community Edition (Versilian Studios): cellos, cellos_pizz
+- Versilian Community Sample Library (Versilian Studios): vibraphone, vibraphone_bowed, marimba, glockenspiel,
+  xylophone, woodblock, harp
+  All played through core/audio/sampler.py. Foley (felt steps, bean pops, eating, sighs, poofs, the stamp, wind)
+  and the shaker are procedural (core/audio/sfx.py and demo/mix.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- Fredoka: The Fredoka Project Authors, https://github.com/google/fonts/tree/main/ofl/fredoka
+  (the library's own subsets core/fonts/f3.woff2 and f2.woff2, copied by make_fonts.py)
+- Inter (variable): The Inter Project Authors, https://github.com/rsms/inter, via https://github.com/google/fonts/tree/main/ofl/inter
+- Noto Sans SC: Adobe / Google, Reserved Font Name 'Source', https://github.com/google/fonts/tree/main/ofl/notosanssc
+  Subset to the characters in film.js (make_fonts.py) from the variable font NotoSansSC[wght].ttf,
+  downloaded by build.sh into demo/fonts/src/.
+
+## Code
+- three.js r170 (MIT), with RoundedBoxGeometry, RoomEnvironment, BufferGeometryUtils and the post-processing passes
+  from its examples, loaded from the library's node_modules. demo/post.js is a copy of core/three/post.js.
+
+## Images, models
+- None. The Pips, beans, board and lighting are built in code; no photographs, no external models, no AI-generated images.
+
+## Numbers
+- Every number on screen and in the narration is an output of the toy simulation in demo/filmsim.js; see demo/FACTS.md.

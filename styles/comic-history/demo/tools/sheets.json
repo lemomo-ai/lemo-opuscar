@@ -1,0 +1,21 @@
+{
+ "_about": "Prompts for the three green-screen part sheets in src/ (Codex CLI image_gen, 16:9). sheet-al was made with sheet-fr attached as the style reference. A new generation will not match these sheets: re-key with tools/extract.py and re-read the pivots in index.html (RIG) from parts/*_debug.jpg.",
+ "sheets": [
+  {
+   "file": "src/sheet-fr.png",
+   "aspect": "16:9",
+   "prompt": "Character design sheet for a paper puppet (cut-out paper doll) that will be animated with code. An early-19th-century French general: big bicorne hat, navy coat with gold epaulettes and a red sash, white breeches, black boots. Our own original cartoon design, not a portrait of any real person: oversized round head, simple dot eyes, bold expressive eyebrows, tiny body. Drawn as flat-coloured paper cut-out pieces with slightly rough hand-cut edges and a subtle paper texture, every piece separated and laid out with clear gaps on a pure flat chroma-green background (#00B140): head, torso, left upper arm, left forearm with hand, right upper arm, right forearm with hand, left leg with boot, right leg with boot, hat as its own piece; plus three extra head variants with expressions (angry shouting, smug, shocked). A small brass split-pin dot marks each joint position on each piece. No text, no labels, no cast shadows on the green background, nothing overlapping."
+  },
+  {
+   "file": "src/sheet-pr.png",
+   "aspect": "16:9",
+   "prompt": "Character design sheet for a paper puppet (cut-out paper doll) that will be animated with code. A 19th-century Prussian general: spiked black helmet, big curled moustache, dark blue-black coat with gold buttons and epaulettes, black boots. Our own original cartoon design, not a portrait of any real person: oversized round head, simple dot eyes, bold expressive eyebrows, tiny body. Drawn as flat-coloured paper cut-out pieces with slightly rough hand-cut edges and a subtle paper texture, every piece separated and laid out with clear gaps on a pure flat chroma-green background (#00B140): head, torso, left upper arm, left forearm with hand, right upper arm, right forearm with hand, left leg with boot, right leg with boot, helmet as its own piece, a sabre as its own piece; plus three extra head variants with expressions (angry shouting, smug, shocked). A small brass split-pin dot marks each joint position on each piece. No text, no labels, no cast shadows on the green background, nothing overlapping."
+  },
+  {
+   "file": "src/sheet-al.png",
+   "aspect": "16:9",
+   "reference": "src/sheet-fr.png",
+   "prompt": "Character design sheet for a paper puppet (cut-out paper doll) that will be animated with code. Match the attached reference sheet exactly in style: same flat-coloured paper cut-out pieces with slightly rough hand-cut edges, same subtle paper/felt texture, same brass split-pin rivets at every joint, same oversized round head and tiny body proportions, same layout with clear gaps on a pure flat chroma-green background (#00B140). The character: a young woman from Alsace in traditional 19th-century Alsatian costume: a very large black ribbon bow headdress (its own separate piece), white puffed-sleeve blouse, black laced bodice, red skirt with a white apron, small black shoes. Our own original cartoon design, not a portrait of any real person: oversized round head, simple dot eyes, expressive eyebrows, rosy cheeks, brown hair in a bun. Pieces, every one separated with clear gaps: head, torso with skirt and apron as one piece, left upper arm, left forearm with open hand, right upper arm, right forearm with open hand, left leg with shoe, right leg with shoe, the black bow headdress as its own piece. Plus extra head variants laid out in a row at the top: the same young woman worried, the same young woman smiling, the same woman as an old grandmother (grey hair in a bun, a few wrinkles, gentle smile), the old grandmother surprised, and a small round child head (her grandchild, a little girl, smiling). A small brass split-pin dot marks each joint position on each piece (a rivet at the chin of every head). No text, no labels, no cast shadows on the green background, nothing overlapping."
+  }
+ ]
+}

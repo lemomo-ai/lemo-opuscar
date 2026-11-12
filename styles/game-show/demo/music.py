@@ -1,4 +1,4 @@
-# Score for "AI 进化节拍" (AI Evolution Beat), second cut: 150 BPM, royal road progression (王道进行) Fmaj7–G7–Em7–Am7; SFX and voices read from events.json
+# Score for "AI 进化节拍" (AI Evolution Beat): 150 BPM, royal road progression (王道进行) Fmaj7–G7–Em7–Am7; SFX and voices read from events.json
 import json, os, sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 OUT = sys.argv[1] if len(sys.argv) > 1 else 'music.wav'   # python music.py [out.wav]

@@ -1,0 +1,19 @@
+{
+ "slug": "spreadsheet",
+ "num": "71",
+ "en": "Spreadsheet Film",
+ "cn": "表格动画",
+ "category_en": "Screens & Interfaces",
+ "category_cn": "屏幕界面",
+ "film": "The Hidden Column",
+ "film_cn": "藏起来的那一列",
+ "line": "The total says treatment B; unhide the stone-size columns and A wins every group. Simpson's paradox told in one sheet, 1 cell = 1 patient.",
+ "line_cn": "总数说 B 更好；把藏起来的结石大小列打开，A 在每一组都赢。一张表讲清辛普森悖论，一格就是一位病人。",
+ "uses": [
+  "Data literacy",
+  "Finance & costs",
+  "Analytics explainers"
+ ],
+ "frame_sec": 47.3,
+ "dur": 52.0
+}

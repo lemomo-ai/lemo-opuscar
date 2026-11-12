@@ -1,0 +1,95 @@
+{
+ "end": 52.0,
+ "subs": [
+  {
+   "id": "v01",
+   "t0": 0.35,
+   "t1": 4.8,
+   "zh": "2010 年，一款新手机有个怪毛病。",
+   "en": "In 2010, a new phone had a strange problem.",
+   "vo": 0.45,
+   "dur": 3.804
+  },
+  {
+   "id": "v02",
+   "t0": 4.8,
+   "t1": 9.622,
+   "zh": "握住它底部的那个角，信号就掉了。",
+   "en": "Hold it by the bottom corner, and the signal dropped.",
+   "vo": 4.9,
+   "dur": 3.522
+  },
+  {
+   "id": "v03",
+   "t0": 10.0,
+   "t1": 14.161,
+   "zh": "为什么？你手里的金属边框，就是天线。",
+   "en": "Why? The metal edge in your hand is the antenna.",
+   "vo": 10.1,
+   "dur": 3.556
+  },
+  {
+   "id": "v04",
+   "t0": 14.161,
+   "t1": 18.98,
+   "zh": "信号从芯片出发，顺着一根细线，接到边框上。",
+   "en": "From the chip, a thin cable carries the signal to the frame.",
+   "vo": 14.261,
+   "dur": 4.214
+  },
+  {
+   "id": "v05",
+   "t0": 18.98,
+   "t1": 24.64,
+   "zh": "金属圈被切开了：每道塑料缝隔出一支独立的天线。",
+   "en": "The ring is cut: each plastic slit splits off a separate antenna.",
+   "vo": 19.08,
+   "dur": 4.551
+  },
+  {
+   "id": "v06",
+   "t0": 24.64,
+   "t1": 27.732,
+   "zh": "每一段的长度，对应一个频段。",
+   "en": "Each piece is sized to its band.",
+   "vo": 24.74,
+   "dur": 2.487
+  },
+  {
+   "id": "v07",
+   "t0": 27.732,
+   "t1": 35.554,
+   "zh": "700 MHz 约需 11 厘米；3.5 GHz 只要 2 厘米。",
+   "en": "700 MHz needs about 11 cm. 3.5 GHz, just 2.",
+   "vo": 27.832,
+   "dur": 7.217
+  },
+  {
+   "id": "v08",
+   "t0": 35.554,
+   "t1": 41.247,
+   "zh": "现在握住这个角：手把缝连了起来，信号就弱了。",
+   "en": "Now grip the corner. Your hand bridges the slit, and the signal fades.",
+   "vo": 35.654,
+   "dur": 5.088
+  },
+  {
+   "id": "v09",
+   "t0": 41.247,
+   "t1": 46.515,
+   "zh": "于是手机学会了换用没被手盖住的那支天线。",
+   "en": "So phones learned to switch to the antenna your hand isn't covering.",
+   "vo": 41.347,
+   "dur": 4.663
+  },
+  {
+   "id": "v10",
+   "t0": 46.515,
+   "t1": 51.145,
+   "zh": "不是你拿错了，你握着的，就是天线。",
+   "en": "You're not holding it wrong. You are holding the antenna.",
+   "vo": 46.615,
+   "dur": 3.33
+  }
+ ]
+}

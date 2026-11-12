@@ -1,0 +1,64 @@
+[
+ {
+  "id": "v01",
+  "text": "This is a cup of coffee.",
+  "voice": "af_heart",
+  "speed": 0.72
+ },
+ {
+  "id": "v02",
+  "text": "But it began as the seed of a fruit.",
+  "voice": "af_heart",
+  "speed": 0.7
+ },
+ {
+  "id": "v03",
+  "text": "Coffee cherries ripen on the branch, from green to red.",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v04",
+  "text": "Cut one open: two seeds, face to face.",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v05",
+  "text": "The cherries dry whole in the sun, then the husk comes off.",
+  "voice": "af_heart",
+  "speed": 0.7,
+  "asr": "The cherries dry hole in the sun, then the husk comes off."
+ },
+ {
+  "id": "v06",
+  "text": "Green beans. Nothing like coffee yet.",
+  "voice": "af_heart",
+  "speed": 0.82
+ },
+ {
+  "id": "v07",
+  "text": "Then, heat. Yellow. Cinnamon. Brown.",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v08",
+  "text": "Near one hundred ninety-six degrees, they crack, like popcorn.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "asr": "Near 196 degrees, they crack, like popcorn."
+ },
+ {
+  "id": "v09",
+  "text": "Ground, and met with hot water,",
+  "voice": "af_heart",
+  "speed": 0.74
+ },
+ {
+  "id": "v10",
+  "text": "the seed of a cherry becomes a cup of coffee.",
+  "voice": "af_heart",
+  "speed": 0.7
+ }
+]

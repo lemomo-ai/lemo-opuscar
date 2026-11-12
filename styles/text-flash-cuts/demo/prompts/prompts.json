@@ -1,0 +1,89 @@
+[
+ {
+  "name": "char_lookback",
+  "aspect": "1:1",
+  "ref": [],
+  "prompt": "Original anime character, flat cel animation style of a modern avant-garde TV anime: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture. Half-body shot of a slender young woman seen from behind, her back and shoulders turned away to the left of frame, her head thrown far back and tilted almost 70 degrees sideways over her right shoulder so she looks back at the viewer upside-down-ish: the signature exaggerated neck-bend look-back head tilt. Calm, unreadable half-lidded stare, faint closed smile at one corner of the mouth. Short glossy jet-black bob with blunt straight bangs, one small red rectangular hair clip, pale skin, deep crimson eyes. Black high-collar long coat, white shirt collar visible. Elegant, elongated proportions, sharp chin. The whole figure fully inside the frame with margin, nothing cropped except below the waist. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on background, no floor. no text, no letters, no logo, no watermark.",
+  "note": "generated first, no reference"
+ },
+ {
+  "name": "eye",
+  "aspect": "16:9",
+  "ref": [],
+  "prompt": "Extreme close-up of a single anime eye, flat cel animation style of a modern avant-garde TV anime: clean thin black linework, completely flat colors, hard-edged shapes, no gradients, no painterly texture. Horizontal framing filling the whole image: sharp long upper eyelashes as a thick black wedge, deep crimson red iris with concentric thin rings and a tiny vertical black pupil, two crisp white geometric highlights, pale flat skin around it, a single strand of jet-black hair crossing the corner. Calm, unblinking, unsettling stare straight at the viewer. Graphic, poster-like, high contrast red black white palette. no text, no letters, no logo, no watermark.",
+  "note": "generated first, no reference"
+ },
+ {
+  "name": "boy_front",
+  "aspect": "1:1",
+  "ref": [
+   "@char_lookback"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. Original anime character, a different person from the reference (the reference is for drawing style only): a slender teenage boy of about 17, half-body, three-quarter view facing the viewer, startled and frozen as if someone just whispered his name from behind: eyes wide open with tiny contracted pupils, lips slightly parted. Messy straight jet-black hair with long uneven bangs over one eye, pale skin, dark grey eyes. Black high-collar school uniform jacket buttoned up, a thin line of white shirt collar visible. Elongated elegant proportions, sharp jaw. The whole figure inside the frame with margin, cropped at the waist. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "boy_phone",
+  "aspect": "1:1",
+  "ref": [
+   "@boy_front"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. The same teenage boy as the reference image, close-up from the chest up in strict side profile facing left, pressing a plain black smartphone to his ear with one hand, his eyes strained sideways toward the viewer without turning his head, tense, listening. His black hair is wet and stuck together in sharp strands, one drop of water running down his cheek. Black high-collar uniform. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "boy_eye",
+  "aspect": "16:9",
+  "ref": [
+   "@boy_front"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. Extreme close-up of a single eye of the boy in the reference image, horizontal framing filling the whole image: dark grey iris with a tiny contracted black pupil, thin sharp lashes, white sclera, pale skin, several strands of wet jet-black hair crossing the eye, one bead of sweat. Wide-open frightened stare straight at the viewer. Graphic, poster-like, high contrast. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "letter_hands",
+  "aspect": "16:9",
+  "ref": [
+   "@boy_front"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. Insert shot seen from straight above: the two pale hands of the boy in the reference image, black uniform sleeves at the cuffs, hold an unfolded plain white letter sheet flat and square to the camera, filling the center of the frame. The paper is completely blank. An opened plain white envelope lies under it at an angle. Everything rests on a flat matte black surface. Hard flat shadows. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "her_back",
+  "aspect": "9:16",
+  "ref": [
+   "@char_lookback"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. The same young woman as the reference image, full-body, seen completely from behind, standing perfectly still and upright, her head facing straight away from the viewer: only the back of her short glossy jet-black bob and the small red rectangular hair clip are visible, no face. Arms hanging at her sides. Black high-collar long coat reaching below the knees, black tights, black shoes. Elegant elongated proportions. The whole figure inside the frame with margin. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "her_front",
+  "aspect": "1:1",
+  "ref": [
+   "@char_lookback"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. The same young woman as the reference image, bust portrait facing the viewer straight-on, perfectly symmetrical composition, calm half-lidded crimson eyes looking straight into the lens, a faint closed-mouth smile, blunt straight bangs, short glossy jet-black bob, the small red rectangular hair clip, black high-collar coat, white shirt collar. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "her_umbrella",
+  "aspect": "9:16",
+  "ref": [
+   "@char_lookback"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. The same young woman as the reference image, full-body, standing perfectly still facing the viewer and holding a crimson red umbrella over her head; the umbrella's shadow hides her face down to the nose, only her pale chin and a faint closed smile are visible. Black high-collar long coat, black tights, black shoes. No rain drawn, the figure is clean. The whole figure and umbrella inside the frame with margin. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "her_hand",
+  "aspect": "16:9",
+  "ref": [
+   "@char_lookback",
+   "@boy_front"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. Insert close-up: the slender pale hand of the young woman from the first reference image, long fingers, short crimson nails, black coat sleeve, reaches in from the right and rests lightly on the shoulder of the boy from the second reference image, whose black high-collar uniform shoulder and the back of his black hair fill the lower left of the frame, seen from behind. Calm, cold, unhurried touch. Background: perfectly uniform flat pure chroma green #00FF00, no shadow on the background, no floor. no text, no letters, no logo, no watermark."
+ },
+ {
+  "name": "her_mouth",
+  "aspect": "16:9",
+  "ref": [
+   "@char_lookback"
+  ],
+  "prompt": "Flat cel animation style of a modern avant-garde TV anime, matching the reference image's drawing style exactly: clean thin uniform black linework, completely flat colors with one hard-edged shadow tone only, no gradients, no painterly texture, no blush hatching. Palette limited to jet black, off-white, pale skin and crimson red. Extreme close-up of the lower half of the face of the young woman in the reference image, horizontal framing filling the whole image: pale skin, thin lips closed in a slow, faint, unsettling smile curling up at one corner, the tips of her jet-black bob framing the jaw, the black high collar at the bottom edge. Eyes are out of frame. no text, no letters, no logo, no watermark."
+ }
+]

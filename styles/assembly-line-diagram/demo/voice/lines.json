@@ -1,0 +1,68 @@
+[
+ {
+  "id": "v1",
+  "text": "Most factories put things together.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v2",
+  "text": "The one inside you takes them apart.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v3",
+  "text": "It starts at the crushers.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v4",
+  "text": "An acid drum churns it all to paste,",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v5",
+  "text": "and a gatekeeper lets it out, a spoonful at a time.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v6",
+  "text": "On the sorting line, the sandwich comes apart:",
+  "voice": "am_michael",
+  "speed": 0.76
+ },
+ {
+  "id": "v7",
+  "text": "bread into sugar, ham into amino acids, cheese into fatty acids.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v9",
+  "text": "The liver shelves the sugar, and it waits.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v10",
+  "text": "Six hours later: the bus.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v11",
+  "text": "Down the arteries, into tiny furnaces.",
+  "voice": "am_michael",
+  "speed": 0.8
+ },
+ {
+  "id": "v12",
+  "text": "Taken apart, lunch becomes the strength to run.",
+  "voice": "am_michael",
+  "speed": 0.8
+ }
+]

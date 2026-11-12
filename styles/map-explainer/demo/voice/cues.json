@@ -1,0 +1,92 @@
+[
+ {
+  "id": "v01",
+  "t0": 0.45,
+  "t1": 5.72,
+  "vo_end": 5.103,
+  "zh": "全球约五分之一的石油，要穿过这一道狭窄的海峡。",
+  "en": "About a fifth of the world's oil passes through one narrow strait.",
+  "text": "全球约五分之一的石油，要穿过这一道狭窄的海峡。\nAbout a fifth of the world's oil passes through one narrow strait."
+ },
+ {
+  "id": "v02",
+  "t0": 5.8,
+  "t1": 10.52,
+  "vo_end": 9.877,
+  "zh": "这里是波斯湾通往外海的唯一出口。",
+  "en": "It is the Gulf's only way out to the open sea.",
+  "text": "这里是波斯湾通往外海的唯一出口。\nIt is the Gulf's only way out to the open sea."
+ },
+ {
+  "id": "v03",
+  "t0": 10.6,
+  "t1": 15.92,
+  "vo_end": 15.279,
+  "zh": "最窄处宽 21 海里，约 39 公里。",
+  "en": "At its narrowest point, it is 21 nautical miles wide.",
+  "text": "最窄处宽 21 海里，约 39 公里。\nAt its narrowest point, it is 21 nautical miles wide."
+ },
+ {
+  "id": "v05",
+  "t0": 16.0,
+  "t1": 20.32,
+  "vo_end": 19.682,
+  "zh": "水道够深，最大的油轮也能通过。",
+  "en": "The channel is deep enough for the largest tankers.",
+  "text": "水道够深，最大的油轮也能通过。\nThe channel is deep enough for the largest tankers."
+ },
+ {
+  "id": "v04",
+  "t0": 20.4,
+  "t1": 24.92,
+  "vo_end": 24.272,
+  "zh": "油轮分走两条航道，每条宽 2 海里。",
+  "en": "Tankers keep to two lanes, each 2 miles wide.",
+  "text": "油轮分走两条航道，每条宽 2 海里。\nTankers keep to two lanes, each 2 miles wide."
+ },
+ {
+  "id": "v06",
+  "t0": 25.0,
+  "t1": 30.37,
+  "vo_end": 29.743,
+  "zh": "2024 年，日均约 2000 万桶石油经过这里。",
+  "en": "In 2024, that averaged 20 million barrels a day.",
+  "text": "2024 年，日均约 2000 万桶石油经过这里。\nIn 2024, that averaged 20 million barrels a day."
+ },
+ {
+  "id": "v07",
+  "t0": 30.45,
+  "t1": 34.57,
+  "vo_end": 33.914,
+  "zh": "输油管道能绕开海峡，运走一部分，",
+  "en": "Pipelines can carry some of it around the strait,",
+  "text": "输油管道能绕开海峡，运走一部分，\nPipelines can carry some of it around the strait,"
+ },
+ {
+  "id": "v08",
+  "t0": 34.65,
+  "t1": 41.22,
+  "vo_end": 40.549,
+  "zh": "但空余运力每天只有 260 万到 550 万桶。",
+  "en": "but their spare capacity is only 2.6 to 5.5 million.",
+  "text": "但空余运力每天只有 260 万到 550 万桶。\nbut their spare capacity is only 2.6 to 5.5 million."
+ },
+ {
+  "id": "v09",
+  "t0": 41.3,
+  "t1": 46.32,
+  "vo_end": 45.678,
+  "zh": "对大部分石油来说，没有别的出路。",
+  "en": "For most of this oil, there is no other way out.",
+  "text": "对大部分石油来说，没有别的出路。\nFor most of this oil, there is no other way out."
+ },
+ {
+  "id": "v10",
+  "t0": 46.4,
+  "t1": 49.943,
+  "vo_end": 48.943,
+  "zh": "其中大部分，运往亚洲。",
+  "en": "Most of it heads for Asia.",
+  "text": "其中大部分，运往亚洲。\nMost of it heads for Asia."
+ }
+]

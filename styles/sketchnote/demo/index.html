@@ -1,0 +1,679 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:KB;src:url(fonts/Kalam-Bold.ttf);font-display:block}
+@font-face{font-family:PH;src:url(fonts/PatrickHand-Regular.ttf);font-display:block}
+@font-face{font-family:ZK;src:url(fonts/ZCOOLKuaiLe-subset.ttf);font-display:block}
+html,body{margin:0;background:#fbfaf6;overflow:hidden}
+canvas{display:block}
+</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// Sketchnote demo: "How Bees Make Honey" (a biology lecture's notes; English narration, bilingual subtitles).
+// One page of notes grows stroke by stroke while the camera follows the pen, then pulls back to the whole page.
+// All Canvas 2D: jittered fineliner lines, multiply grey marker, one yellow; letters are written along glyph skeletons.
+// Animation rule: geometry randomness uses a fixed seed per element; only the fineliner's wobble phase boils
+// (a new drawing every 2 frames, a cycle of 3).
+const W = 1920, H = 1080, FPS = 24;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const OC = document.createElement('canvas'); OC.width = W; OC.height = H; const octx = OC.getContext('2d');
+
+// ---------- palette: paper, one fineliner, grey marker in three strengths, one yellow ----------
+// The accent (yellow) is a multiply marker; the volume colour (grey) is the same marker laid in three strengths.
+const PL = { paper: '#fbfaf6', ink: [30, 30, 34], ink2: '#5b5852',
+  acc: [255, 205, 40], accA: 0.80, accD: [245, 170, 0], accS: [232, 140, 0],
+  shd: [100, 100, 110], shd2: [80, 80, 92], shd3: [52, 52, 64], dot: [150, 144, 132] };
+const rgba = (c, a) => `rgba(${c.map(v => Math.round(v)).join(',')},${a})`;
+const hex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+const PAPER = PL.paper, DOT = rgba(PL.dot || PL.shd.map(v => v * 0.5 + 95), 0.55);
+const INK = hex(PL.ink), INK2 = PL.ink2;                       // pen, secondary pen (small notes)
+const YEL = rgba(PL.acc, PL.accA), YELD = rgba(PL.accD, 0.95), YELS = rgba(PL.accS, 0.22);   // the one accent colour
+const GRY = rgba(PL.shd, 0.16), GRY2 = rgba(PL.shd2 || PL.shd.map(v => v * 0.8), 0.28), GRYD = rgba(PL.shd3 || PL.shd.map(v => v * 0.52), 0.45);
+const INKM = a => rgba(PL.ink, a);                             // solid marker in pen colour (bee stripes, eye)
+const TAU = Math.PI * 2;
+
+// ---------- seeded randomness ----------
+let SEED = 1, BOIL = 0;
+function rnd() { SEED |= 0; SEED = SEED + 0x6D2B79F5 | 0; let t = Math.imul(SEED ^ SEED >>> 15, 1 | SEED); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+const rr = (a, b) => a + (b - a) * rnd();
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eio = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+const eo = t => 1 - Math.pow(1 - clamp(t), 3);
+const BO = [0, 1, -0.8];   // boil offsets: three drawings, cycled on twos
+
+// ---------- geometry ----------
+function resample(pts, step = 3) {
+  const out = [pts[0].slice()];
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / step));
+    for (let k = 1; k <= n; k++) out.push([x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n]);
+  }
+  return out;
+}
+function plen(pts) { let s = 0; for (let i = 1; i < pts.length; i++) s += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); return s; }
+function noiseFn(amp) {   // static shape + a small boil phase shift
+  const ks = [[amp, rr(0.003, 0.008), rr(0, TAU), rr(0.35, 0.7)], [amp * 0.5, rr(0.012, 0.022), rr(0, TAU), rr(0.35, 0.7)], [amp * 0.22, rr(0.035, 0.06), rr(0, TAU), rr(0.35, 0.7)]];
+  const b = BO[BOIL];
+  return s => ks.reduce((a, [A, f, p, d]) => a + A * Math.sin(f * s + p + d * b), 0);
+}
+function jitter(pts, amp) {
+  const P = resample(pts, 3), n = noiseFn(amp), out = []; let s = 0;
+  for (let i = 0; i < P.length; i++) {
+    if (i) s += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);
+    const a = P[Math.max(0, i - 1)], b = P[Math.min(P.length - 1, i + 1)];
+    let tx = b[0] - a[0], ty = b[1] - a[1]; const L = Math.hypot(tx, ty) || 1; tx /= L; ty /= L;
+    const d = n(s); out.push([P[i][0] - ty * d, P[i][1] + tx * d]);
+  }
+  return out;
+}
+const line = (x1, y1, x2, y2) => [[x1, y1], [x2, y2]];
+function ell(cx, cy, rx, ry, a0 = 0, a1 = TAU, n = 90, rot = 0) { const p = [], c = Math.cos(rot), s = Math.sin(rot); for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, x = rx * Math.cos(a), y = ry * Math.sin(a); p.push([cx + x * c - y * s, cy + x * s + y * c]); } return p; }
+function rrect(x, y, w, h, r) {
+  const p = [];
+  const arc = (cx, cy, a0) => { for (let i = 0; i <= 8; i++) { const a = a0 + Math.PI / 2 * i / 8; p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } };
+  arc(x + w - r, y + r, -Math.PI / 2); arc(x + w - r, y + h - r, 0); arc(x + r, y + h - r, Math.PI / 2); arc(x + r, y + r, Math.PI);
+  return p;
+}
+function bez(p0, p1, p2, p3, n = 40) { const o = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; o.push([u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0], u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]]); } return o; }
+const shift = (pts, dx, dy) => pts.map(([x, y]) => [x + dx, y + dy]);
+function hexPts(cx, cy, r, rot = 0) { const p = []; for (let i = 0; i < 6; i++) { const a = rot + i / 6 * TAU; p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return p; }
+function pathOf(pts, close = true) { const p = new Path2D(); p.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) p.lineTo(pts[i][0], pts[i][1]); if (close) p.closePath(); return p; }
+function bbox(pts) { let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of pts) { a = Math.min(a, x); b = Math.min(b, y); c = Math.max(c, x); d = Math.max(d, y); } return [a, b, c, d]; }
+
+// ---------- pen (fineliner) ----------
+function inkDraw(pts, o, prog) {
+  let { w = 3, amp = 1.5, passes = 2, col = INK, closed = false, alpha = 1, dash = null } = o;
+  w *= 1.2; let base;
+  if (closed) {   // overshoot the join a little, start at a random point
+    base = resample(pts.concat([pts[0]]), 3);
+    const st = Math.floor(rr(0, base.length)); base = base.slice(st).concat(base.slice(1, st + 1));
+    base = base.concat(base.slice(1, 2 + Math.floor(base.length * rr(0.02, 0.05))));
+  } else base = resample(pts, 3);
+  ctx.save(); ctx.strokeStyle = col; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  for (let p = 0; p < passes; p++) {
+    const P = jitter(base, amp * (p ? 1.4 : 1)); const n = Math.max(2, Math.floor(P.length * prog));
+    const wn = noiseFn(0.22); ctx.globalAlpha = alpha * (p ? 0.5 : 0.94);
+    let s = 0;
+    for (let i = 0; i < n - 1; i += 6) {
+      let on = true;
+      if (dash) on = (s % (dash[0] + dash[1])) < dash[0];
+      const end = Math.min(n - 1, i + 6);
+      for (let j = i + 1; j <= end; j++) s += Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1]);
+      if (!on) continue;
+      ctx.beginPath(); ctx.moveTo(P[i][0], P[i][1]); for (let j = i + 1; j <= end; j++) ctx.lineTo(P[j][0], P[j][1]);
+      ctx.lineWidth = w * (p ? 0.62 : 1) * (1 + wn(i * 3)); ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+// ---------- marker (semi-transparent, multiply, streaky) ----------
+function markerDraw(clips, o, prog) {
+  const { col = GRY, w = 18, ang = -0.55, gap = 0.62, amp = 2.2, edge = true, op = 'multiply' } = o;
+  const region = jitter(clips[0].concat([clips[0][0]]), amp);
+  const [x0, y0, x1, y1] = bbox(region), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, R = Math.hypot(x1 - x0, y1 - y0) / 2 + w;
+  const strokes = []; for (let o2 = -R; o2 < R; o2 += w * gap * rr(0.85, 1.15)) strokes.push([o2, w * rr(0.9, 1.08), rr(-4, 4), rr(-6, 6), rr(-6, 6), rr(-2, 2)]);
+  ctx.save();
+  ctx.clip(pathOf(region));
+  if (clips.length > 1) { const p = pathOf(region); for (let i = 1; i < clips.length; i++) p.addPath(pathOf(clips[i])); ctx.clip(p, 'evenodd'); }
+  ctx.globalCompositeOperation = op; ctx.strokeStyle = col; ctx.lineCap = 'round';
+  ctx.translate(cx, cy); ctx.rotate(ang);
+  const stop = -R + 2 * R * prog;
+  for (const [o2, lw, bow, a, b, c] of strokes) {
+    if (o2 >= stop) break;
+    ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(-R + a, o2); ctx.quadraticCurveTo(0, o2 + bow, R + b, o2 + c); ctx.stroke();
+  }
+  ctx.restore();
+  if (edge && prog >= 1) { ctx.save(); ctx.clip(pathOf(region)); ctx.globalCompositeOperation = 'multiply'; ctx.strokeStyle = col; ctx.globalAlpha = 0.45; ctx.lineWidth = 4; ctx.stroke(pathOf(region)); ctx.restore(); }
+}
+function mstrokeDraw(pts, o, prog) {   // a single marker stroke (rays, swashes)
+  const { col = YEL, w = 8, amp = 1 } = o; const P = jitter(pts, amp); const n = Math.max(2, Math.ceil(P.length * prog));
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.stroke(pathOf(P.slice(0, n), false)); ctx.restore();
+}
+
+// ---------- hand lettering, written stroke by stroke along glyph skeletons ----------
+let GLY = null;
+const FONTN = { KB: 'KB', PH: 'PH', ZH: 'ZH' };
+function textLayout(s, x, y, size, o = {}) {
+  const { f = 'PH', align = 'left', jit = 1, sp = 0.98, rot = 0 } = o;
+  ctx.save(); ctx.font = `${size}px ${f}`;
+  const ch = [...s], ws = ch.map(c => ctx.measureText(c).width * sp); ctx.restore();
+  const tot = ws.reduce((a, b) => a + b, 0);
+  let cx = align === 'center' ? -tot / 2 : align === 'right' ? -tot : 0;
+  const G = GLY[f], chars = []; let L = 0;
+  ch.forEach((c, i) => {
+    const dy = rr(-1, 1) * jit * size * 0.03, r = rr(-1, 1) * jit * 0.045, k = rr(-1, 1);
+    const sk = (G.g[c] || []).map(a => { const P = []; for (let j = 0; j < a.length; j += 2) P.push([a[j] * size, a[j + 1] * size]); return P; });
+    const lens = sk.map(plen); const len = lens.reduce((a, b) => a + b, 0) + sk.length * size * 0.12;
+    chars.push({ c, ox: cx, dy, r, sk, lens, len, L0: L }); L += len;
+    cx += ws[i] * (1 + k * 0.02);
+  });
+  return { s, x, y, size, f, rot, chars, L, hw: G.hw * size, tot, col: o.col || INK };
+}
+function textDraw(T, prog) {
+  const target = prog * T.L;
+  ctx.save(); ctx.translate(T.x, T.y); ctx.rotate(T.rot);
+  ctx.font = `${T.size}px ${T.f}`; ctx.fillStyle = T.col; ctx.textBaseline = 'alphabetic';
+  for (const C of T.chars) {
+    if (C.L0 >= target) break;
+    const part = target - C.L0;
+    ctx.save(); ctx.translate(C.ox, C.dy); ctx.rotate(C.r);
+    if (part >= C.len || !C.sk.length) { ctx.fillText(C.c, 0, 0); ctx.restore(); continue; }
+    // partial glyph: draw it on the side canvas, keep only what the pen has covered
+    const m = ctx.getTransform();
+    octx.setTransform(1, 0, 0, 1, 0, 0); octx.clearRect(0, 0, W, H);
+    octx.setTransform(m); octx.font = ctx.font; octx.fillStyle = T.col; octx.textBaseline = 'alphabetic';
+    octx.fillText(C.c, 0, 0);
+    octx.globalCompositeOperation = 'destination-in'; octx.lineCap = 'round'; octx.lineJoin = 'round'; octx.lineWidth = T.hw * 2.9 + 1.5; octx.strokeStyle = '#000';
+    let left = part;
+    octx.beginPath();
+    for (let k = 0; k < C.sk.length && left > 0; k++) {
+      const P = C.sk[k]; octx.moveTo(P[0][0], P[0][1]); if (P.length === 1) octx.lineTo(P[0][0] + 0.1, P[0][1]);
+      for (let j = 1; j < P.length && left > 0; j++) {
+        const d = Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1]);
+        if (d <= left) { octx.lineTo(P[j][0], P[j][1]); left -= d; }
+        else { const u = left / d; octx.lineTo(P[j - 1][0] + (P[j][0] - P[j - 1][0]) * u, P[j - 1][1] + (P[j][1] - P[j - 1][1]) * u); left = 0; }
+      }
+      left -= T.size * 0.12;
+    }
+    octx.stroke(); octx.globalCompositeOperation = 'source-over';
+    ctx.restore(); ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(OC, 0, 0); ctx.restore();
+  }
+  ctx.restore();
+}
+
+// ---------- timeline of strokes ----------
+// Each element = one pen/marker action with a start time and a duration; drawn in registration order (z).
+const EL = [];
+let BSEED = 1000;
+function addEl(t0, d, kind, draw, wx) { EL.push({ t0, d: Math.max(d, 1 / FPS), kind, draw, seed: (BSEED += 7919), wx }); return t0 + d; }
+const cen = pts => { const b = bbox(pts); return (b[0] + b[2]) / 2; };
+const INK_ = (pts, o, t0, d) => addEl(t0, d, 'pen', p => inkDraw(pts, o, p), cen(pts));
+const MRK = (clips, o, t0, d) => addEl(t0, d, 'marker', p => markerDraw(clips, o, p), cen(clips[0]));
+const MST = (pts, o, t0, d) => addEl(t0, d, 'marker', p => mstrokeDraw(pts, o, p), cen(pts));
+const FILL = (pts, t0) => addEl(t0, 0, 'fill', () => { ctx.save(); ctx.fillStyle = PAPER; ctx.fill(pathOf(pts)); ctx.restore(); }, cen(pts));
+const PAGE_TEXTS = [];   // every written text, for window.TEXTS (reading-time check)
+function TXT(s, x, y, size, o, t0, d) {
+  const T = textLayout(s, x, y, size, o);
+  const end = addEl(t0, d == null ? T.L / (o.cps || 2200) : d, 'write', p => textDraw(T, p), x + (o.align === 'center' ? 0 : T.tot / 2));
+  PAGE_TEXTS.push({ T, t0: EL[EL.length - 1].t0 });
+  return end;
+}
+
+// ---------- composite parts ----------
+function dropShadow(pts, dx, dy, t0, d = 0.12, o = {}) { MRK([shift(pts, dx, dy), pts], { col: GRY2, w: 12, ...o }, t0, d); }
+function box(x, y, w, h, t0, d = 0.32) {
+  const p = rrect(x, y, w, h, 28);
+  dropShadow(p, 9, 10, t0 + d * 0.9);
+  return INK_(p, { closed: true, w: 3.2, amp: 1.6 }, t0, d) + 0.12;
+}
+function ribbon(cx, cy, w, h, label, size, t0, o = {}) {
+  const { fill = YEL, arc = 3, f = 'KB', d = 0.3 } = o;
+  const dy = h * 0.34, tl = h * 0.95;
+  for (const sd of [-1, 1]) {
+    const xe = cx + sd * w / 2;
+    const tp = [[xe - sd * h * 0.4, cy - h / 2 + dy], [xe + sd * tl, cy - h / 2 + dy], [xe + sd * (tl - h * 0.36), cy + dy], [xe + sd * tl, cy + h / 2 + dy], [xe - sd * h * 0.4, cy + h / 2 + dy]];
+    FILL(tp, t0 + d * 0.5); MRK([tp], { col: GRY2, w: 14, ang: 0.9 }, t0 + d * 0.7, d * 0.3);
+    INK_(tp, { closed: true, w: 2.8, amp: 0.9 }, t0 + d * 0.5, d * 0.35);
+    const fold = [[xe, cy + h / 2 - 2], [xe, cy + h / 2 + dy], [xe - sd * h * 0.4, cy + h / 2 + dy]];
+    MRK([fold], { col: GRYD, w: 8, edge: false }, t0 + d * 0.8, d * 0.2);
+  }
+  const body = []; const N = 40;
+  for (let i = 0; i <= N; i++) { const u = i / N; body.push([cx - w / 2 + w * u, cy - h / 2 - arc * Math.sin(Math.PI * u)]); }
+  for (let i = N; i >= 0; i--) { const u = i / N; body.push([cx - w / 2 + w * u, cy + h / 2 - arc * Math.sin(Math.PI * u)]); }
+  FILL(body, t0);
+  if (fill) MRK([body], { col: fill, w: 20 }, t0 + d * 0.55, d * 0.45);
+  INK_(body, { closed: true, w: 3.2, amp: 1 }, t0, d * 0.6);
+  let end = t0 + d;
+  if (label) end = TXT(label, cx, cy + size * 0.36 - arc, size, { f, align: 'center', jit: 0.7 }, t0 + d * 0.8, o.td);
+  return end;
+}
+function fatArrow(x1, y, x2, t0, o = {}) {
+  const h = o.h || 30, hh = o.hh || 36, hl = o.hl || 36, d = o.d || 0.22;
+  const p = [[x1, y - h / 2], [x2 - hl, y - h / 2 - 2], [x2 - hl + 2, y - hh], [x2, y], [x2 - hl + 2, y + hh], [x2 - hl, y + h / 2 + 2], [x1, y + h / 2]];
+  dropShadow(p, 5, 6, t0 + d, 0.08, { w: 10 });
+  FILL(p, t0); MRK([p], { col: YEL, w: 14 }, t0 + d * 0.6, d * 0.5);
+  return INK_(p, { closed: true, w: 3, amp: 0.9 }, t0, d * 0.7) + d * 0.4;
+}
+function arrowHead(x, y, ang, s, o, t0, d = 0.05) {
+  return INK_([[x + Math.cos(ang + 2.6) * s, y + Math.sin(ang + 2.6) * s], [x, y], [x + Math.cos(ang - 2.6) * s, y + Math.sin(ang - 2.6) * s]], { w: 3, amp: 0.5, passes: 1, ...o }, t0, d);
+}
+function inkArrow(pts, o, t0, d) {
+  const P = resample(pts, 3); const e = INK_(P, o, t0, d);
+  const a = P[P.length - 1], b = P[Math.max(0, P.length - 6)];
+  return arrowHead(a[0], a[1], Math.atan2(a[1] - b[1], a[0] - b[0]), o.head || 14, { w: o.w || 3 }, e);
+}
+function sparks(cx, cy, r1, r2, angs, t0, d = 0.12) {
+  angs.forEach((a, i) => MST(line(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1, cx + Math.cos(a) * r2, cy + Math.sin(a) * r2), { w: 6, col: YELD }, t0 + i * d * 0.25, d * 0.5));
+  return t0 + d;
+}
+function bullet(x, y, t0) { const c = ell(x, y, 8, 8, 0, TAU, 20); MRK([c], { col: YEL, w: 8 }, t0 + 0.04, 0.05); return INK_(c, { closed: true, w: 2.2, amp: 0.3, passes: 1 }, t0, 0.06); }
+
+// flower: petals in grey, the nectar centre in yellow
+function flower(cx, cy, s, t0, k = 1, stem = true) {
+  const petals = [];
+  for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + i / 6 * TAU; petals.push(ell(cx + Math.cos(a) * 34 * s, cy + Math.sin(a) * 34 * s, 30 * s, 19 * s, 0, TAU, 40, a)); }
+  if (stem) {
+    const st = bez([cx, cy + 40 * s], [cx + 6 * s, cy + 80 * s], [cx - 8 * s, cy + 112 * s], [cx + 2 * s, cy + 140 * s]);
+    INK_(st, { w: 3, amp: 0.6 }, t0 + 0.32 * k, 0.1 * k);
+    const leaf = bez([cx + 1 * s, cy + 112 * s], [cx + 30 * s, cy + 82 * s], [cx + 62 * s, cy + 92 * s], [cx + 70 * s, cy + 98 * s]).concat(bez([cx + 70 * s, cy + 98 * s], [cx + 52 * s, cy + 124 * s], [cx + 22 * s, cy + 124 * s], [cx + 1 * s, cy + 114 * s]));
+    FILL(leaf, t0 + 0.38 * k); MRK([leaf], { col: GRY2, w: 10, ang: 0.6 }, t0 + 0.44 * k, 0.08 * k); INK_(leaf, { closed: true, w: 2.6, amp: 0.5 }, t0 + 0.38 * k, 0.08 * k);
+    INK_(bez([cx + 4 * s, cy + 113 * s], [cx + 26 * s, cy + 104 * s], [cx + 44 * s, cy + 102 * s], [cx + 62 * s, cy + 100 * s], 16), { w: 1.6, amp: 0.3, passes: 1 }, t0 + 0.46 * k, 0.05 * k);
+  }
+  petals.forEach((p, i) => { FILL(p, t0 + i * 0.04 * k); });
+  petals.forEach((p, i) => { MRK([p], { col: GRY, w: 12 * s + 4 }, t0 + 0.22 * k + i * 0.015 * k, 0.1 * k); });
+  petals.forEach((p, i) => { MRK([p, shift(p, -6 * s, -7 * s)], { col: GRY2, w: 10 * s + 3 }, t0 + 0.26 * k + i * 0.015 * k, 0.1 * k); });
+  petals.forEach((p, i) => INK_(p, { closed: true, w: 2.6, amp: 0.6, passes: s > 0.6 ? 2 : 1 }, t0 + i * 0.04 * k, 0.06 * k));
+  const c = ell(cx, cy, 20 * s, 20 * s);
+  FILL(c, t0 + 0.24 * k); MRK([c], { col: YEL, w: 10 }, t0 + 0.3 * k, 0.08 * k); MRK([c, shift(c, -5 * s, -6 * s)], { col: YELS, w: 8 }, t0 + 0.36 * k, 0.05 * k);
+  INK_(c, { closed: true, w: 2.6, amp: 0.5 }, t0 + 0.24 * k, 0.07 * k);
+  if (s > 0.6) for (let i = 0; i < 6; i++) { const a = i * 1.1 + 0.3, r = 9 * s * rr(0.3, 1); INK_(ell(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 1.6, 1.6, 0, TAU, 8), { w: 2, amp: 0.1, passes: 1 }, t0 + 0.36 * k, 0.02); }
+  return t0 + 0.5 * k;
+}
+// bee: grey body, black stripes; `stomach` shows the honey stomach in yellow (the honey's journey stays yellow)
+function bee(cx, cy, s, t0, k = 1, o = {}) {
+  const S = (x, y) => [cx + x * s, cy + y * s];
+  const abd = ell(cx - 52 * s, cy + 14 * s, 74 * s, 50 * s, 0, TAU, 80, -0.18);
+  const tip = [S(-118, 34), S(-146, 46), S(-120, 46)];
+  const tho = ell(cx + 30 * s, cy - 2 * s, 36 * s, 34 * s, 0, TAU, 60);
+  const head = ell(cx + 82 * s, cy - 8 * s, 28 * s, 27 * s, 0, TAU, 50);
+  const w1 = ell(cx + 8 * s, cy - 62 * s, 60 * s, 30 * s, 0, TAU, 60, -0.95);
+  const w2 = ell(cx - 30 * s, cy - 50 * s, 52 * s, 25 * s, 0, TAU, 60, -1.35);
+  const legs = [[S(10, 28), S(2, 52), S(10, 66)], [S(34, 30), S(32, 56), S(42, 68)], [S(54, 24), S(64, 48), S(74, 56)]];
+  // under-layer: shadow on the paper
+  dropShadow(abd, 8 * s, 10 * s, t0 + 0.5 * k, 0.08 * k);
+  legs.forEach((l, i) => INK_(l, { w: 2.6, amp: 0.3, passes: 1 }, t0 + 0.42 * k + i * 0.02 * k, 0.05 * k));
+  MRK([tip], { col: GRYD, w: 6, edge: false }, t0 + 0.14 * k, 0.03); INK_(tip, { closed: true, w: 2.4, amp: 0.3, passes: 1 }, t0 + 0.12 * k, 0.04 * k);
+  FILL(abd, t0); MRK([abd], { col: GRY, w: 14 }, t0 + 0.24 * k, 0.1 * k);
+  // stripes, clipped to the abdomen
+  const stripes = [-20, -52, -84].map(x => { const xx = cx + x * s; return [[xx - 8 * s, cy - 60 * s], [xx + 8 * s, cy - 60 * s], [xx - 2 * s, cy + 80 * s], [xx - 18 * s, cy + 80 * s]]; });
+  stripes.forEach((st, i) => addEl(t0 + 0.18 * k + i * 0.04 * k, 0.05 * k, 'marker', p => {
+    ctx.save(); ctx.clip(pathOf(jitter(abd.concat([abd[0]]), 0.8))); markerDraw([st], { col: INKM(0.86), w: 9, ang: 1.3, edge: false, op: 'source-over' }, p); ctx.restore();
+  }, cx));
+  if (o.stomach) {
+    const hs = ell(cx - 44 * s, cy + 18 * s, 25 * s, 21 * s, 0, TAU, 40);
+    FILL(hs, o.stomach); MRK([hs], { col: YEL, w: 10 }, o.stomach + 0.06, 0.1); MRK([hs, shift(hs, -5, -6)], { col: YELS, w: 8 }, o.stomach + 0.14, 0.06);
+    INK_(hs, { closed: true, w: 2.4, amp: 0.5, dash: [9, 6] }, o.stomach, 0.12);
+  }
+  INK_(abd, { closed: true, w: 3, amp: 0.9 }, t0, 0.14 * k);
+  FILL(tho, t0 + 0.08 * k); MRK([tho], { col: GRY2, w: 12 }, t0 + 0.26 * k, 0.07 * k);
+  for (let i = 0; i < 14; i++) { const a = i / 14 * TAU, r = 30 * s; INK_(line(cx + 30 * s + Math.cos(a) * r * 0.55, cy - 2 * s + Math.sin(a) * r * 0.55, cx + 30 * s + Math.cos(a + 0.2) * r * 0.85, cy - 2 * s + Math.sin(a + 0.2) * r * 0.85), { w: 1.4, amp: 0.2, passes: 1, alpha: 0.7 }, t0 + 0.3 * k + i * 0.004, 0.02); }
+  INK_(tho, { closed: true, w: 3, amp: 0.7 }, t0 + 0.08 * k, 0.08 * k);
+  FILL(head, t0 + 0.14 * k); MRK([head, shift(head, -6 * s, -7 * s)], { col: GRY2, w: 10 }, t0 + 0.3 * k, 0.06 * k);
+  INK_(head, { closed: true, w: 3, amp: 0.6 }, t0 + 0.14 * k, 0.07 * k);
+  const eye = ell(cx + 94 * s, cy - 14 * s, 6 * s, 7 * s, 0, TAU, 20); MRK([eye], { col: INKM(0.9), w: 6, edge: false, op: 'source-over' }, t0 + 0.24 * k, 0.03);
+  INK_(bez(S(78, -30), S(80, -60), S(96, -78), S(112, -84)), { w: 2.4, amp: 0.3, passes: 1 }, t0 + 0.24 * k, 0.05 * k);
+  INK_(bez(S(92, -28), S(102, -52), S(120, -62), S(136, -62)), { w: 2.4, amp: 0.3, passes: 1 }, t0 + 0.26 * k, 0.05 * k);
+  // wings over the body: paper + light grey + veins
+  [w2, w1].forEach((w, i) => { FILL(w, t0 + 0.32 * k + i * 0.05 * k); MRK([w], { col: GRY, w: 12, ang: 0.4 }, t0 + 0.4 * k + i * 0.03 * k, 0.08 * k); INK_(w, { closed: true, w: 2.6, amp: 0.5 }, t0 + 0.32 * k + i * 0.05 * k, 0.07 * k); });
+  INK_(bez(S(-10, -36), S(4, -58), S(22, -74), S(40, -86), 16), { w: 1.4, amp: 0.2, passes: 1, alpha: 0.7 }, t0 + 0.44 * k, 0.03);
+  INK_(bez(S(-26, -36), S(-40, -48), S(-52, -60), S(-62, -68), 16), { w: 1.4, amp: 0.2, passes: 1, alpha: 0.7 }, t0 + 0.46 * k, 0.03);
+  return t0 + 0.55 * k;
+}
+function honeycomb(cells, r, t0, k = 1, fills = []) {
+  // cells: [[cx,cy],...] pointy-top hexes
+  const H = cells.map(([x, y]) => hexPts(x, y, r, Math.PI / 6));
+  H.forEach((h, i) => { FILL(h, t0 + i * 0.03 * k); });
+  H.forEach((h, i) => { MRK([h], { col: fills.includes(i) ? YEL : GRY, w: 12 }, t0 + 0.16 * k + i * 0.025 * k, 0.07 * k); });
+  H.forEach((h, i) => { if (fills.includes(i)) MRK([h, shift(h, -6, -7)], { col: YELS, w: 8 }, t0 + 0.24 * k + i * 0.02 * k, 0.05 * k); else MRK([h, shift(h, -5, -6)], { col: GRY, w: 8 }, t0 + 0.2 * k + i * 0.02 * k, 0.05 * k); });
+  H.forEach((h, i) => INK_(h, { closed: true, w: 2.8, amp: 0.6 }, t0 + i * 0.03 * k, 0.06 * k));
+  return t0 + 0.3 * k + cells.length * 0.02 * k;
+}
+function jar(cx, cy, t0) {
+  const bw = 170, bh = 210, x = cx - bw / 2, y = cy - bh / 2;
+  const body = rrect(x, y, bw, bh, 34);
+  dropShadow(body, 10, 11, t0 + 0.3);
+  FILL(body, t0);
+  const honey = rrect(x + 10, y + 46, bw - 20, bh - 56, 26);
+  MRK([honey], { col: YEL, w: 22, ang: -0.35 }, t0 + 0.26, 0.24);
+  MRK([honey, shift(honey, -22, 0)], { col: YELS, w: 16, ang: -0.35 }, t0 + 0.44, 0.1);
+  INK_(bez([x + 12, y + 50], [x + 50, y + 42], [x + 110, y + 56], [x + bw - 12, y + 46]), { w: 2.4, amp: 0.8, passes: 1 }, t0 + 0.26, 0.08);
+  INK_(body, { closed: true, w: 3.4, amp: 1.0 }, t0, 0.2);
+  // glass highlight
+  INK_(bez([x + 24, y + 60], [x + 20, y + 100], [x + 20, y + 140], [x + 26, y + 176], 20), { w: 4, amp: 0.4, passes: 1, col: '#ffffff', alpha: 0.95 }, t0 + 0.5, 0.05);
+  // lid
+  const lid = rrect(x + 10, y - 40, bw - 20, 44, 10);
+  FILL(lid, t0 + 0.12); MRK([lid], { col: GRY2, w: 12, ang: 1.2 }, t0 + 0.22, 0.08);
+  INK_(lid, { closed: true, w: 3, amp: 0.6 }, t0 + 0.12, 0.1);
+  for (let i = 1; i < 9; i++) INK_(line(x + 10 + i * (bw - 20) / 9, y - 34, x + 10 + i * (bw - 20) / 9, y - 2), { w: 1.6, amp: 0.2, passes: 1, alpha: 0.75 }, t0 + 0.2 + i * 0.006, 0.02);
+  // label
+  const lab = rrect(x + 16, cy - 14, bw - 32, 64, 8);
+  FILL(lab, t0 + 0.5); INK_(lab, { closed: true, w: 2.6, amp: 0.6 }, t0 + 0.5, 0.08);
+  return TXT('HONEY', cx, cy + 34, 36, { f: 'KB', align: 'center', jit: 0.6 }, t0 + 0.56, 0.18);
+}
+function spoon(cx, cy, t0) {
+  const bowl = ell(cx, cy, 34, 22, 0, TAU, 50, -0.35);
+  const handle = [[cx + 30, cy - 14], [cx + 140, cy - 62], [cx + 150, cy - 58], [cx + 152, cy - 50], [cx + 32, cy - 4]];
+  FILL(handle, t0); MRK([handle], { col: GRY2, w: 8, ang: 1.2 }, t0 + 0.1, 0.05);
+  INK_(handle, { closed: true, w: 2.8, amp: 0.4 }, t0, 0.1);
+  FILL(bowl, t0); MRK([bowl], { col: GRY, w: 10 }, t0 + 0.1, 0.06);
+  const drop = ell(cx - 2, cy + 2, 11, 8, 0, TAU, 30, -0.35);
+  MRK([drop], { col: YEL, w: 8 }, t0 + 0.16, 0.05); INK_(drop, { closed: true, w: 2, amp: 0.2, passes: 1 }, t0 + 0.16, 0.04);
+  return INK_(bowl, { closed: true, w: 3, amp: 0.5 }, t0, 0.1) + 0.12;
+}
+
+// ================= THE FULL FILM (50 s) =================
+// The film: it opens on 1/12 of a teaspoon in a spoon, follows one yellow drop across the page,
+// pulls back to the whole page and ends on the spoon again.
+// World coordinates = the finished page (1920×1080). Times are film seconds, aligned to the narration starts in timeline.json.
+// Time stretch: strokes registered inside slow(o, k, …) are stretched as o + (t - o) * k (the parts are written at sketch speed).
+let SCL = null;
+const _addEl = addEl;
+addEl = function (t0, d, kind, draw, wx) { if (SCL) { t0 = SCL.o + (t0 - SCL.o) * SCL.k; d = d * SCL.k; } return _addEl(t0, d, kind, draw, wx); };
+function slow(o, k, fn) { const prev = SCL; SCL = { o, k }; const r = fn(); SCL = prev; return r; }
+
+let TITLE = null, BOX3 = null, STOM = null;
+const CUE = { drop: 3.72, music: 8.0, title: 8.5, s1: 10.3, match: 15.62, deep: 20.1, follow: 25.15, chart: 30.1, seal: 36.0, honey: 38.25, million: 39.7, pull: 44.2, done: 47.5, sign: 47.6 };
+
+function spoonFull(cx, cy, t0, tDrop) {
+  const bowl = ell(cx, cy, 34, 22, 0, TAU, 50, -0.35);
+  const handle = [[cx + 30, cy - 14], [cx + 140, cy - 62], [cx + 150, cy - 58], [cx + 152, cy - 50], [cx + 32, cy - 4]];
+  FILL(handle, t0); MRK([handle], { col: GRY2, w: 8, ang: 1.2 }, t0 + 0.75, 0.25);
+  INK_(handle, { closed: true, w: 2.8, amp: 0.4 }, t0, 0.55);
+  FILL(bowl, t0 + 0.5); MRK([bowl], { col: GRY, w: 10 }, t0 + 0.9, 0.3);
+  MRK([bowl, shift(bowl, -6, -6)], { col: GRY2, w: 8 }, t0 + 1.1, 0.2);
+  INK_(bowl, { closed: true, w: 3, amp: 0.5 }, t0 + 0.5, 0.45);
+  // the drop: a short fall line, then the yellow lands in the bowl
+  INK_(bez([cx + 4, cy - 70], [cx + 2, cy - 52], [cx, cy - 40], [cx - 1, cy - 26], 12), { w: 1.8, amp: 0.2, passes: 1, dash: [6, 6], alpha: 0.8 }, tDrop - 0.35, 0.3);
+  const drop = ell(cx - 2, cy + 2, 11, 8, 0, TAU, 30, -0.35);
+  MRK([drop], { col: YEL, w: 8 }, tDrop, 0.12); INK_(drop, { closed: true, w: 2, amp: 0.2, passes: 1 }, tDrop, 0.12);
+  sparks(cx - 2, cy + 2, 17, 25, [-2.6, -2.0, -1.2], tDrop + 0.1, 0.2);
+}
+function jarFull(cx, cy, t0, tFill) {
+  const bw = 170, bh = 210, x = cx - bw / 2, y = cy - bh / 2;
+  const body = rrect(x, y, bw, bh, 34);
+  dropShadow(body, 10, 11, t0 + 0.6, 0.2);
+  FILL(body, t0);
+  const honey = rrect(x + 10, y + 46, bw - 20, bh - 56, 26);
+  // honey pours in from the bottom up (the biggest yellow on the page)
+  addEl(tFill, 0.55, 'marker', p => { const e = eo(p), top = y + bh - 10 - (bh - 56) * e; ctx.save(); ctx.beginPath(); ctx.rect(x, top, bw, bh); ctx.clip(); markerDraw([honey], { col: YEL, w: 22, ang: -0.35 }, 1); ctx.restore(); }, cx);
+  MRK([honey, shift(honey, -22, 0)], { col: YELS, w: 16, ang: -0.35 }, tFill + 0.5, 0.15);
+  INK_(bez([x + 12, y + 50], [x + 50, y + 42], [x + 110, y + 56], [x + bw - 12, y + 46]), { w: 2.4, amp: 0.8, passes: 1 }, tFill + 0.5, 0.12);
+  INK_(body, { closed: true, w: 3.4, amp: 1.0 }, t0, 0.5);
+  INK_(bez([x + 24, y + 60], [x + 20, y + 100], [x + 20, y + 140], [x + 26, y + 176], 20), { w: 4, amp: 0.4, passes: 1, col: '#ffffff', alpha: 0.95 }, tFill + 0.7, 0.1);
+  const lid = rrect(x + 10, y - 40, bw - 20, 44, 10);
+  FILL(lid, t0 + 0.4); MRK([lid], { col: GRY2, w: 12, ang: 1.2 }, t0 + 0.7, 0.15);
+  INK_(lid, { closed: true, w: 3, amp: 0.6 }, t0 + 0.4, 0.25);
+  for (let i = 1; i < 9; i++) INK_(line(x + 10 + i * (bw - 20) / 9, y - 34, x + 10 + i * (bw - 20) / 9, y - 2), { w: 1.6, amp: 0.2, passes: 1, alpha: 0.75 }, t0 + 0.6 + i * 0.02, 0.04);
+  const lab = rrect(x + 16, cy - 14, bw - 32, 64, 8);
+  FILL(lab, tFill + 0.6); INK_(lab, { closed: true, w: 2.6, amp: 0.6 }, tFill + 0.6, 0.15);
+  return TXT('HONEY', cx, cy + 34, 36, { f: 'KB', align: 'center', jit: 0.6 }, tFill + 0.72, 0.4);
+}
+// sucrose → glucose + fructose, drawn small inside the honey stomach (only readable when the camera dives in)
+function molecules(cx, cy, t0) {
+  const th = { w: 0.32, amp: 0.08, passes: 1 };
+  const pent = (x, y, r) => { const p = []; for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i / 5 * TAU; p.push([x + r * Math.cos(a), y + r * Math.sin(a)]); } return p; };
+  const h1 = hexPts(cx - 17, cy + 1, 3.6, Math.PI / 6), p1 = pent(cx - 7.6, cy + 1.4, 3.4);
+  INK_(h1, { ...th, closed: true }, t0, 0.35); INK_(line(cx - 13.9, cy + 1, cx - 10.9, cy + 1.2), th, t0 + 0.35, 0.1); INK_(p1, { ...th, closed: true }, t0 + 0.45, 0.3);
+  TXT('sucrose', cx - 12, cy - 6.5, 3.0, { f: 'PH', align: 'center', col: INK, jit: 0.3 }, t0 + 0.2, 0.45);
+  INK_([[cx - 2.5, cy + 1.2], [cx + 4, cy + 1.2]], th, t0 + 0.85, 0.15);
+  INK_([[cx + 2.6, cy - 0.2], [cx + 4, cy + 1.2], [cx + 2.6, cy + 2.6]], th, t0 + 1.0, 0.08);
+  const h2 = hexPts(cx + 9.5, cy - 0.5, 3.6, Math.PI / 6), p2 = pent(cx + 18.5, cy + 3.2, 3.4);
+  INK_(h2, { ...th, closed: true }, t0 + 1.1, 0.3); INK_(p2, { ...th, closed: true }, t0 + 1.35, 0.3);
+  TXT('glucose', cx + 9.5, cy - 6.5, 2.7, { f: 'PH', align: 'center', col: INK, jit: 0.3 }, t0 + 1.3, 0.35);
+  TXT('fructose', cx + 18.5, cy + 10.5, 2.7, { f: 'PH', align: 'center', col: INK, jit: 0.3 }, t0 + 1.6, 0.35);
+}
+
+function buildPage() {
+  SEED = 42;
+  // ---- hook: one bee's lifetime = 1/12 teaspoon (bottom-left of the page) ----
+  spoonFull(120, 908, 0.15, CUE.drop);
+  TXT('ONE BEE,', 300, 884, 36, { f: 'KB' }, 0.75, 0.75);
+  TXT('ONE LIFETIME', 300, 926, 36, { f: 'KB' }, 2.35, 1.0);
+  MST(bez([346, 978], [380, 970], [420, 970], [452, 976]), { w: 34, col: YEL, amp: 1.2 }, 6.75, 0.3);
+  TXT('= 1/12', 300, 988, 52, { f: 'KB' }, 5.3, 0.95);
+  TXT('teaspoon', 468, 986, 30, { f: 'PH', col: INK2 }, 6.3, 0.5);
+
+  // ---- title (answers "so where does it come from?") ----
+  ctx.font = '72px KB'; const wA = ctx.measureText('HOW BEES MAKE ').width; ctx.font = '82px KB'; const wB = ctx.measureText('HONEY').width;
+  const tx0 = 196, hx0 = tx0 + wA * 0.98, tEnd = hx0 + wB, rw = tEnd - tx0 + 110, rc = tx0 - 55 + rw / 2;
+  TITLE = { hx0, wB, rc, rw };
+  slow(CUE.title, 1.6, () => ribbon(rc, 112, rw, 112, '', 0, CUE.title, { fill: null, arc: 10, d: 0.34 }));
+  TXT('HOW BEES MAKE', tx0, 140, 72, { f: 'KB', jit: 0.6 }, 8.95, 0.95);
+  MST(bez([hx0 - 14, 130], [hx0 + wB * 0.3, 118], [hx0 + wB * 0.7, 116], [tEnd + 14, 124]), { w: 58, col: YEL, amp: 2 }, 9.85, 0.25);
+  TXT('HONEY', hx0, 138, 82, { f: 'KB', jit: 0.6 }, 9.95, 0.6);
+  TXT('生物课笔记：蜜蜂怎样酿蜜', 128, 240, 36, { f: 'ZK', col: INK2, jit: 0.4 }, 10.45, 0.9);
+
+  // ---- 1 · SIP : nectar ----
+  let t = CUE.s1;
+  slow(t, 1.5, () => { box(56, 312, 388, 448, t, 0.3); ribbon(250, 312, 150, 54, '1  SIP', 34, t + 0.1, { d: 0.26, td: 0.2 }); });
+  slow(t + 0.7, 1.8, () => flower(250, 458, 1.15, t + 0.7, 0.85));
+  TXT('NECTAR', 250, 668, 42, { f: 'KB', align: 'center' }, 11.75, 0.5);
+  TXT('sugary flower juice,', 250, 708, 27, { f: 'PH', align: 'center', col: INK2 }, 12.55, 0.75);
+  TXT('up to 80% water', 250, 740, 27, { f: 'PH', align: 'center', col: INK2 }, 13.6, 0.7);
+  // a few droplets: nectar is mostly water
+  [[312, 404, 7], [330, 428, 5], [300, 380, 4.5]].forEach(([x, y, r], i) => { const d = [[x, y - r * 1.8]].concat(ell(x, y, r, r, -Math.PI * 0.15, Math.PI * 1.15, 20)); INK_(d, { w: 1.8, amp: 0.2, passes: 1, closed: true }, 14.1 + i * 0.18, 0.2); });
+
+  // ---- the honey stomach appears first (match cut from the flower's yellow centre) ----
+  const bs = 1.18, bx = 708, by = 500;
+  STOM = { x: bx - 44 * bs, y: by + 18 * bs, r: 25 * bs };
+  // ---- 2 · CARRY : the bee is drawn around the drop ----
+  t = CUE.match;
+  fatArrow(456, 520, 514, 17.0, { d: 0.35 });
+  slow(t + 0.6, 2.2, () => bee(bx, by, bs, t + 0.6, 0.9, { stomach: t + 0.6 - 0.9 }));
+  slow(17.4, 1.6, () => ribbon(706, 312, 176, 54, '2  CARRY', 34, 17.4, { d: 0.26, td: 0.2 }));
+  inkArrow(bez([560, 640], [585, 618], [610, 594], [636, 532]), { w: 2.4, amp: 0.5, head: 12 }, 18.3, 0.35);
+  TXT('honey stomach', 556, 668, 27, { f: 'PH', align: 'center', col: INK2 }, 18.5, 0.7);
+  molecules(STOM.x, STOM.y, 21.3);
+  TXT('+ INVERTASE', 716, 716, 36, { f: 'KB', align: 'center' }, 23.3, 0.7);
+  TXT('an enzyme that splits sugar', 706, 752, 26, { f: 'PH', align: 'center', col: INK2 }, 24.05, 0.6);
+
+  // ---- 3 · FAN : the pen runs round the box, the camera rides along ----
+  t = CUE.follow;
+  fatArrow(916, 520, 974, t - 0.3, { d: 0.3 });
+  {
+    const x = 984, y = 312, w = 424, h = 448, r = 28;
+    const p = rrect(x, y, w, h, r);                     // starts at the top-right corner arc
+    const k0 = p.findIndex(([px, py]) => px < x + r + 1 && py < y + r + 1);
+    const P = resample(p.slice(k0).concat(p.slice(0, k0 + 1)).concat([[x + r + 30, y]]), 3);
+    BOX3 = { P, t0: t, d: 1.75 };
+    dropShadow(p, 9, 10, t + 1.7, 0.2);
+    INK_(P, { w: 3.2, amp: 1.6 }, t, 1.75);
+  }
+  slow(25.9, 1.6, () => ribbon(1196, 312, 150, 54, '3  FAN', 34, 25.9, { d: 0.24, td: 0.16 }));
+  const r3 = 30, dx = r3 * Math.sqrt(3), dy = r3 * 1.5, hx = 1060, hy = 430;
+  slow(25.45, 2.0, () => honeycomb([[hx, hy], [hx + dx, hy], [hx + dx / 2, hy + dy], [hx - dx / 2, hy + dy], [hx + dx * 1.5, hy + dy], [hx, hy + dy * 2], [hx + dx, hy + dy * 2]], r3, 25.45, 0.7, [2, 5]));
+  slow(27.6, 1.5, () => bee(1316, 418, 0.42, 27.6, 0.55));
+  slow(28.25, 1.3, () => { bee(1226, 392, 0.26, 28.25, 0.5); bee(1368, 360, 0.22, 28.4, 0.5); });
+  [[0, -16], [8, 4], [0, 24]].forEach(([ox, oy], i) => INK_(bez([1240 + ox, 432 + oy], [1222 + ox, 424 + oy], [1206 + ox, 440 + oy], [1184 + ox, 432 + oy], 16), { w: 2.4, amp: 0.4, passes: 1 }, 28.7 + i * 0.12, 0.15));
+  TXT('fan the wings', 1316, 488, 26, { f: 'PH', align: 'center', col: INK2 }, 29.1, 0.6);
+  // the water chart: nectar up to 80 % → honey ~18 % (both bars stay whole in frame ≥ 2.5 s)
+  t = CUE.chart;
+  const yb = 712, sc = 1.45, bx1 = 1132, bx2 = 1272, bw = 74;
+  TXT('WATER', 1004, 600, 34, { f: 'KB' }, t + 0.05, 0.5);
+  INK_(line(1100, yb, 1380, yb), { w: 2.6, amp: 0.6 }, t + 0.3, 0.3);
+  const b1 = [[bx1, yb], [bx1, yb - 80 * sc], [bx1 + bw, yb - 80 * sc], [bx1 + bw, yb]];
+  const b2 = [[bx2, yb], [bx2, yb - 18 * sc], [bx2 + bw, yb - 18 * sc], [bx2 + bw, yb]];
+  addEl(t + 0.75, 1.1, 'marker', p => { const e = eo(p), hh = 80 * sc * e; markerDraw([[[bx1, yb], [bx1, yb - hh], [bx1 + bw, yb - hh], [bx1 + bw, yb]]], { col: GRY2, w: 14, ang: -0.7, edge: e >= 1 }, 1); }, bx1);
+  INK_(b1, { w: 2.8, amp: 0.6 }, t + 1.75, 0.35);
+  TXT('80%', bx1 + bw / 2, yb - 80 * sc - 14, 30, { f: 'KB', align: 'center' }, t + 1.55, 0.45);
+  TXT('nectar', bx1 + bw / 2, yb + 30, 26, { f: 'PH', align: 'center', col: INK2 }, t + 2.0, 0.4);
+  inkArrow(bez([bx1 + bw + 8, yb - 112], [bx1 + bw + 50, yb - 116], [bx2 - 30, yb - 96], [bx2 - 8, yb - 50]), { w: 2.4, amp: 0.5, head: 12, dash: [10, 7] }, t + 2.5, 0.55);
+  addEl(t + 3.0, 0.6, 'marker', p => { const hh = 18 * sc * eo(p); markerDraw([[[bx2, yb], [bx2, yb - hh], [bx2 + bw, yb - hh], [bx2 + bw, yb]]], { col: YEL, w: 12, ang: -0.7, edge: p >= 1 }, 1); }, bx2);
+  INK_(b2, { w: 2.8, amp: 0.6 }, t + 3.5, 0.2);
+  TXT('18%', bx2 + bw / 2, yb - 18 * sc - 14, 34, { f: 'KB', align: 'center' }, t + 3.45, 0.45);
+  TXT('honey', bx2 + bw / 2, yb + 30, 26, { f: 'PH', align: 'center', col: INK2 }, t + 3.85, 0.4);
+
+  // ---- 4 · SEAL ----
+  t = CUE.seal;
+  fatArrow(1418, 520, 1476, t + 0.1, { d: 0.35 });
+  slow(t + 0.4, 1.6, () => ribbon(1668, 312, 158, 54, '4  SEAL', 34, t + 0.4, { d: 0.22, td: 0.16 }));
+  jarFull(1640, 506, t + 0.6, CUE.honey);
+  sparks(1640, 506, 140, 162, [-2.6, -2.25, -0.55, -0.25], CUE.honey + 1.1, 0.3);
+  const cA = hexPts(1790, 620, 30, Math.PI / 6), cB = hexPts(1790 + 30 * Math.sqrt(3), 620, 30, Math.PI / 6);
+  FILL(cA, 37.0); FILL(cB, 37.25);
+  MRK([cA], { col: YEL, w: 12 }, 37.3, 0.2); MRK([cB], { col: GRY, w: 12, ang: 0.9 }, 37.75, 0.25);
+  INK_(cA, { closed: true, w: 2.8, amp: 0.5 }, 37.0, 0.25); INK_(cB, { closed: true, w: 2.8, amp: 0.5 }, 37.25, 0.25);
+  INK_(bez([1823, 626], [1835, 604], [1869, 604], [1881, 626], 20), { w: 2.2, amp: 0.3, passes: 1 }, 37.95, 0.2);
+  TXT('WAX CAP', 1640, 712, 38, { f: 'KB', align: 'center' }, 37.55, 0.6);
+  TXT('ripe honey, sealed in', 1640, 748, 26, { f: 'PH', align: 'center', col: INK2 }, 39.2, 0.5);
+
+  // ---- 2,000,000 flowers ----
+  t = CUE.million;
+  TXT('1 lb of honey takes', 726, 868, 28, { f: 'PH', col: INK2 }, t - 0.45, 1.1);
+  TXT('2,000,000', 726, 932, 54, { f: 'KB' }, t + 2.3, 0.75);
+  MST(bez([724, 916], [800, 906], [930, 908], [1010, 914]), { w: 44, col: YEL, amp: 1.5 }, t + 3.0, 0.3);
+  TXT('flower visits', 1020, 930, 32, { f: 'KB' }, t + 3.1, 0.6);
+  // the flowers multiply: more pens at once, faster each time
+  const FL = [[1256, 900, 0.3], [1326, 936, 0.25], [1378, 884, 0.21], [1222, 962, 0.2], [1290, 990, 0.22], [1352, 1000, 0.19], [1404, 952, 0.18], [1198, 1010, 0.17], [1420, 1012, 0.16]];
+  FL.forEach(([x, y, s], i) => slow(t + 3.2 + i * 0.13, 1.4 - i * 0.08, () => flower(x, y, s, t + 3.2 + i * 0.13, 0.5, false)));
+
+  // ---- the pull-back: the page finishes itself ----
+  t = CUE.pull;
+  TXT('BIO 101  /  LECTURE 7', 1836, 86, 30, { f: 'PH', align: 'right' }, t + 0.3, 0.7);
+  INK_(bez([1580, 100], [1660, 106], [1760, 98], [1840, 104]), { w: 2.4, amp: 0.8, passes: 1 }, t + 1.0, 0.25);
+  INK_(bez([1236, 214], [1290, 130], [1330, 230], [1400, 160]).concat(bez([1400, 160], [1440, 120], [1470, 140], [1500, 150])), { w: 2.2, amp: 0.5, passes: 1, dash: [10, 9] }, t + 0.4, 0.8);
+  slow(t + 1.0, 1.0, () => bee(1560, 168, 0.36, t + 1.0, 0.5));
+  slow(t + 0.5, 1.6, () => box(1440, 840, 420, 170, t + 0.5, 0.3));
+  TXT('NECTAR + ENZYMES', 1650, 902, 34, { f: 'KB', align: 'center' }, t + 0.9, 0.7);
+  TXT('- WATER  =', 1560, 962, 34, { f: 'KB', align: 'center' }, t + 1.6, 0.4);
+  MST(bez([1662, 950], [1700, 946], [1770, 948], [1800, 954]), { w: 40, col: YEL, amp: 1.2 }, t + 2.15, 0.2);
+  TXT('HONEY', 1736, 966, 40, { f: 'KB', align: 'center' }, t + 2.05, 0.4);
+  // last stroke: back to the hook — a yellow loop round 1/12
+  MST(ell(392, 970, 92, 40, -0.4, -0.4 + TAU * 1.04, 80), { w: 7, col: YELD, amp: 2.2 }, CUE.done - 0.55, 0.5);
+
+  // ---- sign-off: a footer the pen writes on the paper under the page (fully written by 48.35 s, held to the end) ----
+  t = CUE.sign;
+  INK_([[60, 1082], [1860, 1082]], { w: 1.8, amp: 0.8, passes: 1, dash: [12, 9], alpha: 0.75 }, t, 0.35);
+  const fy = 1114;
+  TXT('How Bees Make Honey', 60, fy, 32, { f: 'PH', col: INK2 }, t + 0.1, 0.42);
+  ctx.font = '32px PH'; const wT = ctx.measureText('How Bees Make Honey').width, wS = ctx.measureText('Sketchnote ').width;
+  const xs = 60 + wT + 54;
+  INK_(ell(xs - 27, fy - 10, 3, 3, 0, TAU, 10), { w: 2.2, amp: 0.1, passes: 1, closed: true }, t + 0.5, 0.05);
+  TXT('Sketchnote', xs, fy, 32, { f: 'PH', col: INK2 }, t + 0.25, 0.35);
+  TXT('视觉笔记', xs + wS, fy + 1, 32, { f: 'ZK', col: INK2, jit: 0.4 }, t + 0.45, 0.3);
+  TXT('LemoLab × Claude Opus 5.5', 1860, fy, 34, { f: 'KB', align: 'right' }, t + 0.25, 0.5);
+}
+
+// ---------- camera: one world → screen function ----------
+// keys [t, x, y, zoom, ease]; two keys at the same t = a cut. 'follow' rides the pen tip around box 3.
+const CAM = [
+  [0.0, 150, 905, 3.3], [4.6, 205, 912, 2.85],                    // S1 hook: the spoon, slow pull to make room for the words
+  [5.2, 300, 925, 2.5], [7.7, 330, 930, 2.45],                    // S2 drift right onto "= 1/12"
+  [8.5, 605, 168, 1.62, 'whip'], [10.1, 620, 178, 1.58],           // S3 whip-tilt up the empty page to the title
+  [10.9, 255, 560, 1.75], [14.4, 250, 555, 1.85],                 // S4 down to 1 SIP, slow push while it's written
+  [15.62, 250, 458, 8.0],                                         //    push into the flower's yellow centre
+  [15.62, STOM_X(), STOM_Y(), 8.0 * 23 / 29.5],                   // S5 match cut: the honey stomach, same size on screen
+  [17.3, 690, 505, 2.1], [19.9, 700, 512, 2.12],                  //    pull back while the bee is drawn round it
+  [21.0, STOM_X() + 0.5, STOM_Y() + 1.5, 14.5], [23.2, STOM_X() + 1, STOM_Y() + 1.5, 13.6],   // S6 dive into the stomach
+  [24.3, 700, 585, 1.9], [25.15, 760, 560, 2.1],                  //    back out to "+ INVERTASE"
+  ['follow', 25.15, 26.9, 1.45],                                   // S7 ride the pen round box 3
+  [27.6, 1195, 470, 1.9], [29.7, 1210, 455, 2.0],                 // S8 the hive: comb, bees, wind
+  [30.6, 1190, 600, 2.05], [36.0, 1196, 610, 2.18],               // S9 tilt to the chart, hold it whole (slow push)
+  [36.9, 1660, 540, 1.85], [39.35, 1665, 555, 1.9],                 // S10 pan to the jar
+  [40.0, 930, 925, 1.9], [43.9, 1090, 945, 1.95],                // S11 down to 2,000,000, drift with the flowers
+  [47.4, 960, 651, 0.84], [51.0, 960, 651, 0.84]];                // S12 the pull-back: the whole page + the footer sign-off
+const toScreen = (c, x, y) => [(x - c.x) * c.z + W / 2, (y - c.y) * c.z + H / 2];
+function STOM_X() { return 708 - 44 * 1.18; }
+function STOM_Y() { return 500 + 18 * 1.18; }
+function keyCam(t) {
+  const K = CAM.filter(k => k[0] !== 'follow');
+  let i = 0; while (i < K.length - 2 && t >= K[i + 1][0]) i++;
+  const a = K[i], b = K[i + 1];
+  if (b[0] <= a[0]) return { x: b[1], y: b[2], z: b[3] };
+  let u = clamp((t - a[0]) / (b[0] - a[0]));
+  u = b[4] === 'whip' ? (u < 0.5 ? 16 * u ** 5 : 1 - Math.pow(-2 * u + 2, 5) / 2) : eio(u);
+  const z = Math.exp(lerp(Math.log(a[3]), Math.log(b[3]), u));
+  // big zoom changes: move the centre in step with 1/zoom so the target doesn't swing
+  const wa = 1 / a[3], wb = 1 / b[3], k = Math.abs(wa - wb) < 1e-6 ? u : (1 / z - wa) / (wb - wa);
+  const kk = Math.abs(Math.log(a[3] / b[3])) > 0.5 ? k : u;
+  return { x: lerp(a[1], b[1], kk), y: lerp(a[2], b[2], kk), z };
+}
+function penTip(p) { const P = BOX3.P, i = clamp(p) * (P.length - 1), j = Math.floor(i), f = i - j, q = P[Math.min(P.length - 1, j + 1)]; return [lerp(P[j][0], q[0], f), lerp(P[j][1], q[1], f)]; }
+function cam(t) {
+  const F = CAM.find(k => k[0] === 'follow');
+  const base = keyCam(t);
+  const IN = 0.4, OUT = 0.8;
+  if (!F || !BOX3 || t < F[1] - IN || t > F[2] + OUT) return base;
+  // the camera trails the pen tip slightly; blends in over IN s before, hands back to the keys over OUT s after
+  const tc = Math.min(t, F[2]);
+  const p = (tc - BOX3.t0) / BOX3.d, a = penTip(p - 0.035), b = penTip(p - 0.07);
+  const tip = { x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2, z: F[3] };
+  const w = t <= F[2] ? eio(clamp((t - (F[1] - IN)) / IN)) : 1 - eio((t - F[2]) / OUT);
+  return { x: lerp(base.x, tip.x, w), y: lerp(base.y, tip.y, w), z: Math.exp(lerp(Math.log(base.z), Math.log(tip.z), w)) };
+}
+
+// ---------- paper ----------
+let GRAIN = null; const GX0 = -400, GY0 = -300, GS = 1.6;
+function makeGrain() {
+  GRAIN = document.createElement('canvas'); GRAIN.width = Math.round(2720 * GS); GRAIN.height = Math.round(1680 * GS);
+  const g = GRAIN.getContext('2d'); SEED = 9;
+  for (let i = 0; i < 60000; i++) { g.fillStyle = `rgba(90,80,60,${rr(0.015, 0.05)})`; g.fillRect(rr(0, GRAIN.width), rr(0, GRAIN.height), rr(0.8, 2.6), rr(0.8, 2.6)); }
+}
+function paper(c) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = PAPER; ctx.fillRect(0, 0, W, H);
+  ctx.setTransform(c.z, 0, 0, c.z, W / 2 - c.x * c.z, H / 2 - c.y * c.z);
+  ctx.drawImage(GRAIN, GX0, GY0, GRAIN.width / GS, GRAIN.height / GS);
+  const x0 = c.x - W / 2 / c.z, x1 = c.x + W / 2 / c.z, y0 = c.y - H / 2 / c.z, y1 = c.y + H / 2 / c.z;
+  ctx.fillStyle = DOT; const st = 26;
+  for (let y = Math.floor((y0 - 13) / st) * st + 13; y < y1 + st; y += st) for (let x = Math.floor((x0 - 13) / st) * st + 13; x < x1 + st; x += st) { ctx.beginPath(); ctx.arc(x, y, 1.3, 0, TAU); ctx.fill(); }
+}
+
+// ---------- subtitles: a paper slip taped to the bottom of the frame (screen space) ----------
+let TL = null;
+const QS = new URLSearchParams(location.search), NOSUB = !!QS.get('nosub');
+function subtitles(t) {
+  if (NOSUB || !TL) return;
+  const L = TL.lines.find(l => t >= l.c0 && t < l.c1); if (!L) return;
+  const a = clamp(Math.min((t - L.c0) / 0.2, (L.c1 - t) / 0.2)), rise = (1 - eo(clamp((t - L.c0) / 0.3))) * 6;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = a;
+  ctx.font = '42px ZK'; const wz = ctx.measureText(L.zh).width; ctx.font = '31px PH'; const we = ctx.measureText(L.en).width;
+  const cw = Math.max(wz, we) + 76, ch = 104, x0 = W / 2 - cw / 2, y0 = H - 24 - ch + rise;
+  ctx.fillStyle = 'rgba(80,80,92,0.10)'; ctx.fill(pathOf(rrect(x0 + 4, y0 + 5, cw, ch, 10)));
+  ctx.fillStyle = PAPER; ctx.globalAlpha = a * 0.95; ctx.fill(pathOf(rrect(x0, y0, cw, ch, 10)));
+  // a strip of grey washi tape on the top-left corner
+  ctx.globalAlpha = a; ctx.save(); ctx.translate(x0 + 30, y0 + 2); ctx.rotate(-0.16); ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = rgba(PL.shd, 0.22); ctx.fillRect(-34, -11, 68, 22); ctx.restore();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = INK; ctx.font = '42px ZK'; ctx.fillText(L.zh, W / 2, y0 + 50);
+  ctx.fillStyle = INK2; ctx.font = '31px PH'; ctx.fillText(L.en, W / 2, y0 + 88);
+  ctx.restore();
+}
+// window.TEXTS: the texts written on the page (the subtitle slip is checked through the .srt), each with its screen box
+window.TEXTS = t => {
+  t += FROM; const c = cam(t), out = [];
+  PAGE_TEXTS.forEach(({ T, t0 }, i) => {
+    if (t < t0) return;
+    const x0 = T.x + T.chars[0].ox, x1 = x0 + T.tot, y0 = T.y - T.size * 0.85, y1 = T.y + T.size * 0.3;
+    const [a0, b0] = toScreen(c, x0, y0), [a1, b1] = toScreen(c, x1, y1);
+    out.push({ id: 'p' + i, text: T.s, x0: a0, y0: b0, x1: a1, y1: b1 });
+  });
+  return out;
+};
+
+// ---------- render ----------
+// ?from=a&to=b renders only [a, b) of the film: render(t) draws film second a + t (to re-render a few seconds)
+const FROM = +(QS.get('from') || 0), TO = +(QS.get('to') || 51);
+window.DUR = TO - FROM;
+window.render = function (t) { renderFilm(t + FROM); };
+function renderFilm(t) {
+  const f = Math.round(t * FPS); BOIL = Math.floor(f / 2) % 3;
+  const c = cam(t);
+  paper(c);
+  for (const e of EL) {
+    if (t < e.t0) continue;
+    SEED = e.seed;
+    e.draw(clamp((t - e.t0) / e.d));
+  }
+  subtitles(t);
+}
+window.CAMAT = cam;
+
+async function boot() {
+  document.documentElement.style.background = document.body.style.background = PAPER;
+  GLY = await (await fetch('glyphs.json')).json();
+  TL = await (await fetch('timeline.json')).json();
+  await Promise.all(['KB', 'PH', 'ZK'].map(f => document.fonts.load(`40px ${f}`, f === 'ZK' ? '蜜蜂' : 'Ag')));
+  makeGrain();
+  buildPage();
+  window.EV = EL.filter(e => e.kind !== 'fill').map(e => { const c = cam(e.t0 + e.d / 2), x = toScreen(c, e.wx, 0)[0]; return { t: +e.t0.toFixed(4), type: e.kind, d: +e.d.toFixed(4), pan: +clamp((x / W) * 2 - 1, -1, 1).toFixed(3) }; });
+  for (const [k, v] of Object.entries(CUE)) window.EV.push({ t: v, type: 'cue', name: k });
+  window.CUE = CUE;
+  window.render(0);
+  window.READY = true;
+}
+boot();
+</script>
+</body></html>

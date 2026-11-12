@@ -1,0 +1,125 @@
+{
+ "dur": 52.0,
+ "vo": {
+  "L01": [
+   0.7,
+   4.327
+  ],
+  "L02": [
+   5.6,
+   3.225
+  ],
+  "L03": [
+   10.4,
+   4.28
+  ],
+  "L04": [
+   15.6,
+   3.151
+  ],
+  "L05": [
+   21.9,
+   5.407
+  ],
+  "L06": [
+   27.7,
+   3.136
+  ],
+  "L07": [
+   31.3,
+   3.206
+  ],
+  "L08": [
+   35.0,
+   4.945
+  ],
+  "L09": [
+   40.6,
+   2.4
+  ],
+  "L10": [
+   43.3,
+   5.53
+  ]
+ },
+ "cues": [
+  {
+   "t0": 0.7,
+   "t1": 5.52,
+   "zh": "1918 年 5 月，美国要开始用飞机送信了。",
+   "en": "May 1918. America is about to fly the mail."
+  },
+  {
+   "t0": 5.6,
+   "t1": 9.42,
+   "zh": "为此发行的新邮票：红框里，一架蓝色飞机。",
+   "en": "The new stamp: a blue plane, in a red frame."
+  },
+  {
+   "t0": 10.4,
+   "t1": 12.66,
+   "zh": "每张纸都要过两次印刷机。",
+   "en": "Every sheet goes through the press twice."
+  },
+  {
+   "t0": 12.7,
+   "t1": 15.28,
+   "zh": "先印红，再印蓝。",
+   "en": "Red first, then blue."
+  },
+  {
+   "t0": 15.6,
+   "t1": 19.35,
+   "zh": "可有一张纸，蓝色印反了。",
+   "en": "But on one sheet, the blue went on upside down."
+  },
+  {
+   "t0": 21.9,
+   "t1": 24.36,
+   "zh": "集邮的威廉·罗比买下了它。",
+   "en": "A collector named William Robey bought it."
+  },
+  {
+   "t0": 24.4,
+   "t1": 27.62,
+   "zh": "100 枚，24 美元。",
+   "en": "100 stamps, $24."
+  },
+  {
+   "t0": 27.7,
+   "t1": 31.22,
+   "zh": "一周后，他以 15,000 美元转手。",
+   "en": "A week later, he sold it for $15,000."
+  },
+  {
+   "t0": 31.3,
+   "t1": 34.92,
+   "zh": "整版被剪开，飞机各奔东西。",
+   "en": "The sheet was cut up, and the planes flew apart."
+  },
+  {
+   "t0": 35.0,
+   "t1": 40.52,
+   "zh": "2023 年，单单一枚就卖出 200 多万美元。",
+   "en": "In 2023, a single one sold for just over $2 million."
+  },
+  {
+   "t0": 40.6,
+   "t1": 43.22,
+   "zh": "有的遗失了，有的被偷了。",
+   "en": "Some were lost. Some were stolen."
+  },
+  {
+   "t0": 43.3,
+   "t1": 46.11,
+   "zh": "第 66 号在 1955 年失踪，",
+   "en": "Number 66 vanished in 1955,"
+  },
+  {
+   "t0": 46.15,
+   "t1": 49.43,
+   "zh": "至今下落不明。",
+   "en": "and has never been found."
+  }
+ ]
+}

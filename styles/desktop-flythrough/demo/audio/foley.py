@@ -1,4 +1,4 @@
-"""Foley for 明年没有这一天 (Desktop Flythrough demo): every on-screen action gets a sound; pitched sounds take their notes from the score's harmony.json,
+"""Foley for 叮之前 / Before the Ding (Tabletop App Flythrough demo): every on-screen action gets a sound; pitched sounds take their notes from the score's harmony.json,
 camera whips get whooshes sized by the measured camera speed. Usage: sfx.py <events.json> <camspeed.json> <harmony.json> <out.wav>"""
 import sys, os, json
 import numpy as np

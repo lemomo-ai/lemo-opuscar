@@ -1,0 +1,37 @@
+Thermal Camera demo · 《冬夜，一栋楼的体温》 A Building on a Winter Night · third-party assets and sources
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios),
+  FreePats project (freepats.zenvoid.org)
+  Instruments: cellos, contrabass, contrabass_pizz, glass, glockenspiel, gran_cassa, harp, horn, vibraphone,
+  vibraphone_bowed, violas, violins, violins_trem (core/audio/sampler.py).
+
+## Sound effects
+- Wind, scan sweeps, lock beeps, the isotherm alarm, the detector shutter, water in the pipes and fur rustles are
+  procedural (demo/audio.py and core/audio/sfx.py).
+- The meow: "2015-11-24.νιαούρισμα.Νιάου.noise reduced.flac" by Tsester, CC0 1.0, Wikimedia Commons,
+  https://commons.wikimedia.org/wiki/File:2015-11-24.%CE%BD%CE%B9%CE%B1%CE%BF%CF%8D%CF%81%CE%B9%CF%83%CE%BC%CE%B1.%CE%9D%CE%B9%CE%AC%CE%BF%CF%85.noise_reduced.flac
+  Downloaded by build.sh to demo/assets/meow/meow_cc0.flac.
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- IBM Plex Mono Regular / Medium (readings, scale ends, time stamp): IBM, https://github.com/google/fonts/tree/main/ofl/ibmplexmono
+- Inter (English labels): Rasmus Andersson, https://github.com/google/fonts/tree/main/ofl/inter (variable, Inter[opsz,wght].ttf)
+- Noto Sans SC 500 / 700 (Chinese labels and titles): Google / Adobe, https://github.com/google/fonts/tree/main/ofl/notosanssc
+  Static instances subset to the characters in src/*.js (make_fonts.py) from the variable font
+  NotoSansSC[wght].ttf, downloaded by build.sh into demo/fonts/src/.
+
+## Code
+- three.js r170 (MIT), with BufferGeometryUtils, RoundedBoxGeometry and the MarchingCubes lookup tables from its
+  examples: loaded from the library's node_modules.
+
+## Images, models
+- None. The building, cars, cat, trees, snow, sky and the rooms behind the windows are built in code; no photographs,
+  no external models, no AI-generated images.
+
+## Facts
+- Material constants, the retrofit rules, survey conditions, the palette and the cat's temperatures are sourced in
+  demo/FACTS.md (GB 50176-2016, the 2008 retrofit guideline of the Ministry of Housing and Urban-Rural Development,
+  Fluke and FLIR application notes, the MSD Veterinary Manual), with URLs and quoted wording.
+- Invented for the film: the building, its residents, the survey dates and times. The heat-loss figures (187 → 73 kW,
+  −61 %) are an estimate by demo/tools/heatloss.py for this invented building; the cat's fur temperatures and the
+  bonnet temperatures are modelling estimates, not measurements. No real company, product or logo appears.

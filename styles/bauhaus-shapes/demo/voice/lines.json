@@ -1,0 +1,98 @@
+[
+ {
+  "id": "v01",
+  "text": "Start with one dot.",
+  "zh": "从一个点开始。",
+  "en": "Start with one dot.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v02",
+  "text": "Every ten years, it doubles.",
+  "zh": "每 10 年，它翻一倍。",
+  "en": "Every 10 years, it doubles.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v03",
+  "text": "After seventy years, it's one hundred and twenty-eight.",
+  "zh": "70 年后，它是 128。",
+  "en": "After 70 years, it's 128.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v04",
+  "text": "Now take the interest out every year, at the same rate.",
+  "zh": "换个做法：每年把利息取走，利率不变。",
+  "en": "Now take the interest out every year, at the same rate.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v05",
+  "text": "Seventy years later, you have just over six.",
+  "zh": "70 年后，只有 6 出头。",
+  "en": "Seventy years later, you have just over 6.",
+  "voice": "af_heart",
+  "speed": 0.78
+ },
+ {
+  "id": "v06",
+  "text": "Here is the strange part.",
+  "zh": "奇怪的地方在这里。",
+  "en": "Here is the strange part.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v07",
+  "text": "The last ten years add sixty-four.",
+  "zh": "最后 10 年，多出 64。",
+  "en": "The last 10 years add 64.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v08",
+  "text": "That's all the growth before them, plus the dot you started with.",
+  "zh": "等于之前所有的增长，再加上最初那个点。",
+  "en": "That's all the growth before them, plus the dot you started with.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v09",
+  "text": "Start ten years later, on the same slope,",
+  "zh": "同一道坡，晚出发 10 年，",
+  "en": "Start 10 years later, on the same slope,",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v10",
+  "text": "and you finish with half.",
+  "zh": "终点只剩一半。",
+  "en": "and you finish with half.",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v11",
+  "text": "Seventy-two, divided by your yearly rate,",
+  "zh": "72 除以年利率，",
+  "en": "72, divided by your yearly rate,",
+  "voice": "af_heart",
+  "speed": 0.76
+ },
+ {
+  "id": "v12",
+  "text": "tells you how many years it takes to double.",
+  "zh": "就是翻一倍要的年数。",
+  "en": "tells you how many years it takes to double.",
+  "voice": "af_heart",
+  "speed": 0.76
+ }
+]

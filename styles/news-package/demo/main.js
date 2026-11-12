@@ -402,7 +402,7 @@ function shotPrice(t) {
   ctx.restore();
 }
 
-// ② Kospi: real daily closes (Korea Exchange data, fetched through the Naver Finance API, data/kospi_daily.csv), plotted as the drop from the 23 September high
+// ② Kospi: real daily closes (Korea Exchange data, fetched through the Naver Finance API; the 19 closes are written here), plotted as the drop from the 23 September high
 const KDATA = [['15 SEP', 6627.26], ['16 SEP', 6717.97], ['17 SEP', 6715.41], ['18 SEP', 6894.23], ['21 SEP', 7007.72], ['22 SEP', 7017.91], ['23 SEP', 7080.92],
   ['28 SEP', 6889.74], ['29 SEP', 6870.81], ['30 SEP', 6838.04], ['1 OCT', 6971.35], ['2 OCT', 7003.74],
   ['6 OCT', 6941.39], ['7 OCT', 6803.90], ['8 OCT', 6625.93], ['12 OCT', 6384.24], ['13 OCT', 6035.35], ['14 OCT', 6008.81], ['15 OCT', 5554.22]];

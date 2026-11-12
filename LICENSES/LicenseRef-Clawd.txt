@@ -1,0 +1,15 @@
+Clawd
+
+Clawd, the small orange character, is Anthropic's: its design and its name
+belong to Anthropic. The files that REUSE.toml marks with LicenseRef-Clawd are
+pictures in which Clawd appears, and the code that draws it: pictures from
+OPUSCAR 98, from the thank-you films for 300, 800, 3,000 and 6,000 stars and
+from the demo film of Mascot Screencast, and that demo's drawing code.
+
+Clawd is excluded from the CC BY 4.0 licence of these pictures and of the films
+they come from, from the MIT licence of that code, and from every other licence
+in this repository. Lemomo (LemoLab) gives no licence for Clawd, and none for
+any of Anthropic's names, logos or trademarks. The rest of each picture is ours,
+under CC BY 4.0, and the rest of the code is ours, under MIT (see LICENSE, rules
+3 and 4). Each picture may still be shared whole, as published, under CC BY 4.0,
+and the code used under MIT, for everything but Clawd.

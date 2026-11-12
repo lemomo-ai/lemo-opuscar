@@ -1,0 +1,6 @@
+{
+ "_doc": "What styleboard/build.py (the README's Markdown) and styleboard/art/readme.mjs (its pictures) must agree on. Pictures are docs/readme/station-<NN>-<en|zh>-<light|dark>.webp, cards/<slug>-<lang>-<theme>.webp, thanks/<id>-<lang>-<theme>.webp, opuscar98-<lang>-<theme>.webp, end-<lang>-<theme>.webp, cover-<lang>-<theme>.webp.",
+ "dir": "docs/readme",
+ "cols": 3,
+ "cols_by_count": {"4": 4}
+}

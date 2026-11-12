@@ -1,11 +1,16 @@
-# Builds the style gallery (styleboard/) and publishes it to GitHub Pages on every push to main.
-# Films: 720p cuts from the "web" release are copied into the site; full quality stays on the "films" release.
+# Builds the site, the Workbench (styleboard/pages.py and home.py), and publishes it to GitHub Pages on every push to main.
+# Films: the styles' 720p demo films load from the films repository's own Pages site (site_config.FILMS_BASE; tools/films_repo.sh
+# fills it); OPUSCAR 98, the thank-you films and the "My style" demo come from the "web" release into the site at films/
+# (site_config.SITE_FILMS). Full quality stays on the "films" and "thanks" releases.
+# Media: posters, stills, sprites and the home page's long take are not in git. They come from site-media.tar on the "site-media"
+# release, which tools/site_media.sh packs and uploads. THAT RELEASE HAS TO EXIST BEFORE THIS WORKFLOW CAN RUN
+# (gh release create site-media --title "Site media" --notes "…", then sh tools/site_media.sh --upload); until then the build stops at "media".
 name: gallery
 
 on:
   push:
     branches: [main]
-    paths: ['styleboard/**', 'styles/*/poster.jpg', 'styles/*/style.json', 'styles/*/STYLE.md', '.github/workflows/pages.yml']
+    paths: ['styleboard/**', 'docs/social.jpg', 'styles/*/poster.jpg', 'styles/*/style.json', 'styles/*/STYLE.md', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -25,28 +30,59 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - run: python3 styleboard/build.py --site _site
-      # 720p cuts live on the "web" release; Pages serves them as video/mp4 (Safari won't play Release downloads)
-      - run: gh release download web --repo "$GITHUB_REPOSITORY" --pattern '*.mp4' --dir _site/films
+      # the font subsets (fontTools, brotli); the faces too big for git are pinned in styleboard/fonts/fetch.py and kept between runs
+      - run: python3 -m pip install --quiet fonttools brotli
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/lemo-opuscar/fonts
+          key: fonts-${{ hashFiles('styleboard/fonts/fetch.py') }}
+      # the films the site serves itself, from the "web" release; Pages serves them as video/mp4 (Safari won't play Release downloads).
+      # The style films are not downloaded: they would take the site past the 1 GB GitHub Pages allows, so they have the films repository.
+      - name: films
+        run: |
+          mkdir -p _site/films
+          gh release download web --repo "$GITHUB_REPOSITORY" --dir _site/films \
+            --pattern opuscar98.mp4 --pattern "stars*.mp4" --pattern my-style-material-grid.mp4
+          cd _site/films
+          for f in opuscar98 stars300 stars800 stars2000 stars3000 stars6000 my-style-material-grid; do
+            [ -s "$f.mp4" ] || { echo "::error::$f.mp4 is not on the \"web\" release (sh tools/publish.sh)"; exit 1; }
+          done
         env:
           GH_TOKEN: ${{ github.token }}
-      # every film the gallery links must be in the site, or its card opens a dead player (e.g. a style pushed before its films were published)
-      - name: check that every linked film is in the site
+      - name: media
         run: |
-          links=$( { grep -o 'data-src="films/[^"]*"' _site/index.html || true; } | sed 's/^data-src="//; s/"$//' | sort -u)
-          [ -n "$links" ] || { echo "::error::_site/index.html links no films: did the gallery markup change?"; exit 1; }
-          # the catalog says which styles have a film; each of them must be linked (this also makes the number of linked films at least the number of catalog films)
-          expected=$(python3 -c "import json; print('\n'.join(s['slug'] for s in json.load(open('styleboard/catalog.json')) if s.get('dur', 0) > 0))")
-          [ -n "$expected" ] || { echo "::error::styleboard/catalog.json lists no film for any style, so the gallery would have no videos (build.py run on a machine without the films? restore catalog.json)"; exit 1; }
-          missing=0
-          for s in $expected; do
-            grep -qx "films/$s.mp4" <<< "$links" || { echo "::error::catalog.json says $s has a film, but the gallery does not link films/$s.mp4"; missing=1; }
-          done
-          for f in $links; do
-            [ -s "_site/$f" ] || { echo "::error::the gallery links $f but it is not in _site (is it missing from the 'web' release? run tools/publish.sh)"; missing=1; }
-          done
-          echo "$(echo "$links" | wc -l) linked films checked, $(echo "$expected" | wc -l) expected from the catalog"
-          [ "$missing" = 0 ]
+          gh release view site-media --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || {
+            echo "::error::no \"site-media\" release: create it and upload the media first (sh tools/site_media.sh --upload; MAINTAINING.md, The site)"; exit 1; }
+          gh release download site-media --repo "$GITHUB_REPOSITORY" --pattern site-media.tar --dir .
+          mkdir -p _media && tar -xf site-media.tar -C _media && rm site-media.tar
+        env:
+          GH_TOKEN: ${{ github.token }}
+      # English at /, Chinese at /zh/; it reads the media (never makes them) and stops when a film has none.
+      # The token lets it read the star count for the top bar (without it, the bar says "GitHub" alone).
+      - run: python3 styleboard/build.py --site _site --films _site/films --media _media
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      # every page has its twin, no local link is broken, every film a page plays has its media and is in the site or in the films
+      # repository's list (styleboard/films_repo.json), the media bundle is unpacked, text contrast meets AA, no machine paths
+      - name: check the site
+        run: python3 styleboard/check_site.py _site
+      # the style films the pages play are served by the films repository's Pages as styleboard/films_repo.json lists them: 200,
+      # video/mp4, the listed size. Otherwise nothing is deployed and the site online stays as it was.
+      - name: films repository
+        run: |
+          python3 -c 'import json; j = json.load(open("styleboard/films_repo.json")); print("\n".join("%s%s.mp4 %d" % (j["base"], k, v["bytes"]) for k, v in j["films"].items()))' > films.txt
+          xargs -P 8 -n 2 sh -c '
+            h=$(curl -sfI --retry 2 --max-time 30 "$0") || { echo "$0: no 200"; exit 1; }
+            h=$(echo "$h" | tr -d "\r")
+            echo "$h" | grep -qi "^content-type: video/mp4" || { echo "$0: not video/mp4"; exit 1; }
+            n=$(echo "$h" | sed -n "s/^[Cc]ontent-[Ll]ength: *//p" | tail -n 1)
+            [ "$n" = "$1" ] || { echo "$0: $n bytes, the list says $1"; exit 1; }' < films.txt > bad.txt || true
+          if [ -s bad.txt ]; then
+            sed 's/^/::error::/' bad.txt
+            echo "::error::$(wc -l < bad.txt) of $(wc -l < films.txt) style films are not served as listed: run sh tools/films_repo.sh --push, wait until the films repository's Pages serve them (curl -sI), then run this workflow again"
+            exit 1
+          fi
+          echo "$(wc -l < films.txt) style films served by the films repository"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: _site

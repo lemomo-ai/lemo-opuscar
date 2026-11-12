@@ -1,0 +1,49 @@
+1
+00:00:00,850 --> 00:00:05,545
+这是一个方波：平顶，直角。
+Here is a square wave. Flat tops, sharp corners.
+
+2
+00:00:05,550 --> 00:00:08,541
+那么，怎样用圆把它滚出来？
+So how do you roll it out of circles?
+
+3
+00:00:09,900 --> 00:00:12,600
+先让一个圆转起来。
+Start with one spinning circle.
+
+4
+00:00:12,600 --> 00:00:16,885
+盯住它的尖端：它的高度画出一条正弦波。
+Follow its tip. Its height draws a sine wave.
+
+5
+00:00:18,900 --> 00:00:25,043
+在尖端再挂一个小圆：转速是三倍，大小是三分之一。
+Hang a smaller one on its tip: three times as fast, a third the size.
+
+6
+00:00:25,050 --> 00:00:30,532
+再加五倍、七倍，只要奇数倍，直到波形变方。
+Then a fifth, a seventh, odd ones only, until the wave is square.
+
+7
+00:00:30,950 --> 00:00:33,450
+可是，凑近看一个角。
+But look closely at a corner.
+
+8
+00:00:33,450 --> 00:00:38,200
+这里冒出一个尖。圆加得再多，它也只是变窄。
+There's a spike. Add more circles, and it only gets thinner.
+
+9
+00:00:38,200 --> 00:00:42,745
+它从来不会变矮：每次都高出约 9%。
+It never gets shorter. About 9%, every time.
+
+10
+00:00:42,750 --> 00:00:48,932
+就算有无穷多个圆，它也还在。这叫吉布斯现象。
+Even infinitely many circles leave it there. It's called the Gibbs phenomenon.

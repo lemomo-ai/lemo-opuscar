@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Step Ten · Instruction Manual Art</title>
+<style>
+@font-face{font-family:"Inter Manual";src:url(fonts/Inter-VF.ttf) format("truetype");font-weight:100 900}
+@font-face{font-family:"Noto Sans SC Manual";src:url(fonts/NotoSansSC-500.woff2) format("woff2");font-weight:500}
+html,body{margin:0;background:#F4F1EA;overflow:hidden}canvas{display:block}
+</style></head><body><canvas id="c"></canvas>
+<script type="module">
+// No query: the film ("Step Ten", window.render(t) in seconds). ?f=figs: the people's turnaround sheet (build.sh leaves it in out/modelsheet.jpg). ?f=hands: hand.js's close-up hands.
+const W = innerWidth, H = innerHeight, c = document.getElementById('c'); c.width = W; c.height = H;
+const g = c.getContext('2d');
+const f = new URLSearchParams(location.search).get('f');
+if (f) {
+  const { figs, handSheet } = await import('./figs.js');   // ?f=hands: the close-up hands sheet
+  await Promise.all([document.fonts.load('700 150px "Inter Manual"', '0123456789×'), document.fonts.load('500 28px "Inter Manual"', 'Never'), document.fonts.load('500 38px "Noto Sans SC Manual"', '别一个人抬。')]);
+  window.render = () => { g.setTransform(1, 0, 0, 1, 0, 0); (f === 'hands' ? handSheet : figs)(g, W, H); };
+} else {
+  const F = await import('./film.js'); const TL = await F.loadTimeline();
+  const zh = TL.subs.map((s) => s.zh).join('') + '第十步说明书插画';
+  await Promise.all([document.fonts.load('700 150px "Inter Manual"', '0123456789×StepTen'), document.fonts.load('500 28px "Inter Manual"', 'abc'), document.fonts.load('600 28px "Inter Manual"', 'LemoLab × Claude Opus 5.5'),
+    document.fonts.load('500 38px "Noto Sans SC Manual"', zh)]);
+  F.setup(); window.DUR = TL.dur; window.EV = F.events(); window.TEXTS = F.texts;
+  window.render = (t) => F.render(g, t);
+}
+window.render(0);
+window.READY = true;
+</script></body></html>

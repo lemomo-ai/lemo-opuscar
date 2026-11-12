@@ -1,0 +1,50 @@
+1
+00:00:00,350 --> 00:00:04,800
+2010 年，一款新手机有个怪毛病。
+In 2010, a new phone had a strange problem.
+
+2
+00:00:04,800 --> 00:00:09,622
+握住它底部的那个角，信号就掉了。
+Hold it by the bottom corner, and the signal dropped.
+
+3
+00:00:10,000 --> 00:00:14,161
+为什么？你手里的金属边框，就是天线。
+Why? The metal edge in your hand is the antenna.
+
+4
+00:00:14,161 --> 00:00:18,980
+信号从芯片出发，顺着一根细线，接到边框上。
+From the chip, a thin cable carries the signal to the frame.
+
+5
+00:00:18,980 --> 00:00:24,640
+金属圈被切开了：每道塑料缝隔出一支独立的天线。
+The ring is cut: each plastic slit splits off a separate antenna.
+
+6
+00:00:24,640 --> 00:00:27,732
+每一段的长度，对应一个频段。
+Each piece is sized to its band.
+
+7
+00:00:27,732 --> 00:00:35,554
+700 MHz 约需 11 厘米；3.5 GHz 只要 2 厘米。
+700 MHz needs about 11 cm. 3.5 GHz, just 2.
+
+8
+00:00:35,554 --> 00:00:41,247
+现在握住这个角：手把缝连了起来，信号就弱了。
+Now grip the corner. Your hand bridges the slit, and the signal fades.
+
+9
+00:00:41,247 --> 00:00:46,515
+于是手机学会了换用没被手盖住的那支天线。
+So phones learned to switch to the antenna your hand isn't covering.
+
+10
+00:00:46,515 --> 00:00:51,145
+不是你拿错了，你握着的，就是天线。
+You're not holding it wrong. You are holding the antenna.
+

@@ -1,4 +1,4 @@
-# HD-2D — our demo
+# 2.5D Pixel Art — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 

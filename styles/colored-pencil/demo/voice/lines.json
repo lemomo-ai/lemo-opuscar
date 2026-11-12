@@ -1,0 +1,57 @@
+[
+ {
+  "id": "v1",
+  "text": "Do the trees in a forest feed each other?",
+  "voice": "bf_emma",
+  "speed": 0.66
+ },
+ {
+  "id": "v2",
+  "text": "If there is an answer, it is down here.",
+  "voice": "bf_emma",
+  "speed": 0.66
+ },
+ {
+  "id": "v3",
+  "text": "A tree's finest roots are wrapped in fungus,",
+  "voice": "bf_emma",
+  "speed": 0.74
+ },
+ {
+  "id": "v4",
+  "text": "threads far thinner than a hair.",
+  "voice": "bf_emma",
+  "speed": 0.8
+ },
+ {
+  "id": "v5",
+  "text": "The tree pays the fungus in sugar, made from sunlight.",
+  "voice": "bf_emma",
+  "speed": 0.74
+ },
+ {
+  "id": "v6",
+  "text": "The fungus pays back in water and nutrients from the soil.",
+  "voice": "bf_emma",
+  "speed": 0.74
+ },
+ {
+  "id": "v7",
+  "text": "And the same fungus can reach the next tree.",
+  "voice": "bf_emma",
+  "speed": 0.68
+ },
+ {
+  "id": "v8",
+  "text": "Whether trees pass food along it is still argued over.",
+  "asr": "Weather trees pass food along it is still argued over.",
+  "voice": "bf_emma",
+  "speed": 0.74
+ },
+ {
+  "id": "v9",
+  "text": "But one thing is clear. No tree grows alone.",
+  "voice": "bf_emma",
+  "speed": 0.74
+ }
+]

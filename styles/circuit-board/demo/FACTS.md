@@ -5,9 +5,9 @@ Every number or name the film prints or says, where it comes from and the source
 ## Sources
 
 - [S1] Baihetan Dam, Wikipedia — https://en.wikipedia.org/wiki/Baihetan_Dam — "equipped with 16 hydro-generating units each having a capacity of 1 gigawatt"; "All hydro-generating units of the Baihetan hydropower station became fully operational on 20 December 2022."
-- [S2] The Paper (澎湃新闻) — https://www.thepaper.cn/newsDetail_forward_21364518 — "其中，左岸、右岸各建设8台百万千瓦级机组，分别送电江苏、浙江。"
-- [S3] IT之家, Baihetan–Jiangsu line in service — https://www.ithome.com/0/627/417.htm — "白鹤滩-江苏工程起于四川省凉山州布拖县，止于江苏省苏州常熟市，途经四川、重庆、湖北、安徽、江苏 5 省（直辖市），线路全长 2080 公里，新建白鹤滩、虞城 2 座换流站。" "工程额定电压 ±800 千伏、额定输送容量 800 万千瓦……2022 年 7 月竣工投产。"
-- [S4] China News Service (中国新闻网), 2022-06-20 — https://www.chinanews.com.cn/gn/2022/06-20/9783791.shtml — "以白江线为例，起于四川凉山布拖换流站，止于江苏常熟虞城换流站。" On UHV transmission: "输电距离远、输送容量大、运行损耗低……特高压让“电从远方来”成为现实".
+- [S2] The Paper (澎湃新闻) — https://www.thepaper.cn/newsDetail_forward_21364518 — "其中，左岸、右岸各建设8台百万千瓦级机组，分别送电江苏、浙江。" ("Of these, eight 1 GW units are built on each of the left and right banks, sending power to Jiangsu and Zhejiang respectively.")
+- [S3] IT之家, Baihetan–Jiangsu line in service — https://www.ithome.com/0/627/417.htm — "白鹤滩-江苏工程起于四川省凉山州布拖县，止于江苏省苏州常熟市，途经四川、重庆、湖北、安徽、江苏 5 省（直辖市），线路全长 2080 公里，新建白鹤滩、虞城 2 座换流站。" ("The Baihetan–Jiangsu project starts in Butuo county, Liangshan prefecture, Sichuan, and ends in Changshu, Suzhou, Jiangsu, passing through 5 provinces and municipalities (Sichuan, Chongqing, Hubei, Anhui, Jiangsu); the line is 2,080 km long, with 2 new converter stations, Baihetan and Yucheng.") "工程额定电压 ±800 千伏、额定输送容量 800 万千瓦……2022 年 7 月竣工投产。" ("Rated voltage ±800 kV, rated capacity 8 GW … completed and put into service in July 2022.")
+- [S4] China News Service (中国新闻网), 2022-06-20 — https://www.chinanews.com.cn/gn/2022/06-20/9783791.shtml — "以白江线为例，起于四川凉山布拖换流站，止于江苏常熟虞城换流站。" ("Take the Baihetan–Jiangsu line: it starts at the Butuo converter station, Liangshan, Sichuan, and ends at the Yucheng converter station, Changshu, Jiangsu.") On UHV transmission: "输电距离远、输送容量大、运行损耗低……特高压让“电从远方来”成为现实" ("long transmission distance, large capacity, low running loss … UHV makes 'power from far away' a reality").
 - [S5] Structural study of ±800 kV valve halls (steel-framed buildings housing the converter valves) — https://aminer.org/pub/53e9a42bb7602d9702d47000/structure-form-selection-of-the-valve-hall-and-control-building-of-kv
 - [S6] GB/T 156, 标准电压 (Chinese national standard voltages): household supply 220 V, 50 Hz.
 

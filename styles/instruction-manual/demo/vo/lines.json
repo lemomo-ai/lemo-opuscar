@@ -1,0 +1,62 @@
+[
+ {
+  "id": "a",
+  "text": "It arrives flat.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "b",
+  "text": "A box of parts, and one small key.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "c",
+  "text": "And two people who have never built anything.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "d",
+  "text": "Step four. Never lift alone.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "e",
+  "text": "Step five. Turn until it clicks.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "f",
+  "text": "Somewhere around step seven, everyone puts one end on upside down.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "g",
+  "text": "Take it apart. Laugh. Try again.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "h",
+  "text": "Step nine. Wait.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "i",
+  "text": "Step ten was never in the manual.",
+  "voice": "bm_george",
+  "speed": 0.86
+ },
+ {
+  "id": "j",
+  "text": "You learn that one by heart.",
+  "voice": "bm_george",
+  "speed": 0.86
+ }
+]

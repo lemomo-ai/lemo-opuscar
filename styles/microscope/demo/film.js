@@ -1,4 +1,4 @@
-// 《量出来的蓝》 Measured Blue · Microscope Story demo
+// 《量出来的蓝》 Measured Blue · Under the Microscope demo
 // One continuous camera from the glass slide down to one nucleus and back. Every pixel of glass and tissue is the
 // real whole-slide scan (Ventana-1.bif, CC0); every number is computed from the file (tools/plates.py, nucleus.py).
 import { clamp, lerp, seg, ss, eio, eo } from '/core/lib.js';

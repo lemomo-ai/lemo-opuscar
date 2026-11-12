@@ -1,0 +1,159 @@
+{
+ "dur": 52.0,
+ "anchors": [
+  [
+   0,
+   0
+  ],
+  [
+   4.9,
+   4.7
+  ],
+  [
+   8.9,
+   8.6
+  ],
+  [
+   12.2,
+   11.9
+  ],
+  [
+   14.2,
+   13.9
+  ],
+  [
+   19.0,
+   18.7
+  ],
+  [
+   20.15,
+   19.85
+  ],
+  [
+   22.9,
+   22.6
+  ],
+  [
+   23.75,
+   23.45
+  ],
+  [
+   29.3,
+   26.0
+  ],
+  [
+   32.5,
+   29.2
+  ],
+  [
+   36.9,
+   33.4
+  ],
+  [
+   39.5,
+   36.0
+  ],
+  [
+   43.6,
+   41.4
+  ],
+  [
+   46.9,
+   43.9
+  ],
+  [
+   48.0,
+   44.7
+  ],
+  [
+   49.5,
+   45.3
+  ],
+  [
+   52.0,
+   47.6
+  ]
+ ],
+ "cues": [
+  {
+   "id": "v01",
+   "t0": 0.15,
+   "t1": 3.45,
+   "end": 2.85,
+   "zh": "这张海图上的每一条线，都是风。",
+   "en": "Every line on this chart is wind."
+  },
+  {
+   "id": "v02",
+   "t0": 3.45,
+   "t1": 7.535,
+   "end": 6.935,
+   "zh": "后来，在菲律宾上空，它们开始打转。",
+   "en": "Then, over the Philippines, they began to turn."
+  },
+  {
+   "id": "v03",
+   "t0": 7.54,
+   "t1": 9.988,
+   "end": 9.388,
+   "zh": "一只平静的风眼，睁开了。",
+   "en": "A calm eye opened."
+  },
+  {
+   "id": "v04",
+   "t0": 10.4,
+   "t1": 15.423,
+   "end": 14.823,
+   "zh": "它叫“摩羯”。每个点，是它路径上的一条记录。",
+   "en": "Its name was Yagi. Each point is one record of its path."
+  },
+  {
+   "id": "v04b",
+   "t0": 16.1,
+   "t1": 18.92,
+   "end": 18.32,
+   "zh": "它一路向西，扑向海南。",
+   "en": "It headed west, toward Hainan."
+  },
+  {
+   "id": "v05",
+   "t0": 24.05,
+   "t1": 29.447,
+   "end": 28.847,
+   "zh": "每秒62米。最高一级：超强台风。",
+   "en": "62 metres per second. The top grade: super typhoon."
+  },
+  {
+   "id": "v06",
+   "t0": 31.9,
+   "t1": 36.455,
+   "end": 35.855,
+   "zh": "它在文昌登陆，陆地把风线拧弯了。",
+   "en": "It came ashore at Wenchang, and the land bent the lines."
+  },
+  {
+   "id": "v07",
+   "t0": 37.1,
+   "t1": 41.082,
+   "end": 40.482,
+   "zh": "它穿过海峡，再一次登上陆地。",
+   "en": "It crossed the strait, and struck the mainland again."
+  },
+  {
+   "id": "v08",
+   "t0": 41.7,
+   "t1": 47.228,
+   "end": 46.628,
+   "zh": "进入越南，螺旋散开，风线又变回墨色。",
+   "en": "Into Vietnam, the spiral came apart, and the lines went back to ink."
+  },
+  {
+   "id": "v09",
+   "t0": 47.85,
+   "t1": 51.376,
+   "end": 50.776,
+   "zh": "它的整整一周，装进了最后这一条线。",
+   "en": "Its whole week fits in one last line."
+  }
+ ]
+}

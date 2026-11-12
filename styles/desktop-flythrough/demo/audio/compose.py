@@ -1,4 +1,4 @@
-"""Score for 叮之前 / Before the Ding (Desktop Flythrough demo). about 60 s (read from vo/timeline.json), 120 BPM, D major, a bar = 2 s from 0.0.
+"""Score for 叮之前 / Before the Ding (Tabletop App Flythrough demo). about 60 s (read from vo/timeline.json), 120 BPM, D major, a bar = 2 s from 0.0.
 A light bed under the voice-over: plucked bass, soft kick, shaker, a string pad and a sparse marimba figure; the marimba theme is
 played in full only where nobody speaks (the opening second, the pull-back, the end). Accents on the picture's hits.
 Run from the library root:  .venv/bin/python -I styles/desktop-flythrough/demo/audio/compose.py"""

@@ -1,4 +1,4 @@
-// 《没弄反》 Not Swapped: the whole film as data. Layout of both boards, every stroke with its time, the sliding
+// 《汉字的故事》 The Story of Chinese Characters: the whole film as data. Layout of both boards, every stroke with its time, the sliding
 // panel, the drying wet band, the one wipe, the camera, the texts for readcheck and the sound events.
 // Units: world = the board's slate (x 0…6400, y 0…1700). Front-panel things are stored in panel-local units
 // (layer 'FL'); the panel's offset slideX(t) moves them. Back-board things are in world units (layer 'BK').

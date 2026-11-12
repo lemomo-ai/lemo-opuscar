@@ -1,0 +1,358 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Scale Zoom Explainer</title>
+<style>
+@font-face{font-family:Jost;src:url(fonts/Jost.ttf) format('truetype');font-weight:100 900;}
+@font-face{font-family:NotoSC;src:url(fonts/NotoSansSC-Bold-sub.woff2) format('woff2');font-weight:700;}
+html,body{margin:0;background:#1D2052;overflow:hidden}
+svg{display:block}
+text{font-family:Jost,NotoSC,sans-serif}
+</style></head>
+<body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="flat.js"></script>
+<script src="heroes.js"></script>
+<script src="sheet.js"></script>
+<script src="orbi.js"></script>
+<script src="film.js"></script>
+<script src="scenes.js"></script>
+<script>
+// Scale Zoom Explainer. No ?f: the film (film.js, whole-film timeline, ?from=&to= for a slice).
+// ?f=1|2|3: the three style frames on one zoom chain (cosmos, Earth, cell); ?f=options the guide's character sheet.
+// The guide is Orbi (HEROES in heroes.js).
+const F = new URLSearchParams(location.search).get('f') || 'film';
+
+// ---------- the "next stop" ring: where the camera dives next ----------
+function nextRing(p, x, y, r, label, lx, ly, anchor = 'start') {
+  el('circle', { cx: x, cy: y, r, fill: 'none', stroke: C.sun, 'stroke-width': 4 }, p);
+  el('circle', { cx: x, cy: y, r: r + 13, fill: 'none', stroke: C.sun, 'stroke-width': 2.5, 'stroke-dasharray': '3 9', 'stroke-linecap': 'round' }, p);
+  const a = Math.atan2(ly - y, lx - x), sx = x + Math.cos(a) * (r + 22), sy = y + Math.sin(a) * (r + 22);
+  const below = ly > y, ex = lx + (anchor === 'start' ? 30 : anchor === 'end' ? -30 : 0), ey = below ? ly - 46 : ly + 30;
+  el('path', { d: `M${r1(sx)},${r1(sy)}L${ex},${ey}`, stroke: C.sun, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, p);
+  text(p, lx, ly - 18, 'NEXT STOP', { 'font-size': 16, 'font-weight': 600, fill: C.sun, 'letter-spacing': 3, 'text-anchor': anchor });
+  text(p, lx, ly + 14, label, { 'font-size': 28, 'font-weight': 600, fill: C.cream, 'text-anchor': anchor });
+}
+
+// ---------- the scale ribbon: one log track, 10^25 m to 10^-10 m, shared by every frame ----------
+const STOPS = [
+  { e: 21.24, read: '185,000', unit: 'light-years', glyph: 'galaxy' },
+  { e: 7.75, read: '56,000', unit: 'km', glyph: 'earth' },
+  { e: -4.32, read: '48', unit: 'µm', glyph: 'cell' },
+];
+function scaleRibbon(p, cur) {
+  const x0 = 1220, L = 580, y = 1000, pos = e => x0 + (25 - e) / 35 * L;
+  const G = g(p);
+  const s = STOPS[cur];
+  text(G, x0, 872, 'FIELD OF VIEW', { 'font-size': 16, 'font-weight': 600, fill: C.mist, 'letter-spacing': 3 });
+  text(G, x0, 926, `${s.read}<tspan font-size="30" font-weight="500" fill="${C.mist}" dx="10">${s.unit}</tspan>`, { 'font-size': 52, 'font-weight': 600, fill: C.cream });
+  el('rect', { x: x0, y: y - 5, width: L, height: 10, rx: 5, fill: C.n3 }, G);
+  el('rect', { x: x0, y: y - 5, width: r1(pos(s.e) - x0), height: 10, rx: 5, fill: C.sun }, G);
+  for (let e = 25; e >= -10; e--) if (e % 5 === 0) el('rect', { x: r1(pos(e) - 1.5), y: y + 12, width: 3, height: e % 10 === 0 ? 12 : 7, rx: 1.5, fill: C.n3 }, G);
+  for (const [e, lab] of [[20, '10' + sup('20', 16)], [10, '10' + sup('10', 16)], [0, '1 m'], [-10, '10' + sup('−10', 16)]])
+    text(G, pos(e), y + 46, lab, { 'font-size': 16, 'font-weight': 500, fill: C.mist, 'text-anchor': 'middle' });
+  STOPS.forEach((st, i) => {
+    const x = pos(st.e), cy = y - 34, on = i === cur, seen = i < cur, k = on ? 1 : 0.78;
+    if (on) el('circle', { cx: r1(x), cy, r: 21, fill: 'none', stroke: C.sun, 'stroke-width': 3 }, G);
+    const col = (a, b) => (on || seen) ? a : (b === C.n2 ? C.night : C.mist);
+    if (st.glyph === 'galaxy') {
+      el('ellipse', { cx: r1(x), cy, rx: 13 * k, ry: 6 * k, fill: col(C.blue, C.n3), transform: `rotate(-18 ${r1(x)} ${cy})` }, G);
+      el('circle', { cx: r1(x), cy, r: 4 * k, fill: col(C.cream, C.n3) }, G);
+    } else if (st.glyph === 'earth') {
+      el('circle', { cx: r1(x), cy, r: 11 * k, fill: col(C.blue, C.n3) }, G);
+      el('ellipse', { cx: r1(x - 3 * k), cy: cy - 3 * k, rx: 5 * k, ry: 4 * k, fill: col(C.mint, C.n2) }, G);
+    } else {
+      el('circle', { cx: r1(x), cy, r: 11 * k, fill: col(C.mint, C.n3) }, G);
+      el('circle', { cx: r1(x + 3 * k), cy: cy - 2 * k, r: 4.5 * k, fill: col(C.blue, C.n2) }, G);
+    }
+    el('rect', { x: r1(x - 1.5), y: y - 16, width: 3, height: 8, rx: 1.5, fill: on ? C.sun : C.n3 }, G);
+  });
+}
+
+// ---------- spiral galaxy, flat ----------
+function galaxy(p, cx, cy, R, tilt, sq, seed) {
+  const rr = rng(seed);
+  const G = g(p, { transform: `translate(${cx},${cy}) rotate(${tilt}) scale(1,${sq})` });
+  el('circle', { r: R * 1.1, fill: C.n2 }, G);
+  el('circle', { r: R * 0.78, fill: C.n3 }, G);
+  const b = 0.29, r0 = R * 0.085, th = Math.log(1 / 0.085) / b;
+  const armPt = (ph, t, off = 0) => {
+    const r = r0 * Math.exp(b * t), a = t + ph;
+    const nx = Math.cos(a) * b - Math.sin(a), ny = Math.sin(a) * b + Math.cos(a), nl = Math.hypot(nx, ny);
+    return [Math.cos(a) * r - ny / nl * off, Math.sin(a) * r + nx / nl * off];
+  };
+  const ribbon = (ph, wmax, t0, t1, col) => {
+    const A = [], B = [];
+    for (let i = 0; i <= 90; i++) {
+      const u = i / 90, t = t0 + (t1 - t0) * u, w = wmax * Math.pow(Math.sin(Math.PI * Math.min(1, u * 1.25 + 0.05)), 0.8) * (0.55 + 0.45 * Math.exp(b * t) / Math.exp(b * t1));
+      A.push(armPt(ph, t, w)); B.push(armPt(ph, t, -w));
+    }
+    const pts = A.concat(B.reverse());
+    el('path', { d: 'M' + pts.map(q => `${r1(q[0])},${r1(q[1])}`).join('L') + 'Z', fill: col, 'stroke-linejoin': 'round' }, G);
+  };
+  for (const ph of [0, Math.PI]) ribbon(ph, R * 0.15, 1.0, th, C.blueD);
+  for (const ph of [Math.PI * 0.5, Math.PI * 1.5]) ribbon(ph, R * 0.075, 2.2, th - 0.5, C.blueD);
+  for (const ph of [0, Math.PI]) ribbon(ph - 0.05, R * 0.09, 1.2, th - 0.2, C.blue);
+  // star clouds along the arms
+  for (const ph of [0, Math.PI, Math.PI * 0.5, Math.PI * 1.5]) {
+    const minor = ph % Math.PI !== 0;
+    for (let i = 0; i < (minor ? 50 : 120); i++) {
+      const t = 1.2 + rr() * (th - 1.2), u = t / th;
+      const [x, y] = armPt(ph, t, (rr() - 0.5) * R * (minor ? 0.14 : 0.26));
+      const k = rr(), size = (1 - u * 0.5) * (minor ? 6 : 10) * (0.35 + rr());
+      const fill = k < 0.06 ? C.coral : k < 0.12 ? C.mint : u < 0.4 ? (k < 0.6 ? C.sun : C.cream) : k < 0.78 ? C.cream : C.sun;
+      el('circle', { cx: r1(x), cy: r1(y), r: r1(size), fill }, G);
+    }
+  }
+  // core: three flat steps
+  el('circle', { r: R * 0.15, fill: C.sun }, G);
+  el('circle', { r: R * 0.075, fill: C.cream }, G);
+  return { at: (ph, t, off = 0) => { const [x, y] = armPt(ph, t, off); const a = tilt * Math.PI / 180, ys = y * sq; return [cx + Math.cos(a) * x - Math.sin(a) * ys, cy + Math.sin(a) * x + Math.cos(a) * ys]; }, r0, b, th };
+}
+
+function tinyGalaxy(p, x, y, r, rot) {
+  const G = g(p, { transform: `translate(${x},${y}) rotate(${rot}) scale(1,0.42)` });
+  el('circle', { r: r * 1.5, fill: C.n2 }, G); el('circle', { r, fill: C.n3 }, G);
+  el('circle', { r: r * 0.55, fill: C.blueD }, G); el('circle', { r: r * 0.22, fill: C.cream }, G);
+}
+
+// ---------- satellites ----------
+function satellite(p, x, y, s, rot, body = C.cream, bodyD = C.creamD) {
+  const G = g(p, { transform: `translate(${x},${y}) rotate(${rot})` });
+  el('rect', { x: -s * 1.05, y: -s * 0.05, width: s * 2.1, height: s * 0.1, fill: C.mist }, G);
+  for (const sx of [-1, 1]) {
+    const px = sx > 0 ? s * 0.42 : -s * 1.12;
+    el('rect', { x: px, y: -s * 0.24, width: s * 0.7, height: s * 0.48, rx: s * 0.05, fill: C.blueD }, G);
+    el('rect', { x: px, y: -s * 0.24, width: s * 0.7, height: s * 0.22, rx: s * 0.05, fill: C.blue }, G);
+  }
+  shaded(G, 'rect', { x: -s * 0.3, y: -s * 0.3, width: s * 0.6, height: s * 0.6, rx: s * 0.12 }, body, bodyD, s * 0.1, s * 0.1);
+  el('circle', { cx: 0, cy: -s * 0.02, r: s * 0.1, fill: C.coral }, G);
+  return G;
+}
+
+// ---------- bacterium: coral rod with flagella ----------
+function bacterium(p, x, y, len, wid, rot, o = {}) {
+  const G = g(p, { transform: `translate(${x},${y}) rotate(${rot})` });
+  const base = o.dim ? C.coralD : C.coral, shade = o.dim ? '#B83A3C' : C.coralD;
+  if (o.tails !== false) for (const [sy, k] of [[-0.25, 1], [0.2, -1], [0.0, 1]]) {
+    const x0 = -len / 2 + wid * 0.2, y0 = sy * wid;
+    el('path', { d: `M${x0},${y0}C${x0 - len * 0.25},${y0 + k * wid * 0.6} ${x0 - len * 0.35},${y0 - k * wid * 0.7} ${x0 - len * 0.62},${y0 + k * wid * 0.1}`, fill: 'none', stroke: shade, 'stroke-width': Math.max(2.5, wid * 0.09), 'stroke-linecap': 'round' }, G);
+  }
+  shaded(G, 'rect', { x: -len / 2, y: -wid / 2, width: len, height: wid, rx: wid / 2 }, base, shade, 0, wid * 0.22);
+  if (!o.dim) for (const q of [-0.22, 0.12]) el('circle', { cx: q * len, cy: -wid * 0.08, r: wid * 0.12, fill: C.sun }, G);
+  return G;
+}
+
+// red blood cell, top view (flat disc + dimple)
+function rbc(p, x, y, r) {
+  shaded(p, 'circle', { cx: x, cy: y, r }, C.coral, C.coralD, r * 0.1, r * 0.1);
+  el('circle', { cx: x + r * 0.04, cy: y + r * 0.04, r: r * 0.52, fill: C.coralD }, p);
+  const G = g(p, { 'clip-path': clipOf('circle', { cx: x + r * 0.04, cy: y + r * 0.04, r: r * 0.52 }) });
+  el('circle', { cx: x + r * 0.16, cy: y + r * 0.16, r: r * 0.52, fill: C.coral }, G);
+}
+
+
+// =================== FRAME 1 · cosmos · title ===================
+function frame1() {
+  el('rect', { width: W, height: H, fill: C.night });
+  const bg = g();
+  stars(bg, 11, 230, inBoxes([[110, 150, 650, 380], [1210, 870, 600, 190], [330, 620, 400, 300], [700, 600, 190, 110]]));
+  for (const [x, y, sz] of [[300, 610, 14], [1010, 110, 18], [1820, 260, 12], [880, 980, 12], [160, 140, 10], [1600, 860, 16]]) sparkle(bg, x, y, sz, C.cream);
+  for (const [x, y, sz] of [[820, 250, 11], [1700, 120, 9], [420, 990, 9]]) sparkle(bg, x, y, sz, C.sun);
+  tinyGalaxy(bg, 1720, 760, 26, 24); tinyGalaxy(bg, 880, 140, 18, -30); tinyGalaxy(bg, 140, 760, 14, 10);
+  const gx = galaxy(g(), 1230, 470, 560, -16, 0.5, 7);
+  // next stop: our Sun, about halfway out along an arm
+  const t = Math.log(0.56 / 0.085) / gx.b, [sx, sy] = gx.at(Math.PI, t, 10);
+  const ui = g();
+  el('circle', { cx: r1(sx), cy: r1(sy), r: 7, fill: C.sun }, ui);
+  el('circle', { cx: r1(sx), cy: r1(sy), r: 3.5, fill: C.cream }, ui);
+  nextRing(ui, r1(sx), r1(sy), 26, 'Our Sun', 880, 690, 'end');
+  // title, left third
+  const T = g();
+  text(T, 116, 268, 'The Long', { 'font-size': 132, 'font-weight': 700, fill: C.cream, 'letter-spacing': -2 });
+  text(T, 116, 392, 'Way Down', { 'font-size': 132, 'font-weight': 700, fill: C.cream, 'letter-spacing': -2 });
+  text(T, 122, 458, '26 powers of ten, from a galaxy to a cell', { 'font-size': 32, 'font-weight': 500, fill: C.mist });
+  text(T, 122, 516, '从银河一路缩到一个细胞', { 'font-size': 34, 'font-weight': 700, fill: C.sun, 'font-family': 'NotoSC', 'letter-spacing': 2 });
+  // the guide, foreground, zoom gesture aimed at the galaxy
+  const HG = HEROES[HERO_KEY] || HEROES[HERO_DEFAULT];
+  hero(g(), 470, 780, (HG.lens ? 290 : 250) * HG.k, { rot: -10, look: [0.8, -0.6], aim: -40, fly: true, tilt: -8, sight: [sx, sy, 26] });
+  scaleRibbon(g(), 0);
+}
+
+// =================== FRAME 2 · Earth · data ===================
+function frame2() {
+  el('rect', { width: W, height: H, fill: C.night });
+  const ex = 250, ey = 600, ER = 6371 * 0.034, k = 0.034; // px per km
+  const ring = h => (6371 + h) * k;
+  const bg = g();
+  const box2 = inBoxes([[640, 90, 620, 270], [80, 250, 150, 70], [530, 410, 240, 80], [1050, 630, 240, 90], [1560, 630, 250, 90], [1210, 870, 600, 190], [1640, 420, 230, 210], [1560, 180, 200, 120]]);
+  stars(bg, 23, 170, (x, y) => Math.hypot(x - ex, y - ey) < ER + 120 || box2(x, y));
+  for (const [x, y, sz] of [[560, 140, 14], [1860, 330, 10], [640, 980, 12], [1500, 300, 9]]) sparkle(bg, x, y, sz, C.cream);
+  halo(bg, ex, ey, ER + 46, ER + 100);
+  // orbits, masked where text sits
+  const mid = 'm' + (uid++), mask = el('mask', { id: mid, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H }, defs);
+  el('rect', { width: W, height: H, fill: '#fff' }, mask);
+  for (const [x, y, w, h] of [[640, 90, 630, 280], [1056, 622, 230, 100], [1574, 622, 250, 100]]) el('rect', { x, y, width: w, height: h, rx: 24, fill: '#000' }, mask);
+  const orb = g(null, { mask: `url(#${mid})` });
+  el('circle', { cx: ex, cy: ey, r: r1(ring(20200)), fill: 'none', stroke: C.mint, 'stroke-width': 3 }, orb);
+  el('circle', { cx: ex, cy: ey, r: r1(ring(35786)), fill: 'none', stroke: C.sun, 'stroke-width': 3 }, orb);
+  // Earth, two tones (land and clouds follow the terminator)
+  const land = (G, dark) => {
+    el('circle', { cx: ex, cy: ey, r: ER, fill: dark ? C.blueD : C.blue }, G);
+    const L = dark ? C.mintD : C.mint, Cl = dark ? C.creamD : C.cream;
+    const R = rng(5);
+    for (const [cx, cy, rr, n] of [[-70, -60, 96, 9], [40, -150, 52, 7], [95, 70, 80, 8], [-110, 120, 46, 6], [150, -40, 36, 6]]) {
+      el('path', { d: blobPath(polar(ex + cx, ey + cy, n, a => rr * (0.78 + 0.32 * R()))), fill: L }, G);
+    }
+    for (const [cx, cy, w] of [[-20, -118, 120], [60, 20, 150], [-120, 40, 90], [20, 150, 110]]) el('rect', { x: ex + cx - w / 2, y: ey + cy - 9, width: w, height: 18, rx: 9, fill: Cl }, G);
+  };
+  twoTone(g(), 'circle', { cx: ex, cy: ey, r: ER }, ER * 0.2, ER * 0.16, land);
+  // ISS orbit hugs the surface
+  el('circle', { cx: ex, cy: ey, r: r1(ring(408)), fill: 'none', stroke: C.coral, 'stroke-width': 3 });
+  // next stop: you
+  const yx = ex - 66, yy = ey - 66;
+  const ui = g();
+  el('circle', { cx: yx, cy: yy, r: 6, fill: C.sun }, ui);
+  nextRing(ui, yx, yy, 22, 'You', 92, 300);
+  // the tape: Earth's surface to geostationary, ticks every 1,000 km
+  const T = g(), tx0 = ex + ER, tx1 = ex + ring(35786), ty = ey;
+  el('rect', { x: tx0, y: ty - 10, width: r1(tx1 - tx0), height: 20, rx: 4, fill: C.sun }, T);
+  el('rect', { x: tx0, y: ty + 4, width: r1(tx1 - tx0), height: 6, rx: 3, fill: C.sunD }, T);
+  for (let km = 1000; km < 35786; km += 1000) {
+    const x = r1(tx0 + km * k), big = km % 5000 === 0;
+    el('rect', { x: x - 1.25, y: ty - 10, width: 2.5, height: big ? 12 : 6, fill: C.night }, T);
+  }
+  el('rect', { x: tx0 - 6, y: ty - 16, width: 9, height: 32, rx: 3, fill: C.coralD }, T);
+  // markers where the orbits cross the tape
+  for (const [h, col] of [[408, C.coral], [20200, C.mint], [35786, C.sun]]) {
+    const x = r1(ex + ring(h));
+    el('circle', { cx: x, cy: ty, r: 13, fill: C.night }, T);
+    el('circle', { cx: x, cy: ty, r: 8, fill: col }, T);
+  }
+  // satellites on their orbits
+  const on = (h, deg) => [r1(ex + ring(h) * Math.cos(deg * Math.PI / 180)), r1(ey + ring(h) * Math.sin(deg * Math.PI / 180))];
+  const [ix, iy] = on(408, -36); satellite(g(), ix, iy, 26, -36 + 90);
+  const [gx2, gy2] = on(20200, 9); satellite(g(), gx2, gy2, 46, 18);
+  const [sx2, sy2] = on(35786, -15); satellite(g(), sx2, sy2, 56, -16);
+  // labels
+  const Lb = g();
+  el('path', { d: `M${ix + 26},${iy + 4}L${530},${448}`, stroke: C.coral, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, Lb);
+  text(Lb, 546, 446, 'Space Station', { 'font-size': 30, 'font-weight': 600, fill: C.cream });
+  text(Lb, 546, 482, '408 km up', { 'font-size': 26, 'font-weight': 500, fill: C.coral });
+  for (const [h, name, val, col] of [[20200, 'GPS', '20,200 km', C.mint], [35786, 'Geostationary', '35,786 km', C.sun]]) {
+    const x = r1(ex + ring(h));
+    text(Lb, x, 662, name, { 'font-size': 30, 'font-weight': 600, fill: C.cream, 'text-anchor': 'middle' });
+    text(Lb, x, 698, val, { 'font-size': 26, 'font-weight': 500, fill: col, 'text-anchor': 'middle' });
+  }
+  // headline, top right
+  const Hd = g();
+  text(Hd, 660, 160, 'At true scale, the', { 'font-size': 60, 'font-weight': 700, fill: C.cream, 'letter-spacing': -1 });
+  text(Hd, 660, 230, 'Space Station barely', { 'font-size': 60, 'font-weight': 700, fill: C.cream, 'letter-spacing': -1 });
+  text(Hd, 660, 300, 'leaves the ground', { 'font-size': 60, 'font-weight': 700, fill: C.cream, 'letter-spacing': -1 });
+  text(Hd, 664, 348, '按真实比例，空间站几乎贴着地面飞', { 'font-size': 28, 'font-weight': 700, fill: C.sun, 'font-family': 'NotoSC', 'letter-spacing': 1 });
+  // the guide holds the tape case at the far end, just past the geostationary mark
+  const cx2 = r1(tx1) + 64, HG = HEROES[HERO_KEY] || HEROES[HERO_DEFAULT], hs = 160 * HG.k;
+  const tapeCase = () => {
+    el('rect', { x: r1(tx1) + 12, y: ty - 10, width: 20, height: 20, fill: C.sun });
+    shaded(g(), 'rect', { x: cx2 - 38, y: ty - 38, width: 76, height: 76, rx: 22 }, C.coral, C.coralD, 8, 8);
+    el('circle', { cx: cx2 - 4, cy: ty - 4, r: 17, fill: C.cream });
+    el('circle', { cx: cx2 - 4, cy: ty - 4, r: 7, fill: C.coralD });
+  };
+  hero(g(), cx2 + HG.hold[0] * hs, ty + HG.hold[1] * hs, hs, { look: [-0.9, 0.3], expr: 'happy', over: tapeCase,
+    grip: { l: [cx2 - 38, ty - 4], r: [cx2 + 36, ty - 4], top: [cx2, ty - 36] } });
+  scaleRibbon(g(), 1);
+}
+
+// =================== FRAME 3 · cell · mechanism ===================
+function frame3() {
+  el('rect', { width: W, height: H, fill: C.night });
+  const bg = g(), Rr = rng(31);
+  const box3 = inBoxes([[110, 760, 560, 210], [1210, 870, 600, 190], [440, 510, 340, 100], [620, 250, 310, 100], [1630, 660, 270, 100], [1560, 140, 270, 230]]);
+  for (let i = 0; i < 80; i++) { const x = Rr() * W, y = Rr() * H, r = 2 + Rr() * 5, c = Rr() < 0.7 ? C.n3 : C.mist; if (!box3(x, y)) el('circle', { cx: r1(x), cy: r1(y), r: r1(r), fill: c }, bg); }
+  rbc(bg, 70, 150, 150);
+  rbc(bg, 830, 1080, 150);
+  bacterium(bg, 250, 330, 100, 30, -24, { dim: true });
+  bacterium(bg, 170, 520, 80, 26, 30, { dim: true });
+  const mx = 1270, my = 500, MR = 320;
+  halo(bg, mx, my, MR + 50, MR + 110);
+  // macrophage: one smooth outline with a feeding cup on the left
+  const cupA = Math.PI, gauss = (a, c, w) => Math.exp(-Math.pow(((a - c + Math.PI * 3) % (Math.PI * 2) - Math.PI) / w, 2));
+  const outline = polar(mx, my, 120, a => MR * (1 + 0.035 * Math.sin(3 * a + 1) + 0.025 * Math.sin(7 * a)
+    - 0.42 * gauss(a, cupA, 0.2) + 0.2 * gauss(a, cupA - 0.38, 0.13) + 0.2 * gauss(a, cupA + 0.38, 0.13)
+    + 0.08 * gauss(a, -0.9, 0.2) + 0.07 * gauss(a, 0.75, 0.18) + 0.06 * gauss(a, 2.2, 0.2)));
+  const d = blobPath(outline);
+  const cell = g();
+  // bacterium 2 sits in the cup, behind the lips
+  bacterium(cell, mx - MR * 0.74, my, 140, 40, -4);
+  twoTone(cell, 'path', { d }, 30, 26, (G, dark) => {
+    el('path', { d, fill: dark ? C.mintD : C.mint }, G);
+  });
+  // inside: nucleus, vesicles, phagosome with lysosomes
+  const nuc = blobPath(polar(mx + 90, my - 100, 14, a => 115 * (1 + 0.18 * Math.cos(2 * a) - 0.28 * gauss(a, 2.3, 0.35))));
+  shaded(cell, 'path', { d: nuc }, C.blue, C.blueD, 16, 14);
+  const vR = rng(9);
+  for (let i = 0; i < 26; i++) {
+    const a = vR() * Math.PI * 2, r = 60 + vR() * 230, x = mx + Math.cos(a) * r, y = my + Math.sin(a) * r * 0.9;
+    if (Math.hypot(x - (mx + 90), y - (my - 100)) < 150 || Math.hypot(x - (mx + 110), y - (my + 150)) < 115 || Math.hypot(x - (mx - 116), y - (my - 100)) < 85 || Math.hypot(x - mx + MR * 0.7, y - my) < 90) continue;
+    el('circle', { cx: r1(x), cy: r1(y), r: r1(5 + vR() * 8), fill: vR() < 0.65 ? C.mintD : C.cream }, cell);
+  }
+  const px = mx + 110, py = my + 150;
+  el('circle', { cx: px, cy: py, r: 74, fill: C.mintD }, cell);
+  el('circle', { cx: px, cy: py, r: 62, fill: C.n3 }, cell);
+  bacterium(cell, px - 6, py + 4, 92, 30, 28, { tails: false });
+  for (const [a, rr] of [[-0.9, 20], [0.3, 17], [1.9, 15]]) { const x = px + Math.cos(a) * 80, y = py + Math.sin(a) * 80; el('circle', { cx: r1(x), cy: r1(y), r: rr, fill: C.sunD }, cell); el('circle', { cx: r1(x - 3), cy: r1(y - 3), r: rr - 5, fill: C.sun }, cell); }
+  for (const [a, rr] of [[2.8, 10], [-2.2, 8]]) { const x = px + Math.cos(a) * 40, y = py + Math.sin(a) * 36; el('circle', { cx: r1(x), cy: r1(y), r: rr, fill: C.sun }, cell); }
+  // face
+  for (const ex of [mx - 150, mx - 82]) { el('ellipse', { cx: ex, cy: my - 112, rx: 13, ry: 17, fill: C.night }, cell); el('circle', { cx: ex - 4, cy: my - 118, r: 5, fill: C.cream }, cell); }
+  el('path', { d: `M${mx - 140},${my - 66}Q${mx - 116},${my - 52} ${mx - 92},${my - 66}`, fill: 'none', stroke: C.night, 'stroke-width': 6, 'stroke-linecap': 'round' }, cell);
+  // bacterium 1 and the chemical trail it leaves
+  const b1x = 560, b1y = 440;
+  const tr = g();
+  for (let i = 1; i <= 9; i++) { const u = i / 10, x = b1x + 70 + (mx - MR * 1.05 - b1x - 70) * u, y = b1y + 10 + (my - b1y - 10) * u + Math.sin(u * 7) * 14; el('circle', { cx: r1(x), cy: r1(y), r: r1(9 - u * 5), fill: C.coral }, tr); }
+  bacterium(g(), b1x, b1y, 140, 40, 8);
+  // step tags
+  const step = (n, x, y, title, sub, anchor = 'start') => {
+    const G = g();
+    el('circle', { cx: x, cy: y, r: 24, fill: C.sun }, G);
+    text(G, x, y + 10, String(n), { 'font-size': 30, 'font-weight': 700, fill: C.night, 'text-anchor': 'middle' });
+    const tx = anchor === 'start' ? x + 40 : x - 40;
+    text(G, tx, y + 4, title, { 'font-size': 32, 'font-weight': 600, fill: C.cream, 'text-anchor': anchor });
+    text(G, tx, y + 38, sub, { 'font-size': 22, 'font-weight': 500, fill: C.mist, 'text-anchor': anchor });
+  };
+  step(1, 470, 540, 'Sense', 'follows the chemical trail');
+  step(2, 900, 300, 'Engulf', 'wraps it in membrane', 'end');
+  step(3, 1660, 700, 'Digest', 'enzymes break it up');
+  el('path', { d: `M1634,704L${px + 98},${py + 8}`, stroke: C.sun, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+  // next stop: a virus, 0.1 µm (about 4 px at this scale)
+  const vx = 1720, vy = 190, VG = g();
+  for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; el('line', { x1: vx, y1: vy, x2: r1(vx + Math.cos(a) * 7), y2: r1(vy + Math.sin(a) * 7), stroke: C.cream, 'stroke-width': 2, 'stroke-linecap': 'round' }, VG); }
+  el('circle', { cx: vx, cy: vy, r: 4, fill: C.cream }, VG);
+  nextRing(VG, vx, vy, 24, 'A virus, 0.1 µm', 1800, 340, 'end');
+  // headline, bottom left
+  const Hd = g();
+  text(Hd, 116, 820, 'How a cell eats', { 'font-size': 72, 'font-weight': 700, fill: C.cream, 'letter-spacing': -1 });
+  text(Hd, 116, 898, 'a bacterium', { 'font-size': 72, 'font-weight': 700, fill: C.cream, 'letter-spacing': -1 });
+  text(Hd, 120, 952, '巨噬细胞吃掉细菌，分三步', { 'font-size': 30, 'font-weight': 700, fill: C.sun, 'font-family': 'NotoSC', 'letter-spacing': 1 });
+  // the guide rides on top of the macrophage, zoom aimed at bacterium 1
+  const HG = HEROES[HERO_KEY] || HEROES[HERO_DEFAULT], hs = 150 * HG.k;
+  if (HG.lens) // a lens-eyed guide hovers over the cell and already looks at the next stop
+    hero(g(), mx - 20, my - MR - 10 - HG.bottom * hs * 1.2, hs * 1.2, { look: [1, 0.1], rot: 6, fly: true, tilt: 6, sight: [vx, vy, 24] });
+  else hero(g(), mx - 10, my - MR + 18 - HG.bottom * hs, hs, { look: [-1, 0.6], aim: 25, rot: -4, flip: true });
+  scaleRibbon(g(), 2);
+}
+
+window.render = function (t) {
+  svg = document.getElementById('s'); svg.innerHTML = ''; uid = 0;
+  defs = el('defs');
+  if (F === 'film') film(t + FROM);   // no page grain in the film: a static grain layer would sit still over moving shapes
+  else if (F === 'options') { sheet(); grain(g(), 9); }
+  else { [frame1, frame2, frame3][+F - 1](); grain(g(), 3 + +F); }
+};
+Promise.all([document.fonts.load('700 40px Jost'), document.fonts.load('500 40px Jost'), document.fonts.load('700 40px NotoSC', '细胞')])
+  .then(() => {
+    if (F === 'film') { window.DUR = TO - FROM; window.EV = filmEvents().filter(e => e.t >= FROM && e.t <= TO).map(e => ({ ...e, t: +(e.t - FROM).toFixed(4) })); }
+    // reading-time contract for core/render/readcheck.mjs: every label drawn at t, with its screen box (subtitles and counters excluded)
+    if (F === 'film') window.TEXTS = t => { window.__TXT = []; window.render(t); const out = window.__TXT.filter(e => e.isConnected && e.textContent.trim()).map(e => { const r = e.getBoundingClientRect(); return { id: e.textContent, text: e.textContent, x0: r.left, y0: r.top, x1: r.right, y1: r.bottom }; }); window.__TXT = null; return out; };
+    window.render(0); window.READY = true;
+  });
+</script>
+</body></html>

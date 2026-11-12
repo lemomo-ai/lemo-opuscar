@@ -52,7 +52,7 @@ Timeline (built from content): hook 4 bars, each step ≥ 3 bars (from its voice
 - **J/L cuts:** music enters before the reveal; each step's line starts half a beat before its iris; the motor starts 0.2 s before the payoff; the last Wi-Fi pip rings into step 3; the payoff's glissando tail rings into the tip.
 - **Ambience:** warm room tone (low-passed brown noise, about −42 dB) and a very quiet mantel-clock tick on the half-note grid. In the payoff, Pip's motor hum (a band-passed saw with a slow LFO plus brush hiss) takes over.
 - **Foley in this film:** the box (creak, flap thumps a semitone apart, a swish into a slap), the plug click, floor scrapes for the dock, stamps for every medallion, slide whistles for the 50 cm arrows, rising pips for "connected", pen scratches as each room's route draws, the ink line peeling off paper, an iris "shhk".
-- **Mix:** narration compressed on top, music ducks 8 dB under it, foley unducked, −14 LUFS, true peak −1.2. `tools/cuecheck.py` found 0 hits off the half-beat grid.
+- **Mix:** narration compressed on top, music ducks 8 dB under it, foley unducked, −14 LUFS, true peak ≤ −1 dBTP. `tools/cuecheck.py` found 0 hits off the half-beat grid.
 - **Narrator:** calm classroom authority. The demo uses Kokoro `am_michael` at 0.94. Not `bm_george`: whisper hears "dock" as "dark" in his British vowel. Keep lines to one clause: "Step one. Set the dock against a wall."
 
 ## Palette & props

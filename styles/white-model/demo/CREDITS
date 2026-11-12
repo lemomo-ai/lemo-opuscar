@@ -1,4 +1,4 @@
-How a Flattened City Grew Back (被炸平的城市怎样长回来) — Projection on White Model (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+How a Flattened City Grew Back (被炸平的城市怎样长回来) — Projection-Mapped Model (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
 
 No AI-generated images, no stock footage, no photographs. The model is extruded from open building data in code; every
 light, colour, shadow, label and line is drawn by the page (three.js + 2D canvas). Download URLs are in build.sh

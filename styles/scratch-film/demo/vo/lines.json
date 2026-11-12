@@ -1,0 +1,76 @@
+[
+ {
+  "id": "v01",
+  "text": "At sunset, half a kilometre down, something starts to climb.",
+  "voice": "bf_emma",
+  "speed": 0.8,
+  "asr": "At sunset, half a kilometer down, something starts to climb."
+ },
+ {
+  "id": "v02",
+  "text": "A lanternfish, no longer than your finger.",
+  "voice": "bf_emma",
+  "speed": 0.78,
+  "asr": "A lantern fish no longer than your finger."
+ },
+ {
+  "id": "v03",
+  "text": "It climbs toward the surface, in the dark.",
+  "voice": "bf_emma",
+  "speed": 0.74
+ },
+ {
+  "id": "v04",
+  "text": "But the faint light from above turns it into a shadow.",
+  "voice": "bf_emma",
+  "speed": 0.66
+ },
+ {
+  "id": "v05",
+  "text": "And hunters below are looking up.",
+  "voice": "bf_emma",
+  "speed": 0.76
+ },
+ {
+  "id": "v06",
+  "text": "So it turns on the lights along its belly,",
+  "voice": "bf_emma",
+  "speed": 0.62
+ },
+ {
+  "id": "v07",
+  "text": "as bright as the glow above. The shadow is gone.",
+  "voice": "bf_emma",
+  "speed": 0.7
+ },
+ {
+  "id": "v08",
+  "text": "By midnight, it reaches the surface to feed.",
+  "voice": "bf_emma",
+  "speed": 0.76
+ },
+ {
+  "id": "v09",
+  "text": "And it is not alone.",
+  "voice": "bf_emma",
+  "speed": 0.76
+ },
+ {
+  "id": "v10",
+  "text": "Every night, countless animals rise from the deep.",
+  "voice": "bf_emma",
+  "speed": 0.8
+ },
+ {
+  "id": "v11",
+  "text": "It is the largest migration on Earth.",
+  "voice": "bf_emma",
+  "speed": 0.8
+ },
+ {
+  "id": "v12",
+  "text": "Before sunrise, they all sink back into the dark.",
+  "voice": "bf_emma",
+  "speed": 0.76
+ }
+]

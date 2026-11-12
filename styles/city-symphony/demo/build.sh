@@ -1,5 +1,5 @@
 #!/bin/sh
-# Time-lapse Symphony — "One Day in New York": one-command build.
+# City Symphony — "One Day in New York": one-command build.
 # sources (fetch what is missing) → clips (retime / frame-blend / ramps) → score → picture → subtitles → master → poster, stills, phone cut.
 # From a clean clone the first run downloads the footage listed in SOURCES.jsonl (≈ 1 GB, Commons / LOC / NASA / Internet Archive)
 # and two OFL fonts (tools/fetch_sources.py), and the vsco2ce + vcsl sample packs (library tools/fetch.sh).

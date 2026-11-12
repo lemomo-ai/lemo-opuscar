@@ -1,0 +1,19 @@
+{
+ "slug": "colored-pencil",
+ "num": "13",
+ "en": "Colored-Pencil Science Illustration",
+ "cn": "彩铅科普插画",
+ "category_en": "Painting & Illustration",
+ "category_cn": "绘画插画",
+ "film": "The Other Half",
+ "film_cn": "树的另一半",
+ "line": "Do trees feed each other? A pencil drawing sinks below the grass, follows one grain of sugar along a fungal thread to the next tree, and pulls back over a whole wood joined underground.",
+ "line_cn": "树会互相喂食吗？一张彩铅画沉到草地下面，跟着一粒糖沿菌丝走到下一棵树，再拉开看整片森林在地下连在一起。",
+ "uses": [
+  "Natural-science cutaways",
+  "Picture-book explainers",
+  "Hidden structures and processes"
+ ],
+ "frame_sec": 50.1,
+ "dur": 50.8
+}

@@ -1,0 +1,8 @@
+[
+ {"id": "v1", "text": "Every animal carries a place inside it.", "voice": "af_heart", "speed": 0.78},
+ {"id": "v2", "text": "The wolf, a forest with its lamps lit.", "voice": "af_heart", "speed": 0.78},
+ {"id": "v3", "text": "The eagle, the snow above the clouds.", "voice": "af_heart", "speed": 0.78},
+ {"id": "v4", "text": "The salmon, the river that runs to the sea.", "voice": "af_heart", "speed": 0.78},
+ {"id": "v5", "text": "The whale, a harbour full of light.", "asr": "The whale, a harbor full of light.", "voice": "af_heart", "speed": 0.78},
+ {"id": "v6", "text": "And where the sea ends, that place is home.", "voice": "af_heart", "speed": 0.78}
+]

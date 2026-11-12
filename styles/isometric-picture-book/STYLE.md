@@ -1,4 +1,4 @@
-# Isometric Picture Book — Style Prompt
+# Isometric People Scene — Style Prompt
 
 > A calm explainer of an everyday rule, set in one real place drawn in true isometric with flat colour: small faceless people seen from behind do the thing in order, while serif type lands on the ground, character by character, as if painted there. Whatever hides the action (a roof, a wall) is cut away or lifts off like a paper flap. The order of movement is the explanation.
 > References (grammar only): isometric explainers about public manners (queues, platforms, crossings) and picture-book cutaways where a roof or a wall is lifted away to show the inside. Take the calm pacing, people as the diagram and type on the floor; never copy their characters, layouts, typefaces or music.

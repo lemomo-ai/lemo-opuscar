@@ -1,0 +1,22 @@
+{
+ "slug": "text-flash-cuts",
+ "num": "42",
+ "en": "Text Flash Cuts",
+ "cn": "文字闪切",
+ "category_en": "Graphic & Type",
+ "category_cn": "平面排版",
+ "film": "Behind You",
+ "film_cn": "身后",
+ "line": "A letter, a phone call, a wall of windows, thirteen steps: the girl who told him not to look back is always one step closer, until she turns her head.",
+ "line_cn": "一封信、一通电话、一面窗墙、十三级台阶：叫他别回头的她每一话都更近一步，直到她自己猛地回头。",
+ "uses": [
+  "Suspense & drama trailers",
+  "Title sequences",
+  "Manifesto films"
+ ],
+ "needs": [
+  "image-generation"
+ ],
+ "frame_sec": 38.3,
+ "dur": 46.2
+}

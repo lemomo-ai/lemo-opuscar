@@ -1,9 +1,11 @@
 #!/bin/sh
 # Rebuild the finished film from scratch: sh styles/ukiyoe/demo/build.sh   (runs from any directory)
+# Needs the core, voice and music tiers: setup.sh deps voice music (music/score.py uses core/audio/pluck.py, which needs numba).
 set -e
-sh "$(dirname "$0")/tools/fonts.sh"   # fonts: not in git (CREDITS names them) → fonts/
 cd "$(dirname "$0")/../../.."
 PY=.venv/bin/python; D=styles/ukiyoe/demo
+$PY -c 'import numba' 2>/dev/null || { echo "ukiyoe: the demo needs the music tier (numba, for core/audio/pluck.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
+sh styles/ukiyoe/demo/tools/fonts.sh   # fonts: not in git (CREDITS names them) → fonts/ (after the numba check: that comes first)
 $PY core/tts/tts.py $D/lines.json $D/voices                 # 1. Kokoro narration (am_adam)
 $PY core/tts/asr_check.py $D/lines.json $D/voices           # 2. whisper line-by-line check
 node core/render/events.mjs $D                              # 3. timeline → events.json (narration / foley / ambience)

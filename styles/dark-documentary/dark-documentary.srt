@@ -1,0 +1,40 @@
+1
+00:00:01,050 --> 00:00:08,260
+三天来，帕克斯的天线在晴空下一路跟踪阿波罗11号飞向月球。
+For three days, the dish at Parkes had tracked Apollo 11 to the Moon, under clear skies.
+
+2
+00:00:09,050 --> 00:00:13,286
+可到了月面行走那天，一场风暴压了过来。
+Then, on the day of the moonwalk, a storm came in.
+
+3
+00:00:13,350 --> 00:00:18,427
+天线放倒到极限，等着月亮升起。
+The dish lay tipped to its limit, waiting for the Moon to rise.
+
+4
+00:00:18,450 --> 00:00:25,020
+两阵每小时超过110公里的阵风，把它狠狠撞回齿轮上。
+Two gusts, over 110 km an hour, slammed it against its gears.
+
+5
+00:00:27,450 --> 00:00:31,963
+12点54分，月面上的摄像机打开了。
+At 12:54, the camera on the Moon switched on.
+
+6
+00:00:31,950 --> 00:00:37,282
+第一步传到全世界，走的是堪培拉附近的金银花溪站。
+The first step reached the world through Honeysuckle Creek, near Canberra.
+
+7
+00:00:37,250 --> 00:00:43,676
+几分钟后，月亮升进主波束，休斯敦切到了帕克斯。
+Minutes later, the Moon rose into the main beam, and Houston switched to Parkes.
+
+8
+00:00:43,650 --> 00:00:49,258
+此后整个月面行走，这面天线一直在安全极限之外坚持。
+For the rest of the walk, the dish held on, outside its safety limits.
+

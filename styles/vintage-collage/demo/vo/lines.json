@@ -1,0 +1,67 @@
+[
+ {
+  "id": "L01",
+  "text": "May, nineteen eighteen. America is about to fly the mail.",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "asr": "May 1918. America is about to fly the mail."
+ },
+ {
+  "id": "L02",
+  "text": "The new stamp: a blue plane, in a red frame.",
+  "voice": "bm_george",
+  "speed": 0.95
+ },
+ {
+  "id": "L03",
+  "text": "Every sheet goes through the press twice. Red first, then blue.",
+  "voice": "bm_george",
+  "speed": 0.95
+ },
+ {
+  "id": "L04",
+  "text": "But on one sheet, the blue went on upside down.",
+  "voice": "bm_george",
+  "speed": 0.92
+ },
+ {
+  "id": "L05",
+  "text": "A collector named William Robey bought it. One hundred stamps, twenty-four dollars.",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "asr": "A collector named William Robey bought it. 100 stamps, $24."
+ },
+ {
+  "id": "L06",
+  "text": "A week later, he sold it for fifteen thousand.",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "asr": "A week later, he sold it for 15,000."
+ },
+ {
+  "id": "L07",
+  "text": "The sheet was cut up, and the planes flew apart.",
+  "voice": "bm_george",
+  "speed": 0.95
+ },
+ {
+  "id": "L08",
+  "text": "In twenty twenty-three, a single one sold for just over two million dollars.",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "asr": "In 2023, a single one sold for just over $2 million."
+ },
+ {
+  "id": "L09",
+  "text": "Some were lost. Some were stolen.",
+  "voice": "bm_george",
+  "speed": 0.92
+ },
+ {
+  "id": "L10",
+  "text": "Number sixty-six vanished in nineteen fifty-five, and has never been found.",
+  "voice": "bm_george",
+  "speed": 0.92,
+  "asr": "Number 66 vanished in 1955, and has never been found."
+ }
+]

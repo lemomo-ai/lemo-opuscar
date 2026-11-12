@@ -20,7 +20,7 @@ On-screen text in the film is Chinese; it is quoted as it appears, with an Engli
 | Radio message 17:22 "RECOMMEND LANDING NOW." | Sent by the air station to the airship | R: "At 5:22 P.M. station commander radioed ship: 'Recommend landing now.'" |
 | Radio message 18:08 "…RECOMMEND EARLIEST POSSIBLE LANDING." | The last message | R: "At 6:08 P.M. station commander sent last message: 'Conditions definitely improved recommend earliest possible landing.'" |
 | VO2 "The station's answer: delay landing." | Summary of the 16:42 message | As above (16:42) |
-| Wind chart "17:12 · 8 节" (17:12 · 8 knots) | Surface wind in the 17:12 message (the gusts are no longer shown on screen) | R: "At 5:12 P.M. … surface wind west-southwest eight knots gusts to 20 knots" |
+| Wind chart "17:12 · 8 节" (17:12 · 8 knots) | Surface wind in the 17:12 message (the gusts are not shown on screen) | R: "At 5:12 P.M. … surface wind west-southwest eight knots gusts to 20 knots" |
 | Wind chart "18:00 · 4 节" (18:00 · 4 knots) | Surface wind in the 18:00 message | R: "At 6:00 P.M. station transmitted to ship: '… surface wind west-southwest four knots gusts under 10 knots …'" |
 | Wind chart "≈ 着陆 · 1 节" (≈ landing · 1 knot) | Surface wind at the start of the landing; placing the point at 18:18 is only illustrative (the report gives no exact time, hence the ≈) | R: "surface wind light, variable and shifting and at the precise moment of the beginning of the landing was southeast 1 knot." |
 | VO3 "At six twenty-one, the ropes go down"; plan view "18:21 放绳处" (18:21 ropes dropped here), "30°"; conclusion graphic "放绳" (ropes dropped) | The bow landing ropes are dropped, bearing 30° from the mooring mast | R: "At 6:21 P.M., the bow trail ropes were dropped, on a bearing of 30 degrees from the mooring mast" |
@@ -49,9 +49,9 @@ On-screen text in the film is Chinese; it is quoted as it appears, with an Engli
 ## The film's inferences (all marked as such in the film)
 
 - **Photo camera position / view cone**: inferred from the relative position of the foreground mooring mast and the airship in the Pasquarella photograph; labelled "推断" (inferred).
-- **Newsreel camera position**: not found, so no camera position is drawn on screen (an earlier cut labelled it "未定" (undetermined); removed to cut down on text).
+- **Newsreel camera position**: not found, so no camera position is drawn on screen.
 - **Photo times**: Pasquarella ≈T+2 s (Commons description "taken during the initial explosion"); NH 57973 ≈T+26 s (matched against the airship's attitude in the newsreel); both marked ≈.
-- **Footage alignment**: the newsreel's main-body impact (source 01:43.6) is aligned to the report's +32 s, which puts the start of the newsreel at about 7 s after the first flame; there is an exposure splice at source 01:43.3, error ±1–2 s. In the three-column grid the newsreel column lights up only at ≈T+7 s (no "无影像" (no footage) placeholder box any more, and no small-print note on the alignment error).
+- **Footage alignment**: the newsreel's main-body impact (source 01:43.6) is aligned to the report's +32 s, which puts the start of the newsreel at about 7 s after the first flame; there is an exposure splice at source 01:43.3, error ±1–2 s. In the three-column grid the newsreel column lights up only at ≈T+7 s; there is no placeholder box and no small-print note on the alignment error.
 - **Plan view**: a diagram with the mooring mast as origin, drawn to scale in feet; the 1947 map does not show the mooring mast of 1937, so the plan view is not laid over the map; only a locator inset is used.
 - **Side view**: 16 gas cells of equal size, not to exact scale, labelled "示意" (schematic).
 - **The "landing begins" point in the wind chart**: the report gives no time; the point is placed at 18:18 and marked ≈.

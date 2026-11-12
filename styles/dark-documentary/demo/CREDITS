@@ -1,0 +1,30 @@
+Radar Sweep Documentary demo · Catching the Moon 《狂风里接住登月直播》 · third-party assets and sources
+
+## Voice
+- Kokoro-82M (hexgrad), voice bm_lewis, speed 0.82, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: faster-whisper (MIT; OpenAI Whisper weights, MIT). Script: demo/vo/lines.json.
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios / Sam Gossner): contrabass, cellos, violins, violins_trem, timpani
+- Versilian Community Sample Library (Versilian Studios): vibraphone, vibraphone_bowed, glockenspiel, harp
+  (core/audio/sampler.py). Wind, rain, sonar pings, motors, gears, the alarm bell, the TV hiss and the room tone are
+  procedural (core/audio/sfx.py and demo/mix.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- IBM Plex Sans (variable; weights 200 and 300): IBM Corp., https://github.com/google/fonts/tree/main/ofl/ibmplexsans
+- JetBrains Mono (variable; weight 300): JetBrains s.r.o., https://github.com/google/fonts/tree/main/ofl/jetbrainsmono
+- Noto Sans SC Light, subset to the characters in main.js: Google LLC / Adobe, https://github.com/google/fonts/tree/main/ofl/notosanssc
+  (fetched through the Google Fonts CSS API by demo/tools/fetch_fonts.sh)
+
+## Code
+- three.js r170 (MIT), with EffectComposer, RenderPass, UnrealBloomPass, ShaderPass and ConvexGeometry from its examples,
+  loaded from the library's node_modules.
+
+## Images, models
+- None. The terrain, the telescope, the sky, the clouds, the rain, the lunar module, the Earth and Moon, the control room
+  and the TV picture are built or drawn in code; no photographs, no footage, no external models, no AI-generated images.
+- The lunar module and the telescope are our own simplified models built from the vehicles' published general shape.
+  The TV picture (a moonwalker by the lander) is our own drawing, not a frame of the 1969 broadcast.
+
+## Facts
+- Every date, time, number and event on screen and in the voice is sourced in demo/FACTS.md, with URLs and quoted wording.

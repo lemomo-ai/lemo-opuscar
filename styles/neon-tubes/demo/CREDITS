@@ -1,0 +1,20 @@
+Neon Tubes demo · 《夜宵》 Midnight Snack · third-party assets and sources
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- Noto Sans SC: Google / Adobe, https://github.com/google/fonts/tree/main/ofl/notosanssc
+  build.sh downloads the variable font NotoSansSC[wght].ttf into demo/fonts/src/; tools/fonts.py subsets it to the six
+  hanzi of the stencilled end card. The neon hanzi on the signs are not set in any font: they are tube centrelines laid by
+  hand over this font's glyph skeletons (tools/glyphs_build.py, checked with tools/glyph_check.py).
+- Barlow Condensed Bold: Jeremy Tribby, https://github.com/google/fonts/tree/main/ofl/barlowcondensed (end card, Latin lines).
+
+## Sound
+- Nothing third-party. The score and the foley are synthesised in demo/audio.py (numpy / scipy) with the library's
+  core/audio/sfx.py helpers: no samples, no recordings, no voice.
+
+## Images, models
+- None. The tubes, walls, street, puddles, rain, the cat and the goldfish are drawn by code (Canvas 2D + WebGL2:
+  film.js, world.js, gl.js). No photographs, no external models, no AI-generated images.
+
+## Facts
+- Gas colours, coatings, tube sizes and sign construction follow neon practice; sources in demo/FACTS.md.
+- Invented for the film: the street, the shop names, the clock times, the cat and the goldfish.

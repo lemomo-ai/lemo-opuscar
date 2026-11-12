@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Firefly Pointillism · on-screen text for readcheck</title>
+<!-- The film is drawn by film.py (Python). This page only lists the text the film draws, with the times and boxes
+     film.py uses (title_targets, title_st, T_TITLE0 / T_CRED0 in timeline.py), so core/render/readcheck.mjs can time it.
+     Subtitles are checked from the .srt, not here. -->
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+const DUR = 50.6;
+// fully formed: every particle has landed (start + 0.3 s largest delay + flight time)
+const TITLE_IN = 45.6 + 0.3 + 0.62, CRED_IN = 46.6 + 0.3 + 0.55;
+const X = 232;
+const T = [
+  {id: 'title-zh', text: '你亮，我就亮', t0: TITLE_IN, x0: X, y0: 262 - 75, x1: X + 6 * 144, y1: 262 + 75},
+  {id: 'title-en', text: 'SHINE BACK', t0: TITLE_IN, x0: X + 6, y0: 372 - 24, x1: X + 6 + 420, y1: 372 + 24},
+  {id: 'style', text: 'Firefly Pointillism · 萤火光点', t0: CRED_IN, x0: X + 6, y0: 446 - 20, x1: X + 6 + 520, y1: 446 + 20},
+  {id: 'credit', text: 'LemoLab × Claude Opus 5.5', t0: CRED_IN, x0: X + 6, y0: 494 - 20, x1: X + 6 + 470, y1: 494 + 20},
+];
+window.DUR = DUR;
+window.TEXTS = (t) => T.filter(e => t >= e.t0).map(({id, text, x0, y0, x1, y1}) => ({id, text, x0, y0, x1, y1}));
+const g = document.getElementById('c').getContext('2d');
+window.render = (t) => { g.fillStyle = '#050708'; g.fillRect(0, 0, 1920, 1080); };
+window.READY = true;
+</script>

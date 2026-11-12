@@ -1,0 +1,31 @@
+# CREDITS · 8848.86
+
+## Sound (core/audio/sampler.py `credits()` output)
+
+- Piano: "Salamander Grand Piano V3" by Alexander Holm, licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+- Samples (CC0): VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
+- Instruments used: piano, marimba, vibraphone_hard, vibraphone_bowed, glockenspiel, harp, woodblock, violins, violins_pizz, violas, cellos, cellos_spic, cellos_pizz, contrabass, contrabass_pizz, horn, timpani, gran_cassa, sus_cymbal.
+- Machine sounds (stepper whine, pen on paper, servo, gripper, room) are synthesised in `audio.py` with `core/audio/sfx.py`.
+
+## Fonts (OFL 1.1; the page loads none: every letter is pen strokes baked into plot.json)
+
+Only the licence texts are in git. `tools/fonts.py` (run by `build.sh`) writes the font files below into `fonts/` locally.
+
+
+- Relief SingleLine, © 2022 The Relief SingleLine Project Authors, github.com/isdat-type/Relief-SingleLine: `fonts/ReliefSingleLine.svg` (local), `fonts/OFL-ReliefSingleLine.txt`.
+- Noto Sans SC (Google, Adobe), instanced at weights 100 and 300, subset to the characters used: `fonts/NotoSansSC-Thin-subset.ttf`, `fonts/NotoSansSC-Light-subset.ttf` (local), `fonts/OFL-NotoSansSC.txt`.
+- Noto Serif SC (Google, Adobe), weight 800, subset: `fonts/NotoSerifSC-ExtraBold-subset.ttf` (local), `fonts/OFL-NotoSerifSC.txt`.
+- Sources (local, downloaded by `build.sh` into `data/fontsrc/`): Relief SingleLine `fonts/open_svg/ReliefSingleLineSVG-Regular.svg` from github.com/isdat-type/Relief-SingleLine; `NotoSansSC[wght].ttf` and `NotoSerifSC[wght].ttf` from github.com/google/fonts (`ofl/notosanssc/`, `ofl/notoserifsc/`).
+
+## Code
+
+- three.js r170 (MIT), from the library's `node_modules/three`, including the fat-line addons (`examples/jsm/lines/`).
+- `core/three/post.js`: the library's post chain (GTAO, depth of field, bloom, grade).
+
+## Data
+
+- NASADEM HGT v001, NASA JPL (CC0 / no restrictions), four 1° tiles via Microsoft Planetary Computer (`tools/fetch_dem.py`, local in `data/raw/`): see SOURCES.md. Heights and camp altitudes: FACTS.md.
+
+## Images, models, footage
+
+- None. Desk, plotter, pens, lamp, room and paper are built in code.

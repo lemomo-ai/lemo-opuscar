@@ -5,6 +5,7 @@
 # Steps: fonts, chalk recordings, voice + speech check, events, score + mix, picture, master, reading-time check,
 # subtitles, poster and gallery frame. Fonts and recordings are not in git: they are downloaded here (OFL / CC0 / CC BY,
 # see CREDITS). The voice is edge-tts (online).
+# Needs the core, voice and music tiers: setup.sh deps voice music (audio.py uses core/audio/pluck.py, which needs numba).
 set -e
 LANG_VO=${1:-zh}
 HERE=$(cd "$(dirname "$0")" && pwd)                 # .../chalkboard/demo
@@ -17,6 +18,7 @@ NAME=chalkboard
 FPS=30
 FRAME=42.5                                           # the verdict on the board, between voice lines: poster and gallery frame
 cd "$LIB"
+"$PY" -c 'import numba' 2>/dev/null || { echo "chalkboard: the demo needs the music tier (numba, for core/audio/pluck.py), which isn't installed. Run: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice music" >&2; exit 1; }
 
 # fonts (gitignored): single-line EMS fonts for the English chalk; LXGW WenKai as the source of the subtitle subset
 EMS=https://gitlab.com/oskay/svg-fonts/-/raw/master/fonts/EMS

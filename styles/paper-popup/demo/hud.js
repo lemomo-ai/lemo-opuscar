@@ -1,5 +1,5 @@
 // 2D overlay: narration subtitles, character speech bubbles (typewriter), chapter banners, action-rating words, end card
-import { VO, BUB, CHAPTERS, CREDITS, TITLE_CN, DUR } from './story.js';
+import { BUB, CHAPTERS, CREDITS, TITLE_CN, DUR, voCues } from './story.js';
 import { clamp, seg, back, ss, eo, lerp, TAU, mulberry } from './lib.js';
 
 const INK = '#3a2a24';
@@ -12,8 +12,9 @@ function wrap(x, text, maxW) {
 }
 
 export function drawSubs(x, t, dur) {
-  for (const [id, t0, en, zh] of VO) {
-    const d = dur[id] || 3, a = Math.min(seg(t, t0 - .15, t0 + .15), 1 - seg(t, t0 + d + .25, t0 + d + .55));
+  // a line split into parts (story.js VO_SPLIT) fades in with its first part, cuts between parts and fades out after its last
+  for (const { t0, t1, en, zh, first, last } of voCues(dur)) {
+    const a = Math.min(first ? seg(t, t0 - .15, t0 + .15) : +(t >= t0), last ? 1 - seg(t, t1 + .25, t1 + .55) : +(t < t1));
     if (a <= 0) continue;
     x.save(); x.globalAlpha = a; x.textAlign = 'center'; x.textBaseline = 'alphabetic';
     x.font = '500 40px Fredoka'; const lines = wrap(x, en, 1720);

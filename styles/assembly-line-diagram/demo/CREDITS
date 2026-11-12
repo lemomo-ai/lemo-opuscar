@@ -1,0 +1,32 @@
+Assembly-Line Diagram demo · 《拆解流水线》 The Disassembly Line · third-party assets and sources
+
+## Picture
+- Everything is drawn in code: demo/*.js build one SVG per frame, rendered in Chromium by the library's
+  core/render/video.mjs. No photographs, no external images or models, no AI-generated images (no Codex image generation).
+- Style references, studied for grammar only, not traced and not in the film:
+  Fritz Kahn, "Der Mensch als Industriepalast" (Fricke & Co., Stuttgart, 1926), e.g. the scan at
+  https://neatlinemaps.com/product/nl-02170/fritz-kahn-der-mensch-als-industriepalast/ ;
+  Nigel Holmes, explanation graphics for TIME (see https://eyemagazine.com/feature/article/crashing-through-the-type
+  and https://flowingdata.com/2012/08/01/nigel-holmes-on-explanation-graphics-and-how-he-got-started/).
+
+## Voice
+- Kokoro-82M (hexgrad), voice am_michael, speed 0.8 (0.76 for one line), Apache License 2.0; run locally via
+  kokoro-onnx (MIT) through the library's core/tts/tts.py. Speech check: faster-whisper small.en (MIT; OpenAI Whisper
+  weights, MIT). Script: demo/voice/lines.json; clips are rendered to demo/out/voice/ (local).
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios),
+  played by core/audio/sampler.py from demo/tools/mix.py (the instruments used are listed in demo/out/instruments.txt
+  after a build). Every sound effect is procedural (core/audio/sfx.py and demo/tools/mix.py).
+
+## Fonts (SIL Open Font License 1.1)
+- Big Shoulders Display 700 / 800 / 900: Patric King, https://fonts.google.com/specimen/Big+Shoulders+Display
+- Archivo 600 / 800: Omnibus-Type, https://fonts.google.com/specimen/Archivo
+- Noto Sans SC 500 / 700 / 900: Google / Adobe, https://fonts.google.com/noto/specimen/Noto+Sans+SC
+  All three are subset to the characters in demo/*.js and demo/timeline.json through the Google Fonts CSS API
+  (demo/tools/fonts.sh, run by build.sh when demo/fonts/ is empty) and kept local as woff2.
+
+## Facts
+- Every station, the times on the clock and the two simplifications (one food = one nutrient; running on the liver's
+  sugar) are sourced in demo/FACTS.md (NIDDK, Encyclopaedia Britannica, Mayo Clinic), with URLs.
+- Invented for the film: the sandwich, the clock times, the bus, the factory and its workers.

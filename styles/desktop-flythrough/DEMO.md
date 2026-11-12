@@ -1,4 +1,4 @@
-# Desktop Flythrough 桌面穿梭 — our demo
+# Tabletop App Flythrough 桌面卡片穿梭 — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 

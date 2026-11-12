@@ -1,0 +1,30 @@
+Text Flash Cuts — "Behind You" (身后) (library demo)
+Every third-party asset in the film, with its source and licence.
+
+STORY, CHARACTERS AND TEXT
+- Fictional. The series "身后 / Behind You", its two characters, all lines and the release note are invented for this demo.
+  No existing anime, character, line, card text or logo is used. The visual grammar follows the early-2000s TV-anime
+  "text frame" school; no frame of any existing work was used as a reference image.
+
+IMAGES (Codex 生图 / generated with Codex image generation)
+- 11 character and insert images generated with Codex CLI's built-in image generation through core/image/gen_image.py
+  (prompts and --ref chain in prompts/prompts.json and prompts/README.md). Two of them (char_lookback, eye) were generated first without a
+  reference; the other nine use char_lookback as the --ref for character and drawing style.
+- These images belong to this demo only. A film on another topic generates its own characters (STYLE.md §9);
+  the demo's images are not reused.
+- Architecture, cards, rails, rain, the fallen umbrella, the phone, lockers, windows and all type are drawn in code (main.js).
+
+FONTS (SIL Open Font License 1.1; subsets fetched from Google Fonts by tools/fonts.sh)
+- Noto Serif SC (Black 900), Google / Adobe
+- Noto Sans SC (Black 900), Google / Adobe
+- Cormorant Garamond (SemiBold Italic 600), Christian Thalmann (Catharsis Fonts)
+
+MUSIC AND SOUND
+- Original score and procedural sound design written for this film (mix.py); hits, foley, rain, drone synthesised with numpy (core/audio/sfx.py).
+- Samples (CC0 1.0, https://creativecommons.org/publicdomain/zero/1.0/): VS Chamber Orchestra: Community Edition and
+  Versilian Community Sample Library, by Versilian Studios (Sam Gossner)
+  (harpsichord, contrabass, cellos, violins, glockenspiel, woodblock, timpani, gran cassa, snare, trombone, tuba, horn,
+  tubular bells, tam-tam, suspended cymbal, bowed vibraphone)
+
+TOOLS
+- Rendering: headless Chromium (Playwright); ffmpeg.

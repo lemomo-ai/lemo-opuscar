@@ -1,0 +1,63 @@
+[
+ {
+  "id": "v01",
+  "text": "Here is a square wave. Flat tops, sharp corners.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v02",
+  "text": "So how do you roll it out of circles?",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v03",
+  "text": "Start with one spinning circle.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v04",
+  "text": "Follow its tip. Its height draws a sine wave.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v05",
+  "text": "Hang a smaller one on its tip: three times as fast, a third the size.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v06",
+  "text": "Then a fifth, a seventh, odd ones only, until the wave is square.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v07",
+  "text": "But look closely at a corner.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v08",
+  "text": "There's a spike. Add more circles, and it only gets thinner.",
+  "voice": "am_michael",
+  "speed": 0.82
+ },
+ {
+  "id": "v09",
+  "text": "It never gets shorter. About nine percent, every time.",
+  "voice": "am_michael",
+  "speed": 0.82,
+  "asr": "It never gets shorter, about 9% every time."
+ },
+ {
+  "id": "v10",
+  "text": "Even infinitely many circles leave it there. It's called the Gibbs phenomenon.",
+  "voice": "am_michael",
+  "speed": 0.82
+ }
+]

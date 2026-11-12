@@ -1,11 +1,12 @@
 {
  "slug": "midcentury-toon",
- "num": "48",
+ "num": "55",
  "en": "Mid-century Cartoon",
  "cn": "50s 扁平卡通",
- "category_en": "Cartoon & Anime",
- "category_cn": "卡通与动画",
+ "category_en": "Cartoons",
+ "category_cn": "卡通动画",
  "film": "Meet Pip",
+ "film_cn": "认识一下 Pip",
  "line": "A robot vacuum set up in three steps, told like a 1950s classroom film.",
  "line_cn": "用 50 年代教育片的口吻，三步教你装好一台扫地机。",
  "uses": [

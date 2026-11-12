@@ -1,0 +1,258 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>COMPOUND · 复利是怎么滚起来的</title>
+<style>
+  @font-face{font-family:"BH Sans";src:url(fonts/Jost-VF.ttf) format("truetype");font-weight:100 900}
+  @font-face{font-family:"BH Hei";src:url(fonts/NotoSansSC-VF-sub.woff2) format("woff2");font-weight:100 900}
+  html,body{margin:0;overflow:hidden;background:#F2EFE9}
+  canvas{display:block}
+</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script type="module">
+// 包豪斯几何 Bauhaus Shapes · the demo film «COMPOUND» (film.js) and three still layouts drawn with the same kit
+// (no query) the film · ?cut=a:b a stretch of it · ?sign=1 the credit in the last 2.5 s of a stretch · ?nosub=1 no subtitles
+// ?frame=1|2|3 a still layout (1 title · 2 mechanism · 3 data) · ?pal=klein|sorbet · ?tex=0 turns the ink/paper texture off
+// Only circles, rings, squares, triangles, arcs and straight lines. Colours meet with hard edges:
+// no gradients, no shadows, no transparency between shapes.
+import { mulberry, clamp, lerp } from '/core/lib.js';
+const Q = new URLSearchParams(location.search);
+const FRAME = +(Q.get('frame') || 0), PKEY = Q.get('pal'), TEX = Q.get('tex') !== '0';
+
+// ---------------- palettes (4 colours + paper + ink; ink is a deep slate blue, never black) ----------------
+// Roles, not hues:
+//   red = the protagonist / smallest amount · blue = the ONE large field · yel = pivot, base, middle amount
+//   tint = secondary area (swept area, outer ring) · ink = type and lines only · light = type reversed on fields
+const DEFAULT_PAL = 'klein';
+const PALS = {
+  klein:  { name:'Klein',  paper:'#F8F7F3', red:'#0E9F7A', blue:'#2138C8', yel:'#F4E04D', tint:'#D5DCEE', ink:'#161C3A', light:'#F8F7F3' },
+  sorbet: { name:'Sorbet', paper:'#F5E8E1', red:'#E9476B', blue:'#3552E8', yel:'#F6B12F', tint:'#94D3BF', ink:'#1F3340', light:'#F5E8E1' },
+};
+const P = PALS[PKEY] || PALS[DEFAULT_PAL];
+window.PALETTE = { key:PALS[PKEY]?PKEY:DEFAULT_PAL, ...P };
+
+const W = 1920, H = 1080;
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const SANS = '"BH Sans"', HEI = '"BH Hei"';
+const TAU = Math.PI*2;
+
+// ---------------- drawing helpers ----------------
+function disc(x,y,r,col){ if (r<=0) return; g.fillStyle=col; g.beginPath(); g.arc(x,y,r,0,TAU); g.fill(); }
+function poly(pts,col){ g.fillStyle=col; g.beginPath(); pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])); g.closePath(); g.fill(); }
+function rect(x,y,w,h,col){ g.fillStyle=col; g.fillRect(x,y,w,h); }
+function line(pts,col,w=5){ g.strokeStyle=col; g.lineWidth=w; g.lineCap='butt'; g.lineJoin='round'; g.beginPath();
+  pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])); g.stroke(); }
+function arc(x,y,r,a0,a1,col,w=5){ g.strokeStyle=col; g.lineWidth=w; g.lineCap='butt'; g.beginPath(); g.arc(x,y,r,a0,a1); g.stroke(); }
+// a compass mark: the centre a circle was drawn from (our addition: the Vorkurs construction layer, left visible)
+function cross(x,y,col,s=14,w=2){ line([[x-s,y],[x+s,y]],col,w); line([[x,y-s],[x,y+s]],col,w); }
+function text(str,x,y,{size=40,weight=800,fam=SANS,col=P.ink,align='left',base='alphabetic',rot=0,track=0}={}){
+  g.save(); g.translate(x,y); if (rot) g.rotate(rot);
+  g.font=`${weight} ${size}px ${fam}`; g.fillStyle=col; g.textAlign=align; g.textBaseline=base;
+  g.letterSpacing = track ? `${track}px` : '0px';
+  g.fillText(str,0,0); g.restore();
+}
+function measure(str,size,weight=800,fam=SANS,track=0){ g.font=`${weight} ${size}px ${fam}`; g.letterSpacing = track?`${track}px`:'0px'; return g.measureText(str).width; }
+// one line made of several runs, each with its own colour (used to set "×" or a word in an accent)
+function runs(parts,x,y,opt){ let cx=x; for (const [s,col] of parts){ text(s,cx,y,{...opt,col}); cx+=measure(s,opt.size,opt.weight??800,opt.fam??SANS,opt.track??0); } return cx; }
+
+// ---------------- material: opaque ink on matte card ----------------
+// Fine tooth everywhere, plus a slow, very low ink-density drift inside the colour fields (screen-printed, not glossy).
+let TOOTH = null;
+function buildTooth(){
+  const rnd = mulberry(11), N = new Float32Array(W*H);
+  // value noise for the slow drift
+  const gw = 48, gh = 28, grid = Array.from({length:(gw+1)*(gh+1)}, ()=>rnd()*2-1);
+  const vn = (x,y)=>{ const fx=x/W*gw, fy=y/H*gh, ix=Math.floor(fx), iy=Math.floor(fy), tx=fx-ix, ty=fy-iy;
+    const s=t=>t*t*(3-2*t), a=grid[iy*(gw+1)+ix], b=grid[iy*(gw+1)+ix+1], c=grid[(iy+1)*(gw+1)+ix], d=grid[(iy+1)*(gw+1)+ix+1];
+    return lerp(lerp(a,b,s(tx)),lerp(c,d,s(tx)),s(ty)); };
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+    const fibre = Math.sin(x*0.013+y*0.0035+Math.sin(y*0.002)*3)*0.5 + Math.sin(x*0.0021-y*0.011)*0.5;
+    N[y*W+x] = (rnd()-0.5)*1.0 + fibre*0.14 + vn(x,y)*0.22;
+  }
+  return N;
+}
+function finish(){
+  if (!TEX) return;
+  if (!TOOTH) TOOTH = buildTooth();
+  const img = g.getImageData(0,0,W,H), d = img.data;
+  for (let i=0,p=0;i<d.length;i+=4,p++){
+    const n = TOOTH[p];
+    const lum = (d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255;
+    const amp = 7.5 - lum*2.5;                 // a touch more tooth in the darker inks
+    d[i]   = clamp(d[i]  + n*amp, 0, 255);
+    d[i+1] = clamp(d[i+1]+ n*amp, 0, 255);
+    d[i+2] = clamp(d[i+2]+ n*amp*0.85, 0, 255);
+  }
+  g.putImageData(img,0,0);
+}
+
+// =====================================================================================
+// FRAME 1 · TITLE  «Compound Interest»: a dot rolls up the ramp of time and grows a ring every doubling
+// =====================================================================================
+function frameTitle(){
+  rect(0,0,W,H,P.paper);
+  const A={x:0,y:H}, B={x:W,y:410}, dx=B.x-A.x, dy=B.y-A.y, L=Math.hypot(dx,dy);
+  const u={x:dx/L,y:dy/L}, n={x:dy/L,y:-dx/L}, TH=Math.atan2(dy,dx);
+  const on=(s,r=0)=>({x:A.x+u.x*s+n.x*r, y:A.y+u.y*s+n.y*r});
+  const rot=(v,a)=>({x:v.x*Math.cos(a)-v.y*Math.sin(a), y:v.x*Math.sin(a)+v.y*Math.cos(a)});
+
+  // the square the title leans on (square = the thing that stays put)
+  rect(-40, 96, 392, 392, P.yel);
+
+  // the ramp of time
+  poly([[A.x,A.y],[B.x,B.y],[W,H]], P.blue);
+
+  // the roll: radius grows exponentially with distance, phase = ∫ ds / R
+  const R0=24, K=7, R1=R0*Math.pow(Math.SQRT2,K), S0=430, S1=1985, GA=Math.log(R1/R0)/(S1-S0);
+  const Rs=s=>R0*Math.exp(GA*(clamp(s,S0,S1)-S0));
+  // start phase chosen so the red core ends at the back of the finished ball, low, where the path can be seen arriving
+  let TOT=0; for (let s=S0; s<=S1; s+=0.5) TOT += 0.5/Rs(s);
+  const END_PHASE = 1.05;
+  let phi=END_PHASE-TOT; const path=[];
+  for (let s=S0; s<=S1; s+=0.5){ const R=Rs(s); phi += 0.5/R; const c=on(s,R), v=rot({x:-n.x,y:-n.y},phi);
+    path.push([c.x+v.x*R, c.y+v.y*R]); }
+  // the path the principal draws: point -> line
+  line(path, P.ink, 5);
+
+  // the grown ball: 8 discs (1 -> 128), all tangent at the red core, newest ring outermost
+  const c=on(S1,R1), v=rot({x:-n.x,y:-n.y},phi), T={x:c.x+v.x*R1, y:c.y+v.y*R1}, d={x:-v.x,y:-v.y};
+  const RING = [P.red, P.yel, P.blue, P.paper, P.red, P.tint, P.blue, P.yel];   // inner -> outer
+  for (let k=K;k>=0;k--){ const r=R0*Math.pow(Math.SQRT2,k); disc(T.x+d.x*r, T.y+d.y*r, r, RING[k]); }
+
+  // the principal at the start: a single red point
+  const s0=on(S0, R0);
+  disc(s0.x, s0.y, R0+3, P.red);          // +3 covers the half line-width where the path leaves the rim
+
+  // numbers ride the slope, printed in paper colour on the ramp
+  const along=(str,s,off,size,col,align='left',weight=700)=>{ const p=on(s,off); text(str,p.x,p.y,{size,weight,col,align,rot:TH}); };
+  along('1', S0, -86, 72, P.light, 'center', 600);
+  along('128', 1290, -330, 300, P.light, 'left', 700);
+  along('×2 every 7 years', 700, -70, 40, P.light, 'left', 600);
+  along('每7年翻一倍', 700, -124, 34, P.light, 'left', 700);
+
+  // title: the O of COMPOUND is the principal itself
+  const fs=196, X=128, Y=330;
+  const wC = measure('C',fs,800,SANS,-4);
+  text('C', X, Y, {size:fs, weight:800, track:-4});
+  const oR = fs*0.355, ox = X+wC+oR+4, oy = Y-fs*0.355;
+  disc(ox, oy, oR, P.red);
+  text('MPOUND', ox+oR+6, Y, {size:fs, weight:800, track:-4});
+  text('INTEREST', X+6, Y+150, {size:118, weight:300, track:18});
+  text('复利是怎么滚起来的', X+10, Y+232, {size:42, weight:700, fam:HEI, track:4});
+}
+
+// =====================================================================================
+// FRAME 2 · MECHANISM  «The Lever»: the light end travels three times as far
+// =====================================================================================
+function frameLever(){
+  rect(0,0,W,H,P.paper);
+  const FX=1250, FY=600, UNIT=300, BT=26;    // pivot (beam centre line), one arm unit, beam thickness
+  const TH=-16*Math.PI/180;                  // the beam has tipped: light end down, heavy end up
+  const at=(a,r)=>[FX+Math.cos(a)*r, FY+Math.sin(a)*r];
+
+  // swept wedges: the same angle, three times the reach. The light end covers three times the distance
+  const wedge=(a0,a1,r,col)=>{ g.fillStyle=col; g.beginPath(); g.moveTo(FX,FY); g.arc(FX,FY,r,a0,a1); g.closePath(); g.fill(); };
+  wedge(Math.PI+TH, Math.PI, 3*UNIT, P.tint);        // left: from level down to now
+  wedge(TH, 0, UNIT, P.tint);                          // right: from level up to now
+  // the path each end drew: point -> line
+  arc(FX, FY, 3*UNIT, Math.PI+TH, Math.PI, P.ink, 5);
+  arc(FX, FY, UNIT, TH, 0, P.ink, 5);
+  // the level line the beam started from
+  line([at(Math.PI,3*UNIT+46), at(0,UNIT+46)], P.ink, 3);
+
+  // fulcrum: a triangle that runs off the bottom of the frame
+  poly([[FX,FY+BT/2],[FX+250,H+20],[FX-250,H+20]], P.yel);
+
+  // the beam and its loads, tipped together. Area is weight: circle = 1, square = 3
+  const r1=76, side=Math.sqrt(3*Math.PI*r1*r1);
+  g.save(); g.translate(FX,FY); g.rotate(TH);
+  rect(-3*UNIT-46, -BT/2, 4*UNIT+92, BT, P.ink);
+  for (let i=0;i<=4;i++) disc(-3*UNIT+i*UNIT, 0, 5, P.paper);
+  disc(-3*UNIT, -BT/2-r1, r1, P.red);
+  rect(UNIT-side/2, -BT/2-side, side, side, P.blue);
+  text('1', -3*UNIT, -BT/2-r1+3, {size:86, weight:700, col:P.light, align:'center', base:'middle'});
+  text('3', UNIT, -BT/2-side/2+5, {size:150, weight:700, col:P.light, align:'center', base:'middle'});
+  g.restore();
+
+  // how far each end went, read off the arcs
+  const mL=at(Math.PI, 3*UNIT), mR=at(0, UNIT);
+  text('3×', mL[0]-44, mL[1]-22, {size:72, weight:700, align:'right'});
+  text('1×', mR[0]+60, mR[1]-18, {size:44, weight:700});
+
+  // type: title and the reading, top left; the balance as an equation under the long arm
+  text('LEVER', 124, 252, {size:214, weight:800, track:-2});
+  text('The light end travels three times as far.', 132, 330, {size:38, weight:500});
+  text('轻的一头，多走三倍的路', 132, 390, {size:34, weight:700, fam:HEI, track:4});
+  runs([['1',P.red],[' × 3  =  ',P.ink],['3',P.blue],[' × 1',P.ink]], 132, 1010, {size:76, weight:500, track:2});
+}
+
+// =====================================================================================
+// FRAME 3 · DATA  «Water on Earth»: 2.5% is fresh, and most of that is ice (USGS)
+// =====================================================================================
+function frameWater(){
+  rect(0,0,W,H,P.paper);
+  // all water: one disc, area = 100
+  const CX=540, CY=590, R=410;
+  disc(CX, CY, R, P.blue);
+  // fresh water: 2.5% of that area, set inside near the rim
+  const rf = R*Math.sqrt(0.025);
+  const fa = -0.42, FX = CX+Math.cos(fa)*(R-rf-30), FY = CY+Math.sin(fa)*(R-rf-30);
+
+  // the same fresh water, magnified. Rings by area from the core out: surface 1.2 · ground 30.1 · ice 68.7
+  const MX=1330, MY=470, MR=262;
+  const tang=(x1,y1,r1,x2,y2,r2,sign)=>{ const dx=x2-x1, dy=y2-y1, dd=Math.hypot(dx,dy), a=Math.atan2(dy,dx), b=Math.acos((r1-r2)/dd);
+    const t=a+sign*b; return [[x1+Math.cos(t)*r1, y1+Math.sin(t)*r1],[x2+Math.cos(t)*r2, y2+Math.sin(t)*r2]]; };
+  line(tang(FX,FY,rf,MX,MY,MR,1), P.ink, 3);
+  line(tang(FX,FY,rf,MX,MY,MR,-1), P.ink, 3);
+  const rings=(x,y,r)=>{ disc(x,y,r,P.tint); disc(x,y,r*Math.sqrt(0.313),P.yel); disc(x,y,r*Math.sqrt(0.012),P.red); };
+  rings(FX,FY,rf);
+  rings(MX,MY,MR);
+
+  // inside the big disc
+  text('97.5%', CX-262, CY+70, {size:150, weight:700, col:P.light});
+  text('salt water', CX-254, CY+132, {size:40, weight:500, col:P.light, track:1});
+
+  // ring labels: straight leaders to the right
+  const LX=1700;
+  const lab=(px,py,ly,num,name)=>{ line([[px,py],[LX-18,ly-14]], P.ink, 3); disc(px,py,7,P.ink);
+    text(num, LX, ly, {size:52, weight:700}); text(name, LX+2, ly+40, {size:26, weight:600, track:4}); };
+  lab(MX, MY, 300, '1.2%', 'SURFACE');
+  lab(MX+MR*0.36, MY+MR*0.18, 496, '30.1%', 'GROUND');
+  lab(MX+MR*0.80, MY+MR*0.40, 692, '68.7%', 'ICE');
+
+  // the headline sits under the lens
+  const hs=184, hx=1066, hy=930;
+  text('2.5%', hx, hy, {size:hs, weight:800, track:-4});
+  const hw = measure('2.5%', hs, 800, SANS, -4);
+  text('is fresh', hx+hw+28, hy, {size:56, weight:500});
+  text('淡水只占2.5%，大半还冻在冰里', hx+6, hy+72, {size:34, weight:700, fam:HEI, track:3});
+  text('Source: USGS, Where is Earth’s water', 132, 1050, {size:22, weight:500, track:1});
+}
+
+
+// ---------------- the film lives in film.js; ?frame= draws a still layout instead ----------------
+const FILM = !Q.get('frame');
+let renderFilm = null;
+if (FILM){
+  const { setupFilm } = await import('./film.js');
+  const F = setupFilm({ g, P, W, H, SANS, HEI, disc, poly, rect, line, cross, measure, finish });
+  const lines = await (await fetch('voice/lines.json')).json(), dur = await (await fetch('voice/dur.json')).json();
+  const info = F.init(lines, dur), CUT = (Q.get('cut') || `0:${F.FULL}`).split(':').map(Number);
+  if (Q.get('sign') === '1') F.setSign(CUT[1]-2.5);      // short cuts: the credit for the last 2.5 s
+  window.DUR = CUT[1]-CUT[0]; window.EV = info.ev; window.CUES = info.cues; window.FILM_INFO = { full:F.FULL, cut:CUT, shots:F.SHOTS };
+  window.TEXTS = t => F.texts(CUT[0]+t);
+  window.SUBBOX = t => F.subBox(CUT[0]+t);
+  const SUBS = Q.get('nosub') !== '1';                 // ?nosub=1: no burned-in subtitles (stills for the gallery)
+  renderFilm = t => F.render(CUT[0]+t, SUBS);
+}
+
+window.render = function(t){
+  g.setTransform(1,0,0,1,0,0);
+  if (FILM){ renderFilm(t); return; }
+  else if (FRAME===1) frameTitle(); else if (FRAME===2) frameLever(); else frameWater();
+  finish();
+};
+await document.fonts.load(`800 100px ${SANS}`); await document.fonts.load(`300 100px ${SANS}`);
+await document.fonts.load(`700 40px ${HEI}`, '复利');
+window.FONTCHECK = { sans: document.fonts.check(`800 100px ${SANS}`), hei: document.fonts.check(`700 40px ${HEI}`,'复利') };
+window.READY = true;
+</script>
+</body></html>

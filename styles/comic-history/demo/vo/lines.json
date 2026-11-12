@@ -1,0 +1,60 @@
+[
+ {
+  "id": "v1",
+  "voice": "bm_george",
+  "speed": 0.96,
+  "text": "Eighteen seventy-one. France has just lost a war.",
+  "asr": "1871. France has just lost a war."
+ },
+ {
+  "id": "v2",
+  "voice": "bm_george",
+  "speed": 1.0,
+  "text": "Alsace-Lorraine now belongs to the new German Empire."
+ },
+ {
+  "id": "v3",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "The people there never moved an inch. Their papers did."
+ },
+ {
+  "id": "v4",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "In nineteen eighteen, Germany lost the next war, and France tore it right back off.",
+  "asr": "In 1918, Germany lost the next war, and France tore it right back off."
+ },
+ {
+  "id": "v5",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "In nineteen forty, Nazi Germany took it again. No treaty this time. Just force.",
+  "asr": "In 1940, Nazi Germany took it again. No treaty this time. Just force."
+ },
+ {
+  "id": "v6",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "By nineteen forty-five, it was French again.",
+  "asr": "By 1945, it was French again."
+ },
+ {
+  "id": "v7",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "text": "Four layers. One lifetime."
+ },
+ {
+  "id": "v8",
+  "voice": "bm_george",
+  "speed": 0.9,
+  "text": "She never moved house. Her home switched countries four times."
+ },
+ {
+  "id": "v9",
+  "voice": "bm_george",
+  "speed": 0.95,
+  "text": "Today, Strasbourg hosts the European Parliament."
+ }
+]

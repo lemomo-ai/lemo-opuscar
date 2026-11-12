@@ -52,7 +52,7 @@ One continuous camera over one table; framing changes by zoom and by passing thr
 |  | 33.3 | pen stroke, piano D2/D3/A3, glass D6, soft timpani D3 | |
 | End | 35.7–40.0 | the theme in D (F♯4–A4–D5–C♯5–A4), ticks as index rows land; the final D chord with strings and bowed vibraphone at 36.33 | |
 
-Mix (in `mix.py`): music about 11 dB under the voice before ducking, ducked a further ~5 dB while the narrator speaks; foley 9 dB under the voice, beds 24 dB under; a 38 Hz high-pass on everything but the voice; a master limiter keeps the peak-to-RMS ratio near 11.5 dB so `mux.sh` can reach −14 LUFS under −1.2 dBTP.
+Mix (in `mix.py`): music about 11 dB under the voice before ducking, ducked a further ~5 dB while the narrator speaks; foley 9 dB under the voice, beds 24 dB under; a 38 Hz high-pass on everything but the voice; a master limiter keeps the peak-to-RMS ratio near 11.5 dB so `mux.sh` can reach −14 LUFS with true peak ≤ −1 dBTP.
 
 ## Palette & props
 

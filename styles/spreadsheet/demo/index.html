@@ -1,0 +1,769 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>The Hidden Column · Spreadsheet Film</title>
+<style>
+@font-face{font-family:'NSC';src:url(fonts/NotoSansSC-sub.woff2) format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Inter';src:url(fonts/Inter-sub.woff2) format('woff2');font-weight:100 900;font-display:block}
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}
+</style>
+<script src="tl.js"></script>
+</head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// Spreadsheet Film · full film: "The Hidden Column" (藏起来的那一列), Simpson's paradox in one sheet.
+// Data: Charig et al., BMJ 1986 (kidney stones, open surgery A vs PCNL B), 700 patients, 1 cell = 1 patient.
+// Rule of the style: everything on screen is something a sheet can make — fills, values, borders, merged cells,
+// hidden columns, reference boxes, the formula bar. The shell never zooms; only the sheet does.
+const Q = new URLSearchParams(location.search);
+const CUT_FROM = Q.get('from') ? +Q.get('from') : 0, CUT_TO = Q.get('to') ? +Q.get('to') : TL.dur;   // ?from=a&to=b: only [a, b) of the one timeline
+const W = 1920, H = 1080, DUR = TL.dur;
+const P = TL.p;                                              // phrase start times (from timeline.py)
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const UI = "'Inter','NSC',sans-serif";
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x)), lerp = (a, b, t) => a + (b - a) * t;
+const seg = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eo = t => 1 - Math.pow(1 - t, 3);
+const ss = t => t * t * (3 - 2 * t);
+const back = t => { const s = 1.6; return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2); };
+const hash = (i, j) => { let h = (i * 374761393 + j * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177 | 0; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, t) => { const A = hex(a), B = hex(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * clamp(t, 0, 1)).toString(16).padStart(2, '0')).join(''); };
+
+// ---------------- palette ----------------
+const INK = '#17120a', AMBER = '#ffb21f';
+const OK = '#b8f25a', OK_INK = '#2c4a00';              // success (lime)
+const NO = '#e8382d', NO_INK = '#ffe0db';              // not successful (red)
+const BIG = '#2a2f6c', BIG_INK = 'rgba(255,255,255,0.75)';   // large stone (indigo)
+const SMALL = '#dfe6f3', SMALL_INK = '#2a2f6c';        // small stone (pale)
+const REF_A = '#2f6fe0', REF_B = '#b03ad6';
+const NOTE = '#fff4c7';
+const PASTEL = ['#d4f57a', '#fff09a', '#ffc99e', '#ffb3c9', '#b9dcff', '#a8efd5'];
+
+// ---------------- chrome (fixed; only the sheet zooms) ----------------
+const TITLE_H = 30, TOOL_H = 40, FBAR_H = 50, ROWH_W = 54, TABS_H = 28, STAT_H = 26;
+const SHEET_B = H - TABS_H - STAT_H;
+const RH = 22, CWID = 64;                                 // a cell at 100 %: rectangular pixel ≈ 2.9 : 1
+const colName = i => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = (i - m - 1) / 26; } return s; };
+
+// ---------------- the data (Charig et al. 1986) ----------------
+const GROUPS = { A: { S: [81, 87], L: [192, 263] }, B: { S: [234, 270], L: [55, 80] } };   // [successes, patients]
+const BLOCK = { A: 2, B: 33 };                            // first column of each block (outcome col; size col is +1)
+const ROW0 = 5, PW = 14, PH = 25;                         // patients: 14 pairs wide × 25 rows
+const NC = 80;
+const isSizeCol = i => (i >= BLOCK.A && i < BLOCK.A + 2 * PW && (i - BLOCK.A) % 2 === 1) || (i >= BLOCK.B && i < BLOCK.B + 2 * PW && (i - BLOCK.B) % 2 === 1);
+const PIV = {                                             // pivot bars: first col, width; bottom row
+  AS: { tr: 'A', sz: 'S', c0: 12, w: 4 }, BS: { tr: 'B', sz: 'S', c0: 17, w: 12 },
+  AL: { tr: 'A', sz: 'L', c0: 33, w: 12 }, BL: { tr: 'B', sz: 'L', c0: 46, w: 4 },
+};
+const PBOT = 69;
+const pats = [];
+{
+  const rnd = mulberry(1986);
+  for (const tr of ['A', 'B']) {
+    const list = [];
+    for (const sz of ['S', 'L']) { const [ok, n] = GROUPS[tr][sz]; for (let q = 0; q < n; q++) list.push({ tr, sz, ok: q < ok ? 1 : 0 }); }
+    for (let q = list.length - 1; q > 0; q--) { const r = Math.floor(rnd() * (q + 1)); [list[q], list[r]] = [list[r], list[q]]; }
+    list.forEach((p, k) => { p.hc = BLOCK[tr] + 2 * (k % PW); p.hr = ROW0 + Math.floor(k / PW); p.sc = p.hc + 1; p.id = k + 1; pats.push(p); });
+  }
+  // destinations: each bar fills bottom-up, successes first, failures on top
+  for (const key in PIV) {
+    const b = PIV[key], mem = pats.filter(p => p.tr === b.tr && p.sz === b.sz).sort((x, y) => y.ok - x.ok || x.hr - y.hr || x.hc - y.hc);
+    b.n = mem.length; b.ok = mem.filter(p => p.ok).length; b.top = PBOT - Math.ceil(b.n / b.w) + 1;
+    mem.forEach((p, m) => { p.dc = b.c0 + (m % b.w); p.dr = PBOT - Math.floor(m / b.w); p.m = m; p.bar = key; });
+  }
+}
+const homeMap = new Map(); pats.forEach(p => homeMap.set(p.hc + ',' + p.hr, p));
+const sizeMap = new Map(); pats.forEach(p => sizeMap.set(p.sc + ',' + p.hr, p));
+
+// ---------------- merged cells ----------------
+const M = {
+  LBL_A: [BLOCK.A, BLOCK.A + 27, 2, 3], LBL_B: [BLOCK.B, BLOCK.B + 27, 2, 3],
+  RL_A: [BLOCK.A, BLOCK.A + 17, 31, 32], RV_A: [BLOCK.A + 18, BLOCK.A + 27, 31, 32],
+  RL_B: [BLOCK.B, BLOCK.B + 17, 31, 32], RV_B: [BLOCK.B + 18, BLOCK.B + 27, 31, 32],
+  TITLE: [12, 49, 40, 42],
+  ROOM_S: [12, 28, 44, 45], ROOM_L: [33, 49, 44, 45],
+  TOT: [12, 49, 74, 75],
+  CNT_A: [BLOCK.A, BLOCK.A + 27, 34, 37], CNT_B: [BLOCK.B, BLOCK.B + 27, 34, 37],
+  CARD: [18, 43, 80, 93],
+};
+for (const k in PIV) { const b = PIV[k]; M['BL_' + k] = [b.c0, b.c0 + b.w - 1, 70, 70]; M['RT_' + k] = [b.c0, b.c0 + b.w - 1, 71, 72]; }
+const PATIENT_DEMO = pats.find(p => p.tr === 'A' && p.hr === 12 && p.hc === BLOCK.A + 10 && true) || pats[150];
+
+// ---------------- timing ----------------
+const T = {
+  a0: 0.3, a1: 1.7, enterA: 2.0, hop0: 2.15, hop1: 2.7, b0: 2.85, b1: 3.8, enterB: 4.0, winB: 4.45,
+  pull0: 7.5, pull1: 10.0, paint0: 7.9, paint1: 9.85,
+  pdHop0: 10.75, pdHop1: 11.25, pdNote: 11.35,
+  quiet: 14.55, whip0: 15.0, whip1: 15.45, track1: 17.2,
+  selAll: 17.45, rclick: 17.95, menuHi: 18.25, unhide: 18.55, un1: 19.85,
+  cnt0: 21.9, cnt1: 22.7, cntEnter: 22.95,
+  pv0: 24.85, pv1: 26.2, pvEnter: 26.45, fly0: 26.55, fly1: 29.0,
+  rateS_A: P.v09_1 + 0.62, rateS_B: P.v09_1 + 1.72, rateL_A: P.v10_1 + 0.55, rateL_B: P.v10_1 + 1.72,
+  tot: 38.75, w0: 39.75, w1: 40.75, wEnter: 40.95, totWin: P.v11_1 + 0.1,
+  ti0: P.v12_0 + 0.05, ti1: P.v12_0 + 0.95, tiEnter: P.v12_0 + 1.1,
+  bloom: 44.95, card0: 48.6, card1: 49.15,
+};
+T.winS = T.rateS_B + 0.55; T.winL = T.rateL_B + 0.55;
+const EV = [];
+// paint order: rings from each block's result cell
+const RC = { A: { c: BLOCK.A + 22, r: 31.5 }, B: { c: BLOCK.B + 22, r: 31.5 } };
+pats.forEach(p => { const c = RC[p.tr]; const d = Math.max(Math.abs(p.hc - c.c) / 2, Math.abs(p.hr - c.r) * 0.95); p.tp = T.paint0 + d * 0.072 + hash(p.hc, p.hr) * 0.05; });
+// flight order: bars build bottom-up, left room first by a hair
+pats.forEach(p => { const rank = (PBOT - p.dr) + (p.dc - 12) * 0.012 + hash(p.dc, p.dr) * 0.9; p.rk = rank; });
+{ const mx = Math.max(...pats.map(p => p.rk)); pats.forEach(p => { p.f0 = T.fly0 + (p.rk / mx) * (T.fly1 - T.fly0 - 0.55); p.f1 = p.f0 + 0.55; }); }
+// hidden columns open as a ripple, left → right
+const UNC = []; for (let i = 0; i < NC; i++) if (isSizeCol(i)) UNC.push(i);
+const unT = {}; UNC.forEach((i, q) => { unT[i] = T.unhide + 0.08 + q * (T.un1 - T.unhide - 0.6) / UNC.length; EV.push({ t: +unT[i].toFixed(4), type: 'unhide', n: q }); });
+
+// ---------------- column layout (the hidden columns change it) ----------------
+let CX = new Float64Array(NC + 2), CWs = new Float64Array(NC + 1);
+function layout(t) {
+  let x = 0;
+  for (let i = 0; i <= NC; i++) {
+    let w = CWID;
+    if (i < NC && isSizeCol(i)) w = CWID * eio(seg(t, unT[i], unT[i] + 0.55));
+    CWs[i] = w; CX[i] = x; x += w;
+  }
+  CX[NC + 1] = x;
+}
+const colX = i => i <= NC ? CX[Math.max(0, i)] : CX[NC] + (i - NC) * CWID;
+const colW = i => i < NC ? CWs[Math.max(0, i)] : CWID;
+const colXf = c => { const i = Math.floor(c); return colX(i) + (c - i) * colW(i); };
+
+// ---------------- camera ----------------
+const mid = k => { const [c0, c1, r0, r1] = M[k]; return [(c0 + c1 + 1) / 2, (r0 + r1 + 1) / 2]; };
+const CK = [   // t, centre [col, row] (col in column units, so the camera rides the unhide), zoom, ease into this key
+  { t: 0.0, at: [M.RV_A[0] + 6.2, 30.2], z: 2.85 },
+  { t: 1.9, at: [M.RV_A[0] + 6.0, 30.0], z: 2.7, e: 'ss' },
+  { t: T.hop0, at: [M.RV_A[0] + 6.0, 30.0], z: 2.7 },
+  { t: T.hop1 + 0.15, at: [M.RV_B[0] + 6.0, 30.0], z: 2.7, e: 'eio' },
+  { t: 4.6, at: [M.RV_B[0] + 5.7, 30.2], z: 2.85, e: 'ss' },
+  { t: 5.7, at: [31.5, 28.6], z: 1.12, e: 'eio' },
+  { t: T.pull0, at: [31.5, 28.2], z: 1.06, e: 'ss' },
+  { t: T.pull1, at: [31.5, 17.6], z: 0.79, e: 'eio' },
+  { t: 14.55, at: [24.5, 15.2], z: 0.95, e: 'ss' },
+  { t: T.whip0, at: [24.0, 14.8], z: 0.97, e: 'ss' },
+  { t: T.whip1, at: [9.5, 7.6], z: 2.05, e: 'eio' },
+  { t: T.track1, at: [23.5, 7.6], z: 2.05, e: 'ss' },
+  { t: T.unhide + 0.1, at: [23.5, 7.6], z: 2.05 },
+  { t: T.un1 + 0.5, at: [31.5, 17.0], z: 0.475, e: 'eio' },
+  { t: T.pv0, at: [31.5, 17.2], z: 0.485, e: 'ss' },
+  { t: T.pvEnter + 0.1, at: [31.5, 20.0], z: 0.48, e: 'ss' },
+  { t: T.fly1 + 0.15, at: [31.0, 58.0], z: 0.74, e: 'eio' },
+  { t: T.rateS_A - 1.3, at: [20.5, 58.6], z: 1.1, e: 'eio' },
+  { t: T.winS + 0.6, at: [20.5, 58.6], z: 1.13, e: 'ss' },
+  { t: T.rateL_A - 1.25, at: [41.5, 58.6], z: 1.1, e: 'eio' },
+  { t: T.winL + 0.5, at: [41.5, 58.6], z: 1.13, e: 'ss' },
+  { t: T.tot + 0.75, at: [31.0, 58.4], z: 0.745, e: 'eio' },
+  { t: T.bloom, at: [31.0, 58.2], z: 0.76, e: 'ss' },
+  { t: 47.55, at: [31.5, 50.0], z: 0.36, e: 'eio' },
+  { t: 48.75, at: [31.0, 87.0], z: 1.0, e: 'eio' },
+  { t: DUR, at: [31.0, 87.0], z: 1.03, e: 'ss' },
+];
+const EASE = { eio, ss, eo, lin: x => x };
+let CAM, HDR, SHEET_Y, VCX, VCY, VW, VH;
+function camera(t) {
+  let q = 0; while (q < CK.length - 2 && t > CK[q + 1].t) q++;
+  const A = CK[q], B = CK[q + 1], u = (EASE[B.e] || EASE.lin)(seg(t, A.t, B.t));
+  const z = Math.exp(lerp(Math.log(A.z), Math.log(B.z), u));
+  // interpolate in screen-consistent terms: blend the world centres
+  const ax = colXf(A.at[0]), ay = A.at[1] * RH, bx = colXf(B.at[0]), by = B.at[1] * RH;
+  // zoom-aware path: keep the motion from overshooting by weighting with 1/z
+  const wA = 1 / A.z, wB = 1 / B.z, k = (lerp(0, wB, u) * 0 + u);
+  return { x: lerp(ax, bx, k), y: lerp(ay, by, k), z };
+}
+const X = wx => VCX + (wx - CAM.x) * CAM.z, Y = wy => VCY + (wy - CAM.y) * CAM.z;
+const XC = i => Math.round(X(colX(i))), YR = j => Math.round(Y(j * RH));
+
+// ---------------- helpers ----------------
+const rect = (x, y, w, h, f) => { g.fillStyle = f; g.fillRect(x, y, w, h); };
+function text(s, x, y, font, col, align = 'left', base = 'middle') { g.font = font; g.fillStyle = col; g.textAlign = align; g.textBaseline = base; g.fillText(s, x, y); }
+const line = (x1, y1, x2, y2, col, w = 1) => { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); };
+const tw = (s, font) => { g.font = font; return g.measureText(s).width; };
+function mrect(k) { const [c0, c1, r0, r1] = M[k]; const x = XC(c0), y = YR(r0); return [x, y, XC(c1 + 1) - x, YR(r1 + 1) - y]; }
+function typed(s, t, a, b) { if (t < a) return ''; if (t >= b) return s; return [...s].slice(0, Math.floor(seg(t, a, b) * [...s].length + 1e-6)).join(''); }
+function addKeys(s, a, b) { const n = [...s].length; for (let q = 0; q < n; q++) EV.push({ t: +(a + (b - a) * q / n).toFixed(4), type: 'key' }); }
+function refBox(x, y, w, h, col, lw = 2.5) {
+  g.lineWidth = lw; g.strokeStyle = col; g.strokeRect(x + 1, y + 1, w - 1, h - 1);
+  g.fillStyle = col; for (const [a, b] of [[x, y], [x + w, y], [x, y + h], [x + w, y + h]]) g.fillRect(a - 3.5, b - 3.5, 7, 7);
+}
+const popK = (t, t0, d = 0.2, amt = 0.3) => t >= t0 && t < t0 + d ? 1 + amt * (1 - (t - t0) / d) : 1;
+
+// ---------------- formulas (the film's dialogue lines) ----------------
+const FX_A = [['=AVERAGE(', INK], ['A_outcome', REF_A], [')', INK]];
+const FX_B = [['=AVERAGE(', INK], ['B_outcome', REF_B], [')', INK]];
+const FX_C = [['=COUNTIF(', INK], ['A_size', BIG], [', "L")', INK]];
+const FX_P = [['=PIVOTBY(', INK], ['size', BIG], [', ', INK], ['treatment', '#555'], [', ', INK], ['outcome', '#3f8a00'], [', AVERAGE)', INK]];
+const FX_W = [['=(', INK], ['87', REF_A], ['*', INK], ['93%', REF_A], [' + ', INK], ['263', REF_B], ['*', INK], ['73%', REF_B], [') / 350', INK]];
+const flat = parts => parts.flatMap(([s, c]) => [...s].map(ch => [ch, c]));
+const FXs = { A: flat(FX_A), B: flat(FX_B), C: flat(FX_C), P: flat(FX_P), W: flat(FX_W) };
+const TITLE_S = "Simpson's paradox", TITLE_Z = '辛普森悖论', CARD_S = 'The Hidden Column';
+function typedParts(key, t, a, b) { const L = FXs[key]; if (t >= b) return L; return L.slice(0, Math.floor(seg(t, a, b) * L.length + 1e-6)); }
+addKeys(FXs.A, T.a0, T.a1); addKeys(FXs.B, T.b0, T.b1); addKeys(FXs.C, T.cnt0, T.cnt1); addKeys(FXs.P, T.pv0, T.pv1); addKeys(FXs.W, T.w0, T.w1);
+addKeys(TITLE_S, T.ti0, T.ti1); addKeys(CARD_S, T.card0, T.card1);
+for (const [t, n] of [[T.enterA, 1], [T.enterB, 2], [T.cntEnter, 3], [T.pvEnter, 4], [T.wEnter, 5], [T.tiEnter, 6], [T.card1 + 0.1, 7]]) EV.push({ t, type: 'enter', n });
+
+// ---------------- selection (the amber active cell) ----------------
+const hopPath = (a, b, n, t0, t1) => { const o = []; for (let q = 0; q <= n; q++) { const u = q / n; o.push({ c: Math.round(lerp(a.c, b.c, u)), r: Math.round(lerp(a.r, b.r, u)), t: t0 + (t1 - t0) * u }); } return o; };
+const HOP_AB = hopPath({ c: M.RV_A[1], r: 31 }, { c: M.RV_B[0], r: 31 }, 7, T.hop0, T.hop1);
+const HOP_PD = hopPath({ c: M.RV_B[0], r: 31 }, { c: PATIENT_DEMO.hc, r: PATIENT_DEMO.hr }, 9, T.pdHop0, T.pdHop1);
+for (const h of [...HOP_AB.slice(1), ...HOP_PD.slice(1)]) EV.push({ t: +h.t.toFixed(4), type: 'hop' });
+function selection(t) {  // → {box:[c0,c1,r0,r1] | null, editing, trail}
+  const walk = hops => { let p = hops[0]; for (const h of hops) if (t >= h.t) p = h; return { p, trail: hops.filter(h => h.t <= t && t - h.t < 0.22 && (h.c !== p.c || h.r !== p.r)) }; };
+  if (t < T.hop0) return { box: M.RV_A, editing: t < T.enterA };
+  if (t < T.hop1) { const w = walk(HOP_AB); return { box: [w.p.c, w.p.c, 31, 32], trail: w.trail }; }
+  if (t < T.pdHop0) return { box: M.RV_B, editing: t >= T.b0 && t < T.enterB };
+  if (t < T.selAll) { const w = walk(HOP_PD); const p = w.p; return { box: [p.c, p.c, p.r, p.r], trail: w.trail.map(h => ({ ...h, r1: h.r })), small: true }; }
+  if (t < T.cnt0) return { box: null };
+  if (t < T.pv0) return { box: M.CNT_A, editing: t < T.cntEnter };
+  if (t < T.rateS_A - 0.2) return { box: M.ROOM_S, editing: t < T.pvEnter };
+  if (t < T.rateL_A - 0.2) return { box: M['RT_AS'] };
+  if (t < T.w0) return { box: M['RT_AL'] };
+  if (t < T.ti0) return { box: [30, 37, 74, 75], editing: t < T.wEnter };
+  if (t < T.bloom) return { box: M.TITLE, editing: t < T.tiEnter };
+  if (t < T.card0 - 0.15) return { box: null };
+  return { box: M.CARD, editing: t < T.card1 + 0.1 };
+}
+
+// ---------------- background: white sheet, enter pulses, and the final bloom ----------------
+const BLOOM_C = { c: 30.5, r: 41 };
+const PULSES = [{ t: T.enterA, c: M.RV_A[0] + 5, r: 31.5, col: 1 }, { t: T.enterB, c: M.RV_B[0] + 5, r: 31.5, col: 4 }, { t: T.pvEnter, c: 20, r: 44.5, col: 0 }, { t: T.tiEnter, c: 30.5, r: 41, col: 3 }];
+function bloomAt(i, j, t) {
+  if (t < T.bloom) return null;
+  const d = Math.max(Math.abs(i + 0.5 - BLOOM_C.c) * 0.62, Math.abs(j + 0.5 - BLOOM_C.r));
+  const tr = T.bloom + d * 0.032 + hash(i, j) * 0.04;
+  if (t < tr) return null;
+  const step = Math.floor(d / 2.2);
+  return { fill: PASTEL[step % PASTEL.length], val: String(10 + (step % 6) * 17), tr };
+}
+
+// ---------------- drawing the sheet ----------------
+function drawSheet(t) {
+  const z = CAM.z, ch = RH * z;
+  g.save(); g.beginPath(); g.rect(ROWH_W, SHEET_Y, VW, VH); g.clip();
+  rect(ROWH_W, SHEET_Y, VW, VH, '#ffffff');
+  // visible columns
+  const xl = CAM.x - (VCX - ROWH_W) / z, xr = CAM.x + (W - VCX) / z;
+  let i0 = 0; while (i0 < NC && colX(i0 + 1) < xl) i0++;
+  let i1 = i0; while (colX(i1) < xr && i1 < NC + 40) i1++;
+  const j0 = Math.max(0, Math.floor((CAM.y - (VCY - SHEET_Y) / z) / RH)), j1 = Math.ceil((CAM.y + (SHEET_B - VCY) / z) / RH);
+  const fs = 11 * z, showVal = fs >= 6.5;
+  const light = new Path2D(), dark = new Path2D();
+  const valFont = `500 ${fs}px ${UI}`;
+  const flying = [];
+  for (let i = i0; i <= i1; i++) {
+    const cw = colW(i); if (cw < 0.5) continue;
+    const x = XC(i), w = XC(i + 1) - x;
+    for (let j = j0; j <= j1; j++) {
+      const y = YR(j), h = YR(j + 1) - y;
+      let fill = null, val = '', ink = '#9a9a94', painted = false, flash = 0;
+      const key = i + ',' + j;
+      const hp = homeMap.get(key), sp = sizeMap.get(key);
+      if (hp) {                                 // patient outcome cell (at home until it flies)
+        if (t < hp.f0) {
+          val = String(hp.ok);
+          if (t >= hp.tp) { fill = hp.ok ? OK : NO; ink = hp.ok ? OK_INK : NO_INK; painted = true; flash = t - hp.tp < 0.14 ? (1 - (t - hp.tp) / 0.14) * 0.8 : 0; }
+          else ink = '#8a8a84';
+        }
+      } else if (sp) {                          // stone-size cell (revealed by the unhide)
+        painted = true; fill = sp.sz === 'L' ? BIG : SMALL; ink = sp.sz === 'L' ? BIG_INK : SMALL_INK; val = sp.sz;
+        if (w < 9 * z + 4) val = w > 7 ? '#' : '';
+        else if (w < CWID * z * 0.55) val = '##';
+      }
+      if (!fill) {
+        const b = bloomAt(i, j, t);
+        if (b) { fill = b.fill; val = b.val; ink = 'rgba(40,30,60,0.32)'; painted = true; flash = t - b.tr < 0.12 ? (1 - (t - b.tr) / 0.12) * 0.6 : 0; }
+        else {
+          // enter pulses: a pastel ring runs out over the white sheet
+          for (const pu of PULSES) {
+            const dt = t - pu.t; if (dt < 0 || dt > 0.75) continue;
+            const d = Math.max(Math.abs(i + 0.5 - pu.c) * 0.55, Math.abs(j + 0.5 - pu.r));
+            const e = Math.exp(-(((d - dt * 16) / 1.1) ** 2)) * (1 - dt / 0.75);
+            if (e > 0.06) { fill = mix('#ffffff', PASTEL[pu.col], Math.round(e * 4) / 4); }
+          }
+        }
+      }
+      if (fill) rect(x, y, w, h, fill);
+      if (flash > 0) rect(x, y, w, h, `rgba(255,255,255,${flash})`);
+      const p = painted ? dark : light; p.moveTo(x + w + 0.5, y); p.lineTo(x + w + 0.5, y + h); p.moveTo(x, y + h + 0.5); p.lineTo(x + w, y + h + 0.5);
+      if (showVal && val) text(val, x + w / 2, y + h / 2 + 0.5, valFont, ink, 'center');
+    }
+  }
+  g.lineWidth = 1; g.strokeStyle = '#dad9d3'; g.stroke(light); g.strokeStyle = 'rgba(6,4,18,0.42)'; g.stroke(dark);
+  // hidden-column seams in the sheet (a slightly darker line where columns are folded away)
+  for (let i = i0; i <= i1; i++) if (i < NC && isSizeCol(i) && colW(i) < 1.5) { const x = XC(i) + 0.5; line(x, SHEET_Y, x, SHEET_B, 'rgba(40,40,40,0.28)', 1); }
+  drawPivot(t); drawMerged(t); drawFlying(t); drawSelection(t); drawRefs(t); drawNotes(t);
+  if (t >= T.selAll && t < T.unhide + 0.25) rect(ROWH_W, SHEET_Y, VW, VH, 'rgba(47,111,224,0.10)');
+  g.restore();
+}
+
+// patients sitting in the pivot bars, and the ones in the air
+function drawPivot(t) {
+  const z = CAM.z, fs = 11 * z, show = fs >= 6.5, font = `500 ${fs}px ${UI}`;
+  const dk = new Path2D();
+  for (const p of pats) {
+    if (t < p.f1) continue;
+    const x = XC(p.dc), y = YR(p.dr), w = XC(p.dc + 1) - x, h = YR(p.dr + 1) - y;
+    if (x > W || x + w < ROWH_W || y > H || y + h < SHEET_Y) continue;
+    rect(x, y, w, h, p.ok ? OK : NO);
+    if (t - p.f1 < 0.12) rect(x, y, w, h, `rgba(255,255,255,${(1 - (t - p.f1) / 0.12) * 0.7})`);
+    dk.rect(x + 0.5, y + 0.5, w, h);
+    if (show) text(String(p.ok), x + w / 2, y + h / 2 + 0.5, font, p.ok ? OK_INK : NO_INK, 'center');
+  }
+  g.lineWidth = 1; g.strokeStyle = 'rgba(6,4,18,0.45)'; g.stroke(dk);
+}
+function drawFlying(t) {
+  const z = CAM.z;
+  for (const p of pats) {
+    if (t < p.f0 || t >= p.f1) continue;
+    const u = eio(seg(t, p.f0, p.f1));
+    // cells hop: the position snaps to whole cells, rows first then columns (an L-shaped path)
+    const ur = clamp(u * 1.35, 0, 1), uc = clamp(u * 1.35 - 0.35, 0, 1);
+    const c = Math.round(lerp(p.hc, p.dc, uc)), r = Math.round(lerp(p.hr, p.dr, ur));
+    const x = XC(c), y = YR(r), w = XC(c + 1) - x, h = YR(r + 1) - y;
+    rect(x, y, w, h, p.ok ? OK : NO);
+    g.lineWidth = Math.max(1.5, 2 * z); g.strokeStyle = INK; g.strokeRect(x, y, w, h);
+  }
+}
+
+function cellBox(x, y, w, h, fill, border = INK, lw = 1.5) { rect(x, y, w, h, fill); g.lineWidth = lw; g.strokeStyle = border; g.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw); }
+function drawMerged(t) {
+  const z = CAM.z;
+  // block labels
+  for (const tr of ['A', 'B']) {
+    const [x, y, w, h] = mrect('LBL_' + tr);
+    cellBox(x, y, w, h, '#f4f3ee', '#8f8e88', 1);
+    rect(x, y, 10 * z, h, tr === 'A' ? REF_A : REF_B);
+    text(tr, x + 24 * z, y + h / 2 + 1, `800 ${26 * z}px ${UI}`, INK);
+    text(tr === 'A' ? 'Open surgery' : 'Keyhole surgery (PCNL)', x + 56 * z, y + h / 2 + 1, `600 ${17 * z}px ${UI}`, '#3a3a34');
+    text('350 patients', x + w - 14 * z, y + h / 2 + 1, `500 ${14 * z}px ${UI}`, '#7a7a74', 'right');
+  }
+  // large-stone counts (COUNTIF), drawn as a bar of cells under each block: indigo = large
+  if (t >= T.cntEnter) for (const tr of ['A', 'B']) {
+    const t0 = T.cntEnter + (tr === 'B' ? 0.35 : 0), n = tr === 'A' ? 263 : 80;
+    const [c0, c1, r0, r1] = M['CNT_' + tr], nc = 2 * PW, fillC = Math.round(nc * n / 350);
+    for (let q = 0; q < nc; q++) {
+      const on = q < fillC && t >= t0 + 0.45 * q / Math.max(1, fillC);
+      const x = XC(c0 + q), w = XC(c0 + q + 1) - x, y = YR(r0), h = YR(r1 + 1) - y;
+      rect(x, y, w, h, on ? BIG : SMALL); g.strokeStyle = 'rgba(6,4,18,0.35)'; g.lineWidth = 1; g.strokeRect(x + 0.5, y + 0.5, w, h);
+    }
+    if (t >= t0 + 0.35) {
+      const [x, y, w, h] = mrect('CNT_' + tr), f = `800 ${58 * z * popK(t, t0 + 0.35, 0.2, 0.15)}px ${UI}`, f2 = `600 ${30 * z}px ${UI}`;
+      const big = tr === 'A', tx0 = big ? x + 22 * z : XC(c0 + fillC) + 22 * z;
+      text(String(n), tx0, y + h / 2 + 3, f, big ? '#ffffff' : SMALL_INK);
+      text('of 350 have large stones', tx0 + tw(String(n), f) + 18 * z, y + h / 2 + 3, f2, big ? '#ffffff' : SMALL_INK);
+    }
+  }
+  // overall results
+  for (const tr of ['A', 'B']) {
+    const [lx, ly, lw, lh] = mrect('RL_' + tr), [vx, vy, vw, vh] = mrect('RV_' + tr);
+    cellBox(lx, ly, lw, lh, '#ffffff', '#b9b8b2', 1);
+    text('Success rate, all patients', lx + lw - 14 * z, ly + lh / 2 + 1, `600 ${15 * z}px ${UI}`, '#55554f', 'right');
+    const enter = tr === 'A' ? T.enterA : T.enterB, editing = tr === 'A' ? t < T.enterA : (t >= T.b0 && t < T.enterB);
+    const win = tr === 'B' && t >= T.winB;
+    const fill = win ? mix('#ffffff', OK, seg(t, T.winB, T.winB + 0.25)) : '#ffffff';
+    cellBox(vx, vy, vw, vh, editing ? '#ffffff' : fill, '#b9b8b2', 1);
+    if (t >= enter) text(tr === 'A' ? '78%' : '83%', vx + vw - 14 * z, vy + vh / 2 + 2, `800 ${32 * z * popK(t, enter, 0.22, 0.35)}px ${UI}`, INK, 'right');
+    if (win && t >= T.winB + 0.1) { const k = eo(seg(t, T.winB + 0.1, T.winB + 0.3)); g.globalAlpha = k; tri(vx + 22 * z, vy + vh / 2, 9 * z, OK_INK, 'up'); text('higher', vx + 36 * z, vy + vh / 2 + 1, `700 ${14 * z}px ${UI}`, OK_INK); g.globalAlpha = 1; }
+  }
+  // pivot: room headers, bar labels, rates, totals, title
+  if (t >= T.pvEnter) {
+    const k = eo(seg(t, T.pvEnter, T.pvEnter + 0.3));
+    for (const [key, name, sub] of [['ROOM_S', 'Small stones', '< 2 cm'], ['ROOM_L', 'Large stones', '≥ 2 cm']]) {
+      const [x, y, w, h] = mrect(key);
+      cellBox(x, y, w * k, h, key === 'ROOM_S' ? SMALL : BIG, INK, 1.5);
+      if (k > 0.7) {
+        const ink = key === 'ROOM_S' ? SMALL_INK : '#ffffff';
+        text(name, x + 16 * z, y + h / 2 + 1, `800 ${24 * z}px ${UI}`, ink);
+        text(sub, x + 16 * z + tw(name, `800 ${24 * z}px ${UI}`) + 16 * z, y + h / 2 + 1, `600 ${17 * z}px ${UI}`, ink);
+      }
+    }
+    for (const key in PIV) {
+      const b = PIV[key], done = t >= T.fly1 - 0.3;
+      if (!done) continue;
+      const [x, y, w, h] = mrect('BL_' + key), kk = eo(seg(t, T.fly1 - 0.3, T.fly1));
+      g.globalAlpha = kk;
+      text(b.tr, x + 8 * z, y + h / 2 + 1, `800 ${17 * z}px ${UI}`, b.tr === 'A' ? REF_A : REF_B);
+      text(`${b.n} patients`, x + w - 6 * z, y + h / 2 + 1, `500 ${12.5 * z}px ${UI}`, '#6a6a64', 'right');
+      g.globalAlpha = 1;
+      const tr = { AS: T.rateS_A, BS: T.rateS_B, AL: T.rateL_A, BL: T.rateL_B }[key];
+      const [rx, ry, rw, rh] = mrect('RT_' + key);
+      const win = (key === 'AS' && t >= T.winS) || (key === 'AL' && t >= T.winL);
+      const winT = key === 'AS' ? T.winS : T.winL;
+      cellBox(rx, ry, rw, rh, win ? mix('#ffffff', OK, seg(t, winT, winT + 0.2)) : '#ffffff', win ? INK : '#b9b8b2', win ? 2.5 : 1);
+      if (t >= tr) {
+        const pct = Math.round(100 * b.ok / b.n) + '%';
+        text(pct, rx + rw - 10 * z, ry + rh / 2 + 2, `800 ${30 * z * popK(t, tr, 0.22, 0.35)}px ${UI}`, INK, 'right');
+        if (win && b.w > 4) { const kw = eo(seg(t, winT + 0.1, winT + 0.3)); g.globalAlpha = kw; tri(rx + 18 * z, ry + rh / 2, 8 * z, OK_INK, 'up'); text('A wins', rx + 32 * z, ry + rh / 2 + 1, `700 ${15 * z}px ${UI}`, OK_INK); g.globalAlpha = 1; }
+        if (win && b.w <= 4) { const kw = eo(seg(t, winT + 0.1, winT + 0.3)); g.globalAlpha = kw; tri(rx + 16 * z, ry + rh / 2, 8 * z, OK_INK, 'up'); g.globalAlpha = 1; }
+      }
+    }
+  }
+  if (t >= T.tot) {
+    const [x, y, w, h] = mrect('TOT'), k = eo(seg(t, T.tot, T.tot + 0.35));
+    cellBox(x, y, w * k, h, '#ffffff', INK, 1.5);
+    if (k > 0.6) {
+      text('All 700 patients, together', x + 16 * z, y + h / 2 + 1, `700 ${20 * z}px ${UI}`, INK);
+      // two result chips inside the band; B is the overall winner
+      const ax = XC(30), bx = XC(38), cw2 = XC(38) - XC(30);
+      const bw = mix('#ffffff', OK, seg(t, T.totWin, T.totWin + 0.25));
+      cellBox(ax, y + 3 * z, cw2 - 6 * z, h - 6 * z, '#ffffff', '#b9b8b2', 1);
+      cellBox(bx, y + 3 * z, cw2 - 6 * z, h - 6 * z, bw, t >= T.totWin ? INK : '#b9b8b2', t >= T.totWin ? 2.5 : 1);
+      text('A', ax + 12 * z, y + h / 2 + 1, `800 ${18 * z}px ${UI}`, REF_A); text(t >= T.wEnter ? '78%' : '78%', ax + cw2 - 18 * z, y + h / 2 + 2, `800 ${26 * z * popK(t, T.wEnter, 0.22, 0.3)}px ${UI}`, INK, 'right');
+      text('B', bx + 12 * z, y + h / 2 + 1, `800 ${18 * z}px ${UI}`, REF_B); text('83%', bx + cw2 - 18 * z, y + h / 2 + 2, `800 ${26 * z * popK(t, T.totWin, 0.22, 0.3)}px ${UI}`, INK, 'right');
+      if (t >= T.totWin) { const kw = eo(seg(t, T.totWin + 0.1, T.totWin + 0.3)); g.globalAlpha = kw; tri(bx + 36 * z, y + h / 2, 8 * z, OK_INK, 'up'); text('wins', bx + 50 * z, y + h / 2 + 1, `700 ${15 * z}px ${UI}`, OK_INK); g.globalAlpha = 1; }
+    }
+  }
+  if (t >= T.ti0) {
+    const [x, y, w, h] = mrect('TITLE');
+    const done = t >= T.tiEnter;
+    cellBox(x, y, w, h, done ? AMBER : '#ffffff', INK, 2);
+    const s = typed(TITLE_S, t, T.ti0, T.ti1), f = `800 ${50 * z * (done ? popK(t, T.tiEnter, 0.2, 0.12) : 1)}px ${UI}`;
+    text(s, x + 22 * z, y + h / 2 + 2, f, INK);
+    if (done) { const kz = eo(seg(t, T.tiEnter, T.tiEnter + 0.3)); g.globalAlpha = kz; text(TITLE_Z, x + 22 * z + tw(TITLE_S, f) + 28 * z, y + h / 2 + 3, `700 ${47 * z}px ${UI}`, INK); g.globalAlpha = 1; }
+    else if (Math.floor(t * 8) % 2 === 0) rect(x + 22 * z + tw(s, f) + 3, y + h * 0.22, 3, h * 0.56, INK);
+  }
+  // end card: a merged range waiting from the bloom on, filled by typing
+  if (t >= 47.75) {
+    const [x, y, w, h] = mrect('CARD'), km = eio(seg(t, 47.75, 48.3));
+    cellBox(x + w * (1 - km) / 2, y + h * (1 - km) / 2, w * km, h * km, '#ffffff', INK, 2);
+    if (t >= T.card0) {
+      const s = typed(CARD_S, t, T.card0, T.card1), f1 = `800 ${76 * z}px ${UI}`;
+      text(s, x + 40 * z, y + 92 * z, f1, INK, 'left', 'alphabetic');
+      if (t < T.card1 + 0.1 && Math.floor(t * 8) % 2 === 0) rect(x + 40 * z + tw(s, f1) + 4, y + 36 * z, 4, 62 * z, INK);
+      const k2 = eo(seg(t, T.card0 + 0.15, T.card0 + 0.5));
+      g.globalAlpha = k2;
+      text('藏起来的那一列', x + 42 * z, y + 156 * z, `700 ${46 * z}px ${UI}`, INK, 'left', 'alphabetic');
+      // a row of cells as a rule, then the style name and the sign-off, right-aligned
+      for (let q = 0; q < 9; q++) rect(x + 42 * z + q * 34 * z, y + 196 * z, 32 * z, 10 * z, [OK, NO, BIG, AMBER, OK, OK, NO, BIG, SMALL][q]);
+      text('Spreadsheet Film · 表格动画', x + w - 40 * z, y + 214 * z, `600 ${36 * z}px ${UI}`, '#3a3a34', 'right', 'alphabetic');
+      text('LemoLab × Claude Opus 5.5', x + w - 40 * z, y + 266 * z, `700 ${32 * z}px ${UI}`, INK, 'right', 'alphabetic');
+      g.globalAlpha = 1;
+    }
+  }
+}
+function tri(x, y, s, col, dir = 'down') { g.fillStyle = col; g.beginPath(); if (dir === 'down') { g.moveTo(x - s, y - s / 2); g.lineTo(x + s, y - s / 2); g.lineTo(x, y + s / 2); } else if (dir === 'up') { g.moveTo(x - s, y + s / 2); g.lineTo(x + s, y + s / 2); g.lineTo(x, y - s / 2); } else if (dir === 'left') { g.moveTo(x + s / 2, y - s); g.lineTo(x + s / 2, y + s); g.lineTo(x - s / 2, y); } else { g.moveTo(x - s / 2, y - s); g.lineTo(x - s / 2, y + s); g.lineTo(x + s / 2, y); } g.fill(); }
+
+// reference boxes while a formula is on screen
+function drawRefs(t) {
+  const blockBox = tr => { const x = XC(BLOCK[tr]), y = YR(ROW0); return [x, y, XC(BLOCK[tr] + 2 * PW) - x, YR(ROW0 + PH) - y]; };
+  if (t >= T.a0 + 0.35 && t < T.enterA + 0.05) refBox(...blockBox('A'), REF_A);
+  if (t >= T.b0 + 0.35 && t < T.enterB + 0.05) refBox(...blockBox('B'), REF_B);
+  if (t >= T.w0 + 0.1 && t < T.ti0) {
+    for (const [key, col, a] of [['AS', REF_A, T.w0 + 0.1], ['AL', REF_B, T.w0 + 0.5]]) {
+      if (t < a) continue;
+      const b = PIV[key], x = XC(b.c0), y = YR(b.top), w = XC(b.c0 + b.w) - x, h = YR(72 + 1) - y;
+      refBox(x - 3, y - 3, w + 6, h + 6, col, 3);
+    }
+  }
+}
+
+function drawSelection(t) {
+  const S = selection(t), z = CAM.z;
+  for (const h of S.trail || []) { const a = 1 - (t - h.t) / 0.22; g.globalAlpha = a * 0.7; rect(XC(h.c), YR(h.r), XC(h.c + 1) - XC(h.c), YR(h.r + (S.small ? 1 : 2)) - YR(h.r), AMBER); g.globalAlpha = 1; }
+  if (!S.box) return;
+  const [c0, c1, r0, r1] = S.box; const x = XC(c0), y = YR(r0), w = XC(c1 + 1) - x, h = YR(r1 + 1) - y;
+  if (S.editing && c0 !== 18) { /* the merged cells draw their own white editing fill */ }
+  const lw = 3.5;
+  g.lineWidth = lw; g.strokeStyle = INK; g.strokeRect(x - lw / 2, y - lw / 2, w + lw, h + lw);
+  const o = lw + 3;
+  g.lineWidth = 2; g.strokeStyle = '#ffffff'; g.strokeRect(x - o, y - o, w + 2 * o, h + 2 * o);
+  g.setLineDash([7, 5]); g.lineDashOffset = -t * 60; g.strokeStyle = AMBER; g.strokeRect(x - o, y - o, w + 2 * o, h + 2 * o); g.setLineDash([]);
+  const hs = 10; rect(x + w - hs / 2 + 1, y + h - hs / 2 + 1, hs, hs, INK); g.strokeStyle = AMBER; g.lineWidth = 2; g.strokeRect(x + w - hs / 2 + 1, y + h - hs / 2 + 1, hs, hs);
+  // in-cell editing: caret / typed text in the overall result cells
+  if (S.editing && (S.box === M.RV_A || S.box === M.RV_B)) {
+    const L = S.box === M.RV_A ? typedParts('A', t, T.a0, T.a1) : typedParts('B', t, T.b0, T.b1);
+    let tx = x + 14 * z; const f = `700 ${17 * z}px ${UI}`;
+    for (const [c, col] of L) { text(c, tx, y + h / 2 + 1, f, col); tx += tw(c, f); }
+    if (Math.floor(t * 8) % 2 === 0) rect(tx + 2, y + h * 0.22, 2.5, h * 0.56, INK);
+  }
+}
+
+// a cell comment for the patient we click on
+function drawNotes(t) {
+  const z = CAM.z;
+  if (t >= T.pdNote && t < T.quiet + 0.4) {
+    const p = PATIENT_DEMO, k = eo(seg(t, T.pdNote, T.pdNote + 0.25)), out = seg(t, T.quiet, T.quiet + 0.3);
+    const ax = XC(p.hc + 1), ay = YR(p.hr);
+    const bx = ax + 40, by = ay - 128, bw = 330, bh = 112;
+    g.globalAlpha = k * (1 - out);
+    line(ax, ay + 2, bx, by + bh - 10, INK, 1.5);
+    rect(bx, by, bw, bh, NOTE); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(bx + 0.75, by + 0.75, bw - 1.5, bh - 1.5);
+    g.fillStyle = NO; g.beginPath(); g.moveTo(ax - 9, ay); g.lineTo(ax, ay); g.lineTo(ax, ay + 9); g.fill();
+    text(`Patient ${p.id}`, bx + 16, by + 24, `700 20px ${UI}`, INK);
+    text('Treatment A  ·  success', bx + 16, by + 54, `500 18px ${UI}`, '#3a3a34');
+    text('Stone size: ', bx + 16, by + 84, `500 18px ${UI}`, '#3a3a34');
+    text('not shown', bx + 16 + tw('Stone size: ', `500 18px ${UI}`), by + 84, `700 18px ${UI}`, NO);
+    g.globalAlpha = 1;
+  }
+}
+
+// ---------------- headers ----------------
+function drawHeaders(t) {
+  const z = CAM.z, S = selection(t), all = t >= T.selAll && t < T.unhide + 0.25;
+  const top = SHEET_Y - HDR;
+  rect(0, top, W, HDR, '#ecebe6');
+  g.save(); g.beginPath(); g.rect(ROWH_W, top, VW, HDR); g.clip();
+  const xl = CAM.x - (VCX - ROWH_W) / z, xr = CAM.x + (W - VCX) / z;
+  let i0 = 0; while (i0 < NC && colX(i0 + 1) < xl) i0++;
+  const fsz = Math.min(18, 12 * Math.sqrt(Math.max(1, z)));
+  const clue = seg(t, P.v05_0 + 0.3, P.v05_0 + 0.6) * (1 - seg(t, T.unhide, T.unhide + 0.4));
+  for (let i = i0; colX(i) < xr && i < NC + 40; i++) {
+    const x = XC(i), w = XC(i + 1) - x;
+    const on = all || (S.box && i >= S.box[0] && i <= S.box[1]);
+    if (w >= 1) {
+      if (on) rect(x, top, w, HDR, all ? '#c9d9f5' : '#ffd98a');
+      if (w > 16) text(colName(i), x + w / 2, top + HDR / 2 + 1, `${on ? 700 : 500} ${fsz}px ${UI}`, on ? INK : '#55554f', 'center');
+      line(x + 0.5, top + 4, x + 0.5, SHEET_Y, '#c4c3bc');
+    }
+    if (i < NC && isSizeCol(i) && colW(i) < 1.5) {    // a folded column: the double line is the clue
+      const col = clue > 0 ? mix('#5b5b55', NO, clue) : '#5b5b55', lw = 1.2 + clue * 1.3;
+      line(x - 1.5, top + 3, x - 1.5, SHEET_Y - 1, col, lw); line(x + 2.5, top + 3, x + 2.5, SHEET_Y - 1, col, lw);
+    }
+  }
+  g.restore();
+  line(0, SHEET_Y - 0.5, W, SHEET_Y - 0.5, '#9a9a94');
+  rect(0, SHEET_Y, ROWH_W, VH, '#ecebe6');
+  g.save(); g.beginPath(); g.rect(0, SHEET_Y, ROWH_W, VH); g.clip();
+  const j0 = Math.max(0, Math.floor((CAM.y - (VCY - SHEET_Y) / z) / RH)), j1 = Math.ceil((CAM.y + (SHEET_B - VCY) / z) / RH);
+  for (let j = j0; j <= j1; j++) {
+    const y = YR(j), h = YR(j + 1) - y, on = all || (S.box && j >= S.box[2] && j <= S.box[3]);
+    if (on) rect(0, y, ROWH_W, h, all ? '#c9d9f5' : '#ffd98a');
+    if (h > 9) text(String(j + 1), ROWH_W - 8, y + h / 2 + 1, `${on ? 700 : 500} ${Math.min(fsz, h - 1)}px ${UI}`, on ? INK : '#5a5a54', 'right');
+    line(6, y + 0.5, ROWH_W, y + 0.5, '#cfcec8');
+  }
+  g.restore();
+  line(ROWH_W - 0.5, top, ROWH_W - 0.5, SHEET_B, '#9a9a94');
+  rect(0, top, ROWH_W, HDR, all ? '#c9d9f5' : '#e0dfd9');
+  g.fillStyle = all ? REF_A : '#a8a8a2'; g.beginPath(); g.moveTo(ROWH_W - 6, SHEET_Y - 6); g.lineTo(ROWH_W - 6, SHEET_Y - HDR + 8); g.lineTo(ROWH_W - HDR + 8, SHEET_Y - 6); g.fill();
+}
+
+// ---------------- chrome ----------------
+function arrowU(x, y, flip, col) { g.save(); g.translate(x, y); if (flip) g.scale(-1, 1); g.strokeStyle = col; g.lineWidth = 1.8; g.beginPath(); g.arc(1, 2, 6, Math.PI * 1.05, Math.PI * 1.95, false); g.stroke(); tri(-5.5, 1, 3.5, col, 'down'); g.restore(); }
+function appIcon(x, y, s) { rect(x, y, s, s, INK); const q = s / 3, cols = [OK, NO, BIG, AMBER, OK, NO, SMALL, OK, BIG]; for (let n = 0; n < 9; n++) rect(x + (n % 3) * q + 1, y + Math.floor(n / 3) * q + 1, q - 2, q - 2, cols[n]); }
+function formulaLine(t) {   // → {parts, caret, after, name}
+  const sel = selection(t);
+  const ref = b => b ? colName(b[0]) + (b[2] + 1) : '';
+  if (t < T.enterA) return { parts: typedParts('A', t, T.a0, T.a1), caret: true, name: 'A_total' };
+  if (t < T.hop0) return { parts: FXs.A, after: '= 78%', name: 'A_total' };
+  if (t < T.b0) return { parts: [], name: ref(sel.box) };
+  if (t < T.enterB) return { parts: typedParts('B', t, T.b0, T.b1), caret: true, name: 'B_total' };
+  if (t < T.pdHop0) return { parts: FXs.B, after: '= 83%', name: 'B_total' };
+  if (t < T.pdHop1) return { parts: [], name: ref(sel.box) };
+  if (t < T.selAll) return { parts: [['1', '#555']], after: `patient ${PATIENT_DEMO.id}  ·  1 = success, 0 = not`, name: ref(sel.box) };
+  if (t < T.cnt0) return { parts: [], name: t < T.unhide ? 'A1:BI999' : 'D6' };
+  if (t < T.cntEnter) return { parts: typedParts('C', t, T.cnt0, T.cnt1), caret: true, name: 'A_large' };
+  if (t < T.pv0) return { parts: FXs.C, after: '= 263', name: 'A_large' };
+  if (t < T.pvEnter) return { parts: typedParts('P', t, T.pv0, T.pv1), caret: true, name: 'pivot' };
+  if (t < T.rateS_A - 0.2) return { parts: FXs.P, name: 'pivot' };
+  if (t < T.rateL_A - 0.2) return { parts: [['=AVERAGE(', INK], ['A_small', REF_A], [')', INK]].flatMap(([s, c]) => [[s, c]]), after: t >= T.rateS_A ? '= 93%' : '', name: 'A_small' };
+  if (t < T.w0) return { parts: [['=AVERAGE(', INK], ['A_large', REF_B], [')', INK]], after: t >= T.rateL_A ? '= 73%' : '', name: 'A_large' };
+  if (t < T.wEnter) return { parts: typedParts('W', t, T.w0, T.w1), caret: true, name: 'A_total' };
+  if (t < T.ti0) return { parts: FXs.W, after: '= 78%   the large stones pull A down', name: 'A_total' };
+  if (t < T.bloom + 1.2) return { parts: [[typed(TITLE_S, t, T.ti0, T.ti1), INK]], caret: t < T.tiEnter, name: 'M41' };
+  if (t < T.card0) return { parts: [], name: 'S81' };
+  return { parts: [[typed(CARD_S, t, T.card0, T.card1), INK]], caret: t < T.card1 + 0.1, name: 'S81' };
+}
+function drawChrome(t) {
+  rect(0, 0, W, TITLE_H, '#dcdbd5');
+  for (let n = 0; n < 3; n++) { g.fillStyle = '#c6c5bf'; g.beginPath(); g.arc(20 + n * 20, TITLE_H / 2, 6, 0, 7); g.fill(); }
+  appIcon(84, 8, 14); text('kidney-stones-1986.sheet', 106, TITLE_H / 2 + 1, `500 13px ${UI}`, '#333');
+  text('Charig et al., BMJ 1986  ·  700 patients', W / 2, TITLE_H / 2 + 1, `500 12px ${UI}`, '#77766f', 'center');
+  text(t < T.enterA ? 'Saved' : 'Saving…', W - 16, TITLE_H / 2 + 1, `12px ${UI}`, '#7a7a74', 'right');
+  line(0, TITLE_H - 0.5, W, TITLE_H - 0.5, '#b5b4ae');
+  const ty = TITLE_H; rect(0, ty, W, TOOL_H, '#f1f0eb');
+  let x = 14; const m = ty + TOOL_H / 2;
+  const btn = (w, draw, pressed) => { if (pressed) { rect(x, ty + 6, w, TOOL_H - 12, '#ffe2a3'); g.strokeStyle = '#c9a24f'; g.lineWidth = 1; g.strokeRect(x + 0.5, ty + 6.5, w - 1, TOOL_H - 13); } draw(x); x += w + 4; };
+  const sep = () => { line(x + 2.5, ty + 9, x + 2.5, ty + TOOL_H - 9, '#c8c7c1'); x += 10; };
+  btn(26, a => arrowU(a + 13, m, false, '#444')); btn(26, a => arrowU(a + 13, m, true, '#444')); sep();
+  btn(116, a => { rect(a, m - 12, 116, 24, '#fff'); g.strokeStyle = '#bbbab4'; g.lineWidth = 1; g.strokeRect(a + 0.5, m - 11.5, 115, 23); text('Inter', a + 8, m + 1, `13px ${UI}`, '#222'); tri(a + 104, m, 4, '#666'); });
+  btn(46, a => { rect(a, m - 12, 46, 24, '#fff'); g.strokeStyle = '#bbbab4'; g.strokeRect(a + 0.5, m - 11.5, 45, 23); text('11', a + 8, m + 1, `13px ${UI}`, '#222'); tri(a + 36, m, 4, '#666'); }); sep();
+  btn(26, a => text('B', a + 13, m + 1, `800 15px ${UI}`, '#222', 'center'), t >= T.ti0 && t < T.tiEnter);
+  btn(26, a => text('I', a + 13, m + 1, `italic 500 15px ${UI}`, '#222', 'center'));
+  btn(26, a => { text('U', a + 13, m, `500 15px ${UI}`, '#222', 'center'); line(a + 8, m + 9, a + 18, m + 9, '#222'); }); sep();
+  btn(30, a => { g.strokeStyle = '#333'; g.lineWidth = 1.2; g.strokeRect(a + 8.5, m - 8.5, 13, 11); line(a + 6, m + 7, a + 24, m + 7, AMBER, 4); });
+  btn(30, a => { text('A', a + 15, m - 2, `800 15px ${UI}`, '#222', 'center'); line(a + 6, m + 8, a + 24, m + 8, REF_A, 4); }); sep();
+  btn(26, a => text('%', a + 13, m + 1, `500 15px ${UI}`, '#222', 'center'), (t >= T.enterA && t < T.enterA + 0.25) || (t >= T.enterB && t < T.enterB + 0.25));
+  btn(36, a => text('.00', a + 18, m + 1, `500 14px ${UI}`, '#222', 'center'));
+  btn(26, a => text('Σ', a + 13, m + 1, `500 16px ${UI}`, '#222', 'center'), t >= T.w0 && t < T.wEnter); sep();
+  const cfOn = (t >= T.paint0 - 0.1 && t < T.paint1) || (t >= T.unhide && t < T.un1) || (t >= T.bloom && t < T.bloom + 1.5);
+  btn(170, a => { [INK, OK, NO, BIG, AMBER].forEach((c, n) => rect(a + 8 + n * 5, m - 7, 5, 14, c)); text('Conditional format', a + 40, m + 1, `500 13px ${UI}`, '#222'); tri(a + 158, m, 4, '#666'); }, cfOn);
+  const pivOn = t >= T.pv0 && t < T.fly1;
+  btn(84, a => { g.strokeStyle = '#333'; g.lineWidth = 1.2; g.strokeRect(a + 8.5, m - 7.5, 15, 15); line(a + 8, m - 2, a + 24, m - 2, '#333', 1.2); line(a + 13, m - 8, a + 13, m + 8, '#333', 1.2); text('Pivot', a + 32, m + 1, `500 13px ${UI}`, '#222'); }, pivOn);
+  const rule = t < T.unhide ? 'Rule: outcome  1 → lime, 0 → red' : t < T.bloom ? 'Rule: + stone size  L → indigo' : 'Rule: colour scale, 6 steps';
+  btn(300, a => text(rule, a + 10, m + 1, `500 13px ${UI}`, '#444'));
+  line(0, ty + TOOL_H - 0.5, W, ty + TOOL_H - 0.5, '#c8c7c1');
+
+  // formula bar
+  const fy = TITLE_H + TOOL_H, fm = fy + FBAR_H / 2 + 1; rect(0, fy, W, FBAR_H, '#f8f7f3');
+  rect(10, fy + 9, 150, FBAR_H - 18, '#fff'); g.strokeStyle = '#b3b2ac'; g.lineWidth = 1; g.strokeRect(10.5, fy + 9.5, 149, FBAR_H - 19);
+  const F = formulaLine(t);
+  text(F.name || '', 22, fm, `700 16px ${UI}`, INK); tri(148, fm, 4, '#777');
+  g.strokeStyle = '#b03030'; g.lineWidth = 2; g.beginPath(); g.moveTo(176, fm - 6); g.lineTo(188, fm + 6); g.moveTo(188, fm - 6); g.lineTo(176, fm + 6); g.stroke();
+  g.strokeStyle = '#2a7a3a'; g.beginPath(); g.moveTo(203, fm); g.lineTo(208, fm + 5); g.lineTo(218, fm - 6); g.stroke();
+  text('fx', 240, fm, `italic 700 17px ${UI}`, '#333', 'center');
+  rect(262, fy + 6, W - 272, FBAR_H - 12, '#fff'); g.strokeStyle = '#b3b2ac'; g.strokeRect(262.5, fy + 6.5, W - 273, FBAR_H - 13);
+  let fx = 278;
+  for (const [s, col] of F.parts) { text(s, fx, fm, `700 26px ${UI}`, col); fx += tw(s, `700 26px ${UI}`); }
+  if (F.caret && Math.floor(t * 8) % 2 === 0) rect(fx + 3, fy + 13, 2.5, FBAR_H - 26, INK);
+  if (F.after) text(F.after, fx + 22, fm, `600 22px ${UI}`, '#7a7a74');
+  line(0, fy + FBAR_H - 0.5, W, fy + FBAR_H - 0.5, '#b5b4ae');
+
+  // sheet tabs + status bar
+  const by = SHEET_B; rect(0, by, W, TABS_H, '#e5e4de'); line(0, by + 0.5, W, by + 0.5, '#9a9a94');
+  tri(18, by + TABS_H / 2, 5, '#888', 'left'); tri(36, by + TABS_H / 2, 5, '#888', 'right');
+  let tx = 56;
+  for (const [name, on] of [['patients', true], ['study notes', false], ['+', false]]) {
+    g.font = `${on ? 700 : 500} 13px ${UI}`; const w = g.measureText(name).width + 28;
+    if (on) { rect(tx, by, w, TABS_H - 3, '#fff'); line(tx, by + TABS_H - 3, tx + w, by + TABS_H - 3, AMBER, 3); }
+    text(name, tx + w / 2, by + TABS_H / 2, `${on ? 700 : 500} 13px ${UI}`, on ? INK : '#555', 'center');
+    line(tx + w + 0.5, by + 5, tx + w + 0.5, by + TABS_H - 5, '#b5b4ae'); tx += w;
+  }
+  const sy = by + TABS_H, sm = sy + STAT_H / 2 + 1; rect(0, sy, W, STAT_H, INK);
+  let mode = 'Ready', msg = '';
+  const painted = pats.filter(p => t >= p.tp).length, placed = pats.filter(p => t >= p.f1).length;
+  if (t < T.enterA || (t >= T.b0 && t < T.enterB)) mode = 'Edit';
+  else if (t < T.paint0) msg = t >= T.enterB ? 'Average  0.83  ·  Count  350' : 'Average  0.78  ·  Count  350';
+  else if (t < T.paint1 + 0.2) { mode = 'Recalc'; msg = `Applying conditional format  ${painted} / 700 cells`; }
+  else if (t < T.selAll) msg = '1 cell = 1 patient  ·  700 patients  ·  Charig et al., BMJ 1986';
+  else if (t < T.unhide) { mode = 'Select'; msg = 'All cells selected'; }
+  else if (t < T.un1 + 0.3) { mode = 'Recalc'; msg = 'Unhiding 28 columns'; }
+  else if (t < T.cnt0) msg = 'L = large stone (2 cm or more)  ·  S = small';
+  else if (t < T.cntEnter) mode = 'Edit';
+  else if (t < T.pv0) msg = 'Large stones:  A 263  ·  B 80';
+  else if (t < T.pvEnter) mode = 'Edit';
+  else if (t < T.fly1 + 0.2) { mode = 'Recalc'; msg = `Pivot  ·  placing ${placed} / 700 cells`; }
+  else if (t < T.w0) msg = 'Pivot rows: stone size  ·  columns: treatment  ·  values: success rate';
+  else if (t < T.wEnter) mode = 'Edit';
+  else if (t < T.bloom) msg = 'A: 87 small + 263 large  ·  B: 270 small + 80 large';
+  else if (t < T.card0) { mode = 'Recalc'; msg = 'Applying colour scale to the whole sheet'; }
+  else msg = '';
+  rect(0, sy, 74, STAT_H, mode === 'Recalc' ? AMBER : mode === 'Ready' ? INK : '#3a3326');
+  text(mode, 37, sm, `700 12px ${UI}`, mode === 'Recalc' ? INK : '#fff', 'center');
+  text(msg, 88, sm, `500 12px ${UI}`, 'rgba(255,255,255,0.82)');
+  const zx = W - 270, zk = clamp((Math.log(CAM.z) - Math.log(0.3)) / (Math.log(3.2) - Math.log(0.3)), 0, 1);
+  rect(zx, sm - 1, 9, 2, '#fff'); line(zx + 18, sm, zx + 178, sm, 'rgba(255,255,255,0.4)', 2);
+  rect(zx + 18 + 160 * zk - 4, sy + 6, 8, STAT_H - 12, AMBER);
+  rect(zx + 186, sm - 1, 10, 2, '#fff'); rect(zx + 190, sm - 5, 2, 10, '#fff');
+  text(Math.round(CAM.z * 100) + '%', W - 16, sm, `700 12px ${UI}`, '#fff', 'right');
+}
+
+// ---------------- cursor + context menu (screen space) ----------------
+function cursorAt(t) {   // → {x, y, kind, down}
+  const wxy = (c, r) => [X(colXf(c)), Y(r * RH)];
+  const K = [
+    [0.0, () => [1500, 880], 'cross'], [4.6, () => [1500, 880], 'cross'],
+    [5.9, () => wxy(M.RV_A[0] + 5, 32.1), 'cross'], [6.6, () => wxy(M.RV_A[0] + 5.6, 32.0), 'cross'],
+    [7.3, () => wxy(M.RV_B[0] + 4.6, 32.0), 'cross'], [7.9, () => wxy(M.RV_B[0] + 5.0, 32.15), 'cross'],
+    [9.8, () => [1700, 960], 'cross'], [T.pdHop0, () => [1700, 960], 'cross'],
+    [T.pdHop1 - 0.05, () => wxy(PATIENT_DEMO.hc + 0.6, PATIENT_DEMO.hr + 0.6), 'cross'], [14.4, () => wxy(PATIENT_DEMO.hc + 0.6, PATIENT_DEMO.hr + 0.6), 'cross'],
+    [T.whip1 + 0.3, () => [1300, 520], 'arrow'], [T.selAll - 0.35, () => [ROWH_W - 16, SHEET_Y - 10], 'arrow'], [T.selAll + 0.15, () => [ROWH_W - 16, SHEET_Y - 10], 'arrow'],
+    [T.rclick - 0.1, () => [900, SHEET_Y - HDR / 2], 'arrow'], [T.menuHi, () => [900 + 30, SHEET_Y - HDR / 2 + 6 + 7 * 30 + 15], 'arrow'],
+    [T.unhide + 0.2, () => [900 + 34, SHEET_Y - HDR / 2 + 6 + 7 * 30 + 15], 'arrow'], [T.un1 + 0.6, () => [1760, 980], 'arrow'],
+  ];
+  if (t > K[K.length - 1][0] + 0.4) return null;
+  let q = 0; while (q < K.length - 2 && t > K[q + 1][0]) q++;
+  const A = K[q], B = K[q + 1], u = eio(seg(t, A[0], B[0]));
+  const a = A[1](), b = B[1]();
+  const down = [T.selAll, T.rclick, T.unhide].some(tc => t >= tc && t < tc + 0.12) || (t >= T.pdHop1 - 0.05 && t < T.pdHop1 + 0.07);
+  return { x: lerp(a[0], b[0], u), y: lerp(a[1], b[1], u), kind: t < B[0] ? B[2] : A[2], down };
+}
+EV.push({ t: T.selAll, type: 'click' }, { t: T.rclick, type: 'click' }, { t: T.unhide, type: 'click' }, { t: T.pdHop1 - 0.05, type: 'click' }, { t: T.rclick + 0.05, type: 'menu' });
+function drawCursor(t) {
+  const C = cursorAt(t); if (!C) return;
+  const { x, y } = C, s = C.down ? 0.86 : 1;
+  g.save(); g.translate(x, y); g.scale(s, s);
+  if (C.kind === 'cross') {
+    g.fillStyle = INK; g.fillRect(-15, -5.5, 30, 11); g.fillRect(-5.5, -15, 11, 30);
+    g.fillStyle = '#ffffff'; g.fillRect(-13, -3.5, 26, 7); g.fillRect(-3.5, -13, 7, 26);
+  } else {
+    g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 26); g.lineTo(7, 20); g.lineTo(12, 31); g.lineTo(17, 29); g.lineTo(12, 18); g.lineTo(21, 18); g.closePath();
+    g.fillStyle = '#ffffff'; g.fill(); g.strokeStyle = INK; g.lineWidth = 2; g.stroke();
+  }
+  g.restore();
+}
+function drawMenu(t) {
+  if (t < T.rclick + 0.03 || t >= T.unhide + 0.12) return;
+  const k = eo(seg(t, T.rclick + 0.03, T.rclick + 0.15));
+  const x = 900 + 6, y = SHEET_Y - HDR / 2 + 6, w = 300, items = ['Cut', 'Copy', 'Paste', '—', 'Insert columns', 'Delete columns', 'Hide columns', 'Unhide columns'];
+  const h = items.length * 30 + 12;
+  g.save(); g.globalAlpha = k;
+  rect(x, y, w, h * (0.6 + 0.4 * k), '#fbfbf9'); g.strokeStyle = '#8f8e88'; g.lineWidth = 1; g.strokeRect(x + 0.5, y + 0.5, w - 1, h * (0.6 + 0.4 * k) - 1);
+  items.forEach((s, n) => {
+    const iy = y + 6 + n * 30;
+    if (s === '—') { line(x + 10, iy + 15.5, x + w - 10, iy + 15.5, '#d0cfc9'); return; }
+    const hi = n === 7 && t >= T.menuHi;
+    if (hi) rect(x + 4, iy, w - 8, 30, t >= T.unhide ? AMBER : '#ffe2a3');
+    text(s, x + 18, iy + 16, `${hi ? 700 : 500} 17px ${UI}`, hi ? INK : '#333');
+  });
+  g.restore();
+}
+
+// ---------------- subtitles: a cell comment, bottom left ----------------
+function drawSubs(t) {
+  const L = TL.lines.find(l => t >= l.c0 && t < l.c1); if (!L) return;
+  const k = Math.min(seg(t, L.c0, L.c0 + 0.12), 1 - seg(t, L.c1 - 0.12, L.c1));
+  const fz = `600 36px ${UI}`, fe = `500 25px ${UI}`;
+  const w = Math.max(tw(L.zh, fz), tw(L.en, fe)) + 52, h = 104, x = ROWH_W + 22, y = SHEET_B - h - 16;
+  g.save(); g.globalAlpha = k;
+  rect(x, y, w, h, NOTE); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(x + 0.75, y + 0.75, w - 1.5, h - 1.5);
+  g.fillStyle = NO; g.beginPath(); g.moveTo(x + w - 14, y + 1.5); g.lineTo(x + w - 1.5, y + 1.5); g.lineTo(x + w - 1.5, y + 14); g.fill();
+  text(L.zh, x + 24, y + 38, fz, INK);
+  text(L.en, x + 24, y + 78, fe, '#3a3a34');
+  g.restore();
+}
+function setup(t) {
+  layout(t);
+  CAM = camera(t);
+  HDR = Math.round(26 * clamp(Math.sqrt(CAM.z), 1, 1.45));
+  SHEET_Y = TITLE_H + TOOL_H + FBAR_H + HDR; VW = W - ROWH_W; VH = SHEET_B - SHEET_Y;
+  VCX = ROWH_W + VW / 2; VCY = SHEET_Y + (SHEET_B - 96 - SHEET_Y) / 2;
+  // a sheet can't scroll above row 1 or left of column A
+  CAM.x = Math.max(CAM.x, (VCX - ROWH_W) / CAM.z); CAM.y = Math.max(CAM.y, (VCY - SHEET_Y) / CAM.z);
+}
+function renderFull(t) {
+  setup(t);
+  rect(0, 0, W, H, '#1a1a1a');
+  drawSheet(t); drawHeaders(t); drawChrome(t); drawMenu(t); drawCursor(t); if (Q.get('nosub') !== '1') drawSubs(t);
+};
+// sound events
+pats.forEach(p => EV.push({ t: +p.tp.toFixed(4), type: 'paint', ok: p.ok }));
+pats.forEach(p => EV.push({ t: +p.f0.toFixed(4), type: 'lift' }, { t: +p.f1.toFixed(4), type: 'land', ok: p.ok, row: PBOT - p.dr }));
+for (const [t, n] of [[T.rateS_A, 'rate'], [T.rateS_B, 'rate'], [T.rateL_A, 'rate'], [T.rateL_B, 'rate'], [T.winS, 'win'], [T.winL, 'win'], [T.totWin, 'win'], [T.winB, 'winB'], [T.cntEnter, 'count'], [T.tot, 'pop']]) EV.push({ t, type: n });
+for (const [t, n] of [['quiet', T.quiet], ['whip', T.whip0], ['unhide', T.unhide], ['pivot', T.pvEnter], ['fly1', T.fly1], ['bloom', T.bloom], ['card', T.card0], ['pull', T.pull0], ['landing', 47.55], ['judge', T.tot], ['merge', 47.75]]) EV.push({ t: n, type: 'cue', name: t });
+EV.sort((a, b) => a.t - b.t);
+window.render = t => renderFull(CUT_FROM + t);
+window.DUR = CUT_TO - CUT_FROM; window.EV = EV;
+// reading-time check (core/render/readcheck.mjs): the texts the film asks you to read — merged cells, the cell comment,
+// the end card. Cell values (texture), the shell (toolbar, formula bar, headers, status bar) and the subtitle note (.srt) are left out.
+// A box outside the sheet viewport counts as out of frame.
+window.TEXTS = function (t0) {
+  const t = CUT_FROM + t0; setup(t);
+  const out = [], put = (id, text, k) => {
+    const [x, y, w, h] = mrect(k), inside = x >= ROWH_W - 1 && y >= SHEET_Y - 1 && x + w <= W + 1 && y + h <= SHEET_B + 1;
+    out.push({ id, text, x0: inside ? x : -1, y0: y, x1: x + w, y1: y + h });
+  };
+  if (t >= T.enterA) put('resA', '78%', 'RV_A');
+  if (t >= T.enterB) put('resB', '83%', 'RV_B');
+  if (t >= T.cntEnter + 0.35) put('cntA', '263 of 350 have large stones', 'CNT_A');
+  if (t >= T.cntEnter + 0.7) put('cntB', '80 of 350 have large stones', 'CNT_B');
+  if (t >= T.pvEnter + 0.25) { put('roomS', 'Small stones < 2 cm', 'ROOM_S'); put('roomL', 'Large stones ≥ 2 cm', 'ROOM_L'); }
+  for (const [k, tr, pct] of [['AS', T.rateS_A, '93%'], ['BS', T.rateS_B, '87%'], ['AL', T.rateL_A, '73%'], ['BL', T.rateL_B, '69%']]) if (t >= tr) put('rate' + k, pct, 'RT_' + k);
+  if (t >= T.tot + 0.3) put('total', 'All 700 patients, together A 78% B 83%', 'TOT');
+  if (t >= T.tiEnter) put('title', "Simpson's paradox 辛普森悖论", 'TITLE');
+  if (t >= T.card0) put('cardTitle', 'The Hidden Column', 'CARD');                 // the end card's four blocks: title (typed),
+  if (t >= T.card0 + 0.15) {                                                        // Chinese title, style name and sign-off (faded in)
+    put('cardZh', '藏起来的那一列', 'CARD'); put('cardStyle', 'Spreadsheet Film · 表格动画', 'CARD'); put('cardSign', 'LemoLab × Claude Opus 5.5', 'CARD');
+  }
+  if (t >= T.pdNote && t < T.quiet) {
+    const p = PATIENT_DEMO, ax = XC(p.hc + 1), ay = YR(p.hr);
+    out.push({ id: 'note', text: `Patient ${p.id} Treatment A · success Stone size: not shown`, x0: ax + 40, y0: ay - 128, x1: ax + 370, y1: ay - 16 });
+  }
+  return out;
+};
+Promise.all([
+  document.fonts.load(`500 20px NSC`, '藏起来的那一列'), document.fonts.load(`700 20px NSC`, '辛普森悖论'),
+  document.fonts.load(`500 20px Inter`, 'Ab12'), document.fonts.load(`800 20px Inter`, 'Ab12'), document.fonts.load(`italic 500 20px Inter`, 'I'),
+]).then(() => document.fonts.ready).then(() => { window.render(0); window.READY = true; });
+</script></body></html>

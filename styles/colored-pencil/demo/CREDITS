@@ -1,0 +1,22 @@
+The Other Half (树的另一半) — Colored-Pencil Science Illustration (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+No AI-generated images, no stock footage, no outside pictures or models: the 3D world (soil, trees, roots, fungus,
+stones, worms, grains), the colored-pencil rendering, paper, labels, subtitles and end card are made by the code in this folder.
+
+FONT (SIL Open Font License 1.1; licence text in fonts/OFL-lxgwwenkai.txt; the .ttf files are local, fetched by build.sh)
+- LXGW WenKai 霞鹜文楷 — The LXGW WenKai Project Authors, based on Klee One (Fontworks) — https://github.com/lxgw/LxgwWenKai
+  (file: LXGWWenKai-Regular.ttf v1.245.1, https://raw.githubusercontent.com/lxgw/LxgwWenKai/v1.245.1/fonts/TTF/LXGWWenKai-Regular.ttf) → fonts/src/, subset by tools/make_font.py → fonts/LXGWWenKai-subset.ttf
+  Subsetting for this page is allowed under the font's Reserved Font Name note (subsets for web delivery).
+
+VOICE
+- Kokoro TTS (kokoro-onnx, Apache-2.0; model weights Apache-2.0), voice bf_emma, generated locally by
+  core/tts/tts.py from voice/lines.json (deterministic; the .wav files are local, in out/voice/).
+
+MUSIC SAMPLES (played by core/audio/sampler.py; out/instruments.txt is written by sampler.credits())
+- guitar_nylon, kalimba: FreePats project (freepats.zenvoid.org), CC0 1.0
+- flute, clarinet, contrabass_pizz, cellos, violins: VS Chamber Orchestra: Community Edition (Versilian Studios), CC0 1.0
+- harp, glockenspiel, vibraphone_bowed, marimba: Versilian Community Sample Library (Versilian Studios), CC0 1.0
+Pencil foley, ambience (wind, birds, earth tone), the lens tock and the grain sounds are synthesised by mix.py with core/audio/sfx.py.
+
+FACTS
+- See FACTS.md (the sources behind every claim in the narration, and how the film words the open question).

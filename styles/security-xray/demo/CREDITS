@@ -1,0 +1,31 @@
+Security X-ray demo · 《安检口的夜班》 Night Shift at Lane 3 · third-party assets and sources
+
+## Voice
+- Kokoro-82M (hexgrad), voice af_heart, Apache License 2.0; run locally via kokoro-onnx (MIT) through the
+  library's core/tts/tts.py. Speech check: faster-whisper small.en (MIT; OpenAI Whisper weights, MIT).
+  Script: demo/voice/lines.json.
+
+## Music samples (CC0; credit not required, given with thanks)
+- VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
+  Instruments: bass_drum, bassoon_stac, cellos, cellos_pizz, cellos_spic, contrabass, contrabass_pizz, glockenspiel,
+  harp, hihat, marimba, timpani, trombone, trombone_stac, tuba_stac, vibraphone, vibraphone_bowed, violas, violins,
+  violins_pizz, violins_trem, woodblock, xylophone (core/audio/sampler.py). Console tones and foley are procedural
+  (core/audio/sfx.py and demo/audio.py).
+
+## Fonts (SIL Open Font License 1.1; licence texts in demo/fonts/)
+- IBM Plex Mono Regular / Medium: IBM, https://github.com/google/fonts/tree/main/ofl/ibmplexmono
+- Noto Sans SC 500 / 700: Google / Adobe, https://github.com/google/fonts/tree/main/ofl/notosanssc
+  Static instances subset to the characters in film.js (make_fonts.py) from the variable font
+  NotoSansSC[wght].ttf, downloaded by build.sh into demo/fonts/src/.
+
+## Code
+- three.js r170 (MIT), with RoundedBoxGeometry from its examples: loaded from the library's node_modules
+
+## Images, models
+- None. Every object is built in code; no photographs, no external models, no AI-generated images.
+
+## Facts
+- Every rule on screen and every factual voice line is sourced in demo/FACTS.md (CAAC notices, CAAC news site,
+  China Eastern via 极目新闻), with URLs and quoted wording.
+- Invented for the film: the lane, the times, the counter (1,284 bags, 37 opened, 412 power banks, 29 liquids,
+  6 crabs), the bag contents, the power bank label and the console. No real company, product or logo appears.

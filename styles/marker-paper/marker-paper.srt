@@ -1,0 +1,49 @@
+1
+00:00:00,300 --> 00:00:03,846
+站在海边，望向大海。
+Stand on a beach, and look out to sea.
+
+2
+00:00:03,950 --> 00:00:07,385
+地平线离你有多远？
+How far away is the horizon?
+
+3
+00:00:07,450 --> 00:00:11,416
+蓝色是已知的，红色是要求的。
+Blue is what we know. Red is what we want.
+
+4
+00:00:13,200 --> 00:00:18,320
+视线刚好擦过地球，和半径成直角。
+Your line of sight just grazes the Earth, at a right angle.
+
+5
+00:00:19,700 --> 00:00:23,179
+h² 小到可以忽略，划掉它。
+h² is tiny, so we drop it.
+
+6
+00:00:23,400 --> 00:00:28,849
+眼高 1.6 米：大约 4.5 公里。
+From 1.6 m up: about 4.5 km.
+
+7
+00:00:29,900 --> 00:00:33,078
+现在，爬高 100 倍。
+Now, climb 100 times higher.
+
+8
+00:00:33,150 --> 00:00:36,675
+你只能多看远 10 倍。
+You see only 10 times farther.
+
+9
+00:00:37,200 --> 00:00:43,951
+从 10 公里高的飞机上看：大约 357 公里。
+From a plane, 10 km up: about 357 km.
+
+10
+00:00:44,050 --> 00:00:48,548
+视野只随高度的平方根增长。
+The view grows only with the square root of your height.

@@ -1,0 +1,125 @@
+{
+ "dur": 52.0,
+ "lines": [
+  {
+   "id": "v01",
+   "t0": 0.6,
+   "t1": 4.853,
+   "dur": 4.253,
+   "zh": "日落时分，在半公里深的海里，有东西开始往上游。",
+   "en": "At sunset, half a kilometre down, something starts to climb.",
+   "c0": 0.6,
+   "c1": 5.5
+  },
+  {
+   "id": "v02",
+   "t0": 5.6,
+   "t1": 8.574,
+   "dur": 2.974,
+   "zh": "一条灯笼鱼，还没有手指长。",
+   "en": "A lanternfish, no longer than your finger.",
+   "c0": 5.6,
+   "c1": 9.674
+  },
+  {
+   "id": "v03",
+   "t0": 10.2,
+   "t1": 13.292,
+   "dur": 3.092,
+   "zh": "它摸着黑，一路游向海面。",
+   "en": "It climbs toward the surface, in the dark.",
+   "c0": 10.2,
+   "c1": 14.3
+  },
+  {
+   "id": "v04",
+   "t0": 14.4,
+   "t1": 18.828,
+   "dur": 4.428,
+   "zh": "可头顶那点微光，会把它照成一个影子。",
+   "en": "But the faint light from above turns it into a shadow.",
+   "c0": 14.4,
+   "c1": 19.5
+  },
+  {
+   "id": "v05",
+   "t0": 19.6,
+   "t1": 22.124,
+   "dur": 2.524,
+   "zh": "下面的猎手，正抬头往上看。",
+   "en": "And hunters below are looking up.",
+   "c0": 19.6,
+   "c1": 23.2
+  },
+  {
+   "id": "v06",
+   "t0": 23.3,
+   "t1": 26.859,
+   "dur": 3.559,
+   "zh": "于是，它点亮肚子上的一排灯，",
+   "en": "So it turns on the lights along its belly,",
+   "c0": 23.3,
+   "c1": 27.5
+  },
+  {
+   "id": "v07",
+   "t0": 27.6,
+   "t1": 31.722,
+   "dur": 4.122,
+   "zh": "和头顶的光一样亮。影子不见了。",
+   "en": "as bright as the glow above. The shadow is gone.",
+   "c0": 27.6,
+   "c1": 32.35
+  },
+  {
+   "id": "v08",
+   "t0": 32.45,
+   "t1": 35.83,
+   "dur": 3.38,
+   "zh": "到了午夜，它游到海面觅食。",
+   "en": "By midnight, it reaches the surface to feed.",
+   "c0": 32.45,
+   "c1": 36.45
+  },
+  {
+   "id": "v09",
+   "t0": 36.55,
+   "t1": 38.546,
+   "dur": 1.996,
+   "zh": "而它并不孤单。",
+   "en": "And it is not alone.",
+   "c0": 36.55,
+   "c1": 39.15
+  },
+  {
+   "id": "v10",
+   "t0": 39.25,
+   "t1": 42.619,
+   "dur": 3.369,
+   "zh": "每天夜里，无数动物从深海升起。",
+   "en": "Every night, countless animals rise from the deep.",
+   "c0": 39.25,
+   "c1": 43.25
+  },
+  {
+   "id": "v11",
+   "t0": 43.35,
+   "t1": 46.279,
+   "dur": 2.929,
+   "zh": "这是地球上规模最大的迁徙。",
+   "en": "It is the largest migration on Earth.",
+   "c0": 43.35,
+   "c1": 46.9
+  },
+  {
+   "id": "v12",
+   "t0": 47.0,
+   "t1": 50.658,
+   "dur": 3.658,
+   "zh": "日出之前，它们又一起沉回黑暗。",
+   "en": "Before sunrise, they all sink back into the dark.",
+   "c0": 47.0,
+   "c1": 51.6
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+Six Hands Away (隔着几只手) — Stick-figure Explainer (Lemo-Opuscar) · LemoLab × Claude Opus 5.5
+
+No AI-generated images, no stock footage, no outside pictures: paper, figures, globe, envelopes and type
+layout are drawn by the code in this folder.
+
+FONTS (SIL Open Font License 1.1; licence texts in fonts/, the .ttf files are local and fetched by build.sh)
+- Jost — The Jost Project Authors — https://github.com/indestructible-type/Jost
+  (file: https://github.com/google/fonts/tree/main/ofl/jost) → fonts/Jost.ttf
+- Noto Sans SC — Adobe / Google — https://github.com/notofonts/noto-cjk
+  (file: https://github.com/google/fonts/tree/main/ofl/notosanssc), subset to tools/zh-chars.txt → fonts/NotoSansSC-sub.ttf
+
+VOICE
+- Kokoro-82M (Apache 2.0) via kokoro-onnx (MIT), voice af_heart, generated locally by
+  core/tts/tts.py from voice/lines.json (deterministic; the .wav files are local).
+
+MUSIC SAMPLES (played by core/audio/sampler.py; out/instruments.txt is written by sampler.credits())
+- contrabass_pizz, violins, violas, cellos, horn: VS Chamber Orchestra: Community Edition (Versilian Studios), CC0 1.0
+- marimba, glockenspiel, vibraphone, harp, sus_cymbal: Versilian Community Sample Library (Versilian Studios), CC0 1.0
+- kalimba: FreePats project (freepats.zenvoid.org), CC0 1.0
+Foley (pops, taps, sweeps, thuds) is synthesised by core/audio/sfx.py.
+
+FACTS
+- See FACTS.md (sources for every number in the film; what is illustrative is labelled so on screen).

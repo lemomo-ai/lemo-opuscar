@@ -1,4 +1,4 @@
-"""Sound for 《没弄反》 -> mix.wav (48 kHz stereo, exactly DUR seconds).
+"""Sound for 《汉字的故事》 The Story of Chinese Characters -> mix.wav (48 kHz stereo, exactly DUR seconds).
 Run from the library root (build.sh does it):
     node core/render/events.mjs styles/chalkboard/demo        (events.json from the picture)
     .venv/bin/python styles/chalkboard/demo/audio.py [en]

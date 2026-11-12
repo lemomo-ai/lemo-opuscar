@@ -1,4 +1,4 @@
-// 《被炸平的城市怎样长回来》 How a Flattened City Grew Back — Projection on White Model demo.
+// 《被炸平的城市怎样长回来》 How a Flattened City Grew Back — Projection-Mapped Model demo.
 // Rotterdam centre at 1:1000 (3DBAG LOD1.3 + BAG construction years + BGT water). render(t) is a pure function of t:
 // camera from keys, projection state from timeline.js, every number from data/stats.json (tools/prep.py).
 import * as THREE from 'three';

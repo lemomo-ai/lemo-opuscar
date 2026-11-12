@@ -1,0 +1,96 @@
+[
+ {
+  "id": "v01_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "Almost every banana you buy is the same banana."
+ },
+ {
+  "id": "v02_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "Not just the same kind."
+ },
+ {
+  "id": "v02_b",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "The same plant, copied."
+ },
+ {
+  "id": "v03_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "The Cavendish has no seeds."
+ },
+ {
+  "id": "v03_b",
+  "voice": "am_michael",
+  "speed": 0.78,
+  "text": "Each one grows from a piece of another."
+ },
+ {
+  "id": "v04_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "Your grandparents ate a different banana,"
+ },
+ {
+  "id": "v04_b",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "the Gros Michel.",
+  "asr": "the Gros Mitchell."
+ },
+ {
+  "id": "v05_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "In the nineteen fifties, a soil fungus tore through its farms.",
+  "asr": "In the 1950s, a soil fungus tore through its farms."
+ },
+ {
+  "id": "v06_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "So the trade switched to the Cavendish, which resisted it."
+ },
+ {
+  "id": "v07_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "Now a new strain, Tropical Race Four,",
+  "asr": "Now a new strain, Tropical Race 4,"
+ },
+ {
+  "id": "v07_b",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "kills the Cavendish as well."
+ },
+ {
+  "id": "v08_a",
+  "voice": "am_michael",
+  "speed": 0.86,
+  "text": "In twenty nineteen, it reached Colombia.",
+  "asr": "In 2019, it reached Columbia."
+ },
+ {
+  "id": "v09_a",
+  "voice": "am_michael",
+  "speed": 0.8,
+  "text": "Yet over a thousand kinds of banana grow on Earth."
+ },
+ {
+  "id": "v10_a",
+  "voice": "am_michael",
+  "speed": 0.8,
+  "text": "The way out is not one perfect banana."
+ },
+ {
+  "id": "v10_b",
+  "voice": "am_michael",
+  "speed": 0.8,
+  "text": "It's many."
+ }
+]

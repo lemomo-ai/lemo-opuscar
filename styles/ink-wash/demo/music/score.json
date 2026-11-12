@@ -32,14 +32,14 @@
   "H_seal": 44.6
  },
  "sections": {
-  "A": "散板：0.90 低 F 散音（墨滴），2.6 箫弱起长音，3.4/4.0/4.6 泛音 C5/F5/A5 托片名，6.0 D→C 下行滑音",
-  "B": "60 BPM 古琴独奏主题：A 按音上滑、C 吟；8.8/9.4/10.0 单音 F/A/C = 三笔成形；10.3 F6 泛音 = 剑穗；旁白段只留低音",
-  "C": "90 BPM：低音轮指 ostinato（八分）+ 脚步点清脆短音与手鼓（15.333+k*0.6667）+ 箫旋律 A C D C A G；20.0 起渐暗下沉",
-  "D": "21.30 大鼓+定音鼓重音；古琴低弦下滑；23.0→26.8 大鼓滚奏渐强；26.80 硬切到 0",
-  "E": "26.8–28.5 数字 0；泛音 G5/C6/D6 于 28.50/29.20/29.95；30.50–32.40 数字 0",
-  "F": "32.40 大鼓最强 + 定音鼓 + 古琴七弦扫弦（C D F G A c d）+ 低 F 延续到 35.4",
-  "G": "60 BPM 主题回归（更舒展）+ 箫对位；41.30 落在主音 F（抱拳）",
-  "H": "42.8 起收束；44.60 低 F 泛音 + F2 散音 + 小锣（盖印）；48.0 前 0.3 s 淡出"
+  "A": "free tempo: 0.90 low F open string (ink drop), 2.6 xiao long note entering softly, 3.4/4.0/4.6 harmonics C5/F5/A5 under the title, 6.0 D→C downward slide",
+  "B": "60 BPM guqin solo theme: A stopped note sliding up, C with yin vibrato; 8.8/9.4/10.0 single notes F/A/C = the three strokes take shape; 10.3 F6 harmonic = sword tassel; only the low register under the narration",
+  "C": "90 BPM: low lunzhi tremolo ostinato (eighths) + crisp short notes and hand drum on the footsteps (15.333+k*0.6667) + xiao melody A C D C A G; darkening and sinking from 20.0",
+  "D": "21.30 big drum + timpani accent; guqin low string slides down; 23.0→26.8 big-drum roll crescendo; 26.80 hard cut to 0",
+  "E": "26.8–28.5 digital 0; harmonics G5/C6/D6 at 28.50/29.20/29.95; 30.50–32.40 digital 0",
+  "F": "32.40 big drum at full force + timpani + guqin sweep across all seven strings (C D F G A c d) + low F held to 35.4",
+  "G": "60 BPM theme returns (broader) + xiao counterpoint; 41.30 lands on the tonic F (the fist-and-palm salute)",
+  "H": "winding down from 42.8; 44.60 low F harmonic + F2 open string + small gong (the seal stamp); 0.3 s fade-out before 48.0"
  },
  "selfcheck": {
   "dur": 48.0,

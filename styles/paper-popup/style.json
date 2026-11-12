@@ -1,11 +1,12 @@
 {
  "slug": "paper-popup",
- "num": "41",
+ "num": "79",
  "en": "Paper Pop-up Book",
  "cn": "纸片立体书",
- "category_en": "Materials & 3D",
- "category_cn": "材质与 3D",
+ "category_en": "3D & Miniature",
+ "category_cn": "立体微缩",
  "film": "Pip's Paper Adventure",
+ "film_cn": "小精灵冒险记",
  "line": "A pop-up book opens on a desk; a sprite named Pip adventures through paper worlds and jumps out into ours.",
  "line_cn": "立体书在书桌上打开，小精灵 Pip 在纸片世界冒险，最后跳出书外。",
  "uses": [
@@ -13,6 +14,6 @@
   "Game trailers",
   "Story films"
  ],
- "frame_sec": 26.6,
+ "frame_sec": 16.0,
  "dur": 133.0
 }
