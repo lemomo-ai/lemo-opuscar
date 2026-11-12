@@ -5,20 +5,22 @@
 # It copies the web cut of every style with a film (styleboard/catalog.json) into a local checkout of the repository, removes the
 # films of styles that are gone, writes the repository's README.md, LICENSE, .nojekyll and .gitignore, and writes
 # styleboard/films_repo.json here: what the repository holds, which check_site.py checks the pages against (commit it).
-#   sh tools/films_repo.sh [DIR]          sync into DIR (default ../lemo-opuscar-films: a clone of the repository, or a new folder)
+#   sh tools/films_repo.sh [DIR]          sync into DIR (default ../lemo-opuscar-films beside this repository: a clone of the
+#                                         repository, or a new folder; a relative DIR is taken from where you run the script)
 #   sh tools/films_repo.sh --push [DIR]   the same, then commit and push DIR (a clone of the repository); it prints what goes first
 # Nothing is pushed without --push. Push the films repository before main, so the site never plays a film that isn't there yet.
 set -e
+CALLER=$(pwd)
 cd "$(dirname "$0")/.."
 PUSH=0; DIR=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --push) PUSH=1; shift ;;
-    -*) sed -n '2,10p' "$0"; exit 2 ;;
-    *) [ -z "$DIR" ] || { sed -n '2,10p' "$0"; exit 2; }; DIR=$1; shift ;;
+    -*) sed -n '2,11p' tools/films_repo.sh; exit 2 ;;
+    *) [ -z "$DIR" ] || { sed -n '2,11p' tools/films_repo.sh; exit 2; }; DIR=$1; shift ;;
   esac
 done
-[ -n "$DIR" ] || DIR=../lemo-opuscar-films
+if [ -z "$DIR" ]; then DIR="$(cd .. && pwd)/lemo-opuscar-films"; else case "$DIR" in /*) ;; *) DIR="$CALLER/$DIR" ;; esac; fi
 command -v python3 >/dev/null || { echo "✗ python3 is needed to run this script"; exit 1; }
 REPO=$(python3 -c 'import sys; sys.dont_write_bytecode = True; sys.path.insert(0, "styleboard"); import site_config; print(site_config.FILMS_REPO)')
 
@@ -42,7 +44,7 @@ check_dir() {
     *) echo "✗ $DIR is a git checkout of ${origin:-a repository without an origin}, not of $REPO"; exit 1 ;;
   esac
 }
-check_dir
+if [ "$PUSH" = 1 ]; then check_dir push; else check_dir; fi   # with --push, refuse a plain folder before copying 860 MB into it
 mkdir -p "$DIR"
 DIR=$(cd "$DIR" && pwd -P)
 
@@ -124,7 +126,7 @@ if mb > 900: print(f'! {mb:.0f} MB: GitHub Pages documents 1 GB per site, and th
 PY
 
 if [ "$PUSH" = 0 ]; then
-  echo "Next: check $DIR, then push it before main:  sh tools/films_repo.sh --push $DIR"
+  echo "Next: check $DIR, then push it before main:  sh tools/films_repo.sh --push \"$DIR\""
   exit 0
 fi
 check_dir push
