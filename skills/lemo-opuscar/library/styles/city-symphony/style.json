@@ -1,11 +1,16 @@
 {
  "slug": "city-symphony",
- "num": "66",
- "en": "Time-lapse Symphony",
- "cn": "延时交响",
+ "num": "04",
+ "en": "City Symphony",
+ "cn": "城市交响曲",
+ "aka": [
+  "Time-lapse Symphony",
+  "延时交响"
+ ],
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "One Day in New York",
+ "film_cn": "纽约的一天",
  "line": "One day in New York in time-lapse: rivers of light, a grid on the sixteenths, 1899 beside today.",
  "line_cn": "纽约的一天：延时光河、踩着十六分音符的网格，1899 年和今天并排。",
  "uses": [

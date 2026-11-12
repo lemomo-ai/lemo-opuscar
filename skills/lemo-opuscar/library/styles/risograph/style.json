@@ -1,11 +1,15 @@
 {
  "slug": "risograph",
- "num": "12",
+ "num": "28",
  "en": "Risograph Print",
- "cn": "Risograph 孔版印刷",
+ "cn": "孔版印刷",
+ "aka": [
+  "Risograph 孔版印刷"
+ ],
  "category_en": "Print & Printmaking",
- "category_cn": "印刷与版画",
+ "category_cn": "印刷版画",
  "film": "Sunday Ride",
+ "film_cn": "周日骑行",
  "line": "A Sunday-morning bike ride through the city — bakery, park, riverside — each stop adding an ink until three misregistered plates overprint.",
  "line_cn": "周日早晨骑车穿过城市：面包店、公园、河边，每到一处加一版油墨，最后三版套印。",
  "uses": [

@@ -1,11 +1,12 @@
 {
  "slug": "countdown",
- "num": "65",
+ "num": "03",
  "en": "Live Countdown Split-screen",
  "cn": "实时倒计时分屏",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "Counting Itself Down",
+ "film_cn": "自己倒数",
  "line": "The last minute of the Artemis II launch, uncut: one cell opens to nine, and they merge into one at ignition.",
  "line_cn": "阿尔忒弥斯二号发射的最后一分钟，一秒不剪：格子从 1 开到 9，点火合成 1。",
  "uses": [
@@ -13,6 +14,6 @@
   "Countdowns",
   "Live events"
  ],
- "frame_sec": 28.5,
+ "frame_sec": 8.93,
  "dur": 59.5
 }

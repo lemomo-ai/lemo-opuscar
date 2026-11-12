@@ -1,0 +1,376 @@
+# The rules in LICENSE, file by file, in the REUSE format (https://reuse.software/spec/).
+# Check with `reuse lint`. When a file matches several tables, the last one wins: our code, then the docs,
+# then the films and their pictures, then the pictures that show third-party material or Clawd, then the two
+# contributed styles, then third-party material.
+# Every table overrides what a file says about itself, so this file and LICENSE are the only rules.
+version = 1
+SPDX-PackageName = "Lemo-Opuscar"
+SPDX-PackageSupplier = "Lemomo (LemoLab)"
+SPDX-PackageDownloadLocation = "https://github.com/lemomo-ai/lemo-opuscar"
+
+# 1. Code: everything of ours that no later table names (code, data, configuration, CREDITS, small assets)
+[[annotations]]
+path = "**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "MIT"
+
+# 2. Docs: every Markdown file, and the image-generation prompts
+[[annotations]]
+path = ["**.md", "styles/*/demo/prompts/**", "styles/manga-panels/demo/tools/style_suffix.txt",
+        "styles/comic-history/demo/tools/sheets.json"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-NC-4.0"
+
+# 3. The demo films' subtitles, posters and stills, and the pictures made from the films for the README and the site
+[[annotations]]
+path = ["styles/*/*.srt", "styles/*/poster.jpg", "styles/*/demo/stills/**", "styleboard/img/**",
+        "docs/**.jpg", "docs/**.jpeg", "docs/**.png", "docs/**.webp", "docs/**.gif", "docs/**.avif", "docs/**.svg"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# 3b. Pictures from films that are made from third-party material: footage, photographs, scans, satellite imagery, map,
+# elevation and other data, 3D models and textures (each style's poster, stills, README cards and gallery card; a table
+# for the whole style when its film uses such material, for one file when only that still does). The third-party
+# material in them keeps its own licence; the rest is ours, under CC BY 4.0. Sources and the changes made: each demo's
+# CREDITS. Public-domain and CC0 sources need no copyright line; they are named in the comment. Lighting-only HDRIs and
+# the type are not counted. The tiny film frames inside the station and cover pictures (docs/readme/) are not listed.
+# Caption News: Wikimedia Commons footage and photos; also public-domain USDA, USGS footage, photos and report page
+[[annotations]]
+path = ["styles/caption-news/poster.jpg", "styles/caption-news/demo/stills/**", "docs/readme/cards/caption-news-*", "styleboard/img/caption-news_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Altena TV (A-TV)", "Phonon.b", "Martin J. Calabrese", "Midsummer Bees",
+                          "vastateparksstaff (Virginia State Parks)"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC-BY-3.0 AND CC-BY-2.0 AND LicenseRef-PublicDomain"
+
+# Sports Telestrator: beIN SPORTS Türkiye match footage, one photo on Wikimedia Commons; the stadium photo is CC0 (Olos88)
+[[annotations]]
+path = ["styles/telestrator/poster.jpg", "styles/telestrator/demo/stills/**", "docs/readme/cards/telestrator-*", "styleboard/img/telestrator_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "beIN SPORTS Türkiye", "Thomas Rodenbücher"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC-BY-3.0 AND CC-BY-2.0 AND CC0-1.0"
+
+# Engineering Briefing Board: photos on Wikimedia Commons; also CC0 (Tvabutzku1234) and public domain (Estormiz,
+# Carol M. Highsmith / Library of Congress)
+[[annotations]]
+path = ["styles/briefing-board/poster.jpg", "styles/briefing-board/demo/stills/**", "docs/readme/cards/briefing-board-*", "styleboard/img/briefing-board_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "BAW – Bundesanstalt für Wasserbau", "Russ (\"Bear mountain bridge west II\")"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC-BY-2.0 AND CC0-1.0 AND LicenseRef-PublicDomain"
+
+# City Symphony: time-lapse and city footage on Wikimedia Commons and Flickr; also public-domain archive film, footage
+# and photos (Edison / Library of Congress, U.S. Marine Corps, NASA, Carol M. Highsmith)
+[[annotations]]
+path = ["styles/city-symphony/poster.jpg", "styles/city-symphony/demo/stills/**", "docs/readme/cards/city-symphony-*", "styleboard/img/city-symphony_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Scott Herder", "David Schwab", "Longfellow Films", "Joe Cavallini", "350.org",
+                          "Branded Cities", "Steven Kelley", "Jason Eppink", "Sunny Ripert"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC-BY-3.0 AND CC-BY-2.0 AND LicenseRef-PublicDomain"
+
+# 3D Map Explainer: Sentinel-2 cloudless imagery; shipping lanes from OpenStreetMap (a produced work of ODbL data);
+# relief from the AWS Terrain Tiles (Mapzen / Tilezen; for this region SRTM, GMTED and ETOPO1, public domain, and GEBCO)
+[[annotations]]
+path = ["styles/map-explainer/poster.jpg", "styles/map-explainer/demo/stills/**", "docs/readme/cards/map-explainer-*", "styleboard/img/map-explainer_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "EOX IT Services GmbH (Sentinel-2 cloudless 2016, https://s2maps.eu)",
+                          "Contains modified Copernicus Sentinel data (2016, 2017)",
+                          "OpenStreetMap contributors (shipping lanes)", "Mapzen / Tilezen terrain tiles (AWS Open Data)"]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-PublicDomain"
+
+# Projection on White Model: the model is built from 3DBAG (CC BY 4.0), with BAG and BGT data (Kadaster, PDOK; CC0)
+[[annotations]]
+path = ["styles/white-model/poster.jpg", "styles/white-model/demo/stills/**", "docs/readme/cards/white-model-*", "styleboard/img/white-model_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "3DGI and the 3D geoinformation research group, TU Delft (3DBAG)"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC0-1.0"
+
+# Exploded Teardown: the keyboard is rendered from the Corne keyboard's design files (CC BY 4.0 / MIT, foostan)
+[[annotations]]
+path = ["styles/teardown/poster.jpg", "styles/teardown/demo/stills/**", "docs/readme/cards/teardown-*", "styleboard/img/teardown_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "foostan (Corne keyboard, github.com/foostan/crkbd)"]
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# Data Physicalization: the spirals are built from IRENA data as processed by Our World in Data (CC BY 4.0); the dial is
+# the Poly Haven walnut veneer texture (CC0)
+[[annotations]]
+path = ["styles/data-physical/poster.jpg", "styles/data-physical/demo/stills/**", "docs/readme/cards/data-physical-*", "styleboard/img/data-physical_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "IRENA (2026), processed by Our World in Data"]
+SPDX-License-Identifier = "CC-BY-4.0 AND CC0-1.0"
+
+# Flow-field Wind Lines: the CMA typhoon track via IBTrACS (LicenseRef-IBTrACS), ETOPO1 relief (NOAA) and Natural Earth
+# lines (public domain), island positions from Wikidata (CC0)
+[[annotations]]
+path = ["styles/flow-field/poster.jpg", "styles/flow-field/demo/stills/**", "docs/readme/cards/flow-field-*", "styleboard/img/flow-field_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "China Meteorological Administration (best track), distributed by NOAA NCEI in IBTrACS v04r01"]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-IBTrACS AND LicenseRef-PublicDomain AND CC0-1.0"
+
+# Public-domain archive film, photos, scans, imagery and data: 1920s Newsreel (Ford Motor Company Film Collection, U.S.
+# National Archives; pre-1931 print), Live Countdown Split-screen (NASA), Visual Investigation (Universal Newsreel, U.S.
+# Navy, FBI, USGS), Archive Light Table (Library of Congress), Satellite Briefing (Landsat, USGS / NASA; NASA Blue Marble),
+# LiDAR Survey (USGS 3DEP, USDA NAIP), Vintage Collage (U.S. government, Harris & Ewing, Pearson Scott Foresman), Data
+# Storytelling (NASA GISTEMP), and the Natural Earth maps of Comic History Cartoon, Broadcast News Package and Watercolor Brush
+[[annotations]]
+path = ["styles/newsreel/poster.jpg", "styles/newsreel/demo/stills/**", "docs/readme/cards/newsreel-*", "styleboard/img/newsreel_*",
+        "styles/countdown/poster.jpg", "styles/countdown/demo/stills/**", "docs/readme/cards/countdown-*", "styleboard/img/countdown_*",
+        "styles/visual-investigation/poster.jpg", "styles/visual-investigation/demo/stills/**", "docs/readme/cards/visual-investigation-*", "styleboard/img/visual-investigation_*",
+        "styles/archive-lighttable/poster.jpg", "styles/archive-lighttable/demo/stills/**", "docs/readme/cards/archive-lighttable-*", "styleboard/img/archive-lighttable_*",
+        "styles/satellite-briefing/poster.jpg", "styles/satellite-briefing/demo/stills/**", "docs/readme/cards/satellite-briefing-*", "styleboard/img/satellite-briefing_*",
+        "styles/lidar-survey/poster.jpg", "styles/lidar-survey/demo/stills/**", "docs/readme/cards/lidar-survey-*", "styleboard/img/lidar-survey_*",
+        "styles/vintage-collage/poster.jpg", "styles/vintage-collage/demo/stills/**", "docs/readme/cards/vintage-collage-*", "styleboard/img/vintage-collage_*",
+        "styles/dataviz/poster.jpg", "styles/dataviz/demo/stills/**", "docs/readme/cards/dataviz-*", "styleboard/img/dataviz_*",
+        "styles/comic-history/poster.jpg", "styles/comic-history/demo/stills/**", "docs/readme/cards/comic-history-*", "styleboard/img/comic-history_*",
+        "styles/news-package/poster.jpg", "styles/news-package/demo/stills/**", "docs/readme/cards/news-package-*", "styleboard/img/news-package_*",
+        "styles/watercolor/poster.jpg", "styles/watercolor/demo/stills/**", "docs/readme/cards/watercolor-*", "styleboard/img/watercolor_*"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-PublicDomain"
+
+# Public-domain and CC0 material together: Constructivist Montage ("Empires of Steel" and Lewis Hine via the U.S. National
+# Archives, public domain; Hine prints from the Met, CC0), Double Exposure (Unsplash photos on Wikimedia Commons and PhyloPic
+# silhouettes, CC0; one PhyloPic silhouette under the Public Domain Mark)
+[[annotations]]
+path = ["styles/kino-montage/poster.jpg", "styles/kino-montage/demo/stills/**", "docs/readme/cards/kino-montage-*", "styleboard/img/kino-montage_*",
+        "styles/double-exposure/poster.jpg", "styles/double-exposure/demo/stills/**", "docs/readme/cards/double-exposure-*", "styleboard/img/double-exposure_*"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-PublicDomain AND CC0-1.0"
+
+# CC0 photos, scans, data, models and textures: Under the Microscope (whole-slide scan, PathAI, via the OpenSlide test data),
+# Pen Plotter (NASADEM heights, NASA JPL), Brick Toy and Paper Pop-up Book (Poly Haven models and textures), Woodcut
+# Print (the Poly Haven walnut veneer at 7-9 s; its filter-test still is a photo by ThuyHaBich, Pixabay via Wikimedia
+# Commons), and one single still: 1920s Silent Film's redraw sample (a frame of a video by Raysonho, Wikimedia Commons),
+# which is not in the film
+[[annotations]]
+path = ["styles/microscope/poster.jpg", "styles/microscope/demo/stills/**", "docs/readme/cards/microscope-*", "styleboard/img/microscope_*",
+        "styles/pen-plotter/poster.jpg", "styles/pen-plotter/demo/stills/**", "docs/readme/cards/pen-plotter-*", "styleboard/img/pen-plotter_*",
+        "styles/brick-toy/poster.jpg", "styles/brick-toy/demo/stills/**", "docs/readme/cards/brick-toy-*", "styleboard/img/brick-toy_*",
+        "styles/paper-popup/poster.jpg", "styles/paper-popup/demo/stills/**", "docs/readme/cards/paper-popup-*", "styleboard/img/paper-popup_*",
+        "styles/woodcut/poster.jpg", "styles/woodcut/demo/stills/**", "docs/readme/cards/woodcut-*", "styleboard/img/woodcut_*",
+        "styles/silent-film/demo/stills/frame_redraw.jpg"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-4.0 AND CC0-1.0"
+
+# 3c. Pictures in which Clawd appears (Anthropic's character; LICENSE, and LICENSES/LicenseRef-Clawd.txt): OPUSCAR 98,
+# the thank-you films for 300, 800, 3,000 and 6,000 stars (not the 2,000-star film, which has no Clawd), Mascot Screencast
+[[annotations]]
+path = ["docs/readme/opuscar98-*", "styleboard/img/feature_opuscar98.jpg", "styleboard/img/opuscar98/**",
+        "docs/thanks/thanks-300.jpg", "docs/thanks/thanks-800.jpg", "docs/thanks/thanks-3000.jpg", "docs/thanks/thanks-6000.jpg",
+        "styleboard/img/thanks/stars300.jpg", "styleboard/img/thanks/stars800.jpg", "styleboard/img/thanks/stars3000.jpg", "styleboard/img/thanks/stars6000.jpg",
+        "docs/readme/thanks/stars300-*", "docs/readme/thanks/stars800-*", "docs/readme/thanks/stars3000-*", "docs/readme/thanks/stars6000-*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Anthropic (Clawd)"]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-Clawd"
+
+# Mascot Screencast: Clawd, and Anthropic's Claude app interface and the names Claude and Claude Code, redrawn
+# (LicenseRef-ThirdPartyMarks)
+[[annotations]]
+path = ["styles/living-screencast/poster.jpg", "styles/living-screencast/demo/stills/**", "docs/readme/cards/living-screencast-*", "styleboard/img/living-screencast_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Anthropic (Clawd; the Claude app interface, Claude and Claude Code)"]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-Clawd AND LicenseRef-ThirdPartyMarks"
+
+# Mascot Screencast's drawing code: clawd.js draws Clawd; ui.js redraws the Claude app and the terminal's logo (on
+# Clawd's pixel grid); index.html styles the redrawn app. film.js and main.js only move what these draw, and stay MIT.
+[[annotations]]
+path = "styles/living-screencast/demo/clawd.js"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Anthropic (Clawd)"]
+SPDX-License-Identifier = "MIT AND LicenseRef-Clawd"
+
+[[annotations]]
+path = "styles/living-screencast/demo/ui.js"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Anthropic (Clawd; the Claude app interface, Claude and Claude Code)"]
+SPDX-License-Identifier = "MIT AND LicenseRef-Clawd AND LicenseRef-ThirdPartyMarks"
+
+[[annotations]]
+path = "styles/living-screencast/demo/index.html"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Anthropic (the Claude app interface, Claude and Claude Code)"]
+SPDX-License-Identifier = "MIT AND LicenseRef-ThirdPartyMarks"
+
+# 4. The two styles contributed from outside, under the same terms with their authors' permission
+[[annotations]]
+path = "styles/memphis-diorama/**"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 EianLu", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "styles/memphis-diorama/**.md"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 EianLu", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-NC-4.0"
+
+[[annotations]]
+path = ["styles/memphis-diorama/*.srt", "styles/memphis-diorama/poster.jpg", "styles/memphis-diorama/demo/stills/**",
+        "docs/readme/cards/memphis-diorama-*", "styleboard/img/memphis-diorama_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 EianLu", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "styles/crayon-world/**"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 2nd1st", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "styles/crayon-world/**.md"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 2nd1st", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-NC-4.0"
+
+[[annotations]]
+path = ["styles/crayon-world/*.srt", "styles/crayon-world/poster.jpg", "styles/crayon-world/demo/stills/**",
+        "docs/readme/cards/crayon-world-*", "styleboard/img/crayon-world_*"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 2nd1st", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# 5. Third-party material: it keeps its own licence (sources in each demo's CREDITS)
+
+# Fonts: the licence texts kept next to fonts that are downloaded at build time
+[[annotations]]
+path = ["**/*OFL*"]
+precedence = "override"
+SPDX-FileCopyrightText = "The authors of the fonts named in each file"
+SPDX-License-Identifier = "OFL-1.1"
+
+# Fonts: the subsets in core/fonts (copyright lines from the fonts' name tables, see core/fonts/OFL.md)
+[[annotations]]
+path = ["core/fonts/*.woff2", "core/fonts/OFL.md"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2018 The ZCOOL KuaiLe Project Authors", "2016 The Fredoka Project Authors",
+                          "2011 Juan Montoreano", "2007 Igino Marini"]
+SPDX-License-Identifier = "OFL-1.1"
+
+# Fonts: the stroke data of a single-line font, and handwriting skeletons computed from the outlines of OFL fonts
+[[annotations]]
+path = "styles/whiteboard/demo/fonts/EMSTech.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["Sheldon B. Michaels (EMS Tech)", "Kimberly Geswein (Architects Daughter)", "Windell H. Oskay (SVG conversion)"]
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "styles/colored-pencil/demo/glyphs.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["The LXGW WenKai Project Authors", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "styles/ipad-sketch/demo/glyphs.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["The Caveat Project Authors", "The Long Cang Project Authors", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "styles/marker-paper/demo/glyphs.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["Indian Type Foundry (Kalam)", "The LXGW Marker Gothic Project Authors", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "styles/sketchnote/demo/glyphs.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["Indian Type Foundry (Kalam)", "Patrick Wagesreiter (Patrick Hand)", "The ZCOOL KuaiLe Project Authors", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "OFL-1.1"
+
+# Code libraries bundled with two demos (their licence files sit next to them)
+[[annotations]]
+path = ["styles/spy-titles/demo/vendor/opentype.min.js", "styles/spy-titles/demo/vendor/opentype-LICENSE.txt"]
+precedence = "override"
+SPDX-FileCopyrightText = "2020 Frederik De Bleser"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "styles/watercolor/demo/vendor/topojson-client.min.cjs"
+precedence = "override"
+SPDX-FileCopyrightText = "2012-2019 Michael Bostock"
+SPDX-License-Identifier = "ISC"
+
+# Poly Haven models and textures (CC0, see core/assets/polyhaven/SOURCES.md)
+[[annotations]]
+path = ["core/assets/polyhaven/**.gltf", "core/assets/polyhaven/**.bin", "core/assets/polyhaven/**.jpg"]
+precedence = "override"
+SPDX-FileCopyrightText = "Poly Haven (https://polyhaven.com)"
+SPDX-License-Identifier = "CC0-1.0"
+
+# Data in the public domain, copied or converted
+[[annotations]]
+path = "styles/archive-lighttable/demo/sources/*.xml"
+precedence = "override"
+SPDX-FileCopyrightText = "Library of Congress (catalogue records)"
+SPDX-License-Identifier = "LicenseRef-PublicDomain"
+
+[[annotations]]
+path = ["styles/dataviz/demo/data/GLB.Ts+dSST.csv", "styles/dataviz/demo/data/jja.json"]
+precedence = "override"
+SPDX-FileCopyrightText = "GISTEMP Team, NASA Goddard Institute for Space Studies"
+SPDX-License-Identifier = "LicenseRef-PublicDomain"
+
+[[annotations]]
+path = "styles/caption-news/demo/assets/states.json"
+precedence = "override"
+SPDX-FileCopyrightText = "Natural Earth (https://www.naturalearthdata.com)"
+SPDX-License-Identifier = "LicenseRef-PublicDomain"
+
+# Natural Earth outlines, cut from the world-atlas 2.0.2 TopoJSON (ISC; its licence text: styles/watercolor/demo/vendor/LICENSE-world-atlas)
+[[annotations]]
+path = ["styles/comic-history/demo/europe.json", "styles/news-package/demo/assets/europe.json", "styles/watercolor/demo/aus.js"]
+precedence = "override"
+SPDX-FileCopyrightText = ["Natural Earth (https://www.naturalearthdata.com)", "2013-2019 Michael Bostock (world-atlas)"]
+SPDX-License-Identifier = "LicenseRef-PublicDomain AND ISC"
+
+# shorelines we traced on public-domain Landsat imagery, with Natural Earth lake and river lines
+[[annotations]]
+path = "styles/satellite-briefing/demo/assets/vectors.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "Natural Earth (https://www.naturalearthdata.com)"]
+SPDX-License-Identifier = "MIT AND LicenseRef-PublicDomain"
+
+# A typhoon track from the China Meteorological Administration, as NOAA distributes it in IBTrACS (not public domain);
+# track.js adds our code around the same records
+[[annotations]]
+path = "styles/flow-field/demo/data/yagi_cma_track.csv"
+precedence = "override"
+SPDX-FileCopyrightText = "China Meteorological Administration (best track), distributed by NOAA NCEI in IBTrACS v04r01"
+SPDX-License-Identifier = "LicenseRef-IBTrACS"
+
+[[annotations]]
+path = "styles/flow-field/demo/track.js"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "China Meteorological Administration (best track), distributed by NOAA NCEI in IBTrACS v04r01"]
+SPDX-License-Identifier = "MIT AND LicenseRef-IBTrACS"
+
+# Data under CC BY 4.0
+[[annotations]]
+path = "styles/data-physical/demo/data/**"
+precedence = "override"
+SPDX-FileCopyrightText = "IRENA (2026), processed by Our World in Data"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "styles/teardown/demo/data/pcb.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["foostan (Corne keyboard, github.com/foostan/crkbd)", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "styles/white-model/demo/data/model.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["3DGI and the 3D geoinformation research group, TU Delft (3DBAG)", "Kadaster (BAG, BGT)", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# Data under the Open Database License: the shipping-lane coordinates in the page's IN array, from OpenStreetMap
+[[annotations]]
+path = "styles/map-explainer/demo/index.html"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Lemomo (LemoLab)", "OpenStreetMap contributors (the IN array)"]
+SPDX-License-Identifier = "MIT AND ODbL-1.0"

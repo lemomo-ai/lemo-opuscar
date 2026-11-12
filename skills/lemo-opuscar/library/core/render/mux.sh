@@ -5,6 +5,7 @@
 #   inter-sample peaks loudnorm can't see. If the encoded film still peaks above −1 dBTP, the audio alone is encoded again with the limiter lower (the picture is copied, up to 3 times).
 #   Finally prints the measured I / LRA / true peak and warns if off target (loudness outside ±1 LU or peak above −1 dB)
 # (when the mix itself clips or has extremely high peaks, loudnorm's dynamic mode misses both targets; measured −20 LUFS / +5 dBTP)
+# A mix louder than 0 LUFS (badly clipped; loudnorm refuses it) is turned down to about −14 LUFS before normalising, with a warning.
 # Any failed ffmpeg step exits non-zero and leaves no half-written file; the output path is printed only if the finished file exists and is non-empty.
 #   (the film is written to a temporary file beside the output and renamed when complete, so Ctrl-C or a failed re-mux never touches an earlier good film)
 # Silent / extremely quiet audio (below −70 LUFS, which loudnorm can't measure): only when it "decoded successfully and measured as truly silent" is loudness normalisation skipped with a warning; the film is still made.
@@ -26,6 +27,11 @@ V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 case "$FPS" in ''|*[!0-9.]*) die "fps must be a number, got '$FPS'";; esac
 case "$GR" in ''|*[!0-9.]*) die "grain must be a number (0 = none), got '$GR'";; esac
 case "${LEMO_COLOR:-}" in ''|bt709) ;; *) die "LEMO_COLOR must be bt709 or unset, got '$LEMO_COLOR'";; esac
+# ffmpeg 7 or newer, as TECHNIQUE.md asks (older ones misreport the audio's length or reject the limiter's options with cryptic errors).
+# Only the newest ffmpeg is supported: an older one stops here with a clear message. A version that isn't a number (a git build) is let through
+command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null || die "ffmpeg and ffprobe are needed (ffmpeg 7 or newer) and aren't on PATH"
+FFV=$(ffmpeg -version 2>/dev/null | sed -n '1s/^ffmpeg version n\{0,1\}\([0-9][0-9]*\)\..*/\1/p')
+[ -z "$FFV" ] || [ "$FFV" -ge 7 ] || die "needs ffmpeg 7 or newer, found $(ffmpeg -version 2>/dev/null | sed -n '1s/^ffmpeg version \([^ ]*\).*/\1/p'): update ffmpeg (Ubuntu 24.04 ships 6.1; use a static build such as https://johnvansickle.com/ffmpeg/)"
 
 # Check whether the audio length declared in the WAV header exceeds the file (for a WAV truncated on a sample boundary, ffmpeg itself reports no error). Reads the length byte by byte, independent of the machine's byte order
 wav_truncated() {   # returns 0 = the header declares more than the file holds; a placeholder length (0 or 0xFFFFFFFF) is treated as "length unknown", not truncated
@@ -66,8 +72,20 @@ NORM=1
 for k in input_i input_tp input_lra input_thresh target_offset; do
   case "$(g $k)" in ''|*inf*|*nan*) NORM=0;; esac
 done
+# loudnorm takes a measured loudness of 0 LUFS at most: a mix louder than that (badly clipped) is turned down to about -14 LUFS first and measured again.
+# Only such a mix gets the extra gain; every other mix goes through exactly the same filters as before
+PRE=""
+if [ "$NORM" = 1 ] && awk -v i="$(g input_i)" 'BEGIN { exit !(i + 0 > 0) }'; then
+  PG=$(awk -v i="$(g input_i)" 'BEGIN { printf "%.2f", i + 14 }'); PRE="volume=-${PG}dB,"
+  echo "mux.sh: warning: the mix measures $(g input_i) LUFS, louder than the 0 LUFS loudnorm accepts (it is almost certainly clipping); turning it down $PG dB before normalising. Lower the mix and mux again" >&2
+  M=$(ffmpeg -hide_banner -nostats -i "$A" -af "${PRE}loudnorm=I=-14:TP=-1.2:LRA=11:print_format=json" -f null - 2>&1) || die "ffmpeg cannot measure the turned-down audio '$A': $(echo "$M" | tail -2)"
+  J=$(echo "$M" | sed -n '/{/,/}/p')
+  for k in input_i input_tp input_lra input_thresh target_offset; do
+    case "$(g $k)" in ''|*inf*|*nan*) die "could not measure '$A' even turned down $PG dB";; esac
+  done
+fi
 if [ "$NORM" = 1 ]; then
-  LN="loudnorm=I=-14:TP=-1.2:LRA=11:measured_I=$(g input_i):measured_TP=$(g input_tp):measured_LRA=$(g input_lra):measured_thresh=$(g input_thresh):offset=$(g target_offset):linear=true"
+  LN="${PRE}loudnorm=I=-14:TP=-1.2:LRA=11:measured_I=$(g input_i):measured_TP=$(g input_tp):measured_LRA=$(g input_lra):measured_thresh=$(g input_thresh):offset=$(g target_offset):linear=true"
 else
   LN="anull"
   echo "mux.sh: warning: the audio is silent or quieter than -70 LUFS, so loudness normalisation was skipped" >&2

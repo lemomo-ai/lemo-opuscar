@@ -1,11 +1,12 @@
 {
  "slug": "stained-glass",
- "num": "20",
+ "num": "26",
  "en": "Stained Glass",
  "cn": "彩色玻璃窗",
- "category_en": "Graphic & Type",
- "category_cn": "图形与排版",
+ "category_en": "Traditional Crafts",
+ "category_cn": "传统工艺",
  "film": "The Dragon of the East Window",
+ "film_cn": "东窗之龙",
  "line": "Sunlight crosses a cathedral window from dawn to dusk, waking each pane of a knight-and-dragon tale.",
  "line_cn": "阳光从清晨移到黄昏，照到哪一格花窗，哪一格的故事就动起来。",
  "uses": [

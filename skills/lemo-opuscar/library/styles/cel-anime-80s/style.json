@@ -1,11 +1,12 @@
 {
  "slug": "cel-anime-80s",
- "num": "27",
+ "num": "53",
  "en": "80s Cel Anime",
  "cn": "80 年代赛璐璐动画",
- "category_en": "Cartoon & Anime",
- "category_cn": "卡通与动画",
+ "category_en": "Cartoons",
+ "category_cn": "卡通动画",
  "film": "City Lights, 1987",
+ "film_cn": "城市灯火，1987",
  "line": "A courier girl rides through a rain-soaked neon city to deliver a tape before the dawn launch.",
  "line_cn": "快递少女骑车穿过雨后霓虹都市，赶在黎明发射前送到一盘磁带。",
  "uses": [
@@ -13,6 +14,6 @@
   "Game trailers",
   "Nostalgia"
  ],
- "frame_sec": 17.7,
+ "frame_sec": 13.2,
  "dur": 59.0
 }

@@ -1,0 +1,19 @@
+{
+ "slug": "scratch-film",
+ "num": "65",
+ "en": "Scratch Film",
+ "cn": "胶片直刻",
+ "category_en": "Film & Tape",
+ "category_cn": "胶片录像",
+ "film": "The Night Climb",
+ "film_cn": "夜里往上游",
+ "line": "A finger-long lanternfish climbs half a kilometre in the dark, hides its shadow with its own lights, and turns out to be one of countless animals rising every night.",
+ "line_cn": "一条手指长的灯笼鱼摸黑往上游半公里，用自己的光藏起影子；镜头拉远，原来每晚有无数动物和它一起升起。",
+ "uses": [
+  "Things that happen in the dark",
+  "One mark to a whole system",
+  "Small adventures told in light and shadow"
+ ],
+ "frame_sec": 39.2,
+ "dur": 52.0
+}

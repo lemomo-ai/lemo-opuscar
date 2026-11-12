@@ -70,7 +70,7 @@ Sources are greyscale; red is the only colour and it only ever points: circles, 
 3. **Harmony**: a quiet pizzicato ostinato in eighths (Dm – B♭ – Gm – A) under the slow sections; tremolo minor-second clusters for tension; slow sustained chords for the verdict columns; a resolving D minor add9 with vibraphone for the evidence map.
 4. **Foley** (procedural): paper for documents, a shutter for photos, Morse "dits" and keystrokes for telegrams, teletype chatter, a rewind sweep, pencil scratches for plans, one deep thump for the moment of impact — then near-silence.
 5. **Original sound** (archival commentary, radio, recorded sound): band-passed 180 Hz–5.5 kHz with sparse crackle, shown as a waveform with a red play-line and word-by-word lighting; music ducks −12 dB under it. Original sound and score alternate; never both loud.
-6. **Voice**: calm and flat (ours: Kokoro `am_michael`); music ducks about −9 dB under it; −14 LUFS, true peak ≤ −1.2 dB.
+6. **Voice**: calm and flat (ours: Kokoro `am_michael`); music ducks about −9 dB under it; −14 LUFS, true peak ≤ −1 dBTP.
 
 ## 8. Native moves (and how to code them)
 

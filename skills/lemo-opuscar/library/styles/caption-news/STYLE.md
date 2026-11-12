@@ -75,7 +75,7 @@ Vertical 9:16 is a different layout, not a crop: put the caption under a 1080×1
 | Foley | every graphic action has a sound: chunk slam (click + thump), counter rattle (a tick every 45 ms), whoosh into each card, highlighter squeak, camera shutter on the freeze, stamp thump on a big number, pops for labels, ticks as map states fill, a riser into the map push | |
 | Natural sound | the subject's own location sound (here a swarm), J-cut 0.3 s before the freeze, bed under the ending | not ducked below audibility |
 
-Master −14 LUFS, true peak −1.2 dB (`core/render/mux.sh`).
+Master −14 LUFS, true peak ≤ −1 dBTP (`core/render/mux.sh`).
 
 ## 8. Native moves
 

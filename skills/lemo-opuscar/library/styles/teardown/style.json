@@ -1,11 +1,12 @@
 {
  "slug": "teardown",
- "num": "60",
+ "num": "46",
  "en": "Exploded Teardown",
  "cn": "产品拆解",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
  "film": "21 Keys, Opened",
+ "film_cn": "二十一键",
  "line": "Half an open-source keyboard comes apart in one orbit, down to the chip, then closes with its real dimensions.",
  "line_cn": "开源键盘的一半在一次环绕中逐层拆开，看到主控再合拢，标上真实尺寸。",
  "uses": [

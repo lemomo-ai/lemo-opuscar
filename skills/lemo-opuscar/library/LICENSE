@@ -1,21 +1,137 @@
-MIT License
+Lemo-Opuscar
+Copyright (c) 2026 Lemomo (LemoLab)
+https://github.com/lemomo-ai/lemo-opuscar
 
-Copyright (c) 2026 LemoLab
+This file says which licence applies to what. This edition carries the texts
+of the licences its files use (MIT, CC BY-NC 4.0, OFL 1.1) in LICENSES/; the
+full texts of all the licences named here are at
+https://github.com/lemomo-ai/lemo-opuscar/tree/main/LICENSES.
+REUSE.toml states the same rules file by file, in the machine-readable REUSE
+format (https://reuse.software).
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+WHICH LICENCE APPLIES
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Paths are relative to the library's root folder (in the plugin directory
+edition: skills/lemo-opuscar/library/). The first rule that matches a file
+decides.
+
+1. Third-party material keeps its own licence: fonts and their licence texts,
+   music, sound recordings and sample libraries, models and textures, data,
+   maps, footage, photographs, and the code libraries bundled with some demos.
+   Each demo's CREDITS names its third-party assets and their licences;
+   REUSE.toml names every third-party file kept in this repository and its
+   licence.
+
+2. Docs: Creative Commons Attribution-NonCommercial 4.0 International
+   (CC BY-NC 4.0, LICENSES/CC-BY-NC-4.0.txt).
+   - Every Markdown file (*.md): the guides, each style's STYLE.md and DEMO.md,
+     the READMEs, and the Markdown of the Claude Code skill.
+   - The image-generation prompts: everything under styles/*/demo/prompts/,
+     styles/manga-panels/demo/tools/style_suffix.txt and
+     styles/comic-history/demo/tools/sheets.json.
+
+3. Demo films, and pictures made from them: Creative Commons Attribution 4.0
+   International (CC BY 4.0, LICENSES/CC-BY-4.0.txt).
+   - The demo films and the other films of this project, published in the
+     repository's Releases and on its gallery site, and their subtitles
+     (styles/*/*.srt).
+   - Their posters and stills (styles/*/poster.jpg, styles/*/demo/stills/).
+   - The pictures under docs/ and styleboard/img/, made from the films for the
+     README and the gallery site.
+   Third-party material in the films and in these pictures (footage,
+   photographs, satellite imagery, music, maps and model data) keeps its own
+   licence: each demo film's CREDITS (styles/<slug>/demo/CREDITS) names it, and
+   REUSE.toml names it for the posters, stills and cards made from such
+   material.
+
+4. Code: MIT License (LICENSES/MIT.txt). Everything else that is ours: the code
+   in core/, tools/, styleboard/ and plugin/ and each demo's code, with the
+   data, configuration, CREDITS and small assets they use. Where the MIT text
+   speaks of "this software and associated documentation files (the
+   "Software")", it means the material under this rule only, not the docs of
+   rule 2.
+
+Two styles were contributed from outside: Memphis Diorama by EianLu
+(styles/memphis-diorama/) and Crayon World 3D by 2nd1st (styles/crayon-world/).
+They are included under these terms with their authors' permission, which
+also covers the commercial licence below: Lemomo (LemoLab) gives it for their
+docs as for the rest.
+
+Six voice tracks are excluded from rule 3 and from any licence here: the
+narration in the demo films of Chalkboard, Circuit Board, Tabletop App
+Flythrough, Isometric People Scene and Scratchboard Long Take (made with
+Microsoft Edge TTS, an online service) and of Broadcast News Package (made with
+Doubao TTS, under Volcengine's terms). Don't extract them or reuse them in
+other work. Each of these six films may still be shared whole, as published,
+under CC BY 4.0 for everything but its narration.
+
+Clawd is excluded from rules 3 and 4 and from any licence here. Clawd, the small
+orange character, is Anthropic's: its design and its name belong to Anthropic.
+It appears, for example, in OPUSCAR 98, in the thank-you films for 300, 800,
+3,000 and 6,000 stars and in the demo film of Mascot Screencast, in pictures
+made from them, and in the Mascot Screencast code that draws it; this paragraph
+applies as well to any other film, picture or code of this project in which it
+appears. REUSE.toml marks such files kept in this repository with
+LicenseRef-Clawd. No licence is given here for Clawd, and none for any
+trademark. These films and pictures may still be shared whole, as published,
+under CC BY 4.0, and the code used under MIT, for everything but Clawd.
+
+Third-party product interfaces, names, logos and trademarks that appear in the
+films, pictures and code (for example Anthropic's Claude app interface and the
+names Claude and Claude Code in Mascot Screencast) belong to their owners and
+are not licensed here. This applies as well where only a name appears (for
+example GPT, Claude and Gemini in Rhythm Game Show, or Google and Meta in
+Broadcast News Package). REUSE.toml marks, with LicenseRef-ThirdPartyMarks, the
+pictures and code that redraw such an interface or logo. The films and pictures
+may still be shared whole, as published, under CC BY 4.0, and the code used
+under MIT, for everything but those.
+
+
+FILMS YOU MAKE
+
+Films you make with the library are yours, commercial films included, and need
+no credit; third-party material you use in them (for example samples under
+CC BY) keeps its own terms.
+
+
+ADDITIONAL PERMISSION FOR THE DOCS
+
+In addition to CC BY-NC 4.0, Lemomo (LemoLab) grants a worldwide, royalty-free,
+non-exclusive, irrevocable permission to you and the people working with you on
+a film (staff, contractors, the client) to read, follow, copy and adapt the docs
+to make your own films (commercial and client films included), and to include
+them, or versions you adapted, in the project files you deliver for that film.
+A style you change and keep as your own to make your films (MY-STYLES.md) is
+covered. This permission does not cover sharing the docs or adapted versions
+with others beyond those people and those project files, or selling them:
+CC BY-NC 4.0 and the commercial licence below govern those.
+
+
+HOW TO CREDIT
+
+"Lemo-Opuscar by Lemomo (LemoLab)", with a link to
+https://github.com/lemomo-ai/lemo-opuscar, the name of the licence with a link
+to it (CC BY-NC 4.0, https://creativecommons.org/licenses/by-nc/4.0/, for the
+docs; CC BY 4.0, https://creativecommons.org/licenses/by/4.0/, for the films
+and pictures), and say if you changed it.
+
+For the two contributed styles, name their author too: "Memphis Diorama by
+EianLu, in Lemo-Opuscar by Lemomo (LemoLab)" and "Crayon World 3D by 2nd1st, in
+Lemo-Opuscar by Lemomo (LemoLab)".
+
+Third-party material is credited as its CREDITS says.
+
+
+COMMERCIAL USE OF THE DOCS
+
+Any commercial use of the docs beyond the permission above (for example
+selling them, or putting them, whole, in part or adapted, into a product or
+service run for commercial advantage, paid or not) needs a commercial licence.
+To ask for one, email lemomo.studio@gmail.com.
+
+
+EARLIER VERSIONS
+
+Versions of this repository published before 2.0.0, and forks made from them,
+keep the licence they were published under.

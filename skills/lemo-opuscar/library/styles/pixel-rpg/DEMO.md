@@ -10,7 +10,7 @@ A 30–60 second film: a lone hero at a save crystal remembers his lost companio
 
 A world drawn at **320×180 native pixels**, scaled ×6 with nearest-neighbour to 1080p. Every color comes from a **limited, indexed palette**. Gradients are **ordered dither**, not blends. Characters are **sprites** around 22×34 px that animate in a handful of frames. Story is told the way a game tells it: through **dialog boxes with portraits**, **menus**, **status bars**, **battle messages** and **save files**.
 
-It is *not* HD-2D (no depth of field, no bloom, no real-time light), *not* CRT nostalgia (no scanlines, no grain), and *not* a parody. It takes the game's systems seriously as a language for feeling.
+It is *not* 2.5D Pixel Art (no depth of field, no bloom, no real-time light), *not* CRT nostalgia (no scanlines, no grain), and *not* a parody. It takes the game's systems seriously as a language for feeling.
 
 Never use existing game names, characters, UI frames, fonts, logos, melodies or sound effects. Learn the grammar, not the assets.
 

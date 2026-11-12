@@ -1,0 +1,19 @@
+{
+ "slug": "sketchnote",
+ "num": "17",
+ "en": "Sketchnote",
+ "cn": "视觉笔记",
+ "category_en": "Sketch & Board",
+ "category_cn": "速写板书",
+ "film": "How Bees Make Honey",
+ "film_cn": "蜜蜂怎样酿蜜",
+ "line": "One bee makes 1/12 of a teaspoon of honey in her life; the pen follows one yellow drop from flower to jar until the whole page is a poster.",
+ "line_cn": "一只蜜蜂一辈子只酿 1/12 茶匙蜜；笔跟着一滴黄从花走到罐子，最后整页成了一张海报。",
+ "uses": [
+  "Lecture notes",
+  "Science explainers",
+  "One-page summaries"
+ ],
+ "frame_sec": 48.7,
+ "dur": 51.0
+}

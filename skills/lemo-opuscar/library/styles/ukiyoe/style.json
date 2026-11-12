@@ -1,11 +1,12 @@
 {
  "slug": "ukiyoe",
- "num": "08",
+ "num": "23",
  "en": "Ukiyo-e",
  "cn": "浮世绘",
- "category_en": "East Asian Traditions",
- "category_cn": "东方传统",
+ "category_en": "Traditional Crafts",
+ "category_cn": "传统工艺",
  "film": "Toward the Mountain",
+ "film_cn": "走向远山",
  "line": "A traveller walks toward a distant mountain; every shot is a woodblock print, a great wave at the climax, the mountain and the whole scroll at the end.",
  "line_cn": "旅人走向远山，每个镜头都是一幅版画；巨浪是高潮，结尾是远山与整幅画轴拉远。",
  "uses": [

@@ -1,11 +1,12 @@
 {
  "slug": "chalkboard",
- "num": "73",
+ "num": "16",
  "en": "Chalkboard",
  "cn": "黑板粉笔",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Sketch & Board",
+ "category_cn": "速写板书",
  "film": "The Story of Chinese Characters",
+ "film_cn": "汉字的故事",
  "line": "Chalk writes a popular claim about two characters, wipes it, and traces 射 back three thousand years.",
  "line_cn": "粉笔写下网上的说法，再一擦，把「射」写回三千年前。",
  "uses": [
@@ -13,6 +14,6 @@
   "Myth-busting",
   "Lessons"
  ],
- "frame_sec": 42.5,
+ "frame_sec": 44.2,
  "dur": 49.3
 }

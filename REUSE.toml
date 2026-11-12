@@ -1,0 +1,18 @@
+# The plugin's own files. The library (skills/lemo-opuscar/library/) has its own REUSE.toml. LICENSE says which
+# licence applies to what.
+version = 1
+SPDX-PackageName = "Lemo-Opuscar"
+SPDX-PackageSupplier = "Lemomo (LemoLab)"
+SPDX-PackageDownloadLocation = "https://github.com/lemomo-ai/lemo-opuscar"
+
+[[annotations]]
+path = [".claude-plugin/**", "skills/lemo-opuscar/scripts/**"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["*.md", "skills/lemo-opuscar/*.md"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
+SPDX-License-Identifier = "CC-BY-NC-4.0"

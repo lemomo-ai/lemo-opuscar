@@ -1,11 +1,12 @@
 {
  "slug": "news-package",
- "num": "70",
+ "num": "08",
  "en": "Broadcast News Package",
  "cn": "电视新闻包装",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "The Week in AI",
+ "film_cn": "本周 AI 四件事",
  "line": "Four AI stories from one week in a full on-air package: rundown, headline strap, price board, spec card.",
  "line_cn": "一周四条 AI 新闻，一整套电视台包装：串联单、标题条、翻牌价格表、规格卡。",
  "uses": [
@@ -13,6 +14,6 @@
   "Bulletins",
   "Market updates"
  ],
- "frame_sec": 18.4,
+ "frame_sec": 4.4,
  "dur": 53.5
 }

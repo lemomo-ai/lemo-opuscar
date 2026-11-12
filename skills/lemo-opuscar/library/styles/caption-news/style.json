@@ -1,11 +1,12 @@
 {
  "slug": "caption-news",
- "num": "63",
+ "num": "01",
  "en": "Caption News",
  "cn": "字幕新闻",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "The Bee Ledger",
+ "film_cn": "蜜蜂账本",
  "line": "America lost 1.3 million bee colonies, yet the count rose 6 %: a news short that works with the sound off.",
  "line_cn": "美国一年死掉 130 万箱蜜蜂，总数却涨了 6%：静音也能看懂的新闻。",
  "uses": [

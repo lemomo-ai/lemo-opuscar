@@ -1,0 +1,19 @@
+{
+ "slug": "assembly-line-diagram",
+ "num": "51",
+ "en": "Assembly-Line Diagram",
+ "cn": "流水线图解",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
+ "film": "The Disassembly Line",
+ "film_cn": "拆解流水线",
+ "line": "A body cut open as a factory that runs backwards: a 12:30 sandwich is taken apart station by station, and six hours later it runs for the bus.",
+ "line_cn": "把人体剖成一座倒着开的工厂：12:30 的一份三明治被一站一站拆开，六小时后变成追公交车的力气。",
+ "uses": [
+  "How a process works",
+  "Biology and medicine",
+  "Supply chains and pipelines"
+ ],
+ "frame_sec": 8.24,
+ "dur": 54.9
+}

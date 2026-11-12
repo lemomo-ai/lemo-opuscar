@@ -14,7 +14,7 @@ Each style has its own folder, `~/lemo-my-styles/<slug>/`, shaped like a library
 
 | File | What it holds |
 |---|---|
-| `style.json` | `slug`, `en`, `cn`, `based_on` (the base slug; from a blank page, the technique base), `borrows` (slugs moves were taken from, may be empty), `size` (only when the default isn't 1920×1080, e.g. `"1080x1440"`), `library_version` (`git -C "$LIB" rev-parse --short HEAD`, or the plugin version when `$LIB` isn't a git clone), `created`, `line`, `line_cn` |
+| `style.json` | `slug`, `en`, `cn`, `based_on` (the base slug; from a blank page, the technique base), `borrows` (slugs moves were taken from, may be empty), `size` (only when the default isn't 1920×1080, e.g. `"1080x1440"`), `needs` (copied from the base, e.g. `["image-generation"]` for a ✦ base; leave it out when the base has none), `library_version` (`git -C "$LIB" rev-parse --short HEAD`, or the plugin version when `$LIB` isn't a git clone), `created`, `line`, `line_cn` |
 | `STYLE.md` | the style's invariants only, in the sections of a library `STYLE.md` (11 in most; a changed style keeps its base's): no story, beat table, durations or end card |
 | `CHANGES.md` | one row per decision: section, base, now, why. From a blank page, "base" is the technique base's value, or "—" for something new. This is what the user approves and what you check the demo film against |
 | `DEMO.md` | how the demo film was made, like a library `DEMO.md`: it opens with "One example among many. Don't reuse its story, arc, shots, props or timings.", then the story, shots, palette, score, build notes and which file draws what. It stands in for the film's `TREATMENT.md`, which isn't kept |
@@ -80,7 +80,7 @@ Interview the user until every section of their `STYLE.md` is decided and they k
 - **Keep the signature.** The native move is what makes the style recognisable: swap at most one.
 - **Changes that travel together.** Faster motion needs denser sound. A darker palette needs the type contrast checked. A new material brings its own pitfalls into §9.
 - **Up to five changes** per round when changing a library style; more are hard to judge. A change the film's language forces (a Chinese font when the base has none) doesn't count.
-- **Code draws everything**, as in the library: no image or video generation, which the user may not have. Anything that isn't code (pictures, fonts, stroke or map data, samples) is the user's own or openly licensed, as in TECHNIQUE.md §11, and named in `CREDITS`. A licence the user has to agree to is asked once, and their answer goes into `STYLE.md` so later films don't ask again. If something can't work, say so and offer the closest change code can draw.
+- **Draw the way the base draws.** Code draws everything unless the base is marked ✦: then the images still come from an image generator the user provides (AGENTS.md, Workflow, Brief), and code never draws stand-ins for them. Don't add image or video generation to a base that has none: the user may not have it. Anything that isn't code (pictures, fonts, stroke or map data, samples) is the user's own or openly licensed, as in TECHNIQUE.md §11, and named in `CREDITS`. A licence the user has to agree to is asked once, and their answer goes into `STYLE.md` so later films don't ask again. If something can't work, say so and offer the closest change code can draw.
 - **What doesn't need a style.** Story, structure, opening, ending, cast, sets, pacing and voice (§11 *Variation space*) are free in every film. If that's all they want, they don't need their own style: they say it when they ask for a film.
 
 When the plan is complete, show the user a short summary in their language: each decision, before and after, and what it costs. **Wait for their OK**, then write it down.
@@ -91,7 +91,7 @@ Make the demo film's project folder now (`films/<slug>-test/` in a clone, `<slug
 
 - **`STYLE.md`**:
   - *Change a library style*: a full copy of the base `STYLE.md` with the changes written into their sections, so it reads like any style prompt (no "see the base" gaps). Change the title to the new name and add one line under it: `Based on <base name> (<base slug>) from Lemo-Opuscar.`
-  - *From a blank page*: all 11 sections written from the plan, with §10 engine from the technique base for now (§5 points it at the style's own code). Under the title: `Made from a blank page; techniques from <base name> (<base slug>) in Lemo-Opuscar.`
+  - *From a blank page*: all 11 sections written from the plan, with STYLE.md §10 *Engine* from the technique base for now (step 5 below points it at the style's own code). Under the title: `Made from a blank page; techniques from <base name> (<base slug>) in Lemo-Opuscar.`
   - When the default size isn't 1920×1080, one more line under the title: `Default size: 1080×1440.`
   - Links: the style's own `DEMO.md` and `demo/` (they exist after §5) stay relative; links to the base become `$LIB/styles/<base slug>/…`. Keep every pitfall in §9 that still applies, and add the ones the changes bring.
 - **`CHANGES.md`** and **`style.json`** as in the table above.

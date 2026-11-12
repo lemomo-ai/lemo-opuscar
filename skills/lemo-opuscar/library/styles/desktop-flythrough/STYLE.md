@@ -1,4 +1,4 @@
-# Desktop Flythrough 桌面穿梭 — Style Prompt
+# Tabletop App Flythrough 桌面卡片穿梭 — Style Prompt
 
 > App screens and tools lie on a sunlit desk as printed paper cards; small pixel characters, popped up into voxel toys, carry the work from card to card, while one unbroken camera flies after them, whips between stops and finally pulls back over the whole desk.
 > References (grammar only): one-take desktop tours in software launch films (windows laid flat as places, a small helper as the guide); macro toy photography (low warm sun, long soft shadows); pixel-art sprites (the cast's look). Never copy their characters, layouts, icons or music.
@@ -78,7 +78,7 @@ Not a screen recording (no cursor, no glowing monitor, no real app chrome or log
 
 - **Score**: bright and warm, acoustic in feel: marimba (with vibraphone under long notes), plucked bass, a soft synthetic kick (a short sine sweep), claps, shaker, a quiet string pad. One key, diatonic chords, about one chord per bar. Under a voice the score is a light bed ducked about 16 dB while someone speaks; the full mallet theme plays where nobody speaks.
 - **Foley**: every action has a sound. Pop: a marimba note from the current chord plus an upward sweep. Hop: a soft tick. Landing: a felt thump. Press or stamp: a low thump with a crumble. Typing: dry key clicks. Ding: two bell notes from the chord. Camera whip: a whoosh sized by the measured camera speed. Pitched foley takes its notes from the score's chord table and sits on the 16th grid.
-- **Mix**: the voice leads (about −16 LUFS before delivery, −14 after); music 15–18 dB under the voice and lifted in the gaps; foley under the voice; the mix peaks under −1.5 dBFS and `mux.sh` masters it to −14 LUFS, true peak −1.2 dBTP. The final chord holds to the last half-second.
+- **Mix**: the voice leads (about −16 LUFS before delivery, −14 after); music 15–18 dB under the voice and lifted in the gaps; foley under the voice; the mix peaks under −1.5 dBFS and `mux.sh` masters it to −14 LUFS, true peak ≤ −1 dBTP. The final chord holds to the last half-second.
 
 ## 8. Native moves
 

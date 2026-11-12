@@ -10,7 +10,7 @@
 - **Bureaucratic apparatus**: case numbers, file chips, numbered exhibits, height charts, name plates, stamps. Their seriousness is the frame; the subject can be grave or trivial.
 - **Loud but readable**: one idea per 2–4 s card, one big headline, one visual gag or exhibit, one caption line.
 
-Not Risograph (no grainy two-ink riso texture as the whole look, no zine collage), not Swiss motion (no grid-driven kinetic type on white), not Game Show Flat (no candy sets, no rhythm-game rounds). Dots, paper and stamps must be visible in every frame.
+Not Risograph (no grainy two-ink riso texture as the whole look, no zine collage), not Swiss motion (no grid-driven kinetic type on white), not Rhythm Game Show (no candy sets, no rhythm-game rounds). Dots, paper and stamps must be visible in every frame.
 
 ## 2. Materials & rendering
 

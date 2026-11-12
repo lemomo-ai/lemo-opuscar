@@ -1,11 +1,12 @@
 {
  "slug": "engraving",
- "num": "53",
+ "num": "31",
  "en": "Copperplate Engraving",
  "cn": "铜版画",
  "category_en": "Print & Printmaking",
- "category_cn": "印刷与版画",
+ "category_cn": "印刷版画",
  "film": "The Honeybee, Plate VII",
+ "film_cn": "蜜蜂，图版七",
  "line": "A natural-history plate engraves itself: the burin cuts the copper, the bee builds up line by line, and a watercolour wash brings it to life.",
  "line_cn": "一张博物志图版自己刻出来：雕刀推开铜版，蜜蜂一线线成形，最后手工水彩上色。",
  "uses": [

@@ -42,7 +42,7 @@ Film time; dissolves are 0.6 s.
 - Glockenspiel: one note per window, rising D5–F♯6 at the halt, the same notes falling at the terminus. A bowed-vibraphone note under the lamp.
 - Flute tune over the harp on the viaduct and again by the river; strings tremolo in D minor into the tunnel, cut to silence for the blink; an open D major chord with a harp sweep on the way out; solo violin and strings at the sea; harp and strings under the end card.
 - Foley: snow wind, river, sea, room tone; lamp clicks, horn (two detuned saws, band-passed), brake hiss, wheel clacks and rumble, whooshes in and out of the tunnel, paper for the ticket. Everything stops during the blink.
-- Mix (`demo/mix.py`): voice compressed, RMS −18 dB; music ducked 5 dB under speech with a 300 Hz–4 kHz dip; peak-limited; `core/render/mux.sh` to −14 LUFS, true peak −1.2 dB.
+- Mix (`demo/mix.py`): voice compressed, RMS −18 dB; music ducked 5 dB under speech with a 300 Hz–4 kHz dip; peak-limited; `core/render/mux.sh` to −14 LUFS, true peak ≤ −1 dBTP.
 - Instruments from VSCO 2 CE, VCSL (CC0) and Salamander Grand Piano (CC BY 3.0) through `core/audio/sampler.py`.
 
 ## Palette & props

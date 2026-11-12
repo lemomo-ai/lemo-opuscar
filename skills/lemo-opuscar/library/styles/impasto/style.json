@@ -1,11 +1,12 @@
 {
  "slug": "impasto",
- "num": "04",
+ "num": "11",
  "en": "Impasto Oil Painting",
  "cn": "油画厚涂",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Painting & Illustration",
+ "category_cn": "绘画插画",
  "film": "The Colour of Rain",
+ "film_cn": "雨的颜色",
  "line": "In a grey, rainy square one red umbrella opens, and a waltz paints the whole plaza in colour.",
  "line_cn": "灰色雨中广场，第一把红伞撑开，圆舞曲把整个广场刷上颜色。",
  "uses": [

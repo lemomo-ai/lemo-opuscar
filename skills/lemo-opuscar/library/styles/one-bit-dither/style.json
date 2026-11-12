@@ -1,0 +1,19 @@
+{
+ "slug": "one-bit-dither",
+ "num": "72",
+ "en": "1-bit Dither",
+ "cn": "1-bit 点阵",
+ "category_en": "Screens & Interfaces",
+ "category_cn": "屏幕界面",
+ "film": "The Moon's Fax",
+ "film_cn": "月亮的传真",
+ "line": "February 1966: the first close-up of the Moon arrives at an English radio telescope as a newspaper fax, printed one line at a time in two inks, a day early and stretched too tall.",
+ "line_cn": "1966 年 2 月，月面的第一张近照被英国一座射电望远镜当成报社传真收下，一行一行印出来：早了一天，比例却拉高了。",
+ "uses": [
+  "History told through a chain of media",
+  "Printing, scanning and signals",
+  "Night scenes and space"
+ ],
+ "frame_sec": 25.5,
+ "dur": 50.0
+}

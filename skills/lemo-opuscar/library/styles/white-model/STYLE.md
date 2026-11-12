@@ -1,4 +1,4 @@
-# Projection on White Model — Style Prompt
+# Projection-Mapped Model — Style Prompt
 
 > A pure white massing model of a real place stands on a plinth in a dark room, and a projector paints data onto it as light: one layer at a time, falling on the surfaces that face it, spilling a little past the plate. The model never changes; only the light on it does.
 > References (grammar only): projection-mapped planning models in city galleries (the dark room, the soft throw, colour only on white surfaces); macro model photography (shallow focus at rooftop height); editorial data graphics (one figure, one label, one source per layer). Copy none of their layouts, typefaces, colours or music, and never name them in the film.
@@ -70,7 +70,7 @@ At key moments the subject fills a third of the frame height; readouts left thir
 - **Weight**: timpani, gran cassa, gong, low brass for a heavy fact; warm low brass for a turn.
 - **Floor**: contrabass and cellos only as a floor under the chords; no generic piano and strings melody.
 - **Silence**: the projector goes dark and everything stops but a thin fan hum before the turn; a short suck-out before the heaviest hit. The first sound after the silence is the turn.
-- **Mix**: voice about 10 dB over the music; the two designed impacts are the loudest moments; −14 LUFS, true peak ≤ −1.2 dB. Voice: calm, short declarative lines, numbers spoken plainly.
+- **Mix**: voice about 10 dB over the music; the two designed impacts are the loudest moments; −14 LUFS, true peak ≤ −1 dBTP. Voice: calm, short declarative lines, numbers spoken plainly.
 
 ## 8. Native moves
 

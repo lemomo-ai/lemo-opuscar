@@ -1,11 +1,12 @@
 {
  "slug": "circuit-board",
- "num": "76",
+ "num": "73",
  "en": "Circuit Board",
  "cn": "电路板",
- "category_en": "Information & Keynote",
- "category_cn": "信息与发布",
+ "category_en": "Light & Lines",
+ "category_cn": "发光线条",
  "film": "Seven Milliseconds",
+ "film_cn": "七毫秒",
  "line": "Rivers become copper traces as current runs 2,080 km from a dam to a phone charger.",
  "line_cn": "江河变成电路板上的走线，电流从水坝跑 2,080 公里进手机充电器。",
  "uses": [

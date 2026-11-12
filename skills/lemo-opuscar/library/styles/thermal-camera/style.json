@@ -1,0 +1,19 @@
+{
+ "slug": "thermal-camera",
+ "num": "93",
+ "en": "Thermal Camera",
+ "cn": "热成像",
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
+ "film": "A Building on a Winter Night",
+ "film_cn": "冬夜，一栋楼的体温",
+ "line": "A thermal camera circles an old apartment block on a snowy night: a leaking window, pipes inside the walls, a cat asleep on a warm bonnet, and the same block a year after its retrofit.",
+ "line_cn": "雪夜里，一台热像仪绕着一栋老居民楼转：漏风的窗、墙里的暖气管、睡在热车盖上的猫，还有一年后改造完的同一栋楼。",
+ "uses": [
+  "Building and energy inspection",
+  "Wildlife at night",
+  "Machines and electrics"
+ ],
+ "frame_sec": 1.3,
+ "dur": 49.0
+}

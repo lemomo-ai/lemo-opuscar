@@ -1,0 +1,19 @@
+{
+ "slug": "precise-mechanism",
+ "num": "48",
+ "en": "Color-Coded Mechanism",
+ "cn": "分色机械图解",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
+ "film": "Three Systems Keep the Time",
+ "film_cn": "三套系统走时",
+ "line": "A watch with no battery is cut open: its three systems are dyed one by one, the train races when the escapement is pulled out, and one slowed tick lets it all out again.",
+ "line_cn": "剖开一块不用电的表：三套系统按能量流向逐一染色，抽走擒纵后齿轮疯转，最后放慢到 1/40 等那一声滴答。",
+ "uses": [
+  "How machines work",
+  "Product and engineering explainers",
+  "Science teaching"
+ ],
+ "frame_sec": 21.0,
+ "dur": 52.0
+}

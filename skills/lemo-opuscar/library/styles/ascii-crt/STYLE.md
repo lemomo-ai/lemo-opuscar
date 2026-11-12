@@ -1,4 +1,4 @@
-# ASCII / CRT Terminal: Style Prompt
+# CRT ASCII Terminal: Style Prompt
 
 > Everything on screen is a real character on a monospace grid, lit by the phosphor of an old monochrome CRT.
 > References (grammar only): 1970s–80s monochrome terminals and teletype logs (typed output, cursor, status lines); ASCII art and demoscene text-mode pictures (images from glyph density); analog-synth film scores of the early 1980s (cold pulse, patient drones). Copy no film's interface text, fonts or logos, and use no real agency names.

@@ -1,11 +1,15 @@
 {
  "slug": "blueprint",
- "num": "19",
+ "num": "44",
  "en": "Blueprint",
- "cn": "蓝图 / 工程制图",
- "category_en": "Graphic & Type",
- "category_cn": "图形与排版",
+ "cn": "工程蓝图",
+ "aka": [
+  "蓝图 / 工程制图"
+ ],
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
  "film": "Patent Pending: The Cloud Catcher",
+ "film_cn": "专利申请中：接云机",
  "line": "An inventor's blueprint draws, explodes and assembles a cloud-catching machine, and its revision cloud starts to rain.",
  "line_cn": "发明家的蓝图自己画出一台接云机器，修订云线变成了真的雨云。",
  "uses": [
@@ -13,6 +17,6 @@
   "Hardware launches",
   "Tech explainers"
  ],
- "frame_sec": 33.62,
+ "frame_sec": 33.3,
  "dur": 46.7
 }

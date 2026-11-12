@@ -1,0 +1,19 @@
+{
+ "slug": "hardcore-info",
+ "num": "47",
+ "en": "Line-Art Cutaway",
+ "cn": "线稿剖面图解",
+ "category_en": "Line Diagrams",
+ "category_cn": "线稿图解",
+ "film": "Where Is Your Phone's Antenna?",
+ "film_cn": "你手机的天线在哪",
+ "line": "A phone loses signal when held by the corner; taken apart, its metal frame turns out to be the antenna, cut into pieces your hand can bridge.",
+ "line_cn": "一部手机握住底角就掉信号；拆开才发现金属边框就是天线，被切成几段，手一握就把缝连上了。",
+ "uses": [
+  "Hardware explainers",
+  "Product engineering",
+  "Science education"
+ ],
+ "frame_sec": 14.5,
+ "dur": 52.0
+}

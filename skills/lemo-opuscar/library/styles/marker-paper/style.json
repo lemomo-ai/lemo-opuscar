@@ -1,0 +1,19 @@
+{
+ "slug": "marker-paper",
+ "num": "20",
+ "en": "Marker on Paper",
+ "cn": "马克笔白纸速写",
+ "category_en": "Sketch & Board",
+ "category_cn": "速写板书",
+ "film": "How Far Can You See?",
+ "film_cn": "你能看多远？",
+ "line": "A felt-tip marker works out how far the horizon is from a beach, then shows that climbing a hundred times higher only lets you see ten times farther.",
+ "line_cn": "一支马克笔在白纸上算出海边能看多远，再告诉你：爬高 100 倍，只能多看远 10 倍。",
+ "uses": [
+  "Worked problems",
+  "Science explainers",
+  "Lessons"
+ ],
+ "frame_sec": 6.9,
+ "dur": 52.0
+}

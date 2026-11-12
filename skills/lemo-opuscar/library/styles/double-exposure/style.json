@@ -1,0 +1,19 @@
+{
+ "slug": "double-exposure",
+ "num": "66",
+ "en": "Double Exposure",
+ "cn": "双重曝光",
+ "category_en": "Film & Tape",
+ "category_cn": "胶片录像",
+ "film": "Mountains and Seas",
+ "film_cn": "山海",
+ "line": "From the mountains to the sea as night falls: a stag, a wolf, an eagle, a salmon and a whale, each carrying its own place inside its silhouette, until the whale's harbour lands on the real shore.",
+ "line_cn": "天黑下来的这一路，从山到海：鹿、狼、鹰、鲑鱼、鲸，每只动物的剪影里装着它的那片天地；最后鲸身体里的港湾落在真的海岸上。",
+ "uses": [
+  "Brand and city films",
+  "Documentary and series openings",
+  "Music video intros"
+ ],
+ "frame_sec": 38.5,
+ "dur": 50.5
+}

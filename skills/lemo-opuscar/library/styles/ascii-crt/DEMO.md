@@ -1,11 +1,11 @@
-# ASCII / CRT Terminal — our demo
+# CRT ASCII Terminal — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 
 Demo: *TRANQUILITY.LOG* (59.8 s) · `ascii-crt.mp4` · source in [`demo/`](demo/)
 
 
-Brief the demo was made to: a 30–60 second film in the ASCII / CRT Terminal style.
+Brief the demo was made to: a 30–60 second film in the CRT ASCII Terminal style.
 
 ## Story & structure
 

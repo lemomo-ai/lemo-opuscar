@@ -1,11 +1,12 @@
 {
  "slug": "ink-wash",
- "num": "03",
+ "num": "21",
  "en": "Chinese Ink Wash",
  "cn": "中国水墨",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Traditional Crafts",
+ "category_cn": "传统工艺",
  "film": "The Swordsman and the River",
+ "film_cn": "剑客与江",
  "line": "A swordsman crosses the river on the water and splits the current with a single stroke.",
  "line_cn": "侠客踏水过江，一剑断流。",
  "uses": [

@@ -1,11 +1,12 @@
 {
  "slug": "watercolor",
- "num": "02",
+ "num": "10",
  "en": "Watercolor Brush",
  "cn": "水彩笔刷",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Painting & Illustration",
+ "category_cn": "绘画插画",
  "film": "Follow the Rain",
+ "film_cn": "跟着雨走",
  "line": "Follow the rain from Australia's red desert heart to its green coast in one unbroken painted walk.",
  "line_cn": "跟着降雨从澳洲红色腹地一路画到绿色海岸，一镜到底。",
  "uses": [
@@ -13,6 +14,6 @@
   "Travel",
   "Science explainers"
  ],
- "frame_sec": 68.16,
+ "frame_sec": 68.0,
  "dur": 113.6
 }

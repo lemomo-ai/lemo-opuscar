@@ -1,11 +1,12 @@
 {
  "slug": "whiteboard",
- "num": "06",
+ "num": "15",
  "en": "Whiteboard Explainer",
  "cn": "白板讲解",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Sketch & Board",
+ "category_cn": "速写板书",
  "film": "Einstein in Your Pocket",
+ "film_cn": "口袋里的爱因斯坦",
  "line": "How your phone knows where you are: GPS, atomic clocks, and the 38 microseconds relativity adds every day.",
  "line_cn": "手机怎么知道你在哪：GPS、原子钟，和相对论每天多出的 38 微秒。",
  "uses": [

@@ -72,7 +72,7 @@ Subject ≥ a third of the frame height at key moments; readings right third; in
 - **Dry and wet**: one option is electronics while the subject is still points, and a single organic, wooden or bowed timbre (marimba, bowed vibraphone) for the found features once the surface exists.
 - **Beds**: the place's own ambience (wind in leaves, water, traffic) at the start and the end as J- and L-cuts; a thin air bed in between.
 - **Silence**: a near silence (air only) before the main reveal; the first sound after it is the impact.
-- **Mix**: voice ~10 dB over the music and ducking it; impacts outside the bus compressor; −14 LUFS, true peak ≤ −1.2 dBTP. Voice: a calm, plain narrator, short declarative lines.
+- **Mix**: voice ~10 dB over the music and ducking it; impacts outside the bus compressor; −14 LUFS, true peak ≤ −1 dBTP. Voice: a calm, plain narrator, short declarative lines.
 
 ## 8. Native moves
 

@@ -1,0 +1,19 @@
+{
+ "slug": "flow-field",
+ "num": "75",
+ "en": "Flow-field Wind Lines",
+ "cn": "流场风线",
+ "category_en": "Light & Lines",
+ "category_cn": "发光线条",
+ "film": "Typhoon Yagi over Qiongzhou",
+ "film_cn": "摩羯过琼州",
+ "line": "Thousands of ink wind lines, computed from the best track, draw Super Typhoon Yagi: the eye opening over the South China Sea, the landfall on Hainan, the spiral coming apart in Vietnam, and a whole week folded into one last line.",
+ "line_cn": "几千条从最佳路径算出来的墨色风线，画出超强台风摩羯的一生：在南海睁开风眼，在文昌登陆，在越南散开，一整周最后收成一条线。",
+ "uses": [
+  "Storms, monsoons and other weather",
+  "Ocean currents and river floods",
+  "Any flow measured against a threshold"
+ ],
+ "frame_sec": 24.9,
+ "dur": 52.0
+}

@@ -1,11 +1,15 @@
 {
  "slug": "white-model",
- "num": "58",
- "en": "Projection on White Model",
+ "num": "95",
+ "en": "Projection-Mapped Model",
  "cn": "白模投影",
- "category_en": "Evidence Films",
- "category_cn": "实证影像",
+ "aka": [
+  "Projection on White Model"
+ ],
+ "category_en": "Data & Maps",
+ "category_cn": "数据地图",
  "film": "How a Flattened City Grew Back",
+ "film_cn": "被炸平的城市怎样长回来",
  "line": "A projector paints Rotterdam's white model layer by layer, from the 1940 gap to today's towers.",
  "line_cn": "投影机把数据一层层刷上鹿特丹白模：从 1940 年的空洞到今天的塔楼。",
  "uses": [

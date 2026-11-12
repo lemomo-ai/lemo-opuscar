@@ -1,11 +1,12 @@
 {
  "slug": "crayon-book",
- "num": "01",
+ "num": "09",
  "en": "Crayon Picture Book",
  "cn": "蜡笔儿童绘本",
- "category_en": "Hand-drawn & Painting",
- "category_cn": "手绘与绘画",
+ "category_en": "Painting & Illustration",
+ "category_cn": "绘画插画",
  "film": "The Moon Can't Sleep",
+ "film_cn": "月亮睡不着",
  "line": "The moon can't sleep, so a little girl climbs onto the roof to sing it a lullaby.",
  "line_cn": "月亮失眠了，小女孩爬上屋顶给它唱摇篮曲。",
  "uses": [

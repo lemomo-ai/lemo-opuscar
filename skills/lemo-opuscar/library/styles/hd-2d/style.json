@@ -1,11 +1,15 @@
 {
  "slug": "hd-2d",
- "num": "31",
- "en": "HD-2D",
- "cn": "HD-2D",
+ "num": "59",
+ "en": "2.5D Pixel Art",
+ "cn": "2.5D 像素",
+ "aka": [
+  "HD-2D"
+ ],
  "category_en": "Games",
- "category_cn": "游戏",
+ "category_cn": "电子游戏",
  "film": "The Lampbearer",
+ "film_cn": "守灯人",
  "line": "The lighthouse goes dark; a girl carries the last flame through a night forest and up the storm cliffs.",
  "line_cn": "灯塔熄灭，孙女提着最后一簇火穿过夜林、爬上风暴悬崖。",
  "uses": [

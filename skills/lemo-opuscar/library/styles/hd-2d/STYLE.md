@@ -1,8 +1,8 @@
-# HD-2D — Style Prompt
+# 2.5D Pixel Art — Style Prompt
 
 > Hand-made pixel sprites standing like paper cut-outs inside a lit, fogged, fully 3D diorama, shot from a high three-quarter angle through a tilt-shift lens: a toy world where every lamp throws a real shadow.
 > References (grammar only): *Octopath Traveler* (Square Enix × Acquire, 2018) and its sequel (2023), the games that defined the HD-2D look. Learn the grammar: sprite-in-diorama, high 3/4 camera, tilt-shift focus band, point lights with shadows, heavy bloom and vignette, framed dialogue box. Never use their characters, places, logos, UI ornaments or music, and never name them in the film.
-> Name: "HD-2D" is Square Enix's term (and trademark) for that look. The library borrows it only to describe the style; this style and its demo have no connection to Square Enix and are not endorsed by it. Don't use "HD-2D" as a title or brand in a film.
+> Name: this style was formerly called "HD-2D", Square Enix's term (and trademark) for that look; the library uses the term only to describe the look. This style and its demo have no connection to Square Enix and are not endorsed by it. Don't use "HD-2D" as a title or brand in a film.
 
 ## 1. Essence, and what it is not
 

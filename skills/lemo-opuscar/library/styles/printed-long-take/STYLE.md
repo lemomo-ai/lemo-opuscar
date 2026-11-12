@@ -1,4 +1,4 @@
-# Printed Long Take — Style Prompt
+# Scratchboard Long Take — Style Prompt
 
 > A three-dimensional world rendered as a scratchboard print, ink and paper with one red, crossed by one unbroken camera move. Depth, weather and light are all cut lines; the camera travels through the print instead of the print being turned page by page.
 > References (grammar only): wood engraving and scratchboard illustration (tone made by the width of parallel cuts), Japanese shin-hanga landscapes (layered planes of mountain, forest, water), and the single-take tracking shot of documentary nature films (a move that never cuts). Take the cut line, the layering and the unbroken move; never copy a print, an illustrator's figures or a film's route.

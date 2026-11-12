@@ -11,7 +11,7 @@
 - **Story told the way a game tells it**: dialog boxes with portraits, menus, status bars, battle messages, save files, item fanfares.
 - It takes the game's systems seriously as a language for feeling.
 
-Not HD-2D (no depth of field, bloom or real-time light), not CRT nostalgia (no scanlines, no grain), not a parody.
+Not 2.5D Pixel Art (no depth of field, bloom or real-time light), not CRT nostalgia (no scanlines, no grain), not a parody.
 
 ## 2. Materials & rendering
 

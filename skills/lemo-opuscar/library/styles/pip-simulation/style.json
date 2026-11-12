@@ -1,0 +1,19 @@
+{
+ "slug": "pip-simulation",
+ "num": "99",
+ "en": "Blob Simulation",
+ "cn": "小人模拟实验",
+ "category_en": "Data & Maps",
+ "category_cn": "数据地图",
+ "film": "Is Faster Better?",
+ "film_cn": "跑得快，就更好吗？",
+ "line": "160 flocked Pips race for beans: the fast ones eat first and run dry first, and after 20 generations the board turns blue.",
+ "line_cn": "160 只植绒小人抢豆子：快的先抢到也先跑不动，跑完 20 代，整块台面都变蓝了。",
+ "uses": [
+  "Evolution and natural selection",
+  "Game theory and agent-based models",
+  "Epidemics, queues and markets"
+ ],
+ "frame_sec": 44.7,
+ "dur": 52.0
+}

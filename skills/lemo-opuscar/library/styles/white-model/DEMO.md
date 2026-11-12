@@ -1,4 +1,4 @@
-# Projection on White Model — our demo
+# Projection-Mapped Model — our demo
 
 One example among many. Don't reuse its story, arc, shots, props or timings.
 

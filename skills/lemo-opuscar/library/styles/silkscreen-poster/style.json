@@ -1,11 +1,12 @@
 {
  "slug": "silkscreen-poster",
- "num": "54",
+ "num": "32",
  "en": "Silkscreen Travel Poster",
  "cn": "丝印旅行海报",
  "category_en": "Print & Printmaking",
- "category_cn": "印刷与版画",
+ "category_cn": "印刷版画",
  "film": "The Long Way Home",
+ "film_cn": "绕远路回家",
  "line": "A traveller crosses the world one full-bleed screen print at a time, a ticket stub counting the distance from home, until the far side turns into the way back.",
  "line_cn": "一张满屏丝印海报一座城，票根数着离家的公里数，走到世界的另一头，才发现那是回家的路。",
  "uses": [

@@ -5,7 +5,8 @@ Writes out_dir/<id>.wav (24 kHz, leading/trailing silence trimmed) and out_dir/d
 Model: kokoro-v1.0.onnx / voices-v1.0.bin in this folder; download with sh tools/fetch.sh voice (about 350 MB).
 Path limit: the data folder of espeak-ng (which Kokoro uses to turn text into phonemes) must have a real path, after symlinks, shorter than
          160 bytes (a CJK character counts 3), or it is not found and the error names a path on someone else's machine (the one espeak-ng was
-         built on). A library under a short path such as ~/lemo-opuscar is fine; this script checks before it starts and explains.
+         built on). When the library's own copy is too deep, this script copies that folder once to ~/.cache/lemo-opuscar/espeak-ng-data
+         and uses the copy; only if that path is too long as well does it stop and explain.
 More natural Chinese, Japanese and other voices: core/tts/tts_zh.py (Microsoft edge-tts, online), same interface and output layout.
 """
 import sys, json, os, re
@@ -32,8 +33,19 @@ try:
 except Exception:
     espeak_dir = None   # not installed via espeakng_loader (e.g. the system espeak-ng): don't check, let Kokoro report its own error
 if espeak_dir and len(espeak_dir.encode('utf-8')) >= ESPEAK_LIMIT:
-    sys.exit(f"tts.py: this library sits under a folder path that is too long for the offline voice engine (espeak-ng).\n"
-             f"  its data folder is {len(espeak_dir.encode('utf-8'))} bytes long (a Chinese character counts as 3), the limit is {ESPEAK_LIMIT - 1}:\n"
+    # the library sits too deep: use a copy of the data folder under a short path (made once, refreshed when the package changes)
+    import shutil
+    short = os.path.realpath(os.path.join(os.path.expanduser('~'), '.cache', 'lemo-opuscar', 'espeak-ng-data'))
+    if len(short.encode('utf-8')) < ESPEAK_LIMIT:
+        stamp = os.path.join(short, '.source')
+        if not (os.path.isdir(short) and os.path.exists(stamp) and open(stamp).read() == espeak_dir):
+            shutil.rmtree(short, ignore_errors=True); shutil.copytree(espeak_dir, short)
+            open(stamp, 'w').write(espeak_dir)
+        espeakng_loader.get_data_path = lambda: short
+        espeak_dir = short
+if espeak_dir and len(espeak_dir.encode('utf-8')) >= ESPEAK_LIMIT:
+    sys.exit(f"tts.py: this library sits under a folder path that is too long for the offline voice engine (espeak-ng),\n"
+             f"  and so does the short copy under your home folder ({len(espeak_dir.encode('utf-8'))} bytes, a Chinese character counts as 3; the limit is {ESPEAK_LIMIT - 1}):\n"
              f"    {espeak_dir}\n"
              f"  Move the library to a shorter path (e.g. LEMO_OPUSCAR_HOME=~/lemo-opuscar, or a shorter folder for the clone) and run\n"
              f"  `sh tools/setup.sh deps` there (a moved .venv does not work). No need to move anything for tts_zh.py.")

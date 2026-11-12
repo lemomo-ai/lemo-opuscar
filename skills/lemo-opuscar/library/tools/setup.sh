@@ -87,7 +87,12 @@ else miss="$miss node20+"; fi
 command -v ffmpeg >/dev/null || miss="$miss ffmpeg"
 command -v uv >/dev/null || find_py >/dev/null || miss="$miss python3.11+(or uv)"
 [ -n "$miss" ] && echo "! missing:$miss"
-node_ok && py_ok core || echo "! packages not installed yet: run 'sh tools/setup.sh deps' (a few minutes) before the first render"
+# packages never installed, or installed from a package.json or requirements file that has changed since (a marker is there)
+if ! { node_ok && py_ok core; }; then
+  if [ -f "$LIB/node_modules/.lemo-ok" ] || [ -f "$LIB/.venv/.lemo-core" ]; then
+    echo "! packages changed: run 'sh tools/setup.sh deps' to update them before the next render"
+  else echo "! packages not installed yet: run 'sh tools/setup.sh deps' (a few minutes) before the first render"; fi
+fi
 # Package tiers: core renders; voice (TTS + speech check) and music (pluck.py) are added when a film needs them
 mark() { if "$@"; then printf '✓'; else printf '✗'; fi; }
 core_ok() { node_ok && py_ok core; }

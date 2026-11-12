@@ -1,11 +1,12 @@
 {
  "slug": "visual-investigation",
- "num": "67",
+ "num": "05",
  "en": "Visual Investigation",
  "cn": "视觉调查",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "The Hindenburg: Four Minutes, 32 Seconds",
+ "film_cn": "兴登堡号：四分钟与三十二秒",
  "line": "Newsreel, photos, testimony and the 1937 inquiry on one clock: five sources point to the same spot.",
  "line_cn": "新闻片、照片、证词和调查报告排上同一条时间轴，五路来源指向一处。",
  "uses": [
@@ -13,6 +14,6 @@
   "Fact-checks",
   "Incident reports"
  ],
- "frame_sec": 30.9,
+ "frame_sec": 3.8,
  "dur": 60.0
 }

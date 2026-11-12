@@ -1,11 +1,16 @@
 {
  "slug": "game-show",
- "num": "33",
- "en": "Game Show Flat",
- "cn": "综艺节奏扁平",
+ "num": "61",
+ "en": "Rhythm Game Show",
+ "cn": "节奏综艺",
+ "aka": [
+  "Game Show Flat",
+  "综艺节奏扁平"
+ ],
  "category_en": "Games",
- "category_cn": "游戏",
+ "category_cn": "电子游戏",
  "film": "Rhythm of AI, 1997 → 2026",
+ "film_cn": "AI 进化节拍",
  "line": "The history of AI as a rhythm game: models take the stage on the beat, and a report card closes the show.",
  "line_cn": "把 AI 发展史做成一局节奏游戏，模型踩着拍登场，最后发成绩单。",
  "uses": [

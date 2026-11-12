@@ -1,11 +1,11 @@
 # Lemo-Opuscar
 
-**66 film styles, each with a short film made entirely in code.**<br>
-66 种影片风格，每种都配一支完全用代码做出来的短片。
+**99 film styles, each with a short film made entirely in code.**<br>
+99 种影片风格，每种都配一支完全用代码做出来的短片。
 
 Pick a style, bring your own story, and let Claude direct the film. Claude writes the treatment, draws every frame in code, writes an original score, mixes the sound and renders a finished MP4. No video model, no stock footage.
 
-This is the plugin directory edition (version 1.2.6): the guides, the 66 style prompts and the rendering tools, without the demo films. **The films, the gallery and the newest styles live in the main repository: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar).** Watch every demo film on the [gallery](https://lemomo-ai.github.io/lemo-opuscar/).
+This is the plugin directory edition (version 2.0.0): the guides, the 99 style prompts and the rendering tools, without the demo films. **The films, the gallery and the newest styles live in the main repository: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar).** Watch every demo film on the [gallery](https://lemomo-ai.github.io/lemo-opuscar/).
 
 ## Try it
 
@@ -54,16 +54,17 @@ The library ships inside the plugin. On first use it is copied to `~/.lemo-opusc
 | Walnut veneer textures (Poly Haven, CC0) | this project's GitHub Releases | only for the Data Physicalization style | 7 MB |
 | Fonts named by a style (Google Fonts, OFL) | Google Fonts | when the style needs them | small |
 | Packages a style lists in its `STYLE.md` (e.g. a LiDAR reader) | npm or PyPI, into your project folder | only for that style | varies |
-| Public data for the Evidence Films styles (satellite imagery, laser scans, open city data) | the open-data sources Claude finds for your topic; it tells you each source and licence | only when you ask for such a film | varies |
+| Public data for the styles built from real data or scans (satellite imagery, laser scans, open city data) | the open-data sources Claude finds for your topic; it tells you each source and licence | only when you ask for such a film | varies |
 
 ## Privacy and outside services
 
 - Your topic, your files and the film stay on your computer. The plugin collects nothing and sends nothing to us.
 - **Chinese narration:** offline Kokoro voices by default. Better Chinese voices come from Microsoft's online speech service (edge-tts), which receives the narration text; Claude asks before using it and uses it only if you agree. English narration is always offline (Kokoro).
+- **Image generation:** three styles (Manga Panels, Text Flash Cuts, Comic History Cartoon) draw with an image generator you provide (the Codex CLI or another image tool), which receives the image prompts and any reference images. Claude tells you before generating; other styles use none.
 - The downloads above request files only; they don't send your content. Every third-party asset in a film (fonts, samples, data) is listed with its licence in the film's `CREDITS`.
 
 ## Licence
 
-MIT. Fonts in `core/fonts/` are OFL; the sample libraries and HDRIs keep their own licences (listed in `core/audio/INSTRUMENTS.md` and `core/assets/polyhaven/SOURCES.md`). You are responsible for the material you put in your films.
+`LICENSE` says which licence applies to which file; the texts of the licences this edition uses are in `LICENSES/`, and all of them are in the [main repository](https://github.com/lemomo-ai/lemo-opuscar/tree/main/LICENSES). Code: MIT. Docs (the guides, each style's `STYLE.md` and `DEMO.md`, the skill's Markdown): CC BY-NC 4.0: share and adapt them for non-commercial purposes, and credit **Lemo-Opuscar by Lemomo (LemoLab)** with a link to the main repository and to the licence. On top of that licence, you and the people working with you on a film (staff, contractors, the client) get a worldwide, royalty-free, non-exclusive, irrevocable permission to read, follow, copy and adapt the docs to make your own films, commercial and client films included, and to include them, or versions you adapted, in the project files you deliver for that film; a style you change and keep as your own counts. Sharing them beyond those people and files, or selling them, isn't covered; any other commercial use of the docs needs a commercial licence: email [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com). Films you make are yours, commercial films included; third-party material you use in them (for example samples under CC BY) keeps its own terms. Fonts in `core/fonts/` are OFL; the sample libraries and HDRIs keep their own licences (listed in `core/audio/INSTRUMENTS.md` and `core/assets/polyhaven/SOURCES.md`). You are responsible for the material you put in your films.
 
 Made by LemoLab · by Lemomo ([@lemomo_ai](https://x.com/lemomo_ai)). Problems or ideas: [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues) in the main repository.

@@ -1,0 +1,19 @@
+{
+ "slug": "bauhaus-shapes",
+ "num": "40",
+ "en": "Bauhaus Shapes",
+ "cn": "包豪斯几何",
+ "category_en": "Graphic & Type",
+ "category_cn": "平面排版",
+ "film": "COMPOUND",
+ "film_cn": "复利是怎么滚起来的",
+ "line": "One dot doubles every ten years: 128 after seventy, 6.02 without compounding, and the last ten years are worth all the rest.",
+ "line_cn": "一个点每十年翻一倍：七十年后是 128，不复利只有 6.02，最后十年抵得上之前的全部。",
+ "uses": [
+  "Finance and economics explainers",
+  "Mechanisms and principles",
+  "Titles and chapter cards"
+ ],
+ "frame_sec": 9.4,
+ "dur": 52.0
+}

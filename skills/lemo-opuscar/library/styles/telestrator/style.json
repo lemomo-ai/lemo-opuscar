@@ -1,11 +1,12 @@
 {
  "slug": "telestrator",
- "num": "69",
+ "num": "07",
  "en": "Sports Telestrator",
  "cn": "体育战术板",
  "category_en": "Edit & Documentary",
- "category_cn": "剪辑与纪实",
+ "category_cn": "剪辑纪实",
  "film": "Freeze Frame",
+ "film_cn": "定格",
  "line": "Down 3–0 at half-time, Fenerbahçe scored three in 12 minutes: freeze, draw, split screen, shot map.",
  "line_cn": "半场 0–3，费内巴切 12 分钟连进三球：冻住画面、画线、分屏、射门图。",
  "uses": [

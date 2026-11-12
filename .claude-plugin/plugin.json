@@ -1,8 +1,8 @@
 {
   "name": "lemo-opuscar",
   "displayName": "Lemo-Opuscar",
-  "version": "1.2.6",
-  "description": "66 film styles, each with a short film made entirely in code. Pick a style, bring your own story, and let Claude direct the film. No video model, no stock footage.",
+  "version": "2.0.0",
+  "description": "99 film styles, each with a short film made entirely in code. Pick a style, bring your own story, and let Claude direct the film. No video model, no stock footage.",
   "author": {
     "name": "Lemomo",
     "url": "https://github.com/lemomo-ai"
@@ -20,6 +20,6 @@
     "film-styles",
     "code-generated-video"
   ],
-  "license": "MIT",
+  "license": "MIT AND CC-BY-NC-4.0 AND OFL-1.1",
   "icon": ".claude-plugin/opuscar-trophy.png"
 }

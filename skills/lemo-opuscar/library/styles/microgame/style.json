@@ -1,11 +1,12 @@
 {
  "slug": "microgame",
- "num": "32",
+ "num": "60",
  "en": "Microgame Frenzy",
  "cn": "微游戏快闪",
  "category_en": "Games",
- "category_cn": "游戏",
+ "category_cn": "电子游戏",
  "film": "Five-Second Astronaut",
+ "film_cn": "五秒宇航员",
  "line": "A clumsy cadet survives a five-second boot camp, faster and faster, until the boss: landing home.",
  "line_cn": "见习宇航员闯五秒训练营，越来越快，Boss 关亲手降落回地球。",
  "uses": [

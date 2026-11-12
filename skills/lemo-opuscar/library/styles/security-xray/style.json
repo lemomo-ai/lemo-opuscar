@@ -1,0 +1,19 @@
+{
+ "slug": "security-xray",
+ "num": "91",
+ "en": "Security X-ray",
+ "cn": "安检 X 光",
+ "category_en": "Instruments & Evidence",
+ "category_cn": "仪器实证",
+ "film": "Night Shift at Lane 3",
+ "film_cn": "安检口的夜班",
+ "line": "One night at an airport screening console: a power bank, a bottle of water, and six live crabs that move in the CT.",
+ "line_cn": "机场安检机屏幕上的一个夜班：一个充电宝、一瓶水，还有在 CT 里动了一下腿的六只活蟹。",
+ "uses": [
+  "Airport and customs screening",
+  "Parcel and cargo inspection",
+  "Product internals"
+ ],
+ "frame_sec": 16.6,
+ "dur": 51.9
+}

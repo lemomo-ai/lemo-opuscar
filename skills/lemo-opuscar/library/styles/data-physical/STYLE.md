@@ -70,7 +70,7 @@ The subject fills at least a third of the frame height at key moments; readings 
 - **Score**: mallets and air — marimba ostinato, bowed and struck vibraphone, harp, glass, a soft synth pad and a pulse bass with audible 2nd/3rd harmonics; horns for a turn. Accelerate by subdivision (8ths → 16ths), not tempo.
 - **Impacts**: a turn or a last object lands on punch (60–120 Hz) + bass drum + timpani + a bell; the two or three designed impacts are the loudest moments.
 - **Silence**: a 0.3–0.6 s suck-out (music and foley −30 dB) before each designed impact; a thin studio-air bed stays.
-- **Mix**: voice ~10 dB over music, ruler notes under the voice, −14 LUFS, true peak ≤ −1.2 dBTP. Voice: calm, precise, short sentences.
+- **Mix**: voice ~10 dB over music, ruler notes under the voice, −14 LUFS, true peak ≤ −1 dBTP. Voice: calm, precise, short sentences.
 
 ## 8. Native moves
 

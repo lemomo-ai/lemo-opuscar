@@ -6,22 +6,28 @@ Every note/hit returns mono float32 @ SR; render returns stereo (N,2). Usage: se
     y = S.hit('snare', 'roll', .6)                       # unpitched percussion
     mix = S.render([(0, 'piano', 'C4', 1, .7, -.2), (0, 'violins', 'E5', 4, .6, .3)], 6)
 """
-import os, re, json, math, glob, threading
+import os, re, sys, json, math, glob, threading, subprocess
+from shutil import which
 from collections import OrderedDict
-import numpy as np
-import soundfile as sf
-import soxr
-from scipy.signal import butter, sosfilt, fftconvolve
-from scipy.ndimage import uniform_filter1d
-
 try:
-    from .sfx import SR, add, limit
-except ImportError:  # when sampler is imported directly
-    from sfx import SR, add, limit
+    import numpy as np
+    import soundfile as sf
+    import soxr
+    from scipy.signal import butter, sosfilt, fftconvolve
+    from scipy.ndimage import uniform_filter1d
+    try:
+        from .sfx import SR, add, limit
+    except ImportError:  # when sampler is imported directly
+        from sfx import SR, add, limit
+except ModuleNotFoundError:
+    # `sampler.py --need` only fetches libraries: it also runs from a Python without the core-tier packages
+    if not (__name__ == '__main__' and sys.argv[1:2] == ['--need']): raise
+    np = None
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instruments')
+LIBRARY = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # the library root (fetch.sh runs there)
 INDEX = os.path.join(ROOT, 'index.json')
-_rng = np.random.default_rng(20260925)
+_rng = np.random.default_rng(20260925) if np else None
 _lock = threading.RLock()
 
 
@@ -407,13 +413,152 @@ def _load_index():
     return _IDX
 
 
+# —— Sample libraries: which ones a score needs, and downloading the missing ones in one go ——
+def lib_of(nm):
+    """The sample library an instrument lives in (vsco2ce, vcsl, freepats, karoryfer, salamander)"""
+    nm = ALIASES.get(nm, nm)
+    if nm not in REG: raise KeyError(f'unknown instrument {nm!r}; available: {", ".join(sorted(REG))}')
+    src = REG[nm]['src']
+    return (src[0] if isinstance(src, tuple) else src).split('/')[0]
+
+
+def _pack_file(lib):
+    try: return json.load(open(os.path.join(LIBRARY, 'tools', 'assets.json'), encoding='utf-8'))['packs'][f'instruments-{lib}']['file']
+    except (OSError, ValueError, KeyError): return f'instruments-{lib}.tar'
+
+
+def _have(lib):
+    """Downloaded and unpacked. fetch.sh removes .release/<pack>.download only after unpacking, so while it is there
+    (a download or an unpacking still running, or cut off) the library counts as missing"""
+    return (os.path.isdir(os.path.join(ROOT, lib)) and os.path.exists(INDEX)
+            and not os.path.exists(os.path.join(LIBRARY, '.release', _pack_file(lib) + '.download')))
+
+
+def _fetch_cmd(libs): return ' && '.join(f'sh tools/fetch.sh instruments {l}' for l in libs)
+
+
+def _mb(libs):
+    """Download size of these packs in MB, from tools/assets.json (None when it can't be read)"""
+    try:
+        packs = json.load(open(os.path.join(LIBRARY, 'tools', 'assets.json'), encoding='utf-8'))['packs']
+        return round(sum(packs[f'instruments-{l}']['size'] for l in libs) / 1e6)
+    except (OSError, ValueError, KeyError):
+        return None
+
+
+def names_in(path):
+    """Instrument names written as quoted strings in a script (e.g. a film's mix.py): a quick guess at what it plays"""
+    try: text = open(path, encoding='utf-8', errors='ignore').read()
+    except OSError: return []
+    found = re.findall(r"""['"]([a-z][a-z0-9_]*)['"]""", text)
+    return list(OrderedDict.fromkeys(n for n in found if n in REG or n in ALIASES))
+
+
+def _script_names():
+    main = getattr(sys.modules.get('__main__'), '__file__', None)
+    return names_in(main) if main and main.endswith('.py') else []
+
+
+def _alive(pid):
+    """Is this process still running? (os.kill(pid, 0) would send CTRL_C_EVENT on Windows)"""
+    if os.name == 'nt':
+        try:
+            import ctypes
+            from ctypes import wintypes
+            k = ctypes.WinDLL('kernel32', use_last_error=True)
+            k.OpenProcess.restype = ctypes.c_void_p
+            k.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+            k.GetExitCodeProcess.restype = wintypes.BOOL
+            k.GetExitCodeProcess.argtypes = (ctypes.c_void_p, ctypes.POINTER(wintypes.DWORD))
+            k.CloseHandle.argtypes = (ctypes.c_void_p,)
+            h = k.OpenProcess(0x1000, False, pid)                 # PROCESS_QUERY_LIMITED_INFORMATION
+            if not h: return ctypes.get_last_error() == 5         # access denied: it exists
+            code = wintypes.DWORD()
+            ok = k.GetExitCodeProcess(h, ctypes.byref(code)); k.CloseHandle(h)
+            return not ok or code.value == 259                    # STILL_ACTIVE
+        except Exception:
+            return True                                           # can't tell: wait, up to the timeout
+    try: os.kill(pid, 0)
+    except ProcessLookupError: return False
+    except OSError: pass
+    return True
+
+
+class _FetchLock:
+    """One download at a time across processes (two mixes started together would otherwise write the same pack)"""
+    def __init__(self): self.path = os.path.join(ROOT, '.fetch.lock')
+
+    def __enter__(self):
+        os.makedirs(ROOT, exist_ok=True)
+        import time
+        for i in range(3600):
+            try: os.mkdir(self.path); break
+            except FileExistsError:
+                try: pid = int(open(os.path.join(self.path, 'pid')).read())
+                except (OSError, ValueError): pid = None
+                if pid and not _alive(pid):
+                    try: os.remove(os.path.join(self.path, 'pid')); os.rmdir(self.path)
+                    except OSError: pass
+                    continue
+                if i == 0: print('sampler: another process is downloading sample libraries; waiting for it', file=sys.stderr, flush=True)
+                time.sleep(1)
+        else:
+            raise RuntimeError(f'{self.path} is still there after an hour: remove it if no download is running')
+        with open(os.path.join(self.path, 'pid'), 'w') as f: f.write(str(os.getpid()))
+        return self
+
+    def __exit__(self, *a):
+        try: os.remove(os.path.join(self.path, 'pid')); os.rmdir(self.path)
+        except OSError: pass
+
+
+def _download(libs):
+    script = os.path.join(LIBRARY, 'tools', 'fetch.sh')
+    if not (os.path.isfile(script) and which('sh')): return 'tools/fetch.sh or sh is not available here'
+    with _FetchLock():
+        libs = [l for l in libs if not _have(l)]                 # another process may have fetched some meanwhile
+        if not libs: return None
+        mb = _mb(libs)
+        print(f'sampler: the score needs sample libraries that are not downloaded yet: {", ".join(libs)}'
+              + (f' (about {mb} MB)' if mb else '') + '. Downloading them now into core/audio/instruments/ with '
+              'tools/fetch.sh, from the "assets" release of the library on GitHub (LEMO_FETCH=0 turns this off).',
+              file=sys.stderr, flush=True)
+        try: out = sys.stderr.fileno()                           # keep the progress off stdout, which a script may pipe
+        except (AttributeError, OSError, ValueError): out = None
+        for l in libs:
+            try: subprocess.run(['sh', script, 'instruments', l], cwd=LIBRARY, stdout=out)
+            except OSError as e: print(f'sampler: could not run tools/fetch.sh ({e})', file=sys.stderr)
+    global _IDX
+    _IDX = None                                                   # each pack brings a fresh index.json
+    return 'the download failed'
+
+
+def ensure(names, fetch=None):
+    """Make sure the sample libraries these instruments need are downloaded. The missing ones are named together and,
+    unless fetch=False or LEMO_FETCH=0, downloaded now with tools/fetch.sh, one pack after the other.
+    Raises RuntimeError with the commands to run by hand when a library is still missing. Returns the libraries that were missing."""
+    libs = list(OrderedDict.fromkeys(lib_of(n) for n in names))
+    with _lock:
+        miss = [l for l in libs if not _have(l)]
+        if not miss: return []
+        if fetch is None: fetch = os.environ.get('LEMO_FETCH', '1') != '0'
+        why = _download(miss) if fetch else 'automatic download is off: LEMO_FETCH=0'
+        still = [l for l in libs if not _have(l)]
+        if still:
+            raise RuntimeError(f'sample libraries not downloaded: {", ".join(still)}; {why}. Run, from the library root '
+                               f'({LIBRARY}): {_fetch_cmd(still)}')
+        return miss
+
+
 # —— Instrument object ——
 class Inst:
     def __init__(self, nm):
         self.name, self.spec = nm, REG[nm]
-        src = self.spec['src']; self.lib = (src[0] if isinstance(src, tuple) else src).split('/')[0]
-        if not (os.path.isdir(os.path.join(ROOT, self.lib)) and os.path.exists(INDEX)):
-            raise RuntimeError(f'{nm}: its sample library "{self.lib}" is not downloaded. Run, from the library root: sh tools/fetch.sh instruments {self.lib}')
+        self.lib = lib_of(nm)
+        if not _have(self.lib):
+            # this one and every library the running script seems to need (instrument names quoted in it), all at once
+            try: ensure([nm] + _script_names())
+            except RuntimeError as e: raise RuntimeError(f'{nm}: {e}') from None
         idx = _load_index()
         if nm not in idx:
             zs, off = _analyze(nm, _scan(nm)); idx[nm] = dict(zones=zs, octave_fix=off)
@@ -475,9 +620,9 @@ FAM_ALIASES = {'弦乐': 'strings', '木管': 'woodwinds', '铜管': 'brass', '�
 
 
 def instruments(fam=None):
-    """Instrument names, all or one family: strings / woodwinds / brass / percussion / keyboards / plucked / folk (the Chinese names are accepted too)"""
+    """Instrument names, all or one family: strings / woodwinds / brass / percussion / keyboards / plucked / folk (the Chinese names are accepted too).
+    An unknown family gives [] (as it always has); FAMILIES lists the families"""
     if isinstance(fam, str): fam = FAM_ALIASES.get(fam, fam.lower())
-    if fam is not None and fam not in FAMILIES: raise KeyError(f'unknown family {fam!r}; families: {", ".join(FAMILIES)}')
     return [k for k, v in REG.items() if fam is None or v['fam'] == fam]
 
 
@@ -633,6 +778,7 @@ def render(events, dur=None, master=True):
         if isinstance(e, dict): evs.append(e)
         else:
             k = ['t', 'inst', 'pitch', 'dur', 'vel', 'pan', 'gain']; evs.append(dict(zip(k, e)))
+    ensure(list(OrderedDict.fromkeys(e['inst'] for e in evs)))   # every library the score needs, named and fetched before any note is made
     if dur is None: dur = max(e['t'] + (e.get('dur') or 1) + 3 for e in evs)
     buf = np.zeros((int(dur * SR), 2), np.float32)
     for e in evs:
@@ -676,3 +822,35 @@ def credits(names):
         if LIC[l][2]: need.append(LIC[l][2])
         else: thanks.add(LIC[l][0])
     return list(OrderedDict.fromkeys(need)) + ([f'Samples (CC0): {", ".join(sorted(thanks))}'] if thanks else [])
+
+
+def _need(args):
+    """.venv/bin/python core/audio/sampler.py --need <name | script.py> …: fetch the libraries before a long render starts"""
+    names = []
+    for a in args:
+        if a.endswith('.py'):
+            if not os.path.isfile(a):
+                print(f'✗ {a}: no such script', file=sys.stderr); return 1
+            got = names_in(a); names += got
+            try: shown = os.path.relpath(a)
+            except ValueError: shown = a                          # Windows: another drive
+            print(f'sampler: {shown} plays {", ".join(got) if got else "no sampled instrument"}', file=sys.stderr)
+        else: names += [n for n in a.split(',') if n]
+    try:
+        ensure(names)
+    except (RuntimeError, KeyError) as e:
+        print(f'✗ {e}', file=sys.stderr); return 1
+    libs = sorted({lib_of(n) for n in names})
+    print(f'✓ sample libraries ready: {", ".join(libs)}' if libs else '✓ no sample library needed', file=sys.stderr)
+    return 0
+
+
+if __name__ == '__main__' and sys.argv[1:2] == ['--need']:
+    sys.exit(_need(sys.argv[2:]))
+if __name__ == '__main__':   # self-check, no samples needed: python3 core/audio/sampler.py
+    assert midi('C4') == 60 and midi('A4') == 69 and name(61) == 'C#4'
+    assert instruments() == list(REG)
+    for f in FAMILIES: assert instruments(f), f
+    assert instruments('弦乐') == instruments('strings') == instruments('Strings')
+    assert instruments('未知') == [] and instruments('no-such-family') == []
+    print('sampler: self-check ok')

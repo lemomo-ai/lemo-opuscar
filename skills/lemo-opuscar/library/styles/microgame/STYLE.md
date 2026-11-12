@@ -13,7 +13,7 @@ The format suits short films; once the frenzy stops building, end it.
 - **It keeps accelerating**: every few games tempo, game length, dwell, command hold and animation frame rate step up together.
 - **The hero survives every medium** by keeping two or three silhouette marks.
 
-Not Game Show Flat (one art style, rounds of bars, call-and-response), not a style sampler reel (every game has stakes; lives connect them), not a montage (each game has a rule grasped in under a second).
+Not Rhythm Game Show (one art style, rounds of bars, call-and-response), not a style sampler reel (every game has stakes; lives connect them), not a montage (each game has a rule grasped in under a second).
 
 ## 2. Materials & rendering
 

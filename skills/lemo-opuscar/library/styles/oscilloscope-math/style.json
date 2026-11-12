@@ -1,0 +1,19 @@
+{
+ "slug": "oscilloscope-math",
+ "num": "76",
+ "en": "Oscilloscope Math",
+ "cn": "示波器数学",
+ "category_en": "Light & Lines",
+ "category_cn": "发光线条",
+ "film": "The Gibbs Phenomenon",
+ "film_cn": "吉布斯现象",
+ "line": "How do you roll a square out of circles? Spinning circles stack into a square wave, until a dive into one corner finds the 9% spike that never goes away.",
+ "line_cn": "方方正正的波，怎么由圆滚出来？一个个圆叠成方波，直到镜头扎进一个角：那里有一个永远消不掉的 9% 尖角。",
+ "uses": [
+  "Maths and physics lessons",
+  "Signals and electronics",
+  "Science explainers"
+ ],
+ "frame_sec": 28.6,
+ "dur": 51.1
+}
