@@ -106,6 +106,8 @@ Every film is directed, drawn, scored and mixed by the agent writing code: 🎨 
 - Three styles draw their characters with an image generator you bring (Manga Panels, Text Flash Cuts, Comic History Cartoon; marked ✦ in [the style list](styles/README.md)): the [Codex CLI](https://github.com/openai/codex) signed in to an account that can generate images, or another image tool you have. Without one, those three can't start; every other style works without it.
 - Default output 1920×1080 at 24 fps (some styles set their own frame rate, such as 30 fps); other sizes on request.
 
+Optional standalone example: [reference video through Monid](docs/monid-video.md) · [API docs](https://docs.monid.ai?utm_source=github&utm_campaign=oss-pr&utm_content=lemomo-ai-lemo-opuscar&aid=OSS-LEMOMO-AI-LEMO-OPUSCAR).
+
 ## Make a style your own
 
 Your own brand colours, logo, characters, the tone of your channel: change a library style into one that's only yours, or make one from a blank page that the library doesn't have. It's the same process I use to add a new style to the library.
