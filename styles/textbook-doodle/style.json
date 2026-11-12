@@ -1,0 +1,18 @@
+{
+ "slug": "textbook-doodle",
+ "num": "78",
+ "en": "Textbook Doodle",
+ "cn": "课本涂鸦",
+ "category_en": "Hand-drawn & Painting",
+ "category_cn": "手绘与绘画",
+ "film": "Why We Have Seasons",
+ "line": "A margin stick figure answers the textbook's question wrong, gets the red cross, then works out the seasons across the page.",
+ "line_cn": "课本空白处的小人先答错、吃了红叉，再在书页上一路把四季推出来。",
+ "uses": [
+  "Lessons",
+  "Explainers",
+  "Study tips"
+ ],
+ "frame_sec": 20.3,
+ "dur": 39.0
+}

@@ -1,0 +1,26 @@
+Why We Have Seasons (为什么会有四季) — Textbook Doodle (Lemo-Opuscar)
+
+No AI-generated images, no stock footage, no photographs, no voice. Every page, letter, pen stroke and doodle is drawn by
+code in this folder with canvas 2D (engine/*.js, pages.js, film.js); the score is played from sampled instruments by
+core/audio/sampler.py and the pen and highlighter foley is synthesised from noise by core/audio/sfx.py (tools/score.py).
+
+LIBRARIES
+- numpy, scipy, soundfile (BSD), from the library's .venv.
+
+SAMPLED INSTRUMENTS (fetched by tools/fetch.sh into core/audio/instruments/, not in git)
+- VSCO 2 Community Edition (Versilian Studios / Sam Gossner) — CC0 1.0: violins (pizzicato and sustained), cellos
+  (pizzicato), clarinet, trombone, French horn, trumpet, timpani, sleigh bells.
+- VCSL, Versilian Community Sample Library (Versilian Studios) — CC0 1.0: xylophone, glockenspiel, harp, triangle,
+  woodblock, shaker.
+- MuldjordKit by Lars Muldjord (FreePats edition) — CC BY 4.0: the drum kit.
+
+FONTS (subset by tools/fonts.py from Google Fonts; licence texts in fonts/)
+- Long Cang 400 (handwriting) — SIL Open Font License 1.1 (fonts/OFL-longcang.txt)
+- Noto Serif SC 400 / 700 (print) — SIL Open Font License 1.1 (fonts/OFL-notoserifsc.txt)
+- Noto Sans SC 500 / 900 (print headings, boxes) — SIL Open Font License 1.1 (fonts/OFL-notosanssc.txt)
+
+THE TEXTBOOK
+The textbook is invented: its pages, wording, figure number and page numbers are made up for the film, and no publisher is
+named. Facts on screen: the Earth is closest to the Sun (perihelion) in early January and farthest (aphelion) in early
+July; the axis is tilted about 23.5° and keeps its direction through the year; seasons in the southern hemisphere are the
+reverse of the north.
