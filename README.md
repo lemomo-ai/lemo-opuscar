@@ -61,6 +61,28 @@ cd lemo-opuscar
 claude
 ```
 
+### Update or uninstall
+
+Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
+
+```sh
+claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
+```
+
+To have it update by itself: in Claude Code, type `/plugin`, open **Marketplaces**, pick **lemolab** and choose **Enable auto-update** (third-party marketplaces such as lemolab don't update automatically until you turn this on).
+
+From a clone: `git pull`, then run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` once (it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
+
+After an update, ask for a film as usual; to make a style your own, see [below](#make-a-style-your-own).
+
+Uninstall, then delete `~/lemo-opuscar`:
+
+```sh
+claude plugin uninstall lemo-opuscar@lemolab
+```
+
+Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
+
 ### What happens next
 
 Not sure yet? With the skill installed, type `/lemo-opuscar:lemo-opuscar` and nothing else. It asks which language to use, then what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
@@ -297,28 +319,6 @@ A thank-you film at each milestone, made in code like everything here. Click a p
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lemomo-ai/lemo-opuscar&type=Date" />
  </picture>
 </a>
-
-## Update or uninstall
-
-Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
-
-```sh
-claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
-```
-
-To have it update by itself: in Claude Code, type `/plugin`, open **Marketplaces**, pick **lemolab** and choose **Enable auto-update** (third-party marketplaces such as lemolab don't update automatically until you turn this on).
-
-From a clone: `git pull`, then run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` once (it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
-
-After an update, ask for a film as usual; to make a style your own, see [above](#make-a-style-your-own).
-
-Uninstall, then delete `~/lemo-opuscar`:
-
-```sh
-claude plugin uninstall lemo-opuscar@lemolab
-```
-
-Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
 
 ## About
 

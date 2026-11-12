@@ -59,6 +59,28 @@ cd lemo-opuscar
 claude
 ```
 
+### 更新和卸载
+
+更新，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）：
+
+```sh
+claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
+```
+
+想让它自动更新：在 Claude Code 里输入 `/plugin`，进 **Marketplaces**，选 **lemolab**，点 **Enable auto-update**（lemolab 这类第三方 marketplace 默认不自动更新，要自己打开）。
+
+用 clone 的：`git pull`，然后跑一次 `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps`（只更新有变化的核心包；装过配音或音乐包的，改跑 `… deps voice music`）。
+
+更新后照常说要做什么片；想把风格改成自己的，看[下面](#改成你自己的风格)。
+
+卸载，然后删除 `~/lemo-opuscar`：
+
+```sh
+claude plugin uninstall lemo-opuscar@lemolab
+```
+
+你自己的风格存在 `~/lemo-my-styles/`，更新和卸载都不会删；不要了就自己删掉这个文件夹。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
+
 ### 接下来会发生什么
 
 还没想好也没关系：装成 skill 的，输入 `/lemo-opuscar:lemo-opuscar` 直接启动。它先问你用什么语言，再问这次想做什么：用库里的风格做片、[把风格改成你自己的](#改成你自己的风格)，或者用你存过的风格。
@@ -295,28 +317,6 @@ claude
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lemomo-ai/lemo-opuscar&type=Date" />
  </picture>
 </a>
-
-## 更新和卸载
-
-更新，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）：
-
-```sh
-claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
-```
-
-想让它自动更新：在 Claude Code 里输入 `/plugin`，进 **Marketplaces**，选 **lemolab**，点 **Enable auto-update**（lemolab 这类第三方 marketplace 默认不自动更新，要自己打开）。
-
-用 clone 的：`git pull`，然后跑一次 `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps`（只更新有变化的核心包；装过配音或音乐包的，改跑 `… deps voice music`）。
-
-更新后照常说要做什么片；想把风格改成自己的，看[上面](#改成你自己的风格)。
-
-卸载，然后删除 `~/lemo-opuscar`：
-
-```sh
-claude plugin uninstall lemo-opuscar@lemolab
-```
-
-你自己的风格存在 `~/lemo-my-styles/`，更新和卸载都不会删；不要了就自己删掉这个文件夹。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
 
 ## 关于
 
