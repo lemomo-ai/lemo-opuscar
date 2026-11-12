@@ -33,11 +33,11 @@ ICON = 'opuscar-trophy.png'   # not icon.png: the portal matches a doc's word "i
 # third-party files. They go into LICENSES/ at the plugin's root and the library's, each next to a copy of LICENSE, whose
 # opening line is changed to say so and to point to the repository for the other texts it names (LICENSE_EDIT).
 LICENSES = ['MIT', 'CC-BY-NC-4.0', 'OFL-1.1']
-LICENSE_EDIT = ('This file says which licence applies to what. The full licence texts are in\n'
+LICENSE_EDIT = ('This file says which licence applies to what. The full licence texts are in '
                 'LICENSES/ (also at https://github.com/lemomo-ai/lemo-opuscar/tree/main/LICENSES).',
-                'This file says which licence applies to what. This edition carries the texts\n'
-                'of the licences its files use (MIT, CC BY-NC 4.0, OFL 1.1) in LICENSES/; the\n'
-                'full texts of all the licences named here are at\n'
+                'This file says which licence applies to what. This edition carries the texts '
+                'of the licences its files use (MIT, CC BY-NC 4.0, OFL 1.1) in LICENSES/; the '
+                'full texts of all the licences named here are at '
                 'https://github.com/lemomo-ai/lemo-opuscar/tree/main/LICENSES.')
 # the plugin's own files in the REUSE format; the library keeps the repository's REUSE.toml, which covers its files
 REUSE_ROOT = '''# The plugin's own files. The library (skills/lemo-opuscar/library/) has its own REUSE.toml. LICENSE says which
