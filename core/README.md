@@ -46,6 +46,8 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 
 **mux** runs a two-pass `loudnorm` to −14 LUFS / true peak −1.2 dB and a 4× oversampled, delay-compensated limiter for a true peak at or under −1 dBTP (if AAC still pushes a peak over, it encodes the audio again with a lower ceiling, picture copied, up to three times, and warns if the peak is still over), adds film grain (`grain` 0 = none) and prints the measured loudness. Silent audio is left at its level with a warning; short audio is padded, long audio cut at the picture's end; missing, damaged or truncated audio is refused. It never leaves a partial file.
 
+For delivery, `LEMO_MUX_STRICT=1 sh core/render/mux.sh …` turns those warnings into failures (exit 1): audio whose loudness can't be measured, audio shorter than the picture, a final measurement that is missing, or a result outside −14 ±1 LUFS / true peak above −1 dB. Intentional digital silence needs `LEMO_ALLOW_SILENCE=1`, intentional padding `LEMO_ALLOW_AUDIO_PAD=1`. Without it, nothing changes.
+
 ## Audio
 
 | Command | What it does |
@@ -91,6 +93,7 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |
 | `LEMO_FETCH=0` | `sampler.py` doesn't download missing sample libraries; it stops and names the `fetch.sh` commands |
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |
+| `LEMO_MUX_STRICT=1` | `mux.sh` fails instead of warning when the film misses its loudness targets; `LEMO_ALLOW_SILENCE=1` / `LEMO_ALLOW_AUDIO_PAD=1` allow intentional silence or padding |
 | `WHISPER_MODEL` | Whisper model name or local folder for `asr_check.py` (same as `--model`; default `base.en` for English, `small` for Chinese, `base` otherwise) |
 | `HF_ENDPOINT` | Hugging Face mirror for the Whisper download |
 
