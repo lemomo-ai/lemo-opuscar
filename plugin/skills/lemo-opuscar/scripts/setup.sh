@@ -1,6 +1,7 @@
 #!/bin/sh
 # Lemo-Opuscar skill: find or install the style library, then print its path.
-#   sh setup.sh                    library ready? (clone on first run, update later) → which package tiers are installed, LIB=<path>
+#   sh setup.sh                    library ready? (clone once, then keep its revision) → which package tiers are installed, LIB=<path>
+#   sh setup.sh update [ref]       explicitly update a clean managed clone (default main)
 #   sh setup.sh deps [voice] [music]
 #                                  install packages: core = Node packages, headless browser, Python core tier;
 #                                  voice = TTS and speech check (+ the English voice model); music = pluck.py (numba)
@@ -9,6 +10,10 @@
 # LEMO_OPUSCAR_HOME = where the library lives (default: the clone you stand in, else ~/lemo-opuscar).
 set -e
 REPO=${LEMO_OPUSCAR_REPO:-https://github.com/lemomo-ai/lemo-opuscar.git}
+if [ -n "$LEMO_OPUSCAR_REV" ]; then
+  [ "${#LEMO_OPUSCAR_REV}" = 40 ] || { echo "✗ LEMO_OPUSCAR_REV must be a full lowercase commit hash"; exit 1; }
+  case "$LEMO_OPUSCAR_REV" in *[!0-9a-f]*) echo "✗ LEMO_OPUSCAR_REV must be a full lowercase commit hash"; exit 1;; esac
+fi
 
 # 1. Which library: $LEMO_OPUSCAR_HOME, else the clone we are standing in, else ~/lemo-opuscar
 is_lib() { [ -f "$1/AGENTS.md" ] && [ -d "$1/core/render" ]; }
@@ -29,11 +34,17 @@ apply_sparse() {
   sparse set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
 }
 
-if [ "$(git -C "$LIB" config --get lemo.managed 2>/dev/null)" = true ]; then
-  # our own clone (nothing of the user's lives in it): match main, whatever happened upstream
-  [ "$(git -C "$LIB" remote get-url origin 2>/dev/null)" = "$REPO" ] || git -C "$LIB" remote set-url origin "$REPO"
-  if err=$(git -C "$LIB" fetch --quiet --depth 1 origin main 2>&1 && git -C "$LIB" reset --quiet --hard FETCH_HEAD 2>&1); then apply_sparse
-  else echo "! could not update $LIB (offline?); using the local copy. git: $err" | head -3; fi
+if [ "$1" = update ]; then
+  [ "$(git -C "$LIB" config --get lemo.managed 2>/dev/null)" = true ] || { echo "✗ update only manages clones created by setup.sh; update your manual clone yourself"; exit 1; }
+  [ -z "$(git -C "$LIB" status --porcelain --untracked-files=normal)" ] || { echo "✗ refusing to update a modified library; preserve your local changes first"; exit 1; }
+  [ "$(git -C "$LIB" remote get-url origin 2>/dev/null)" = "$REPO" ] || { echo "✗ origin differs from LEMO_OPUSCAR_REPO; choose the intended repository explicitly"; exit 1; }
+  ref=${2:-${LEMO_OPUSCAR_REV:-main}}
+  case "$ref" in -*) echo "✗ invalid update ref"; exit 1;; esac
+  git -C "$LIB" fetch --quiet --depth 1 origin "$ref" || { echo "✗ update failed; local revision unchanged"; exit 1; }
+  target=$(git -C "$LIB" rev-parse FETCH_HEAD)
+  [ -z "$LEMO_OPUSCAR_REV" ] || [ "$target" = "$LEMO_OPUSCAR_REV" ] || { echo "✗ fetched revision differs from LEMO_OPUSCAR_REV; local revision unchanged"; exit 1; }
+  git -C "$LIB" reset --quiet --hard "$target"
+  apply_sparse
 elif ! is_lib "$LIB"; then
   [ -e "$LIB" ] && [ -n "$(ls -A "$LIB" 2>/dev/null)" ] && { echo "✗ $LIB exists but is not the Lemo-Opuscar library. Set LEMO_OPUSCAR_HOME to another folder."; exit 1; }
   command -v git >/dev/null || { echo "✗ git is needed to download the library"; exit 1; }
@@ -41,8 +52,16 @@ elif ! is_lib "$LIB"; then
   git clone --quiet --depth 1 --filter=blob:none --sparse --branch main "$REPO" "$LIB" || { rm -rf "$LIB"; echo "✗ download failed (offline?)"; exit 1; }
   apply_sparse
   git -C "$LIB" config lemo.managed true
+  if [ -n "$LEMO_OPUSCAR_REV" ]; then
+    git -C "$LIB" fetch --quiet --depth 1 origin "$LEMO_OPUSCAR_REV"
+    [ "$(git -C "$LIB" rev-parse FETCH_HEAD)" = "$LEMO_OPUSCAR_REV" ] || { echo "✗ LEMO_OPUSCAR_REV must be an exact commit hash"; exit 1; }
+    git -C "$LIB" reset --quiet --hard FETCH_HEAD
+  fi
 fi
 LIB=$(cd "$LIB" && pwd -P)
+if [ -n "$LEMO_OPUSCAR_REV" ] && [ "$(git -C "$LIB" rev-parse HEAD)" != "$LEMO_OPUSCAR_REV" ]; then
+  echo "✗ local revision differs from LEMO_OPUSCAR_REV; explicitly update the library or select the correct clone"; exit 1
+fi
 
 # Installed packages are tracked by content: a marker holds a checksum of the files they came from (and the Python
 # version), so a changed package.json or requirements file triggers a reinstall.
@@ -88,9 +107,7 @@ case "$1" in
     cd "$LIB"; lock_deps "sh setup.sh"
     command -v npm >/dev/null || { echo "✗ npm not found: install Node 20+ first"; exit 1; }
     if ! node_ok; then
-      npm install --no-audit --no-fund --loglevel=error
-      # npm may rewrite package-lock.json; in our own clone put it back, so the checksum stays the same
-      [ "$(git config --get lemo.managed 2>/dev/null)" = true ] && git checkout -q -- package.json package-lock.json 2>/dev/null || true
+      npm ci --no-audit --no-fund --loglevel=error
       sig package.json package-lock.json > node_modules/.lemo-ok
     fi
     node node_modules/playwright-core/cli.js install chromium-headless-shell   # the renderer's browser (a no-op when present)

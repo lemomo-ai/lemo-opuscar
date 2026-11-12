@@ -42,6 +42,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   }
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
   await page.addInitScript(WATCH_GL_LOST);
+  let aborting = false;
+  const abort = message => {   // close the browser before exiting, or its inherited pipes can keep callers waiting after the error
+    if (aborting) return;
+    aborting = true; console.error(message);
+    void browser.close().finally(() => { closeServer(); process.exit(1); });
+  };
   const log = [];   // recent errors, printed together if READY is slow to arrive
   const note = s => { log.push(s); if (log.length > 8) log.shift(); console.error(s); };
   page.on('console', m => {
@@ -51,9 +57,8 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   });
   const fontsMissing = [];   // a page that loads its faces itself (document.fonts.load, new FontFace) rejects with a bare "network error"
   page.on('pageerror', e => {   // stop on an error during rendering, so no broken film is produced
-    console.error('[pageerror]', e.message);
     if (fontsMissing.length && /network error/i.test(e.message)) console.error(`  that is the missing font file${fontsMissing.length > 1 ? 's' : ''} above (${fontsMissing.join(', ')})`);
-    process.exit(1);
+    abort('[pageerror] ' + e.message);
   });
   page.on('response', r => {
     if (r.status() < 400) return;
@@ -61,7 +66,7 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     if (p === '/favicon.ico') return;
     if (FATAL.has(type)) {
       note(`[page] ${r.status()} ${u}`);
-      console.error(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); process.exit(1);
+      abort(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); return;
     }
     if (warned.has(u)) return; warned.add(u);
     if (type === 'font') {   // the text would come out in another face: say which file, and where fonts come from
@@ -72,7 +77,8 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     } else note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`);
   });
   page.on('requestfailed', r => { if (!/favicon/.test(r.url()) && r.failure()?.errorText !== 'net::ERR_ABORTED') note(`[page] request failed ${r.url()} (${r.failure()?.errorText})`); });
-  await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : ''));
+  try { await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : '')); }
+  catch (e) { await browser.close(); closeServer(); throw e; }
   const hint = setTimeout(() => {
     console.error(`still waiting for window.READY after 20 s. The page has to set window.READY = true once fonts and images are loaded.\n` +
       (log.length ? '  problems seen so far:\n    ' + log.join('\n    ') + '\n' : '  no console errors so far: is the <script> closed, does it reach the line that sets window.READY?\n') +
@@ -80,12 +86,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   }, 20000);
   const t0 = Date.now();
   try { await page.waitForFunction(() => window.READY === true, null, { timeout: 180000 }); }
-  catch (e) { console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); process.exit(1); }
+  catch (e) { console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); await browser.close(); closeServer(); process.exit(1); }
   finally { clearTimeout(hint); }
   const lost = gl && await glLost(page);   // a blank film is worse than a failed render
   if (lost) {
     console.error(`the WebGL context (${lost}) was lost before the first frame: ${GL_LOST_HELP}`);
-    process.exit(1);
+    await browser.close(); closeServer(); process.exit(1);
   }
   await warnIfSoftwareGL(page);
   return { browser, page };

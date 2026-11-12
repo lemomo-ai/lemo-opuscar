@@ -20,6 +20,12 @@
 # awk prints and reads decimals the way the locale says: under de_DE or fr_FR macOS awk writes 0,8318, and a comma splits an ffmpeg filter graph
 LC_ALL=C; export LC_ALL
 die() { echo "mux.sh: $*" >&2; exit 1; }
+STRICT=${LEMO_MUX_STRICT:-0}
+ALLOW_PAD=${LEMO_ALLOW_AUDIO_PAD:-0}
+ALLOW_SILENCE=${LEMO_ALLOW_SILENCE:-0}
+for flag in "$STRICT" "$ALLOW_PAD" "$ALLOW_SILENCE"; do
+  case "$flag" in 0|1) ;; *) die "LEMO_MUX_STRICT, LEMO_ALLOW_AUDIO_PAD and LEMO_ALLOW_SILENCE must be 0 or 1";; esac
+done
 V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 [ -n "$V" ] && [ -n "$A" ] && [ -n "$O" ] || die "usage: sh core/render/mux.sh video.mp4 mix.wav out.mp4 [fps=24] [grain=2]"
 [ -f "$V" ] || die "video not found: $V"
@@ -87,6 +93,10 @@ fi
 if [ "$NORM" = 1 ]; then
   LN="${PRE}loudnorm=I=-14:TP=-1.2:LRA=11:measured_I=$(g input_i):measured_TP=$(g input_tp):measured_LRA=$(g input_lra):measured_thresh=$(g input_thresh):offset=$(g target_offset):linear=true"
 else
+  if [ "$STRICT" = 1 ]; then
+    [ "$ALLOW_SILENCE" = 1 ] && [ "$(g input_i)" = '-inf' ] && [ "$(g input_tp)" = '-inf' ] \
+      || die "strict QA: audio loudness cannot be certified (intentional digital silence requires LEMO_ALLOW_SILENCE=1)"
+  fi
   LN="anull"
   echo "mux.sh: warning: the audio is silent or quieter than -70 LUFS, so loudness normalisation was skipped" >&2
 fi
@@ -100,6 +110,7 @@ lim() { [ "$NORM" = 1 ] || return 0; echo ",aresample=192000,alimiter=limit=$(aw
 dur() { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1" 2>/dev/null | head -1; }
 VD=$(dur "$V"); AD=$(dur "$A"); PAD=""
 if awk -v a="$AD" -v v="$VD" 'BEGIN { exit !(a + 0 > 0 && v + 0 > 0 && a + 0 < v - 0.02) }'; then
+  [ "$STRICT" != 1 ] || [ "$ALLOW_PAD" = 1 ] || die "strict QA: audio ($AD s) is shorter than video ($VD s); intentional padding requires LEMO_ALLOW_AUDIO_PAD=1"
   PAD=",apad=whole_dur=$VD"
   echo "mux.sh: note: the audio ($AD s) is shorter than the video ($VD s); padding it with silence" >&2
 fi
@@ -124,8 +135,16 @@ ffmpeg -y -loglevel error -i "$V" -i "$A" \
 [ -s "$TMP" ] || die "no output was written to '$O'"
 mv -f "$TMP" "$O" || die "could not move the finished film to '$O'"
 echo "$O"
-measure() { ffmpeg -hide_banner -nostats -i "$O" -vn -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3; }
-R=$(measure); N=0
+# measure sets R in this shell (not a subshell), so a strict-mode failure stops the script
+measure() {
+  if [ "$STRICT" = 1 ]; then
+    METER=$(ffmpeg -hide_banner -nostats -i "$O" -vn -af ebur128=peak=true -f null - 2>&1) || die "strict QA: final audio could not be decoded completely"
+    R=$(echo "$METER" | grep -E "^\s+(I|LRA|Peak):" | head -3)
+  else
+    R=$(ffmpeg -hide_banner -nostats -i "$O" -vn -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3)
+  fi
+}
+measure; N=0
 while [ "$NORM" = 1 ] && [ $N -lt 3 ]; do
   OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
   [ -n "$OP" ] || break                       # no measurement: don't re-encode blind
@@ -136,12 +155,17 @@ while [ "$NORM" = 1 ] && [ $N -lt 3 ]; do
     -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 256k -movflags +faststart -shortest "$TMP" \
     || die "ffmpeg failed while encoding the audio of '$O' again (its message is above)"
   [ -s "$TMP" ] && mv -f "$TMP" "$O" || die "could not replace '$O' with the re-encoded film"
-  R=$(measure)
+  measure
 done
 echo "$R"
 if [ "$NORM" = 1 ]; then
   OI=$(echo "$R" | awk '$1 == "I:" { print $2 }'); OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
-  awk -v i="$OI" -v p="$OP" 'BEGIN { exit !(i + 0 < -15 || i + 0 > -13 || p + 0 > -1) }' \
-    && echo "mux.sh: warning: the film missed the target (-14 LUFS, true peak <= -1 dB): measured $OI LUFS, peak $OP dB. The mix is probably clipping or has very hot peaks: lower it and tame the peaks, then mux again" >&2
+  if [ "$STRICT" = 1 ]; then
+    awk -v i="$OI" -v p="$OP" 'BEGIN { num="^-?[0-9]+([.][0-9]+)?$"; exit !(i ~ num && p ~ num) }' || die "strict QA: final loudness/peak measurement is unavailable"
+  fi
+  if awk -v i="$OI" -v p="$OP" 'BEGIN { exit !(i + 0 < -15 || i + 0 > -13 || p + 0 > -1) }'; then
+    [ "$STRICT" != 1 ] || die "strict QA: final audio missed target: $OI LUFS, peak $OP dB"
+    echo "mux.sh: warning: the film missed the target (-14 LUFS, true peak <= -1 dB): measured $OI LUFS, peak $OP dB. The mix is probably clipping or has very hot peaks: lower it and tame the peaks, then mux again" >&2
+  fi
 fi
 exit 0

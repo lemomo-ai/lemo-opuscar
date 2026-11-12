@@ -6,7 +6,8 @@ Command reference for `core/` and `tools/`. How the pieces fit together is in [`
 
 | Command | What it does |
 |---|---|
-| `sh plugin/skills/lemo-opuscar/scripts/setup.sh` | find, clone or update the library; prints `LIB=<path>` |
+| `sh plugin/skills/lemo-opuscar/scripts/setup.sh` | find or clone the library, then preserve its revision; prints `LIB=<path>` |
+| `… setup.sh update [ref]` | explicitly update a clean managed clone; default `main`; manual clones stay user-managed |
 | `… setup.sh deps` | core tier: npm packages, headless browser, `.venv` from `requirements.txt` |
 | `… setup.sh deps voice` | adds `requirements-voice.txt` (kokoro-onnx, edge-tts, faster-whisper) and the Kokoro model |
 | `… setup.sh deps music` | adds `requirements-music.txt` (numba, for `pluck.py`; `sampler.py` needs only the core) |
@@ -44,6 +45,8 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 **readcheck** asks the page for `window.TEXTS(t)` at every step. Each text must stay fully in frame, unchanged, for at least CJK characters ÷ 4.5 + other non-space characters ÷ 15 + 1.5 s, and never less than `--min`. A new `text` under the same `id` starts a new piece. Text marked `pass: true` (a shop sign in a fly-through, a label the camera sweeps past, fine-print licence credits on the end card) is listed as passing and not timed; never mark text the film needs read. Subtitles are checked by their `.srt`, not here.
 
 **mux** runs a two-pass `loudnorm` to −14 LUFS / true peak −1.2 dB and a 4× oversampled, delay-compensated limiter for a true peak at or under −1 dBTP (if AAC still pushes a peak over, it encodes the audio again with a lower ceiling, picture copied, up to three times, and warns if the peak is still over), adds film grain (`grain` 0 = none) and prints the measured loudness. Silent audio is left at its level with a warning; short audio is padded, long audio cut at the picture's end; missing, damaged or truncated audio is refused. It never leaves a partial file.
+
+For delivery, `LEMO_MUX_STRICT=1 sh core/render/mux.sh …` turns those warnings into failures (exit 1): audio whose loudness can't be measured, audio shorter than the picture, a final measurement that is missing, or a result outside −14 ±1 LUFS / true peak above −1 dB. Intentional digital silence needs `LEMO_ALLOW_SILENCE=1`, intentional padding `LEMO_ALLOW_AUDIO_PAD=1`. Without it, nothing changes.
 
 ## Audio
 
@@ -84,11 +87,13 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 | Variable | Meaning |
 |---|---|
 | `LEMO_OPUSCAR_HOME` | where `setup.sh` keeps the library (default `~/lemo-opuscar`) |
+| `LEMO_OPUSCAR_REV` | optional exact lowercase 40-character commit; mismatch stops setup; updates are explicit |
 | `PLAYWRIGHT_CHROME` | a Chrome / headless-shell executable instead of Playwright's |
 | `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none). A virtualised adapter (most cloud VMs and CI runners) creates the demo's context and then drops it, so WebGL styles draw nothing: `LEMO_ANGLE=swiftshader` asks for software rendering up front and renders them, slowly |
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |
 | `LEMO_FETCH=0` | `sampler.py` doesn't download missing sample libraries; it stops and names the `fetch.sh` commands |
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |
+| `LEMO_MUX_STRICT=1` | `mux.sh` fails instead of warning when the film misses its loudness targets; `LEMO_ALLOW_SILENCE=1` / `LEMO_ALLOW_AUDIO_PAD=1` allow intentional silence or padding |
 | `WHISPER_MODEL` | Whisper model name or local folder for `asr_check.py` (same as `--model`; default `base.en` for English, `small` for Chinese, `base` otherwise) |
 | `HF_ENDPOINT` | Hugging Face mirror for the Whisper download |
 
