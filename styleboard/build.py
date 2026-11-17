@@ -101,12 +101,25 @@ def gh_anchor(t):
     return re.sub(r'\s', '-', re.sub(r'[^\w\s-]', '', t.strip().lower()))
 
 
-def readme_pic(base, zh, alt, width='100%'):
-    """One of styleboard/art/readme.mjs's pictures, light or dark after the reader's GitHub theme."""
+def _img(src, alt, width):
+    return f'<img src="{src}" width="{width}" align="top" alt="{html.escape(alt, quote=False).replace(chr(34), "&quot;")}">'
+
+
+def readme_pic(href, base, zh, alt, width='100%'):
+    """One of styleboard/art/readme.mjs's pictures, light or dark after the reader's GitHub theme: both, each in a link ending in
+    #gh-light-mode-only or #gh-dark-mode-only, which GitHub hides in the other theme. Not <picture>: that follows the browser's
+    colour scheme, so GitHub dark in a light browser would show the light picture. The site drops the ending from its address."""
     d, lang = README_ART['dir'], 'zh' if zh else 'en'
-    return (f'<picture><source media="(prefers-color-scheme: dark)" srcset="{d}/{base}-{lang}-dark.webp">'
-            f'<source media="(prefers-color-scheme: light)" srcset="{d}/{base}-{lang}-light.webp">'
-            f'<img src="{d}/{base}-{lang}-light.webp" width="{width}" alt="{html.escape(alt, quote=False).replace(chr(34), "&quot;")}"></picture>')
+    return ''.join(f'<a href="{href}#gh-{t}-mode-only">{_img(f"{d}/{base}-{lang}-{t}.webp", alt, width)}</a>' for t in ('light', 'dark'))
+
+
+def readme_cards(items, cols, zh):
+    """Cards as readme.mjs draws them: per row, the posters (one picture each, the same in both themes), a break, the captions
+    (themed), a break. items: [(href, base, alt)]; the posters are <base>-poster.webp. No whitespace: the gutters are in the pictures."""
+    d, w = README_ART['dir'], f'{100 / cols:.2f}%'
+    rows = [items[i:i + cols] for i in range(0, len(items), cols)]
+    return '<br>'.join(''.join(f'<a href="{h}">{_img(f"{d}/{b}-poster.webp", a, w)}</a>' for h, b, a in r) + '<br>' +
+                       ''.join(readme_pic(h, b, zh, '', w) for h, b, a in r) for r in rows)
 
 
 def mmss(d):
@@ -135,12 +148,12 @@ def readme_styles(zh):
             by = (f'（[@{b["name"]}]({b["url"]}) 提供）' if zh else f' (by [@{b["name"]}]({b["url"]}))') if b else ''
             calt = (f'{s["cn"]}《{s.get("film_cn") or s["film"]}》{mmss(s["dur"])}' + (f'，@{b["name"]} 提供' if b else '') if zh else
                     f'{s["en"]}: {s["film"]} ({mmss(s["dur"])})' + (f', by @{b["name"]}' if b else ''))
-            cards.append(f'<a href="{site}styles/{s["slug"]}/">{readme_pic("cards/" + s["slug"], zh, calt, f"{100 / cols:.2f}%")}</a>')
+            cards.append((f'{site}styles/{s["slug"]}/', 'cards/' + s['slug'], calt))
             names.append(f'[{s["cn"] if zh else s["en"]}]({site}styles/{s["slug"]}/){by}')
         old = gh_anchor(cn if zh else en)   # the heading's anchor before the workbench (### Painting & Illustration): old links still land here
-        out += [f'###### <a name="{old}"></a>{head(n, cn, en)}', f'<a href="{site}#s{n:02d}">{readme_pic(f"station-{n:02d}", zh, alt)}</a>',
+        out += [f'###### <a name="{old}"></a>{head(n, cn, en)}', readme_pic(f'{site}#s{n:02d}', f'station-{n:02d}', zh, alt),
                 gallery.CAT_DESC[en][zh],
-                ''.join(cards),   # no whitespace between cards: the gutters are inside the pictures, so the grid lines up with the column
+                readme_cards(cards, cols, zh),
                 f'<sub>{" · ".join(names)}</sub>']
     return '\n' + '\n\n'.join(out) + '\n'
 
@@ -149,9 +162,8 @@ def readme_thanks(zh):
     """Between <!-- thanks:start --> and <!-- thanks:end -->: the thank-you films (THANKS in styleboard/gallery.py) as cards, in one row."""
     import gallery
     site = SITE_URL + ('zh/' if zh else '')
-    w = f'{100 / len(gallery.THANKS):.4g}%'
-    return '\n' + ''.join(f'<a href="{site}thanks/#{i}">{readme_pic("thanks/" + i, zh, t[zh] + (f"（{d}）" if zh else f" ({d})"), w)}</a>'
-                          for i, d, _, t, _ in gallery.THANKS) + '\n'
+    return '\n' + readme_cards([(f'{site}thanks/#{i}', 'thanks/' + i, t[zh] + (f"（{d}）" if zh else f" ({d})")) for i, d, _, t, _ in gallery.THANKS],
+                               len(gallery.THANKS), zh) + '\n'
 
 
 def station_anchors():

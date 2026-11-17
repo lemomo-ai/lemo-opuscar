@@ -182,7 +182,9 @@ class Page:
         langs = (f'<link rel="alternate" hreflang="en" href="{LIVE}"><link rel="alternate" hreflang="zh-CN" href="{LIVE}zh/">'
                  f'<link rel="alternate" hreflang="x-default" href="{LIVE}">')
         # language: a saved choice wins; otherwise a zh* browser on the English page goes to /zh/. Mode: film (scrub the long take) or stack.
-        boot = ("(function(){var d=document.documentElement,s;try{s=localStorage.getItem('opuscar-lang')}catch(e){}"
+        # a README link ends in #gh-dark-mode-only or #gh-light-mode-only (GitHub shows a picture by its theme): dropped first, so #s01 etc. still work
+        boot = ("if(/#gh-(dark|light)-mode-only$/.test(location.hash))history.replaceState(null,'',location.href.replace(/#gh-(dark|light)-mode-only$/,''));"
+                + "(function(){var d=document.documentElement,s;try{s=localStorage.getItem('opuscar-lang')}catch(e){}"
                 + ("if(s==='en'){location.replace('../'+location.search+location.hash);return}" if self.zh else
                    "var l=(navigator.languages&&navigator.languages[0])||navigator.language||'';"
                    "if(s==='zh'||(!s&&/^zh/i.test(l))){location.replace('zh/'+location.search+location.hash);return}")

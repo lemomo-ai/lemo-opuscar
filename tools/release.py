@@ -244,7 +244,7 @@ def hygiene(files, slugs, warn):
 
 # The README's pictures (styleboard/art/readme.mjs draws them into docs/readme/): every picture a README names is there,
 # docs/readme/ holds nothing no README names, and opening a README stays light. GitHub loads every picture of a README at once.
-README_BUDGET = 4_000_000     # bytes a reader downloads to open README.md or README.zh-CN.md, in GitHub's light or dark theme
+README_BUDGET = 4_500_000     # bytes a reader downloads to open README.md or README.zh-CN.md (both themes' pictures load: ≈ 4.05 MB on 2026-11-17)
 README_OUTSIDE = 100_000      # the badges, Trendshift and star-history pictures, counted as a fixed amount (≈ 70 KB on 2026-11-07)
 PICTURE = re.compile(r'<picture>(.*?)</picture>', re.S)
 THEMED = re.compile(r'<source media="\(prefers-color-scheme: (dark|light)\)" srcset="([^"]+)"')
@@ -260,11 +260,12 @@ def readme_pictures(bad):
         local = lambda u: not re.match(r'[a-z]+:', u)
         named |= {u for u in IMG_SRC.findall(t) + [u for _, u in THEMED.findall(t)] if local(u)}
         for theme in ('light', 'dark'):
-            got = []   # what a reader in this theme downloads: the source a <picture> picks, else its <img>; and every plain <img>
+            got = []   # what a reader in this theme downloads: the source a <picture> picks, else its <img>; and every plain <img>, the other
+                       # theme's included (GitHub hides a link ending in #gh-dark-mode-only or #gh-light-mode-only, but its picture still loads)
             rest = PICTURE.sub(lambda m: got.append(next((u for th, u in THEMED.findall(m.group(1)) if th == theme), None)
                                                     or IMG_SRC.search(m.group(1)).group(1)) or '', t)
             got += IMG_SRC.findall(rest)
-            size = README_OUTSIDE + sum(os.path.getsize(os.path.join(ROOT, u)) for u in got if local(u) and os.path.isfile(os.path.join(ROOT, u)))
+            size = README_OUTSIDE + sum(os.path.getsize(os.path.join(ROOT, u)) for u in set(got) if local(u) and os.path.isfile(os.path.join(ROOT, u)))
             notes.append(f'{fn} {theme} {size / 1e6:.2f} MB')
             if size > README_BUDGET: bad.append(f'{fn} weighs {size / 1e6:.2f} MB to open in the {theme} theme (budget {README_BUDGET / 1e6:.0f} MB): lighter pictures in styleboard/art/readme.mjs')
     for u in sorted(named):

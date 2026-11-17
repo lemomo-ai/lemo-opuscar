@@ -210,7 +210,9 @@ class Doc(B.Page):
 
     def boot(self):
         twin = json.dumps(self.twin())
-        return ("(function(){var s;try{s=localStorage.getItem('opuscar-lang')}catch(e){}"
+        # a README link ends in #gh-dark-mode-only or #gh-light-mode-only (GitHub shows a picture by its theme): dropped first, so #s01 etc. still work
+        return ("if(/#gh-(dark|light)-mode-only$/.test(location.hash))history.replaceState(null,'',location.href.replace(/#gh-(dark|light)-mode-only$/,''));"
+                + "(function(){var s;try{s=localStorage.getItem('opuscar-lang')}catch(e){}"
                 + (f"if(s==='en'){{location.replace({twin}+location.search+location.hash);return}}" if self.zh else
                    "var l=(navigator.languages&&navigator.languages[0])||navigator.language||'';"
                    f"if(s==='zh'||(!s&&/^zh/i.test(l))){{location.replace({twin}+location.search+location.hash);return}}")

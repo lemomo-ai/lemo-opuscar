@@ -1,12 +1,18 @@
 // The README's pictures, in the Workbench look of the site (a long oak bench in a night studio, one lamp per station):
-//   docs/readme/cover-<lang>-<theme>.webp       the cover: 4 s of the long take's opening (OPUSCAR in wood type), seamless loop
+//   docs/readme/cover-<lang>.webp               the cover: 4 s of the long take's opening (OPUSCAR in wood type), seamless loop
 //   docs/readme/station-<NN>-<lang>-<theme>.webp one header per category: its station on the bench, number and name in the dark
-//   docs/readme/cards/<slug>-<lang>-<theme>.webp one card per style: its poster and caption, linked to its page by the README
+//   docs/readme/cards/<slug>-poster.webp         one card per style, in two pictures: its poster (one for both languages and themes)
+//   docs/readme/cards/<slug>-<lang>-<theme>.webp   and its caption under it; the README links both to the style's page
 //   docs/readme/opuscar98-<lang>-<theme>.webp   OPUSCAR 98: the projector at the end of the bench
-//   docs/readme/thanks/<id>-<lang>-<theme>.webp  the thank-you films, as cards
+//   docs/readme/thanks/<id>-poster.webp, thanks/<id>-<lang>-<theme>.webp  the thank-you films, as cards (poster and caption)
 //   docs/readme/end-<lang>-<theme>.webp          the end plate: the bench's lamps still on, a star asked for (linked to the stargazers)
-//   docs/cover.jpg, docs/social.jpg              the still cover (for clients without <picture>) and GitHub's social preview
+//   docs/cover.jpg, docs/social.jpg              the cover as a still, and GitHub's social preview
 // <lang> is en or zh, <theme> light (a page of paper: the photo is a printed plate) or dark (the photo sinks into the page).
+// The README shows a theme's picture by GitHub's own theme, not the browser's: both pictures are on the page, each in a link ending
+// in #gh-light-mode-only or #gh-dark-mode-only, which GitHub hides in the other theme (its <picture> follows the browser, so a reader
+// with GitHub dark and the browser light would get the light picture). A hidden picture is still downloaded, so what is the same in
+// both themes is one picture: the cover, and the cards' posters. The themed pictures keep their transparency: each only ever sits
+// on its own theme's page (dark dimmed included).
 // styleboard/build.py writes the Markdown that shows them; styleboard/art/readme.json holds what both must agree on.
 //
 //   node styleboard/art/readme.mjs                      everything that changed
@@ -50,15 +56,15 @@ const W = 838;          // README column, desktop
 const S = 2;            // headers, covers: 2×
 const CS = 1.5;         // cards: 1.5× (captions stay sharp; a third of the weight of 2×)
 const HEAD_H = 279;     // station header: 3 : 1
-const COVER = { w: 838, h: 419, frames: 80, ms: 50, travel: 32, cropY: 80, q: 75 };   // 2 : 1, 4 s, frames 0–32 of the long take
+const COVER = { w: 838, h: 419, frames: 80, ms: 50, travel: 32, cropY: 80, q: 58 };   // 2 : 1, 4 s, frames 0–32 of the long take
 const O98_H = 381;      // OPUSCAR 98 plate: 2.2 : 1
 const END_H = 320;      // end plate: 2.6 : 1
 const END = { frame: 95, zoom: 1, dx: 0.1, y: 0.3 };   // the long take's frame with the lamps still on above the empty bench, and how it sits
 const GAP = 18;         // between style cards
 const TGAP = 14;        // between thank-you cards
 const PLATE = 0.40;     // light theme: the photo starts at 40 % (the site's left column is 40 %)
-const Q = { station: 72, card: 74, o98: 80, end: 72 };   // headers at 72: the dark README stays under 4 MB to open (release.py check)
-const V = 3;            // bump to redraw everything after a change the keys can't see (an encoder upgrade)
+const Q = { station: 66, poster: 64, card: 74, o98: 80, end: 72 };   // both themes' pictures download: the README stays under 4.5 MB to open (release.py check)
+const V = 6;            // bump to redraw everything after a change the keys can't see (an encoder upgrade)
 const colsFor = n => LAYOUT.cols_by_count[n] || LAYOUT.cols;
 
 // How each station's still sits in its 3 : 1 header. y: where the window sits (0 top … 1 bottom); dx: the still moves right by
@@ -157,16 +163,11 @@ async function page(html, w, h, scale = S) {
   await p.evaluate(() => Promise.all([...document.images].map(i => i.decode().catch(() => 0))));
   return { p, close: () => ctx.close() };
 }
-// Every picture is flattened onto its theme's page colour, never left transparent: GitHub picks the <picture> source by the
-// browser's colour scheme, not by the GitHub theme, so a reader whose browser is dark and GitHub light (or the other way round)
-// gets the other theme's picture; transparent, its light (or dark) type would vanish into the page. Opaque, it reads as a plate.
-function webp(png, out, q) {
+// alphaQ below 100 (lossy transparency) only for type on a clear ground, the captions: a third lighter and the same to the eye;
+// on a fade (the headers' dark edges) it bands
+function webp(png, out, q, alphaQ = 100) {
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  const bg = THEME[/-dark\.webp$/.test(out) ? 'dark' : 'light'].page.replace('#', '0x');
-  const b = fs.readFileSync(png), w = b.readUInt32BE(16), h = b.readUInt32BE(20), flat = png.replace(/\.png$/, '-flat.png');   // the PNG's IHDR
-  execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-i', `color=c=${bg}:s=${w}x${h}`, '-i', png,
-    '-filter_complex', '[0][1]overlay=format=auto,format=rgb24', '-frames:v', '1', flat]);
-  execFileSync('cwebp', ['-quiet', '-q', String(q), '-m', '6', '-sharp_yuv', flat, '-o', out]);
+  execFileSync('cwebp', ['-quiet', '-q', String(q), '-m', '6', '-sharp_yuv', '-alpha_q', String(alphaQ), png, '-o', out]);
   return fs.statSync(out).size;
 }
 const kb = n => `${Math.round(n / 1024)} KB`;
@@ -233,17 +234,25 @@ async function stations(cats) {
   }
 }
 
-// ---------- cards: a picture with its caption, laid out flush in the README column ----------
-// Each card carries its share of the gutters (the first column flush left, the last flush right) and the README puts no
-// whitespace between them, so the grid lines up with the column at any width. A card's picture therefore depends on its
-// column and, a row being as tall as its tallest caption, on its row: both are in its key. Renaming a style redraws its
-// cards (and its row's, if the row's height changes); adding one redraws the cards after it in its station, whose columns move.
-const CARD_CSS = t => `
-  .grid{display:grid;width:${W}px;color:${t.fg}}
-  .card{padding-bottom:14px}
-  .th{aspect-ratio:16/9;box-shadow:${t.shadow};outline:1px solid ${t.edge};outline-offset:-1px;position:relative}
+// ---------- cards: a poster and its caption, laid out flush in the README column ----------
+// Each card is two pictures, its poster (with the shadow under it) and its caption, and each carries its share of the gutters
+// (the first column flush left, the last flush right); the README puts no whitespace between them and breaks the line after a
+// row of posters and after a row of captions, so the grid lines up with the column at any width. The poster is one picture for
+// both languages and themes: its shadow is soft enough to read on paper and sink into a dark page, its edge a neutral grey. A
+// picture therefore depends on its column, and a caption, a row being as tall as its tallest caption, on its row: both are in
+// the keys. Renaming a style redraws its captions (and its row's, if the row's height changes); adding one redraws the cards
+// after it in its station, whose columns move.
+const SHADE = 9;        // room under a poster for its shadow (the caption picture starts below it)
+const POSTER_CSS = `
+  .th{aspect-ratio:16/9;box-shadow:0 1px 1px rgba(28,25,20,.06),0 9px 14px -9px rgba(28,25,20,.42);outline:1px solid rgba(128,128,128,.22);outline-offset:-1px;position:relative}
   .th img{display:block;width:100%;height:100%;object-fit:cover}
+  .pp{padding-bottom:${SHADE}px}`;
+const CARD_CSS = t => POSTER_CSS + `
+  .grid{display:grid;row-gap:6px;width:${W}px;color:${t.fg}}   /* rows apart, so a cut never takes a pixel of the next row */
+  .card{display:flex;flex-direction:column}
+  .cap{flex:1;padding-bottom:14px}
   .l1{display:flex;align-items:baseline;gap:10px;margin-top:11px}
+  .cap>.l1:first-child{margin-top:${11 - SHADE}px}
   .l2{display:flex;align-items:baseline;gap:10px;margin-top:3px;color:${t.fg2}}
   .nm{flex:1;font-size:16.5px;line-height:1.22}
   .sc.nm{font-size:15.5px;letter-spacing:.02em}
@@ -252,7 +261,7 @@ const CARD_CSS = t => `
   .du{flex:none;font-size:11px;letter-spacing:.06em;color:${t.fg3};font-weight:400}
   .new{font:500 8.5px/1 Sans;letter-spacing:.12em;text-transform:uppercase;color:${t.lamp};margin-left:5px;vertical-align:.7em}
   .zh .new{font-family:SerifSC;font-size:10px;letter-spacing:0}
-  .ty .l1{margin-top:9px} .ty .stars{font-size:9.5px;color:${t.fg3};letter-spacing:.12em}
+  .ty .l1{margin-top:9px} .ty .cap>.l1:first-child{margin-top:0} .ty .stars{font-size:9.5px;color:${t.fg3};letter-spacing:.12em}
   .ty .nm{font-size:14.5px} .ty .sc.nm{font-size:13.5px}`;
 function styleCaption(s, lang) {
   const nw = isNew(s) ? `<sup class="new">${lang === 'zh' ? '新' : 'New'}</sup>` : '';
@@ -265,34 +274,34 @@ function thanksCaption(f, lang) {
   return `<div class="l1"><span class="stars mono">${esc(stars)}</span></div>` +
     `<div class="l1" style="margin-top:3px"><span class="nm ${lang === 'zh' ? 'sc' : 'serif'}">${esc(title)}</span><span class="du mono">${f.dur}</span></div>`;
 }
-// items: [{rel, thumb, cap}] → one picture per item; the page is only opened when something needs drawing
+// items: [{rel, poster, thumb, cap}] → a caption picture (rel) and a poster picture (poster) per item; the page is only opened
+// when something needs drawing. The posters, the same in every language and theme, are drawn by whichever call needs them first.
 async function cardRow(items, cols, gap, theme, lang, cls = '') {
   const t = THEME[theme], cw = W / cols, css = CARD_CSS(t);
-  const cells = items.map((it, i) => {
-    const col = i % cols, l = col * gap / cols, r = (cols - 1 - col) * gap / cols;
-    return `<div class="card" id="c${i}" style="padding-left:${l}px;padding-right:${r}px"><div class="th"><img src="${url(it.thumb)}"></div>${it.cap}</div>`;
-  });
-  // a row's height comes from its captions, so a card's key names the captions of its row-mates (not their pixels)
-  const rowOf = i => cells.slice(i - i % cols, i - i % cols + cols).map(c => norm(c).replace(/<img[^>]*>/, ''));
-  const keys = items.map((it, i) => key('card', norm(css), cls, norm(cells[i]), cols, rowOf(i), fhash(it.thumb), CS, Q.card));
-  const need = items.map((it, i) => todo(it.rel, keys[i]));
+  const pad = i => { const col = i % cols; return `padding-left:${col * gap / cols}px;padding-right:${(cols - 1 - col) * gap / cols}px`; };
+  const caps = items.map((it, i) => `<div class="cap" id="k${i}" style="${pad(i)}">${it.cap}</div>`);
+  const cells = items.map((it, i) => `<div class="card"><div class="pp" id="p${i}" style="${pad(i)}"><div class="th"><img src="${url(it.thumb)}"></div></div>${caps[i]}</div>`);
+  // a row's height comes from its captions, so a caption's key names the captions of its row-mates
+  const rowOf = i => caps.slice(i - i % cols, i - i % cols + cols).map(norm);
+  const needCap = items.map((it, i) => todo(it.rel, key('caption', norm(css), cls, norm(caps[i]), cols, rowOf(i), CS, Q.card, 50)));
+  const needPoster = items.map((it, i) => todo(it.poster, key('poster', POSTER_CSS, pad(i), cw, fhash(it.thumb), CS, Q.poster)));
   let drawn = 0, total = 0;
-  if (need.some(Boolean)) {
+  if (needCap.some(Boolean) || needPoster.some(Boolean)) {
     const html = `<style>${css}</style><div class="grid ${lang} ${cls}" style="grid-template-columns:repeat(${cols},${cw}px)">${cells.join('')}</div>`;
     const { p, close } = await page(html, W, 1600, CS);
-    for (const [i, it] of items.entries()) if (need[i]) {
+    for (const [i, it] of items.entries()) for (const [need, sel, rel] of [[needPoster[i], `#p${i}`, it.poster], [needCap[i], `#k${i}`, it.rel]]) if (need) {
       const png = path.join(tmp, 'c.png');
-      await p.locator(`#c${i}`).screenshot({ path: png, omitBackground: true });
-      webp(png, out(it.rel), Q.card); record(it.rel, need[i]); drawn++;
+      await p.locator(sel).screenshot({ path: png, omitBackground: true });
+      webp(png, out(rel), rel === it.poster ? Q.poster : Q.card, rel === it.poster ? 100 : 50); record(rel, need); drawn++;
     }
     await close();
   }
-  for (const it of items) total += fs.statSync(out(it.rel)).size;
+  for (const it of items) total += fs.statSync(out(it.rel)).size + fs.statSync(out(it.poster)).size;
   return { total, drawn };
 }
 async function cards(cats) {
   for (const c of cats.filter(c => c.styles.length)) for (const lang of ['en', 'zh']) for (const theme of ['light', 'dark']) {
-    const items = c.styles.map(s => ({ rel: `${RD}/cards/${s.slug}-${lang}-${theme}.webp`, thumb: path.join(ROOT, 'styles', s.slug, 'poster.jpg'), cap: styleCaption(s, lang) }));
+    const items = c.styles.map(s => ({ rel: `${RD}/cards/${s.slug}-${lang}-${theme}.webp`, poster: `${RD}/cards/${s.slug}-poster.webp`, thumb: path.join(ROOT, 'styles', s.slug, 'poster.jpg'), cap: styleCaption(s, lang) }));
     const { total, drawn } = await cardRow(items, colsFor(items.length), GAP, theme, lang);
     if (drawn) log(`  cards ${nn(c.n)} ${lang} ${theme}: ${drawn} drawn, ${items.length} × ≈${kb(total / items.length)}`);
   }
@@ -324,7 +333,7 @@ async function films() {
       await p.locator('#o').screenshot({ path: png, omitBackground: true }); await close();
       log(`  ${rel}: ${kb(webp(png, out(rel), Q.o98))}`); record(rel, e);
     }
-    const items = THANKS.map(f => ({ rel: `${RD}/thanks/${f.id}-${lang}-${theme}.webp`, thumb: f.poster, cap: thanksCaption(f, lang) }));
+    const items = THANKS.map(f => ({ rel: `${RD}/thanks/${f.id}-${lang}-${theme}.webp`, poster: `${RD}/thanks/${f.id}-poster.webp`, thumb: f.poster, cap: thanksCaption(f, lang) }));
     const { total, drawn } = await cardRow(items, items.length, TGAP, theme, lang, 'ty');
     if (drawn) log(`  thank-you cards ${lang} ${theme}: ${drawn} drawn, ${kb(total)}`);
   }
@@ -380,8 +389,8 @@ async function end() {
 }
 
 // ---------- cover: the long take's opening, frames 0–32 eased out and back (1 − cos), 4 s, seamless ----------
-// light: the frame as it is; dark: its edges sink into GitHub's dark page. The site's top bar is set on both; it carries no
-// count, so adding a style never redraws the covers (the headline under the cover has the number).
+// One picture for both themes (the frame as it is, with the site's top bar): a hidden picture would be downloaded too. The bar
+// carries no count, so adding a style never redraws the covers (the headline under the cover has the number).
 function mastHTML(lang, w, h, k = 1) {
   const sub = lang === 'zh' ? `<span class="sc wb">电影工坊</span>` : `<span class="serif it wb">The Workbench</span>`;
   const right = lang === 'zh' ? '用代码做的影片风格' : 'Film styles, made in code';
@@ -393,12 +402,6 @@ function mastHTML(lang, w, h, k = 1) {
   .r{font-size:${10 * k}px;color:rgba(239,231,218,.62)}</style>
   <div style="position:relative;width:${w}px;height:${h}px" id="m"><div class="m"><span class="mk">OPUSCAR</span>${sub}<i class="ln"></i><span class="mono r">${right}</span></div></div>`;
 }
-function fadeHTML(w, h, color) {
-  return `<div id="f" style="width:${w}px;height:${h}px;background:
-    linear-gradient(180deg,transparent 78%,${color} 100%),
-    linear-gradient(90deg,${color} 0,transparent 12%,transparent 88%,${color} 100%),
-    linear-gradient(0deg,transparent 88%,${color}cc 100%)"></div>`;
-}
 async function overlay(html, w, h, sel, file) {
   const { p, close } = await page(html, w, h);
   await p.locator(sel).screenshot({ path: file, omitBackground: true }); await close();
@@ -408,10 +411,10 @@ async function cover() {
   const pw = COVER.w * S, ph = COVER.h * S, N = COVER.frames;
   const src = Array.from({ length: COVER.travel + 1 }, (_, i) => media(`long/frames/f_${String(i).padStart(4, '0')}.png`));
   const jobs = [];
-  for (const lang of ['en', 'zh']) for (const theme of ['light', 'dark']) {
-    const rel = `${RD}/cover-${lang}-${theme}.webp`;
-    const e = todo(rel, key('cover', COVER, norm(mastHTML(lang, COVER.w, COVER.h)), theme === 'dark' ? fadeHTML(COVER.w, COVER.h, THEME.dark.page) : ''), src);
-    if (e) jobs.push({ lang, theme, rel, e });
+  for (const lang of ['en', 'zh']) {
+    const rel = `${RD}/cover-${lang}.webp`;
+    const e = todo(rel, key('cover', COVER, norm(mastHTML(lang, COVER.w, COVER.h))), src);
+    if (e) jobs.push({ lang, rel, e });
   }
   if (!jobs.length) return;
   for (let k = 0; k < N; k++) {   // neighbouring frames blended for the in-betweens
@@ -419,15 +422,13 @@ async function cover() {
     execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-y', '-i', src[i], '-i', src[j], '-lavfi',
       `[0][1]blend=all_expr='A*(1-${f})+B*${f}',crop=1920:960:0:${COVER.cropY},scale=${pw}:${ph}:flags=lanczos`, path.join(dir, `b${String(k).padStart(3, '0')}.png`)]);
   }
-  await overlay(fadeHTML(COVER.w, COVER.h, THEME.dark.page), COVER.w, COVER.h, '#f', path.join(dir, 'fade.png'));
-  for (const { lang, theme, rel, e } of jobs) {
+  for (const { lang, rel, e } of jobs) {
     const mast = path.join(dir, `mast-${lang}.png`);
-    if (!fs.existsSync(mast)) await overlay(mastHTML(lang, COVER.w, COVER.h), COVER.w, COVER.h, '#m', mast);
-    const fr = path.join(dir, `${lang}-${theme}`); fs.mkdirSync(fr, { recursive: true });
+    await overlay(mastHTML(lang, COVER.w, COVER.h), COVER.w, COVER.h, '#m', mast);
+    const fr = path.join(dir, lang); fs.mkdirSync(fr, { recursive: true });
     for (let i = 0; i < N; i++) {
       const b = path.join(dir, `b${String(i).padStart(3, '0')}.png`), o = path.join(fr, `o${String(i).padStart(3, '0')}.png`);
-      const ins = theme === 'dark' ? ['-i', b, '-i', path.join(dir, 'fade.png'), '-i', mast] : ['-i', b, '-i', mast];
-      execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-y', ...ins, '-lavfi', theme === 'dark' ? '[0][1]overlay[a];[a][2]overlay' : '[0][1]overlay', o]);
+      execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-y', '-i', b, '-i', mast, '-lavfi', '[0][1]overlay', o]);
     }
     const list = fs.readdirSync(fr).sort().map(n => path.join(fr, n));
     fs.mkdirSync(path.dirname(out(rel)), { recursive: true });
