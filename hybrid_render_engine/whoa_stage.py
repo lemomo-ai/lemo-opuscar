@@ -39,6 +39,18 @@ def proj(wx, wy, wz, cam_pos, focal, w=720, h=1280):
     if dz <= 0.25: return None
     return (w * 0.5 + (dx / dz) * focal, h * 0.5 - (dy / dz) * focal, dz)
 
+def render_stage(img, cam_pos, focal, ground_col=(0.76, 0.60, 0.42), frame_idx=0):
+    """Renders basic horizon and parallax animated clouds."""
+    h, w, _ = img.shape
+    horizon = int(h * 0.55)
+    img[:horizon, :] = (0.53, 0.81, 0.92)
+    img[horizon:, :] = ground_col
+    for i in range(4):
+        cx = ((i * 240 + frame_idx * 3) % (w + 200)) - 100
+        cy = 180 + (i % 2) * 90
+        circle(img, cx, cy, 45, (0.98, 0.98, 1.0), outline=0)
+        circle(img, cx + 35, cy + 5, 35, (0.98, 0.98, 1.0), outline=0)
+
 # -----------------------------------------------------------------------------
 # Great Emu War 3D Props & Outback Stage
 # -----------------------------------------------------------------------------
@@ -520,6 +532,9 @@ def draw_emu_whoa(img, wx, wy, wz, cam_pos, focal, phase=0.0, beret=False):
         box(img, ph[0] - sc*0.9, ph[1] - sc*1.25, ph[0] + sc*0.8, ph[1] - sc*0.85, (0.78, 0.16, 0.14), outline=2)
 
 def draw_red_stamp(img, text_tag="MILITARY ACTION", cy_ratio=0.22):
+    if isinstance(text_tag, (int, float)):
+        cy_ratio = float(text_tag)
+        text_tag = ""
     h, w, _ = img.shape
     bw, bh = 420, 64
     x0, y0 = w // 2 - bw // 2, int(h * cy_ratio)
