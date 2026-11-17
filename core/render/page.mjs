@@ -24,6 +24,17 @@ export function takeSize(args) {
 }
 const warned = new Set();   // each optional file warns only once per process (video.mjs opens several pages)
 const FATAL = new Set(['script', 'document']);   // things the page must have; module imports also have type script
+// A fatal error closes the browsers before exiting: on Linux (WSL among them) a killed browser's helper processes can outlive it
+// and keep the caller's stdout/stderr open, so whoever reads the tool's output would wait forever. Every browser this process
+// opened (video.mjs opens several), at most 5 s for the close; calls still running on the pages fail quietly meanwhile.
+let quitting = false;
+const browsers = new Set();
+async function quit() {
+  if (quitting) return new Promise(() => {}); quitting = true;
+  process.on('unhandledRejection', () => {}); process.on('uncaughtException', () => {});
+  await Promise.race([Promise.all([...browsers].map(b => b.close().catch(() => {}))), new Promise(r => setTimeout(r, 5000))]);
+  closeServer(); process.exit(1);
+}
 // gl: check for a lost WebGL context before handing the page over (the tools that only read the page, readcheck and events, pass false)
 export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = false, gl = true } = {}) {
   requireDemo(dir);
@@ -40,6 +51,7 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     }
     throw e;
   }
+  browsers.add(browser);
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
   await page.addInitScript(WATCH_GL_LOST);
   const log = [];   // recent errors, printed together if READY is slow to arrive
@@ -53,15 +65,16 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   page.on('pageerror', e => {   // stop on an error during rendering, so no broken film is produced
     console.error('[pageerror]', e.message);
     if (fontsMissing.length && /network error/i.test(e.message)) console.error(`  that is the missing font file${fontsMissing.length > 1 ? 's' : ''} above (${fontsMissing.join(', ')})`);
-    process.exit(1);
+    quit();
   });
   page.on('response', r => {
     if (r.status() < 400) return;
     const u = r.url(), p = new URL(u).pathname, type = r.request().resourceType();
     if (p === '/favicon.ico') return;
     if (FATAL.has(type)) {
+      if (quitting) return;
       note(`[page] ${r.status()} ${u}`);
-      console.error(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); process.exit(1);
+      console.error(`the page needs ${p} (a ${type}) but the server answered ${r.status()}. Check the path: pages use absolute URLs like /core/lib.js (see core/README.md)`); quit(); return;
     }
     if (warned.has(u)) return; warned.add(u);
     if (type === 'font') {   // the text would come out in another face: say which file, and where fonts come from
@@ -72,7 +85,8 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     } else note(`[page] optional file missing: ${u} (${r.status()}, requested by ${type === 'fetch' || type === 'xhr' ? 'fetch/xhr' : type}; fine if the page has a fallback)`);
   });
   page.on('requestfailed', r => { if (!/favicon/.test(r.url()) && r.failure()?.errorText !== 'net::ERR_ABORTED') note(`[page] request failed ${r.url()} (${r.failure()?.errorText})`); });
-  await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : ''));
+  try { await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : '')); }
+  catch (e) { if (quitting) await quit(); console.error(`the page didn't load: ${e.message.split('\n')[0]}`); await quit(); }
   const hint = setTimeout(() => {
     console.error(`still waiting for window.READY after 20 s. The page has to set window.READY = true once fonts and images are loaded.\n` +
       (log.length ? '  problems seen so far:\n    ' + log.join('\n    ') + '\n' : '  no console errors so far: is the <script> closed, does it reach the line that sets window.READY?\n') +
@@ -80,12 +94,12 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   }, 20000);
   const t0 = Date.now();
   try { await page.waitForFunction(() => window.READY === true, null, { timeout: 180000 }); }
-  catch (e) { console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); process.exit(1); }
+  catch (e) { if (quitting) await quit(); console.error(`window.READY never became true (waited ${((Date.now() - t0) / 1000).toFixed(0)} s, limit 180 s): ${e.message.split('\n')[0]}`); await quit(); }
   finally { clearTimeout(hint); }
   const lost = gl && await glLost(page);   // a blank film is worse than a failed render
   if (lost) {
     console.error(`the WebGL context (${lost}) was lost before the first frame: ${GL_LOST_HELP}`);
-    process.exit(1);
+    await quit();
   }
   await warnIfSoftwareGL(page);
   return { browser, page };
