@@ -511,7 +511,7 @@
     const pins = MAN.stations.map(s => s.pin);
     let x;
     if (f <= pins[0]) x = -.5 + .5 * Math.max(0, f - MAN.segs[0][1] + 40) / 40;
-    else if (f >= pins[pins.length - 1]) x = 14 + Math.min(1, (f - pins[pins.length - 1]) / 60) * .6;
+    else if (f >= pins[pins.length - 1]) x = 14;   // past the last station (the finale): the mark stays on 15, the ruler's end
     else { let i = 0; while (f > pins[i + 1]) i++; x = i + (f - pins[i]) / (pins[i + 1] - pins[i]); }
     CAM.style.transform = `translateX(${(Math.max(0, x) / 14) * RAIL.clientWidth}px)`;
     CAM.style.opacity = x < 0 ? 0 : 1;
