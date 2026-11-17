@@ -58,7 +58,7 @@ const GAP = 18;         // between style cards
 const TGAP = 14;        // between thank-you cards
 const PLATE = 0.40;     // light theme: the photo starts at 40 % (the site's left column is 40 %)
 const Q = { station: 72, card: 74, o98: 80, end: 72 };   // headers at 72: the dark README stays under 4 MB to open (release.py check)
-const V = 1;            // bump to redraw everything after a change the keys can't see (an encoder upgrade)
+const V = 3;            // bump to redraw everything after a change the keys can't see (an encoder upgrade)
 const colsFor = n => LAYOUT.cols_by_count[n] || LAYOUT.cols;
 
 // How each station's still sits in its 3 : 1 header. y: where the window sits (0 top … 1 bottom); dx: the still moves right by
@@ -157,9 +157,16 @@ async function page(html, w, h, scale = S) {
   await p.evaluate(() => Promise.all([...document.images].map(i => i.decode().catch(() => 0))));
   return { p, close: () => ctx.close() };
 }
+// Every picture is flattened onto its theme's page colour, never left transparent: GitHub picks the <picture> source by the
+// browser's colour scheme, not by the GitHub theme, so a reader whose browser is dark and GitHub light (or the other way round)
+// gets the other theme's picture; transparent, its light (or dark) type would vanish into the page. Opaque, it reads as a plate.
 function webp(png, out, q) {
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  execFileSync('cwebp', ['-quiet', '-q', String(q), '-m', '6', '-sharp_yuv', '-alpha_q', '100', png, '-o', out]);
+  const bg = THEME[/-dark\.webp$/.test(out) ? 'dark' : 'light'].page.replace('#', '0x');
+  const b = fs.readFileSync(png), w = b.readUInt32BE(16), h = b.readUInt32BE(20), flat = png.replace(/\.png$/, '-flat.png');   // the PNG's IHDR
+  execFileSync('ffmpeg', ['-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-i', `color=c=${bg}:s=${w}x${h}`, '-i', png,
+    '-filter_complex', '[0][1]overlay=format=auto,format=rgb24', '-frames:v', '1', flat]);
+  execFileSync('cwebp', ['-quiet', '-q', String(q), '-m', '6', '-sharp_yuv', flat, '-o', out]);
   return fs.statSync(out).size;
 }
 const kb = n => `${Math.round(n / 1024)} KB`;
