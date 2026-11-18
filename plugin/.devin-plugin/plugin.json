@@ -1,0 +1,10 @@
+{
+  "name": "lemo-opuscar",
+  "version": "1.0.0",
+  "description": "Make a film in one of the library's code-rendered styles: your agent directs, draws, scores and mixes it.",
+  "author": { "name": "Lemomo" },
+  "homepage": "https://lemomo-ai.github.io/lemo-opuscar/",
+  "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+  "license": "MIT AND CC-BY-NC-4.0",
+  "keywords": ["film", "video", "animation", "explainer", "code-rendered"]
+}

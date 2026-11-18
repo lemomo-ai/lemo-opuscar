@@ -1,0 +1,12 @@
+{
+  "name": "lemolab",
+  "version": "1.0.0",
+  "description": "LemoLab skills: film styles for coding agents.",
+  "author": { "name": "Lemomo" },
+  "homepage": "https://lemomo-ai.github.io/lemo-opuscar/",
+  "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+  "license": "MIT AND CC-BY-NC-4.0",
+  "requiredPlugins": [
+    { "source": "git-subdir", "url": "https://github.com/lemomo-ai/lemo-opuscar.git", "path": "plugin" }
+  ]
+}

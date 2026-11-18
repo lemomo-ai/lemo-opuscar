@@ -49,6 +49,12 @@ claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
+用 Devin CLI 一条命令即可（安装仓库根目录会自动装入 `plugin/` 里的插件；也可以直接 `devin plugins install lemomo-ai/lemo-opuscar#plugin`）：
+
+```sh
+devin plugins install lemomo-ai/lemo-opuscar
+```
+
 之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
 
 **或者 clone 仓库。** 片子做到仓库里的 `films/<名字>/`。

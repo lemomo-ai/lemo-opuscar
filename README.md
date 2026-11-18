@@ -51,6 +51,12 @@ claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
+With the Devin CLI it's one command (installing the repository root pulls the plugin from `plugin/`; `devin plugins install lemomo-ai/lemo-opuscar#plugin` installs it directly):
+
+```sh
+devin plugins install lemomo-ai/lemo-opuscar
+```
+
 Then use it from any folder. On first use it downloads the guides, tools and style prompts to `~/lemo-opuscar`, shared by all your films; each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
 
 **Or clone the repo.** Films go into `films/<name>/` inside it.
