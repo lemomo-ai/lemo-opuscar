@@ -24,10 +24,14 @@ SAMPLE_LIBS = ('freepats', 'karoryfer', 'salamander', 'vcsl', 'vsco2ce')
 
 # Packs downloaded by tools/fetch.sh (paths relative to the repo root). Every instruments pack carries index.json.
 PACKS = {
-    'voice': ['core/tts/kokoro-v1.0.onnx', 'core/tts/voices-v1.0.bin'],
+    'voice': ['core/tts/kokoro-v1.0.onnx', 'core/tts/voices-v1.0.bin', 'core/tts/KOKORO-SOURCES.md',
+              'core/tts/LICENSE-Apache-2.0.txt'],
     'hdri': ['core/assets/polyhaven/lythwood_lounge_2k.hdr', 'core/assets/polyhaven/photo_studio_loft_hall_2k.hdr'],
     **{f'instruments-{lib}': ['core/audio/instruments/index.json', f'core/audio/instruments/{lib}'] for lib in SAMPLE_LIBS},
 }
+# A pack whose content changes gets a new file name: a clone or plugin install that pins the old sha256 in its
+# tools/assets.json keeps downloading the old file, which stays on the release.
+FILES = {'voice': 'voice-2.tar'}
 STYLE_FIELDS = ('slug', 'en', 'cn', 'category_en', 'category_cn', 'film', 'line', 'line_cn', 'frame_sec')
 SIGN_OFF = re.compile(r'(?i:lemolab)|Opus 5\.5|Sign-off')
 # a home folder may be `Alice Smith` (up to three words, none ending in a dot, so a sentence isn't swallowed); /root/ counts when a path follows it
@@ -314,12 +318,18 @@ def sha(p):
     return h.hexdigest()
 
 
-def tar(name, paths):
+def tar(name, paths, anonymous=False):
+    """anonymous: no owner names or ids in the headers. Only for packs with a new file name (FILES): rebuilding a
+    published pack this way would change its sha256 and break the clones that pin it."""
+    def keep(i):
+        if i.name.endswith('.DS_Store') or '__pycache__' in i.name: return None
+        if anonymous: i.uid = i.gid = 0; i.uname = i.gname = ''
+        return i
     os.makedirs(OUT, exist_ok=True)
     dst = os.path.join(OUT, name)
     with tarfile.open(dst + '.part', 'w') as t:
         for p in paths:
-            t.add(os.path.join(ROOT, p), arcname=p, filter=lambda i: None if i.name.endswith('.DS_Store') or '__pycache__' in i.name else i)
+            t.add(os.path.join(ROOT, p), arcname=p, filter=keep)
     os.replace(dst + '.part', dst)
     return dst
 
@@ -331,9 +341,10 @@ def pack():
             if name in old: man[name] = old[name]; print(f'  ! {name}: its files are not here, keeping the published entry')
             else: print(f'  ! {name}: its files are not here, so it is not in the manifest')
             continue
-        dst = tar(f'{name}.tar', paths)
-        man[name] = dict(file=f'{name}.tar', size=os.path.getsize(dst), sha256=sha(dst))
-        print(f'  {name}.tar  {man[name]["size"] / 1e6:.0f} MB')
+        fn = FILES.get(name, f'{name}.tar')
+        dst = tar(fn, paths, anonymous=name in FILES)
+        man[name] = dict(file=fn, size=os.path.getsize(dst), sha256=sha(dst))
+        print(f'  {fn}  {man[name]["size"] / 1e6:.0f} MB')
     json.dump(dict(repo=REPO, tag='assets', packs=man), open(MANIFEST, 'w'), indent=1)
     print(f'→ {os.path.relpath(MANIFEST, ROOT)}')
 

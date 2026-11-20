@@ -11,5 +11,4 @@ they come from, from the MIT licence of that code, and from every other licence
 in this repository. Lemomo (LemoLab) gives no licence for Clawd, and none for
 any of Anthropic's names, logos or trademarks. The rest of each picture is ours,
 under CC BY 4.0, and the rest of the code is ours, under MIT (see LICENSE, rules
-3 and 4). Each picture may still be shared whole, as published, under CC BY 4.0,
-and the code used under MIT, for everything but Clawd.
+3 and 4). Anyone reusing Clawd needs Anthropic's permission or another legal basis, even when Clawd stays inside a complete picture or film.

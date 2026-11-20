@@ -2,7 +2,9 @@ Rocket from Spare Parts — Brick Toy demo · LemoLab × Claude Opus 5.5 · asse
 
 Music        Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0
              https://creativecommons.org/licenses/by/4.0/
-             "Monkeys Spinning Monkeys", "Heroic Age" — edited to the picture by music/edit.py
+             "Monkeys Spinning Monkeys", "Heroic Age" — edited to the picture by music/edit.py.
+             https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400011
+             https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100848
 Sound FX     Synthesized in code (mix.py + core/audio/sfx.py). No samples.
 Voices       Kokoro TTS v1.0 (kokoro-onnx), Apache-2.0 — bm_george (narrator), am_adam (radio)
 3D assets    Poly Haven, CC0 (see core/assets/polyhaven/SOURCES.md):

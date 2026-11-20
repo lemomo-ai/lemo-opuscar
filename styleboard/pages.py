@@ -31,11 +31,9 @@ BOOK_PATH = os.path.join(HERE, 'opuscar98_styles.json')
 BOOK = json.load(open(BOOK_PATH, encoding='utf-8'))
 FILMS_URL = C.FILMS_URL                                                   # 1080p, on the "films" release
 BLOB = f'{C.REPO_URL}/blob/main'
-# the demo films whose narration LICENSE leaves out of CC BY 4.0 (Edge TTS, Doubao TTS): their pages say so, and their JSON-LD names no licence
-# (CLAWD, below, likewise)
+# The demo films whose narration LICENSE leaves out of CC BY 4.0 (Edge TTS, Doubao TTS).
 NO_VOICE_LICENCE = {'chalkboard', 'circuit-board', 'desktop-flythrough', 'isometric-picture-book', 'printed-long-take', 'news-package'}
 CLAWD = {'living-screencast'}   # the demo films with Clawd and Anthropic's Claude app interface: LICENSE leaves both out of CC BY 4.0
-CC_BY = 'https://creativecommons.org/licenses/by/4.0/'
 mmss = B.mmss
 
 
@@ -71,7 +69,7 @@ T = {
     'spec_h': ('Facts', '资料'),
     'f_needs': ('Needs', '需要'), 'f_needs_img': ('An image generator you provide (the Codex CLI or another image tool): the characters are generated, and without one this style can\'t start',
                                                   '你自己提供的生图工具（Codex CLI 或别的生图工具）：人物要用它生成，没有就没法开始'),
-    'f_no': ('Number', '编号'), 'f_fps': ('{fps} fps', '{fps} 帧/秒'), 'f_lic': ('Licence', '授权'), 'f_lic_v': ('STYLE.md, DEMO.md: CC BY-NC 4.0 · demo code: MIT{code} · film and stills: CC BY 4.0{nar}', 'STYLE.md、DEMO.md：CC BY-NC 4.0 · 样片代码：MIT{code} · 影片和静帧：CC BY 4.0{nar}'),   # links to LICENSE
+    'f_no': ('Number', '编号'), 'f_fps': ('{fps} fps', '{fps} 帧/秒'), 'f_lic': ('Licence', '授权'), 'f_lic_v': ('STYLE.md, DEMO.md: CC BY-NC 4.0 · demo code: MIT{code} · our contributions to the film and stills: CC BY 4.0{nar}', 'STYLE.md、DEMO.md：CC BY-NC 4.0 · 样片代码：MIT{code} · 影片和静帧中项目有权授权的部分：CC BY 4.0{nar}'),   # links to LICENSE
     'f_lic_nar': (' (narration excluded)', '（旁白除外）'),   # the six films whose voice LICENSE excludes (NO_VOICE_LICENCE)
     'f_lic_clawd': (' (Clawd and the Claude app interface excluded)', '（Clawd 和 Claude 应用界面除外）'),   # CLAWD
     'f_lic_3p': ('third-party material: see CREDITS', '第三方素材：见 CREDITS'),   # links to the demo's CREDITS
@@ -328,7 +326,7 @@ class StylePage(Doc):
         ld = [{'@type': 'VideoObject', '@id': self.url() + '#film', 'name': f'{s["film"]} · {s["en"]}', 'description': c['line_cn'] if zh else c['line'],
                'thumbnailUrl': poster_abs, 'duration': f'PT{int(s["dur"] // 60)}M{int(round(s["dur"] % 60))}S', 'contentUrl': full, 'embedUrl': self.url(),
                'inLanguage': 'zh-CN' if zh else 'en', 'creator': {'@id': G.AUTHOR['@id']}, 'isBasedOn': {'@id': G.REPO_URL}, 'genre': cat['en'],
-               **({} if self.slug in NO_VOICE_LICENCE | CLAWD else {'license': CC_BY}),
+               'license': f'{BLOB}/LICENSE',
                **({'contributor': {'@type': 'Person', 'name': c['by']['name'], 'url': c['by']['url']}} if c.get('by') else {})},   # a style contributed from outside
               {'@type': 'BreadcrumbList', 'itemListElement': [
                   {'@type': 'ListItem', 'position': 1, 'name': self.w('crumb_all'), 'item': B.LIVE + ('zh/' if zh else '')},

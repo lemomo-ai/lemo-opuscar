@@ -104,10 +104,10 @@ They are made in the main repository and copied here by its `tools/films_repo.sh
 
 ## Licence
 
-The films are under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (its text: [LICENSE](LICENSE)), with the exceptions below. The main repository's [LICENSE]({lic}) is the one that counts: where this summary and it differ, it decides.
+The project’s licensable contributions to these films are under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (its text: [LICENSE](LICENSE)), with the exceptions below. The main repository's [LICENSE]({lic}) is the one that counts: where this summary and it differ, it decides.
 
 - Third-party material in them (footage, photographs, satellite imagery, maps, data, models, music) keeps its own licence, named in the film's `CREDITS`.
-- The narration of six films, {voice}, is under no licence here: don't extract it or reuse it. Those films may still be shared whole, as published.
+- The narration of six films, {voice}, requires its own legal basis for reuse, including when it remains embedded in the complete film.
 - Clawd, Anthropic's character (for example in Mascot Screencast), and third-party product interfaces, names, logos and trademarks are not licensed here.
 
 Credit "Lemo-Opuscar by Lemomo (LemoLab)", with a link to {C.REPO_URL} and to the licence, and say if you changed the film. For the two styles contributed from outside, name their author too: "Memphis Diorama by EianLu, in Lemo-Opuscar by Lemomo (LemoLab)" and "Crayon World 3D by 2nd1st, in Lemo-Opuscar by Lemomo (LemoLab)".

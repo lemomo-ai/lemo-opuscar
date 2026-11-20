@@ -282,6 +282,13 @@ precedence = "override"
 SPDX-FileCopyrightText = ["Indian Type Foundry (Kalam)", "Patrick Wagesreiter (Patrick Hand)", "The ZCOOL KuaiLe Project Authors", "2026 Lemomo (LemoLab)"]
 SPDX-License-Identifier = "OFL-1.1"
 
+# Neon Tubes' Han glyphs are traced from Noto Sans SC font outlines.
+[[annotations]]
+path = "styles/neon-tubes/demo/glyphs.json"
+precedence = "override"
+SPDX-FileCopyrightText = ["Adobe and Google (Noto Sans SC)", "2026 Lemomo (LemoLab)"]
+SPDX-License-Identifier = "OFL-1.1"
+
 # Code libraries bundled with two demos (their licence files sit next to them)
 [[annotations]]
 path = ["styles/spy-titles/demo/vendor/opentype.min.js", "styles/spy-titles/demo/vendor/opentype-LICENSE.txt"]
@@ -290,9 +297,15 @@ SPDX-FileCopyrightText = "2020 Frederik De Bleser"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = "styles/watercolor/demo/vendor/topojson-client.min.cjs"
+path = ["styles/watercolor/demo/vendor/topojson-client.min.cjs", "styles/watercolor/demo/vendor/LICENSE-topojson-client"]
 precedence = "override"
 SPDX-FileCopyrightText = "2012-2019 Michael Bostock"
+SPDX-License-Identifier = "ISC"
+
+[[annotations]]
+path = "styles/watercolor/demo/vendor/LICENSE-world-atlas"
+precedence = "override"
+SPDX-FileCopyrightText = "2013-2019 Michael Bostock"
 SPDX-License-Identifier = "ISC"
 
 # Poly Haven models and textures (CC0, see core/assets/polyhaven/SOURCES.md)

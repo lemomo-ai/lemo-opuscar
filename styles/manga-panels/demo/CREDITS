@@ -9,8 +9,9 @@ BRAND, PRODUCT, CHARACTER
   It copies no real brand or model and carries no logo, badge, lettering or numbers.
 
 IMAGES (Codex image generation · Codex 生图)
-- These images belong to this demo only. A film in this style generates its own images for its own topic;
-  the demo's character, camera and city are not for reuse, recolouring or editing into another film.
+- These images were made for this demo. A film in this style generates its own images for its own topic (STYLE.md),
+  so don't build another film from the demo's character, camera or city. That is a rule of the style, not a licence
+  term: the demo's images are licensed as LICENSE says for the film and its stills.
 - All 15 drawings were generated with Codex image generation (OpenAI image generation through the Codex CLI,
   core/image/gen_image.py) from the prompts in prompts/, each with the style suffix in
   tools/style_suffix.txt. Re-printed as screentone by tools/prep.py. No photo, existing artwork, character or
