@@ -3,9 +3,9 @@
   "tag": "assets",
   "packs": {
     "voice": {
-      "file": "voice.tar",
-      "size": 353761280,
-      "sha256": "6bc6536c9bc3283150a3bfd1859a9841c39ab4ee05e3df35933d9ab38ce327af"
+      "file": "voice-2.tar",
+      "size": 353771520,
+      "sha256": "7e03348a29f21405269e9db9456d81e0e27e8a9ac5ba3509fc4720702e0c26ea"
     },
     "hdri": {
       "file": "hdri.tar",
