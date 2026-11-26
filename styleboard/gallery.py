@@ -47,10 +47,13 @@ INSTALL_CLONE = ['git clone https://github.com/lemomo-ai/lemo-opuscar.git', 'cd 
 # The feature film: its sources are not in the library; the 720p cut is on the "web" release (the pages play it from
 # site_config.film_url, inside the site), 1080p on "films".
 FEATURE = dict(poster='img/feature_opuscar98.jpg', dur='6:31', full=f'{FILMS_URL}/opuscar98.mp4', date='2026-09-29')
-# Thank-you films (made at 300, 800, 2,000, 3,000 and 6,000 stars): 720p on the "web" release as stars<n>.mp4, 1080p on the "thanks" release,
+# Thank-you films (made at 300, 800, 2,000, 3,000, 6,000 and 20,000 stars): 720p on the "web" release as stars<n>.mp4, 1080p on the "thanks" release,
 # posters in img/thanks/. (id, length, date, (title, 标题), (description, 说明))
 THANKS_REL = THANKS_URL
 THANKS = [
+    ('stars20000', '0:56', '2026-11-26', ('20,000 stars · Twenty Thousand Dominoes', '20000 星 · 两万块骨牌'),
+     ('One domino for each star, engraved with its number and the day it came. The chain runs across a filmmaker\'s desk at night, splits where the stars came fastest, and the last ones fall to spell THANK YOU ★ 20,000. Built in Blender from Python, with Poly Haven scans (CC0). Domino sounds: mmaruska (freesound.org), CC BY 4.0.',
+      '一颗星一块骨牌，牌背刻着第几颗和哪一天。骨牌穿过深夜的拍片工作台，星涨得快的地方链条分岔，最后两万块牌倒下，拼出THANK YOU ★ 20,000。用Python驱动Blender做成，道具是Poly Haven的真实扫描（CC0）。骨牌声来自freesound.org的mmaruska（CC BY 4.0）。')),
     ('stars6000', '0:50', '2026-10-24', ('6,000 stars · The Quilt', '6000 星 · 百家被'),
      ('One star, one patch: 6,000 stargazers sew a quilt for a library not yet a month old. Little Clawd falls asleep under it and dreams in the library\'s styles.',
       '一颗星一块布，6000 位点星的人给还没满月的库缝了一床百家被。小 Clawd 盖着它睡着了，梦里是库里的各种画风。')),
@@ -139,8 +142,8 @@ UI = {
     'o_kind_3D': ('A real 3D scene and camera', '真 3D 场景和机位'),
     # thank-you films
     't_title': ('Thank you for every star · Lemo-Opuscar', '谢谢每一颗星 · Lemo-Opuscar'),
-    't_desc': ('Lemo-Opuscar thank-you films at 300, 800, 2,000, 3,000 and 6,000 GitHub stars, each made entirely in code by Claude Opus 5.5, with no video model.',
-               'Lemo-Opuscar 在 300、800、2000、3000、6000 颗 GitHub 星时做的感谢片，每支都由 Claude Opus 5.5 完全用代码做成，没用视频模型。'),
+    't_desc': ('Lemo-Opuscar thank-you films at 300, 800, 2,000, 3,000, 6,000 and 20,000 GitHub stars, each made entirely in code by Claude Opus 5.5, with no video model.',
+               'Lemo-Opuscar 在 300、800、2000、3000、6000、20000 颗 GitHub 星时做的感谢片，每支都由 Claude Opus 5.5 完全用代码做成，没用视频模型。'),
     't_eyebrow': ('Thank you', '谢谢'), 't_h1': ('For every star', '谢谢每一颗星'),
     't_lead': ('At each milestone we made a thank-you film, in code like everything else here: no video model, every frame, note and cut written by Claude Opus 5.5.',
                '每到一个里程碑，我们做一支感谢片。和这里的所有片子一样全部用代码做成：没有视频模型，每一帧、每个音符、每一刀剪辑都由 Claude Opus 5.5 写出来。'),

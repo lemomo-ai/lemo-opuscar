@@ -44,7 +44,7 @@ jobs:
           gh release download web --repo "$GITHUB_REPOSITORY" --dir _site/films \
             --pattern opuscar98.mp4 --pattern "stars*.mp4" --pattern my-style-material-grid.mp4
           cd _site/films
-          for f in opuscar98 stars300 stars800 stars2000 stars3000 stars6000 my-style-material-grid; do
+          for f in opuscar98 stars300 stars800 stars2000 stars3000 stars6000 stars20000 my-style-material-grid; do
             [ -s "$f.mp4" ] || { echo "::error::$f.mp4 is not on the \"web\" release (sh tools/publish.sh)"; exit 1; }
           done
         env:

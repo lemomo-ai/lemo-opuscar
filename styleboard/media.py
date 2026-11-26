@@ -81,7 +81,7 @@ def jobs(data, book):
                         stills=True, step=float(max(1, math.ceil(s['dur'] / 60)))))   # about 60 cells or fewer: a second each up to a minute
     out.append(dict(id='opuscar98', kind='feature', src=os.path.join(WEB, 'opuscar98.mp4'), poster=os.path.join(HERE, 'img', 'feature_opuscar98.jpg'),
                     stills=False, step=0, times=book))
-    for fid in ('stars6000', 'stars3000', 'stars2000', 'stars800', 'stars300'):
+    for fid in ('stars20000', 'stars6000', 'stars3000', 'stars2000', 'stars800', 'stars300'):
         out.append(dict(id=fid, kind='thanks', src=os.path.join(WEB, fid + '.mp4'), poster=os.path.join(HERE, 'img', 'thanks', fid + '.jpg'),
                         master=os.path.join(PROMO, fid, fid + '.mp4'), stills=False, step=1.0))
     return out

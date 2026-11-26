@@ -552,7 +552,7 @@ class ThanksPage(Doc):
                'hasPart': [{'@type': 'VideoObject', 'name': f[3][zh], 'description': f[4][zh], 'thumbnailUrl': B.LIVE + f'img/thanks/{f[0]}.jpg',
                             'uploadDate': f[2], 'duration': iso(f[1]), 'contentUrl': f'{G.THANKS_REL}/{f[0]}.mp4', 'embedUrl': self.url() + '#' + f[0]} for f in G.THANKS]},
               self.repo_ld(), G.AUTHOR]
-        out = [self.head(t('t_title'), t('t_desc'), B.LIVE + 'img/thanks/stars6000.jpg', ld)]
+        out = [self.head(t('t_title'), t('t_desc'), B.LIVE + f'img/thanks/{G.THANKS[0][0]}.jpg', ld)]
         out.append(f'<body class="thanks">\n<a class="skip" href="#main">{E(t("skip"))}</a>\n' + self.top() + '<main id="main">\n')
         head = (f' <header class="th">\n  <p class="meta"><span>{E(t("t_eyebrow"))}</span><i></i><span>{E(t("t_n", n=len(G.THANKS)))}</span></p>\n'
                 f'  <h1>{E(self.sc(t("t_h1")))}</h1>\n  <p class="lede">{E(t("t_lead"))}</p>\n </header>\n')
@@ -703,7 +703,7 @@ def llms():
            f'- [Agent instructions]({BLOB}/AGENTS.md): how an agent directs a film in one of the styles',
            f'- [The Workbench]({B.LIVE}): every style on a long workbench, one station per category, with its demo film; in Chinese at {B.LIVE}zh/',
            f'- [OPUSCAR 98]({B.LIVE}opuscar98/): 98 Years of Best Picture ({G.FEATURE["dur"]}), the feature film made with these tools',
-           f'- [Thank-you films]({B.LIVE}thanks/): films made at 300, 800, 2,000, 3,000 and 6,000 stars',
+           f'- [Thank-you films]({B.LIVE}thanks/): films made at 300, 800, 2,000, 3,000, 6,000 and 20,000 stars',
            f'- [OPUSCAR 98, all 98 styles]({B.LIVE}opuscar98/#styles): per film the style, a reusable style prompt, and the shots and direction '
            f'(as JSON: {B.LIVE}opuscar98/styles.json)', '']
     for c in DATA['categories']:
