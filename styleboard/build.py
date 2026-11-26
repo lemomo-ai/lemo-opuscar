@@ -159,11 +159,11 @@ def readme_styles(zh):
 
 
 def readme_thanks(zh):
-    """Between <!-- thanks:start --> and <!-- thanks:end -->: the thank-you films (THANKS in styleboard/gallery.py) as cards, in one row."""
+    """Between <!-- thanks:start --> and <!-- thanks:end -->: the thank-you films (THANKS in styleboard/gallery.py) as cards, thanks_cols to a row."""
     import gallery
     site = SITE_URL + ('zh/' if zh else '')
     return '\n' + readme_cards([(f'{site}thanks/#{i}', 'thanks/' + i, t[zh] + (f"（{d}）" if zh else f" ({d})")) for i, d, _, t, _ in gallery.THANKS],
-                               len(gallery.THANKS), zh) + '\n'
+                               min(len(gallery.THANKS), README_ART['thanks_cols']), zh) + '\n'
 
 
 def station_anchors():

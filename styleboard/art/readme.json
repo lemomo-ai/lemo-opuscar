@@ -1,6 +1,7 @@
 {
- "_doc": "What styleboard/build.py (the README's Markdown) and styleboard/art/readme.mjs (its pictures) must agree on. Pictures are docs/readme/station-<NN>-<en|zh>-<light|dark>.webp, cards/<slug>-poster.webp with cards/<slug>-<lang>-<theme>.webp (its caption), thanks/<id>-poster.webp with thanks/<id>-<lang>-<theme>.webp, opuscar98-<lang>-<theme>.webp, end-<lang>-<theme>.webp, cover-<lang>.webp.",
+ "_doc": "What styleboard/build.py (the README's Markdown) and styleboard/art/readme.mjs (its pictures) must agree on. Pictures are docs/readme/station-<NN>-<en|zh>-<light|dark>.webp, cards/<slug>-poster.webp with cards/<slug>-<lang>-<theme>.webp (its caption), thanks/<id>-poster.webp with thanks/<id>-<lang>-<theme>.webp, opuscar98-<lang>-<theme>.webp, end-<lang>-<theme>.webp, cover-<lang>.webp. The thank-you cards run thanks_cols to a row.",
  "dir": "docs/readme",
  "cols": 3,
- "cols_by_count": {"4": 4}
+ "cols_by_count": {"4": 4},
+ "thanks_cols": 3
 }

@@ -334,7 +334,7 @@ async function films() {
       log(`  ${rel}: ${kb(webp(png, out(rel), Q.o98))}`); record(rel, e);
     }
     const items = THANKS.map(f => ({ rel: `${RD}/thanks/${f.id}-${lang}-${theme}.webp`, poster: `${RD}/thanks/${f.id}-poster.webp`, thumb: f.poster, cap: thanksCaption(f, lang) }));
-    const { total, drawn } = await cardRow(items, items.length, TGAP, theme, lang, 'ty');
+    const { total, drawn } = await cardRow(items, Math.min(items.length, LAYOUT.thanks_cols), TGAP, theme, lang, 'ty');
     if (drawn) log(`  thank-you cards ${lang} ${theme}: ${drawn} drawn, ${kb(total)}`);
   }
 }
