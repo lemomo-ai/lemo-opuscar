@@ -1,0 +1,51 @@
+1
+00:00:01,200 --> 00:00:03,117
+How many people do you need in a room
+
+2
+00:00:03,117 --> 00:00:05,603
+before two of them share a birthday?
+
+3
+00:00:06,000 --> 00:00:10,217
+It feels like 183. Half the calendar.
+
+4
+00:00:11,400 --> 00:00:13,902
+The real answer is 23.
+
+5
+00:00:15,000 --> 00:00:15,990
+Here's the trick.
+
+6
+00:00:15,990 --> 00:00:18,146
+You're not comparing people to dates.
+
+7
+00:00:18,146 --> 00:00:20,970
+You're comparing people to each other.
+
+8
+00:00:21,000 --> 00:00:24,956
+23 people make 253 pairs.
+
+9
+00:00:25,200 --> 00:00:28,306
+And every pair is another chance at a match.
+
+10
+00:00:30,000 --> 00:00:33,104
+Add them up, and the odds pass 50%.
+
+11
+00:00:33,600 --> 00:00:36,786
+At 57 people, it's 99.
+
+12
+00:00:38,400 --> 00:00:41,509
+So the next time a coincidence feels impossible,
+
+13
+00:00:41,509 --> 00:00:43,409
+count the pairs.

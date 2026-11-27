@@ -1,0 +1,23 @@
+{
+ "slug": "editorial-explainer",
+ "num": "",
+ "en": "Editorial Explainer",
+ "cn": "编辑部解说",
+ "category_en": "Print & Printmaking",
+ "category_cn": "印刷版画",
+ "film": "Twenty-Three",
+ "film_cn": "二十三个人",
+ "line": "How many people until two share a birthday? A guess of 183 is crossed out, 23 is highlighted, and 253 pencil lines show why.",
+ "line_cn": "多少人里会有两人同一天生日？直觉的 183 被划掉，23 被荧光笔标出，253 条铅笔线说明原因。",
+ "uses": [
+  "Explainers",
+  "Tech and business",
+  "Myth-busting"
+ ],
+ "frame_sec": 28.4,
+ "dur": 46.8,
+ "by": {
+  "name": "ivishalanand",
+  "url": "https://github.com/ivishalanand"
+ }
+}
