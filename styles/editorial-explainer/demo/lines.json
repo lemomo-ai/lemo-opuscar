@@ -1,0 +1,11 @@
+[
+ {"id": "l1", "t": 1.2, "text": "How many people do you need in a room before two of them share a birthday?", "voice": "am_michael", "speed": 1.0, "subs": [["How many people do you need in a room", "How many"], ["before two of them share a birthday?", "share a birthday"]]},
+ {"id": "l2", "t": 6.0, "text": "It feels like a hundred and eighty-three. Half the calendar.", "voice": "am_michael", "speed": 1.0, "subs": [["It feels like 183. Half the calendar.", "183"]]},
+ {"id": "l3", "t": 11.4, "text": "The real answer is twenty-three.", "voice": "am_michael", "speed": 1.0, "subs": [["The real answer is 23.", "23"]]},
+ {"id": "l4", "t": 15.0, "text": "Here's the trick. You're not comparing people to dates. You're comparing people to each other.", "voice": "am_michael", "speed": 1.0, "subs": [["Here's the trick.", "trick"], ["You're not comparing people to dates.", "not"], ["You're comparing people to each other.", "each other"]]},
+ {"id": "l5", "t": 21.0, "text": "Twenty-three people make two hundred and fifty-three pairs.", "voice": "am_michael", "speed": 1.0, "subs": [["23 people make 253 pairs.", "253 pairs"]]},
+ {"id": "l6", "t": 25.2, "text": "And every pair is another chance at a match.", "voice": "am_michael", "speed": 1.0, "subs": [["And every pair is another chance at a match.", "another chance"]]},
+ {"id": "l7", "t": 30.0, "text": "Add them up, and the odds pass fifty percent.", "asr": "Add them up and the odds pass 50%.", "voice": "am_michael", "speed": 1.0, "subs": [["Add them up, and the odds pass 50%.", "50%"]]},
+ {"id": "l8", "t": 33.6, "text": "At fifty-seven people, it's ninety-nine.", "voice": "am_michael", "speed": 1.0, "subs": [["At 57 people, it's 99.", "99"]]},
+ {"id": "l9", "t": 38.4, "text": "So the next time a coincidence feels impossible, count the pairs.", "voice": "am_michael", "speed": 1.0, "subs": [["So the next time a coincidence feels impossible,", "impossible"], ["count the pairs.", "pairs"]]}
+]

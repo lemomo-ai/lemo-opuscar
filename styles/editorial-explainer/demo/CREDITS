@@ -1,0 +1,25 @@
+Twenty-Three (二十三个人) — Editorial Explainer (Lemo-Opuscar)
+Style and demo by ivishalanand (https://github.com/ivishalanand), made with Claude Fable 5.2, contributed to Lemo-Opuscar.
+Sign-off in the film: ivishalanand × LemoLab × Claude Fable 5.2.
+
+IMAGES, FOOTAGE, MODELS
+- None. Paper, halftone cut-outs, highlighter, pencil, chart and type are drawn by the code in this folder (desk.js, film.js).
+  No photographs, no scans, no AI-generated images.
+
+LIBRARIES
+- numpy, scipy, soundfile (BSD), from the library's .venv.
+
+FONTS (SIL Open Font License 1.1; fetched by tools/fonts.sh from google/fonts at one commit, not in git; licence texts in fonts/)
+- Archivo — The Archivo Project Authors (Omnibus-Type), https://github.com/Omnibus-Type/Archivo: headlines and numbers. fonts/OFL-Archivo.txt
+- Source Serif 4 — Adobe, https://github.com/adobe-fonts/source-serif: statements and subtitles. fonts/OFL-SourceSerif4.txt
+- IBM Plex Mono — IBM Corp., https://github.com/IBM/plex: labels and the sign-off. fonts/OFL-IBMPlexMono.txt
+- Caveat — The Caveat Project Authors (Impallari Type), https://github.com/googlefonts/caveat: pencil notes. fonts/OFL-Caveat.txt
+
+SOUND
+- Score: original, synthesised with numpy (music/score.py): marimba, plucked strings (Karplus–Strong), bass, shaker, bell. No samples.
+- Foley: synthesised (mix.py, with core/audio/sfx.py for the thump and the whoosh).
+- Voice: Kokoro-82M (Apache-2.0) via kokoro-onnx, voice am_michael.
+- Speech check: faster-whisper (MIT).
+
+FACTS
+The three numbers in the film are computed, not quoted: FACTS.md.
